@@ -1,0 +1,67 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category   design_default
+ * @package    Mage
+ * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+    <div id="header">
+        <div class="clear">
+            <a href="http://www.unl.edu/"><img src="/ucomm/templatedependents/templatecss/images/logo.png" alt="UNL graphic identifier" id="logo" /></a>
+            <ul>
+                <li><a href="http://www.unl.edu/ucomm/visitor/" title="Information and resources for visiting the University of Nebraska in Lincoln, Nebraska">Visitor</a></li>
+                <li><a href="http://www.unl.edu/ucomm/prospective/" title="Information for Prospective Undergraduate, Graduate, Law and Distance Students">Prospective Student</a></li>
+                <li><a href="http://www.unl.edu/ucomm/current/" title="Links and Information for Current UNL Students">Current Student</a></li>
+                <li><a href="http://www.unl.edu/ucomm/facstaff/" title="Links and Information for UNL Faculty &amp; Staff">Faculty &amp; Staff</a></li>
+                <li><a href="http://www.unl.edu/ucomm/business/" title="Information for UNL Partners in Business, Industry &amp; Government">Business, Industry &amp; Government</a></li>
+            </ul>
+            
+            <div id="unlsearch">
+                <form id="SearchBarForm" onsubmit="return executeQuery( document.getElementById('SearchBarForm'), 'NewSearch', false )" action="http://www.google.com/u/UNL1?sa=Google+Search&amp;q=" method="get">
+                        <fieldset>
+                        <label for="q">Search: 
+                        <input accesskey="f" id="q" alt="Search string" name="q" size="14" maxlength="256" type="text" />
+                        </label>
+                        <label for="whichDatabase">
+                        <select title="Choose which area to search" id="whichDatabase" name="whichDatabase">
+                            <option value="http://www.unl.edu/ucomm/search/?q=">UNL Web</option>
+                            <option value="http://peoplefinder.unl.edu/?q=">UNL People</option>
+                            <option value="http://www.google.com/search?hl=en&amp;ie=UTF-8&amp;oe=UTF-8&amp;q=">Worldwide</option>
+                        </select>
+                        </label>
+                        <a href="http://www.google.com/u/UNL1?sa=Google+Search&amp;q=" class="go" accesskey="g" onclick="return executeQuery( document.forms.SearchBarForm, 'NewSearch', false )"><span>Go</span></a>
+                        </fieldset>
+                </form>
+            </div>
+            
+            <div id="storelinks">
+                <?php echo $this->getChildHtml('store_language') ?>
+                <?php echo $this->getChildHtml('store_switcher') ?>
+            </div>            
+        </div>
+    </div>
+    
+    <div id="red-header">
+        <div class="clear">
+            <h1>University of Nebraska&ndash;Lincoln</h1>
+            <div id="breadcrumbs">
+                <?php echo $this->getChildHtml('breadcrumbs') ?>
+                <a href="<?php echo $this->getBaseUrl(); ?>"><img src="<?php echo $this->getSkinUrl('images/media/seal.png') ?>" alt="Shop Today!" id="badge" /></a>
+            </div>
+        </div>
+    </div>
+    
+    <?php virtual('/ucomm/templatedependents/templatesharedcode/includes/shelf/shelf.shtml'); ?>

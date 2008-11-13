@@ -1,0 +1,76 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category   design_default
+ * @package    Mage
+ * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<?php 
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
+<head>
+    <?php echo $this->getChildHtml('head') ?>
+</head>
+
+<body id="secure" <?php echo $this->getBodyClass()?'class="'.$this->getBodyClass().'"':'' ?>>
+    <p class="skipnav"> <a class="skipnav" href="#main">Skip Navigation</a> </p>
+    
+    <?php echo $this->getChildHtml('header') ?>
+    
+    <div id="container">
+        <div class="clear">
+            <div id="title">
+                <?php echo $this->getChildHtml('topLinks') ?>
+                
+                <div id="titlegraphic">
+                    <h1><?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()); ?></h1>
+                    <h2><?php echo $this->htmlEscape($this->getLayout()->getBlock('header')->getWelcome()) ?></h2>
+                </div>
+            </div>
+            
+            <div id="main_right" class="mainwrapper">
+                <div id="main">                    
+                    <div class="col left sidebar">
+                        <?php echo $this->getChildHtml('topSearch') ?>
+                        <?php echo $this->getChildHtml('left') ?>&nbsp;
+                    </div>
+                    <div class="three_col right">
+                        <div class="clear">
+                        <?php echo $this->getChildHtml('topMenu') ?>
+                        </div>
+                        <?php echo $this->getChildHtml('global_messages') ?>
+                        <?php echo $this->getChildHtml('content') ?>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="footer">
+        <div id="footer_floater">
+            <?php echo $this->getChildHtml('footer') ?>
+        </div>
+    </div>  
+    
+    <script type="text/javascript" src="/ucomm/templatedependents/templatesharedcode/scripts/sifr_replacements.js"></script>
+    <?php echo $this->getChildHtml('before_body_end') ?>
+</body>
+</html>

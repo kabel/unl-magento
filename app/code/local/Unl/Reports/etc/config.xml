@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Reports>
+            <version>0.1.0</version>
+        </Unl_Reports>
+    </modules>
+    <global>
+        <models>
+            <reports_mysql4>
+                <rewrite>
+                    <order_collection>Unl_Reports_Model_Mysql4_Order_Collection</order_collection>
+                </rewrite>
+            </reports_mysql4>
+        </models>
+    </global>
+</config>

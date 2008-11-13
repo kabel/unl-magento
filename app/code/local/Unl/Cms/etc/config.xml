@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Cms>
+            <version>0.1.0</version>
+        </Unl_Cms>
+    </modules>
+    <global>
+        <blocks>
+            <cms>
+                <rewrite>
+                    <page>Unl_Cms_Block_Page</page>
+                </rewrite>
+            </cms>
+        </blocks>
+    </global>
+</config>
