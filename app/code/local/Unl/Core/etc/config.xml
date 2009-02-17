@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Core>
+            <version>0.1.0</version>
+            <depends>
+                <Mage_Catalog />
+            </depends>
+        </Unl_Core>
+    </modules>
+    
+    <global>
+        <blocks>
+            <adminhtml>
+                <rewrite>
+                    <cms_block_edit_form>Unl_Core_Block_Adminhtml_Cms_Block_Edit_Form</cms_block_edit_form>
+                    <cms_page_edit_tab_main>Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Main</cms_page_edit_tab_main>
+                    <newsletter_template_edit_form>Unl_Core_Block_Adminhtml_Newsletter_Template_Edit_Form</newsletter_template_edit_form>
+                    <system_email_template_edit_form>Unl_Core_Block_Adminhtml_System_Email_Template_Edit_Form</system_email_template_edit_form>
+                </rewrite>
+            </adminhtml>
+            <catalog>
+                <rewrite>
+                    <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
+                </rewrite>
+            </catalog>
+            <cms>
+                <rewrite>
+                    <page>Unl_Core_Block_Cms_Page</page>
+                </rewrite>
+            </cms>
+        </blocks>
+        <models>
+            <unl_core>
+                <class>Unl_Core_Model</class>
+            </unl_core>
+            <reports_mysql4>
+                <rewrite>
+                    <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
+                </rewrite>
+            </reports_mysql4>
+        </models>
+        <resources>
+            <unl_core_setup>
+                <setup>
+                    <module>Unl_Core</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </unl_core_setup>
+            <unl_core_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </unl_core_write>
+            <unl_core_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </unl_core_read>
+        </resources> 
+    </global>
+    
+</config>

@@ -1,21 +1,13 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Unl_Catalog>
+        <Unl_Core>
             <active>true</active>
             <codePool>local</codePool>
-        </Unl_Catalog>
-        <Unl_Cms>
+        </Unl_Core>
+        <Unl_TestModule>
             <active>true</active>
             <codePool>local</codePool>
-        </Unl_Cms>
-        <Unl_Reports>
-            <active>true</active>
-            <codePool>local</codePool>
-        </Unl_Reports>
-        <Unl_Adminhtml>
-            <active>true</active>
-            <codePool>local</codePool>
-        </Unl_Adminhtml>
+        </Unl_TestModule>
     </modules>
 </config>
