@@ -2,9 +2,10 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
             <depends>
                 <Mage_Catalog />
+                <Mage_Admin />
             </depends>
         </Unl_Core>
     </modules>
@@ -13,9 +14,13 @@
         <blocks>
             <adminhtml>
                 <rewrite>
+                    <catalog_category_tree>Unl_Core_Block_Adminhtml_Catalog_Category_Tree</catalog_category_tree>
+                    <catalog_product>Unl_Core_Block_Adminhtml_Catalog_Product</catalog_product>
+                    <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                     <cms_block_edit_form>Unl_Core_Block_Adminhtml_Cms_Block_Edit_Form</cms_block_edit_form>
                     <cms_page_edit_tab_main>Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Main</cms_page_edit_tab_main>
                     <newsletter_template_edit_form>Unl_Core_Block_Adminhtml_Newsletter_Template_Edit_Form</newsletter_template_edit_form>
+                    <permissions_user_edit_tab_main>Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Main</permissions_user_edit_tab_main>
                     <system_email_template_edit_form>Unl_Core_Block_Adminhtml_System_Email_Template_Edit_Form</system_email_template_edit_form>
                 </rewrite>
             </adminhtml>
@@ -34,6 +39,11 @@
             <unl_core>
                 <class>Unl_Core_Model</class>
             </unl_core>
+            <admin>
+                <rewrite>
+                    <user>Unl_Core_Model_Admin_User</user>
+                </rewrite>
+            </admin>
             <reports_mysql4>
                 <rewrite>
                     <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
@@ -62,5 +72,38 @@
             </unl_core_read>
         </resources> 
     </global>
+    
+    
+    <adminhtml>
+        <events>
+            <controller_action_predispatch_adminhtml_catalog_category_edit>
+		        <observers>
+		            <category_auth>
+		                <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>setStoreParamFromUser</method>
+		            </category_auth>
+		        </observers>
+		    </controller_action_predispatch_adminhtml_catalog_category_edit>
+		    <controller_action_predispatch_adminhtml_catalog_product_edit>
+                <observers>
+                    <product_auth>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>catalogProductEditActionPreDispatch</method>
+                    </product_auth>
+                </observers>
+            </controller_action_predispatch_adminhtml_catalog_product_edit>
+            <controller_action_predispatch_adminhtml_catalog_product_categories>
+                <observers>
+                    <category_auth>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>setStoreParamFromUser</method>
+                    </category_auth>
+                </observers>
+            </controller_action_predispatch_adminhtml_catalog_product_categories>
+        </events>
+    </adminhtml>
     
 </config>

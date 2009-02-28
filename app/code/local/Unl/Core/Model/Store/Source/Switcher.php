@@ -2,6 +2,12 @@
 
 class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
 {
+    /**
+     * Builds the general option array for stores
+     *
+     * @param boolean $withEmpty Include the empty option
+     * @return array
+     */
     public function getAllOptions($withEmpty = true)
     {
         if (is_null($this->_options)) {
@@ -33,7 +39,7 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
             $this->_options = $options;
         }
         
-        $this->getAttribute()->setDefaultValue(Mage::app()->getRequest()->getParam('store'));
+        //$this->getAttribute()->setDefaultValue(Mage::app()->getRequest()->getParam('store'));
         
         $options = $this->_options;
         if ($withEmpty) {
@@ -66,6 +72,24 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
     public function toOptionArray()
     {
         return $this->getAllOptions(false);
+    }
+    
+    public function toFormOptionArray()
+    {
+        $options = array();
+        foreach ($this->getAllOptions() as $opt) {
+            if (is_array($opt['value'])) {
+                $subOpt = array();
+                foreach ($opt['value'] as $item) {
+                    $subOpt[$item['value']] = $item['label'];
+                }
+                $options[] = $subOpt;
+            } else {
+                $options[$opt['value']] = $opt['label'];
+            }
+        }
+        
+        return $options;
     }
     
     public function getWebsiteCollection()
