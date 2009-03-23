@@ -34,11 +34,18 @@
                     <page>Unl_Core_Block_Cms_Page</page>
                 </rewrite>
             </cms>
+            <unl_core>
+                <class>Unl_Core_Block</class>
+            </unl_core>
         </blocks>
         <models>
             <unl_core>
                 <class>Unl_Core_Model</class>
+                <resourceModel>unl_core_mysql4</resourceModel>
             </unl_core>
+            <unl_core_mysql4>
+                <class>Unl_Core_Model_Mysql4</class>
+            </unl_core_mysql4>
             <admin>
                 <rewrite>
                     <user>Unl_Core_Model_Admin_User</user>
@@ -73,6 +80,17 @@
         </resources> 
     </global>
     
+    <admin>
+        <routers>
+            <unl_core>
+                <use>admin</use>
+                <args>
+                    <module>Unl_Core</module>
+                    <frontName>unl</frontName>
+                </args>
+            </unl_core>
+        </routers>
+    </admin>
     
     <adminhtml>
         <events>
@@ -104,6 +122,41 @@
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_categories>
         </events>
+        
+        <menu>
+            <report>
+                <children>
+                    <salesroot>
+                        <children>
+                            <bursar translate="title" module="reports">
+                                <title>Bursar Report</title>
+                                <action>unl/report_sales/bursar</action>
+                            </bursar>
+                        </children>
+                    </salesroot>
+                </children>
+            </report>
+        </menu>
+        
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <report>
+                            <children>
+                                <salesroot>
+                                    <children>
+                                        <bursar translate="title">
+                                            <title>Bursar Report</title>
+                                        </bursar>
+                                    </children>
+                                </salesroot>
+                            </children>
+                        </report>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
     </adminhtml>
     
 </config>
