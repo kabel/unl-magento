@@ -101,4 +101,69 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
 
         return parent::_prepareColumns();
     }
+    
+    public function getReport($from, $to)
+    {
+        if ($from == '') {
+            $from = $this->getFilter('report_from');
+        }
+        if ($to == '') {
+            $to = $this->getFilter('report_to');
+        }
+        //$totalObj = new Mage_Reports_Model_Totals();
+        //Replaces the original totals counter
+        $columns = array();
+        foreach ($this->getColumns() as $col) {
+            $columns[$col->getIndex()] = array("total" => $col->getTotal(), "value" => 0);
+        }
+        
+        $count = 0;
+        $totalCollection = Mage::getResourceModel('reports/order_collection');
+        $totalCollection->setDateRange($from, $to)
+            ->setStoreIds(array())
+            ->load();
+        foreach ($totalCollection as $item) {
+            $data = $item->getData();
+            foreach ($columns as $field=>$a){
+                if ($field !== '') {
+                    $columns[$field]['value'] = $columns[$field]['value'] + (isset($data[$field]) ? $data[$field] : 0);
+                }
+            }
+            $count++;
+        }
+        
+        $data = array();
+        foreach ($columns as $field=>$a)
+        {
+            if ($a['total'] == 'avg') {
+                if ($field !== '') {
+                    if ($count != 0) {
+                        $data[$field] = $a['value']/$count;
+                    } else {
+                        $data[$field] = 0;
+                    }
+                }
+            } else if ($a['total'] == 'sum') {
+                if ($field !== '') {
+                    $data[$field] = $a['value'];
+                }
+            } else if (strpos($a['total'], '/') !== FALSE) {
+                if ($field !== '') {
+                    $data[$field] = 0;
+                }
+            }
+        }
+
+        $totals = new Varien_Object();
+        $totals->setData($data);
+        //end totals
+        $this->setTotals($totals);
+        $this->addGrandTotals($this->getTotals());
+        return $this->getCollection()->getReport($from, $to);
+    }
+    
+    /*public function addGrandTotals($total)
+    {
+        
+    }*/
 }

@@ -73,7 +73,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                     ->from("", array("shipping" => "0"))
                     ->from("", array("discount" => "SUM(order_item.base_discount_amount)"))
                     ->from("", array("total" => "SUM(order_item.base_row_total - order_item.base_discount_amount + order_item.base_tax_amount)"))
-                    ->from("", array("invoiced" => "SUM(order_item.base_row_invoiced)"))
+                    ->from("", array("invoiced" => "SUM(order_item.base_row_invoiced - order_item.base_discount_invoiced + order_item.base_tax_invoiced)"))
                     ->from("", array("refunded" => "SUM(order_item.base_amount_refunded)"))
                     ->joinInner(
                         array('order_item' => $this->getTable('sales/order_item')), 
