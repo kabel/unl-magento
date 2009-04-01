@@ -51,6 +51,11 @@
                     <user>Unl_Core_Model_Admin_User</user>
                 </rewrite>
             </admin>
+            <catalog>
+                <rewrite>
+                    <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
+                </rewrite>
+            </catalog>
             <reports_mysql4>
                 <rewrite>
                     <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>

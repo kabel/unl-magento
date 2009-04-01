@@ -159,7 +159,21 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
         //end totals
         $this->setTotals($totals);
         $this->addGrandTotals($this->getTotals());
-        return $this->getCollection()->getReport($from, $to);
+        $report = $this->getCollection()->getReport($from, $to);
+        if (count($report)) {
+            $groupInvoiced = 0;
+            foreach ($report as $row) {
+                $groupInvoiced += $row->getInvoiced();
+            }
+            $data['invoiced'] -= $groupInvoiced;
+            $order = Mage::getModel('sales/order');
+            $data['merchant'] = 'Global Shipping/Refunds';
+            $data['tax'] = 0;
+            $data['total'] = $data['shipping'];
+            $order->setData($data);
+            $report->addItem($order);
+        }
+        return $report;
     }
     
     /*public function addGrandTotals($total)

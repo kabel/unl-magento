@@ -6,7 +6,7 @@
             <codePool>local</codePool>
         </Unl_Core>
         <Unl_TestModule>
-            <active>true</active>
+            <active>false</active>
             <codePool>local</codePool>
         </Unl_TestModule>
     </modules>

@@ -28,7 +28,7 @@
                     <module>Unl_TestModule</module>
                     <frontName>tester</frontName>
                 </args>
-            </unl_tester>>
+            </unl_tester>
         </routers>
     </admin>
 </config>
