@@ -25,12 +25,12 @@
     <div class="content">
         <form id="localSearchForm" action="<?php echo $this->helper('catalogSearch')->getResultUrl() ?>" method="get">
             <fieldset>
-                <!--  <label class="overlabel-apply" for="localSearchQuery-field">Search: </label> -->
+                <label class="overlabel" for="localSearchQuery-field"><?php echo $this->helper('catalogSearch')->__('Search entire store here...') ?></label>
                 <input id="localSearchQuery-field" type="text" class="input-text" name="<?php echo $this->helper('catalogSearch')->getQueryParamName() ?>" value="<?php echo $this->helper('catalogSearch')->getEscapedQueryText() ?>"/>
                 <input name="localSearch-Button" id="localSearch-Button" src="/ucomm/templatedependents/templatecss/images/transpixel.gif" alt="Search" type="image" />
                 <div id="search_autocomplete" class="search-autocomplete"></div>
                 <script type="text/javascript">
-                    var searchForm = new Varien.searchForm('localSearchForm', 'localSearchQuery-field', '<?php echo $this->helper('catalogSearch')->__('Search entire store here...') ?>');
+                    var searchForm = new Varien.searchForm('localSearchForm', 'localSearchQuery-field', '');
                     searchForm.initAutocomplete('<?php echo $this->helper('catalogSearch')->getSuggestUrl() ?>', 'search_autocomplete');
                 </script>
             </fieldset>

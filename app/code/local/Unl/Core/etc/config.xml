@@ -19,6 +19,8 @@
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                     <cms_block_edit_form>Unl_Core_Block_Adminhtml_Cms_Block_Edit_Form</cms_block_edit_form>
                     <cms_page_edit_tab_main>Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Main</cms_page_edit_tab_main>
+                    <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
+                    <dashboard_tab_products_ordered>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Ordered</dashboard_tab_products_ordered>
                     <newsletter_template_edit_form>Unl_Core_Block_Adminhtml_Newsletter_Template_Edit_Form</newsletter_template_edit_form>
                     <permissions_user_edit_tab_main>Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Main</permissions_user_edit_tab_main>
                     <system_email_template_edit_form>Unl_Core_Block_Adminhtml_System_Email_Template_Edit_Form</system_email_template_edit_form>

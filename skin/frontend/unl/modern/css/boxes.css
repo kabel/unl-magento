@@ -369,6 +369,14 @@ table.pager td.sort-by .active:hover { color:#444; }
 .search-autocomplete li.odd { background:#f6f6f6; }
 .search-autocomplete li.selected { background:#ecf9ea; }
 #localSearch-Button { position: absolute; top: 30px; right: 15px; }
+.mini-search label.overlabel-apply {
+	color:#666666;
+	font-size: 12px;
+	font-weight: normal;
+	left:24px;
+	position:absolute;
+	top:38px;
+}
 
 
 /********************** Sidebars */

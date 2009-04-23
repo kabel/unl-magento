@@ -29,6 +29,52 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
         return $this;
     }
     
+    public function calculateSales($isFilter = 0, $websiteScope = 1, $storeIds = array())
+    {
+        if ($websiteScope) {
+            parent::calculateSales($isFilter);
+            if (!empty($storeIds)) {
+                $this->addAttributeToFilter('store_id', array('in' => $storeIds));
+            }
+        } else {
+            $product = Mage::getResourceSingleton('catalog/product');
+            
+            $this->getSelect()
+                ->joinInner(
+                    array('order_item' => $this->getTable('sales/order_item')), 
+                    "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
+                    array())
+                ->joinInner(
+                    array('product_int' => $this->getTable('catalog_product_entity_int')),
+                    "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
+                    array())
+                ->joinInner(
+                    array('eav' => $this->getTable('eav_attribute')),
+                    "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
+                    array())
+                ->where("product_int.value IN (?)", (array)$storeIds);
+                
+            if ($isFilter) {
+                $expr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))*{{base_to_global_rate}}";
+                $attrs = array('base_to_global_rate');
+                $this->addExpressionAttributeToSelect('lifetime', "SUM({$expr})", $attrs)
+                    ->addExpressionAttributeToSelect('average', "SUM({$expr}) / COUNT(DISTINCT(e.entity_id))", $attrs);
+            } else {
+                $expr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))";
+                $this->getSelect()
+                    ->from("", array(
+                        'lifetime' => "SUM({$expr})",
+                        'average' => "SUM({$expr}) / COUNT(DISTINCT(e.entity_id))"
+                    ));
+            }
+            
+            $this->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED))
+                ->groupByAttribute('entity_type_id');
+        }
+        
+        return $this;
+    }
+    
     public function setStoreIds($storeIds)
     {
         $vals = array_values($storeIds);
