@@ -8,7 +8,8 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
         parent::__construct();
         $this->setId('gridBursar');
         $this->setStoreSwitcherVisibility(false);
-        $this->setExportVisibility(false);
+        $this->setSubtotalVisibility(true);
+        //$this->setExportVisibility(false);
     }
 
     protected function _prepareCollection()
@@ -96,8 +97,8 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
             'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
         ));
 
-        $this->addExportType('*/*/exportSalesCsv', Mage::helper('reports')->__('CSV'));
-        $this->addExportType('*/*/exportSalesExcel', Mage::helper('reports')->__('Excel'));
+        $this->addExportType('*/*/exportBursarCsv', Mage::helper('reports')->__('CSV'));
+        $this->addExportType('*/*/exportBursarExcel', Mage::helper('reports')->__('Excel'));
 
         return parent::_prepareColumns();
     }

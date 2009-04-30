@@ -19,6 +19,30 @@ class Unl_Core_Report_SalesController extends Mage_Adminhtml_Controller_Action
             ->renderLayout();
     }
     
+    /**
+     * Export bursar report grid to CSV format
+     */
+    public function exportBursarCsvAction()
+    {
+        $fileName   = 'bursar.csv';
+        $content    = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_grid')
+            ->getCsv();
+
+        $this->_prepareDownloadResponse($fileName, $content);
+    }
+
+    /**
+     * Export sales report grid to Excel XML format
+     */
+    public function exportBursarExcelAction()
+    {
+        $fileName   = 'bursar.xml';
+        $content    = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_grid')
+            ->getExcel($fileName);
+
+        $this->_prepareDownloadResponse($fileName, $content);
+    }
+    
     protected function _isAllowed()
     {
         switch ($this->getRequest()->getActionName()) {
