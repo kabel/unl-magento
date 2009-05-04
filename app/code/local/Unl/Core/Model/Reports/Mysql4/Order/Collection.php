@@ -2,6 +2,56 @@
 
 class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_Mysql4_Order_Collection
 {
+    public function prepareSummary($range, $customStart, $customEnd, $isFilter=0, $websiteScope=1, $storeIds=array())
+    {
+        if ($websiteScope) {
+            parent::prepareSummary($range, $customStart, $customEnd, $isFilter);
+            if (!empty($storeIds)) {
+                $this->addAttributeToFilter('store_id', array('in' => $storeIds));
+            }
+        } else {
+            $product = Mage::getResourceSingleton('catalog/product');
+            
+            $this->getSelect()
+                ->joinInner(
+                    array('order_item' => $this->getTable('sales/order_item')), 
+                    "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
+                    array())
+                ->joinInner(
+                    array('product_int' => $this->getTable('catalog_product_entity_int')),
+                    "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
+                    array())
+                ->joinInner(
+                    array('eav' => $this->getTable('eav_attribute')),
+                    "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
+                    array())
+                ->where("product_int.value IN (?)", (array)$storeIds);
+            
+            if ($isFilter==0) {
+                $expr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))*{{base_to_global_rate}}";
+                $attrs = array('base_to_global_rate');
+                $this->addExpressionAttributeToSelect('revenue', "SUM({$expr})", $attrs);
+            } else {
+                $expr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))";
+                $this->getSelect()
+                    ->from("", array(
+                        'revenue' => "SUM({$expr})"
+                    ));
+            }
+            
+            $this->addExpressionAttributeToSelect('quantity', 'COUNT(DISTINCT({{attribute}}))', 'entity_id')
+                ->addExpressionAttributeToSelect('range', $this->_getRangeExpression($range), 'created_at')
+                ->addAttributeToFilter('created_at', $this->getDateRange($range, $customStart, $customEnd))
+                ->groupByAttribute('range')
+                ->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED))
+                ->getSelect()->order('range', 'asc');
+        }
+
+        
+
+        return $this;
+    }
+    
     public function setDateRange($from, $to)
     {
         $this->_reset()
