@@ -2,6 +2,19 @@
 
 class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_Mysql4_Order_Collection
 {
+    public function addOrdersCount($distinct=0)
+    {
+        $this->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED));
+        $what = "e.entity_id";
+        if ($distinct) {
+            $what = "DISTINCT(" . $what . ")";
+        }
+        $this->getSelect()
+            ->from('', array("orders_count" => "COUNT({$what})"));
+
+        return $this;
+    }
+    
     public function prepareSummary($range, $customStart, $customEnd, $isFilter=0, $websiteScope=1, $storeIds=array())
     {
         if ($websiteScope) {
@@ -10,22 +23,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                 $this->addAttributeToFilter('store_id', array('in' => $storeIds));
             }
         } else {
-            $product = Mage::getResourceSingleton('catalog/product');
-            
-            $this->getSelect()
-                ->joinInner(
-                    array('order_item' => $this->getTable('sales/order_item')), 
-                    "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
-                    array())
-                ->joinInner(
-                    array('product_int' => $this->getTable('catalog_product_entity_int')),
-                    "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
-                    array())
-                ->joinInner(
-                    array('eav' => $this->getTable('eav_attribute')),
-                    "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
-                    array())
-                ->where("product_int.value IN (?)", (array)$storeIds);
+            $this->filterSourceStore($storeIds);
             
             if ($isFilter==0) {
                 $expr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))*{{base_to_global_rate}}";
@@ -49,6 +47,28 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
 
         
 
+        return $this;
+    }
+    
+    public function filterSourceStore($storeIds)
+    {
+        $product = Mage::getResourceSingleton('catalog/product');
+            
+        $this->getSelect()
+            ->joinInner(
+                array('order_item' => $this->getTable('sales/order_item')), 
+                "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
+                array())
+            ->joinInner(
+                array('product_int' => $this->getTable('catalog_product_entity_int')),
+                "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
+                array())
+            ->joinInner(
+                array('eav' => $this->getTable('eav_attribute')),
+                "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
+                array())
+            ->where("product_int.value IN (?)", (array)$storeIds);
+        
         return $this;
     }
     
@@ -87,22 +107,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                 $this->addAttributeToFilter('store_id', array('in' => $storeIds));
             }
         } else {
-            $product = Mage::getResourceSingleton('catalog/product');
-            
-            $this->getSelect()
-                ->joinInner(
-                    array('order_item' => $this->getTable('sales/order_item')), 
-                    "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
-                    array())
-                ->joinInner(
-                    array('product_int' => $this->getTable('catalog_product_entity_int')),
-                    "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
-                    array())
-                ->joinInner(
-                    array('eav' => $this->getTable('eav_attribute')),
-                    "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
-                    array())
-                ->where("product_int.value IN (?)", (array)$storeIds);
+            $this->filterSourceStore($storeIds);
                 
             if ($isFilter) {
                 $expr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))*{{base_to_global_rate}}";
@@ -119,6 +124,40 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
             }
             
             $this->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED))
+                ->groupByAttribute('entity_type_id');
+        }
+        
+        return $this;
+    }
+    
+    public function calculateTotals($isFilter=0, $websiteScope=1, $storeIds=array())
+    {
+        if ($websiteScope) {
+            parent::calculateTotals($isFilter);
+            if (!empty($storeIds)) {
+                $this->addAttributeToFilter('store_id', array('in' => $storeIds));
+            }
+        } else {
+            $this->filterSourceStore($storeIds);
+            
+            if ($isFilter) {
+                $revExpr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))*{{base_to_global_rate}}";
+                $taxExpr = "(order_item.base_tax_amount)*{{base_to_global_rate}}";
+                $attrs = array('base_to_global_rate');
+                $this->addExpressionAttributeToSelect('revenue', "SUM({$revExpr})", $attrs)
+                    ->addExpressionAttributeToSelect('tax', "SUM({$taxExpr})", $attrs);
+            } else {
+                $revExpr = "(order_item.base_row_total-IFNULL(order_item.base_amount_refunded,0)-IF(order_item.qty_canceled > 0, (order_item.base_row_total / order_item.qty_ordered * order_item.qty_canceled),0)-IFNULL(order_item.base_discount_amount,0))";
+                $taxExpr = "(order_item.base_tax_amount)";
+                $this->getSelect()
+                    ->from("", array(
+                        'revenue' => "SUM({$revExpr})",
+                        'tax' => "SUM({$taxExpr})"
+                    ));
+            }
+            
+            $this->addExpressionAttributeToSelect('quantity', 'COUNT(DISTINCT({{entity_id}}))', array('entity_id'))
+                ->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED))
                 ->groupByAttribute('entity_type_id');
         }
         
@@ -160,8 +199,8 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                         'SUM({{base_total_refunded}})',
                         array('base_total_refunded'));
             } else {
-                $product = Mage::getResourceSingleton('catalog/product');
-                
+                $this->filterSourceStore($storeIds);
+                                
                 $this->getSelect()
                     ->from("", array("items" => "SUM(order_item.qty_ordered)"))
                     ->from("", array("subtotal" => "SUM(order_item.base_row_total)"))
@@ -170,22 +209,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                     ->from("", array("discount" => "SUM(order_item.base_discount_amount)"))
                     ->from("", array("total" => "SUM(order_item.base_row_total - order_item.base_discount_amount + order_item.base_tax_amount)"))
                     ->from("", array("invoiced" => "SUM(order_item.base_row_invoiced - order_item.base_discount_invoiced + order_item.base_tax_invoiced)"))
-                    ->from("", array("refunded" => "SUM(order_item.base_amount_refunded)"))
-                    ->joinInner(
-                        array('order_item' => $this->getTable('sales/order_item')), 
-                        "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
-                        array())
-                    ->joinInner(
-                        array('product_int' => $this->getTable('catalog_product_entity_int')),
-                        "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
-                        array())
-                    ->joinInner(
-                        array('eav' => $this->getTable('eav_attribute')),
-                        "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
-                        array())
-                    ->where("product_int.value IN (?)", (array)$storeIds);
-                    
-                //$temp = $this->getSelect()->__toString();
+                    ->from("", array("refunded" => "SUM(order_item.base_amount_refunded)"));
                 
                 return $this;
             }
