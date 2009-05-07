@@ -61,6 +61,7 @@ class Unl_Core_Model_Mysql4_Bursar_Collection extends Mage_Reports_Model_Mysql4_
                 array("merchant" => "stgroup.name"))
             ->group("stgroup.group_id");
             
+        $this->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED));
         //$temp = $this->getSelect()->__toString();
                 
         return $this;

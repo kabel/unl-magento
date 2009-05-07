@@ -154,6 +154,15 @@
                     </salesroot>
                 </children>
             </report>
+            <sales>
+                <children>
+                    <picklist translate="title" module="sales">
+                        <title>Pick Lists</title>
+                        <action>unl/sales_picklist</action>
+                        <sort_order>41</sort_order>
+                    </picklist>
+                </children>
+            </sales>
         </menu>
         
         <acl>
@@ -171,6 +180,14 @@
                                 </salesroot>
                             </children>
                         </report>
+                        <sales>
+                            <children>
+                                <picklist translate="title">
+                                    <title>Pick Lists</title>
+                                    <sort_order>41</sort_order>
+                                </picklist>
+                            </children>
+                        </sales>
                     </children>
                 </admin>
             </resources>

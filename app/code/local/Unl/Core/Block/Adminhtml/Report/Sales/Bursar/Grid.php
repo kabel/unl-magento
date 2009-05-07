@@ -122,6 +122,7 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
         $totalCollection = Mage::getResourceModel('reports/order_collection');
         $totalCollection->setDateRange($from, $to)
             ->setStoreIds(array())
+            ->addAttributeToFilter('state', array('neq' => Mage_Sales_Model_Order::STATE_CANCELED))
             ->load();
         foreach ($totalCollection as $item) {
             $data = $item->getData();
