@@ -22,6 +22,11 @@ ln -s /path/to/unl-magento/app/design/adminhtml/default/default/template/unl app
 -- OPTIONAL --
 ln -s /path/to/unl-magento/app/design/adminhtml/default/default/template/tester app/design/adminhtml/default/default/template/tester
 
+-- REQUIRED COPYING --
+Because Magento has some security settings for its javascript proxy, using symlinks for the following file WILL NOT work. You must copy them from the [Unl-Magento] workspace to the [Magento] workspace.
+[Unl-Magento]/js/lightbox -> [Magento]/js/lightbox
+[Unl-Magento]/js/lib/ds-sleight -> [Magento]/js/lib/ds-sleight (this is only needed because the UNL Templates won't work with the version of this file provided by Varien)
+
 
 There are two configration settings for the theme to work:
 System>Configuration>Design
