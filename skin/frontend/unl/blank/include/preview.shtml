@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script language="javascript" src="../../../../../js/tiny_mce/tiny_mce_popup.js"></script>
+<script type="text/javascript" src="../../../../../js/tiny_mce/plugins/preview/jscripts/embed.js"></script>
+<script type="text/javascript">
+tinyMCEPopup.onInit.add(function(ed) {
+    var dom = tinyMCEPopup.dom;
+
+    dom.setHTML('content', ed.getContent({preview: true}));
+});
+
+document.write('<base href="' + tinyMCEPopup.getWindowArg("base") + '">');
+</script>
+<script type="text/javascript" src="/wdn/templates_3.0/scripts/all.js"></script>
+<!--#include virtual="/wdn/templates_3.0/includes/browserspecifics.html" -->
+<!--#include virtual="/wdn/templates_3.0/includes/metanfavico.html" -->
+<title>{#preview.preview_desc}</title>
+</head>
+<body class="fixed">
+<div id="wdn_wrapper">
+    <div id="header"> <a href="http://www.unl.edu/" title="UNL website"><img src="/wdn/templates_3.0/images/logo.png" alt="UNL graphic identifier" id="logo" /></a>
+        <h1>University of Nebraska&ndash;Lincoln</h1>
+        <!--#include virtual="/wdn/templates_3.0/includes/wdnTools.html" -->
+    </div>
+    <div id="wdn_navigation_bar">
+        <div id="breadcrumbs">
+            <ul>
+                <li> </li>
+            </ul>
+        </div>
+        <div id="wdn_navigation_wrapper">
+            <div id="navigation"> </div>
+        </div>
+    </div>
+    <div id="wdn_content_wrapper">
+        <div id="titlegraphic"><!-- InstanceBeginEditable name="titlegraphic" -->
+            <h1>SmartSite Storefront | CMS Preview</h1>
+        </div>
+        <div id="pagetitle"> </div>
+        <div id="maincontent">
+            <div id="content"></div>
+            <div class="clear"> </div>
+        </div>
+    </div>
+    <div id="wdn_wrapper_footer"> </div>
+</div>
+</body>
+</html>

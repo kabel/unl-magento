@@ -2,9 +2,8 @@
 
 class Unl_TestModule_Block_Test extends Mage_Adminhtml_Block_Template
 {
-    public function __construct()
+    public function _construct()
     {
-        parent::__construct();
         $this->setTemplate('tester/index.phtml');
     }
     

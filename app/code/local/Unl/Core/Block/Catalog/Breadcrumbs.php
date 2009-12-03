@@ -5,22 +5,22 @@ class Unl_Core_Block_Catalog_Breadcrumbs extends Mage_Catalog_Block_Breadcrumbs
     protected function _prepareLayout()
     {
         if ($breadcrumbsBlock = $this->getLayout()->getBlock('breadcrumbs')) {
-            $breadcrumbsBlock->addCrumb('home',
-                array('label'=>Mage::helper('catalog')->__('Home'), 'title'=>Mage::helper('catalog')->__('Go to Home Page'), 'link'=>Mage::getBaseUrl())
-            );
+            $breadcrumbsBlock->addCrumb('home', array(
+                'label'=>Mage::helper('catalog')->__('Home'),
+                'title'=>Mage::helper('catalog')->__('Go to Home Page'),
+                'link'=>Mage::getBaseUrl()
+            ));
 
-            $title = '';
-            $path = Mage::helper('catalog')->getBreadcrumbPath($this->getCategory());
-            foreach ($path as $name=>$breadcrumb) {
+            $title = array();
+            $path  = Mage::helper('catalog')->getBreadcrumbPath();
+
+            foreach ($path as $name => $breadcrumb) {
                 $breadcrumbsBlock->addCrumb($name, $breadcrumb);
-                if (!empty($title)) {
-                    $title .= ' '.Mage::getStoreConfig('catalog/seo/title_separator').' ';
-                }
-                $title .= $breadcrumb['label'];
+                $title[] = $breadcrumb['label'];
             }
 
             if ($headBlock = $this->getLayout()->getBlock('head')) {
-                $headBlock->setTitle($title);
+                $headBlock->setTitle(join($this->getTitleSeparator(), $title));
             }
         }
         return $this;
