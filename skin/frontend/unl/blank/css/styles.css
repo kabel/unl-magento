@@ -56,24 +56,21 @@
     background:transparent url(../images/breadcrumbBarSprite3.png) no-repeat scroll 100% -72px;
     padding-right: 8px;
 }
-.subnav ul {
+#maincontent .subnav ul {
     background:transparent url(../images/breadcrumbBarSprite3.png) repeat scroll 0 -36px;
     height: 36px;
-    padding: 0 !important;
+    padding: 0;
+    text-align: center;
+    list-style: none;
 }
 .subnav ul li {
-    list-style: none;
-    float: left;
-    position: relative;
-    left: 12.5%;
+    display: inline;
 }
 .subnav ul li a {
 	display: inline-block;
 	height: 24px;
 	padding: 8px 10px 0;
     margin: 0 0 0 2px;
-    position: relative;
-    left: -25%;	
 }
 .subnav ul li a:hover {
     background: transparent url(../images/breadcrumbBarSprite4.png) repeat scroll 0 -36px;
