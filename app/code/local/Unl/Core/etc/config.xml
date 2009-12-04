@@ -30,7 +30,12 @@
                     <system_email_template_edit_form>Unl_Core_Block_Adminhtml_System_Email_Template_Edit_Form</system_email_template_edit_form>
                 </rewrite>
             </adminhtml>
-             
+             <bundle>
+                <rewrite>
+                    <adminhtml_catalog_product_edit_tab_bundle_option>Unl_Core_Block_Bundle_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option</adminhtml_catalog_product_edit_tab_bundle_option>
+                    <adminhtml_catalog_product_edit_tab_bundle_option_selection>Unl_Core_Block_Bundle_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Selection</adminhtml_catalog_product_edit_tab_bundle_option_selection>
+                </rewrite>
+             </bundle>
             <catalog>
                 <rewrite>
                     <navigation>Unl_Core_Block_Catalog_Navigation</navigation>
