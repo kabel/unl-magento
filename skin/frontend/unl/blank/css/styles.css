@@ -549,8 +549,9 @@ a.minimal-price-link .price { font-weight:normal; }
 .product-options dd select { width:100%; }
 .product-options .options-list {}
 .product-options .options-list input.radio { float:left; margin:3px -18px 0 0; }
-.product-options .options-list input.checkbox { /*float:left; margin:3px -20px 0 0;*/ }
-.product-options .options-list .label { display:block; margin-left:67px; }
+.product-options .options-list .checkbox-wrapper { float:left; margin:3px 6px 0 0; }
+.product-options .options-list .label { display:block; margin-left:20px; }
+.product-options .options-list .checkbox-wrapper + .label { padding-top: 4px }
 .product-options ul.validation-failed { padding:0 7px; }
 .product-options p.required { padding:15px 0 0; }
 
