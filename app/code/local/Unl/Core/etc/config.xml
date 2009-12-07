@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.1</version>
+            <version>0.1.2</version>
             <depends>
                 <Mage_Catalog />
                 <Mage_Admin />
@@ -107,7 +107,25 @@
                     <use>core_read</use>
                 </connection>
             </unl_core_read>
-        </resources> 
+        </resources>
+        
+        <fieldsets>
+            <sales_convert_quote_item>
+                <source_store_view><to_order_item>*</to_order_item></source_store_view>
+            </sales_convert_quote_item>
+        </fieldsets>
+        
+        <events>
+            <sales_quote_item_set_product>
+                <observers>
+                    <source_store_set>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>setQuoteItemSourceStore</method>
+                    </source_store_set>
+                </observers>
+            </sales_quote_item_set_product>
+        </events>
     </global>
     
     <admin>

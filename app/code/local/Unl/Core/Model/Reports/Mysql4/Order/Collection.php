@@ -52,22 +52,12 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
     
     public function filterSourceStore($storeIds)
     {
-        $product = Mage::getResourceSingleton('catalog/product');
-            
+        $filter = $this->getConnection()->quoteInto(' AND order_item.source_store_view IN (?)', (array)$storeIds);
         $this->getSelect()
             ->joinInner(
                 array('order_item' => $this->getTable('sales/order_item')), 
-                "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
-                array())
-            ->joinInner(
-                array('product_int' => $this->getTable('catalog_product_entity_int')),
-                "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
-                array())
-            ->joinInner(
-                array('eav' => $this->getTable('eav_attribute')),
-                "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
-                array())
-            ->where("product_int.value IN (?)", (array)$storeIds);
+                "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL" . $filter, 
+                array());
         
         return $this;
     }

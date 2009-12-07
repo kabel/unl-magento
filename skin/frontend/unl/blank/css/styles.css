@@ -520,8 +520,12 @@ a.minimal-price-link .price { font-weight:normal; }
 .tier-prices .benefit {}
 
 /* Add to Links */
-#maincontent .add-to-links { padding-left: 18px; margin: 10px 0; }
-.add-to-links .separator { display:none; }
+#maincontent .add-to { text-align: left; margin: 10px 0; padding: 0; list-style: none; }
+.add-to li { line-height: 1.25em; padding: 0 12px; margin-left: 12px; background:transparent url(../images/add_to_bg.gif) no-repeat scroll 0 50%; }
+.add-to .separator { display:none; }
+#maincontent .add-to-inline { text-align: right; margin: 10px 0; }
+.add-to-inline li { display: inline; line-height: 1.25em; padding: 0 12px; margin-left: 12px; background:transparent url(../images/add_to_bg.gif) no-repeat scroll 0 50%; }
+.add-to-inline .separator { display:none; }
 
 /* Add to Cart */
 .add-to-cart { margin:10px 0; border:1px solid #eee; background-color:#f8f8f8; padding:10px; text-align:right; }

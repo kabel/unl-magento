@@ -14,13 +14,6 @@ class Unl_Core_Model_Mysql4_Picklist_Collection extends Mage_Reports_Model_Mysql
     
     public function setStoreIds($storeIds)
     {
-        $vals = array_values($storeIds);
-        if (count($storeIds) >= 1 && $vals[0] != '') {
-            $this->addAttributeToFilter('source_store_view', array('in' => (array)$storeIds));
-        } else {
-            $this->addAttributeToSelect('source_store_view', 'inner');
-        }
-        
         $compositeTypeIds = Mage::getSingleton('catalog/product_type')->getCompositeTypes();
         $productTypes = $this->getConnection()->quoteInto(' AND (e.type_id NOT IN (?))', $compositeTypeIds);
         
@@ -28,6 +21,11 @@ class Unl_Core_Model_Mysql4_Picklist_Collection extends Mage_Reports_Model_Mysql
             ->joinInner(array('order_items' => $this->getTable('sales/order_item')), 
                 "e.entity_id = order_items.product_id AND e.entity_type_id = {$this->getProductEntityTypeId()}{$productTypes}",
                 array('qty_invoiced'));
+        
+        $vals = array_values($storeIds);
+        if (count($storeIds) >= 1 && $vals[0] != '') {
+            $this->getSelect()->where('order_items.source_store_view IN (?) OR order_items.source_store_view IS NULL', (array)$storeIds);
+        }
         
         $order = Mage::getResourceSingleton('sales/order');
         /* @var $order Mage_Sales_Model_Entity_Order */
@@ -41,7 +39,7 @@ class Unl_Core_Model_Mysql4_Picklist_Collection extends Mage_Reports_Model_Mysql
             $this->getSelect()->joinInner(
                 array('order' => $this->getTable('sales/order')),
                 $_joinCondition,
-                array('order_num' => 'increment_id')
+                array('order_num' => 'increment_id', 'order_id' => 'entity_id')
             );
         } else {
 
@@ -61,11 +59,11 @@ class Unl_Core_Model_Mysql4_Picklist_Collection extends Mage_Reports_Model_Mysql
         }
         
         $this->getSelect()
-            ->joinInner(
+            ->joinLeft(
                 array('store' => $this->getTable('core_store')),
-                "{$this->_getAttributeFieldName('source_store_view')} = store.store_id",
+                "order_items.source_store_view = store.store_id",
                 array())
-            ->joinInner(
+            ->joinLeft(
                 array('stgroup' => $this->getTable('core_store_group')),
                 "store.group_id = stgroup.group_id",
                 array("merchant" => "stgroup.name"));
