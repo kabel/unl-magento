@@ -266,7 +266,7 @@ One page checkout main layout
         <reference name="root">
             <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
         </reference>
-        <reference name="left">
+        <reference name="right">
             <action method="unsetChildren"></action>
 
             <block type="checkout/onepage_progress" name="checkout.progress" before="-" template="checkout/onepage/progress.phtml"/>

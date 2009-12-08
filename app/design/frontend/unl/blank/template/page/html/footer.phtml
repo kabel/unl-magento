@@ -31,12 +31,13 @@
     </div>
     <div class="footer_col">
         <h3>Related Links</h3>
-        <?php echo $this->getChildHtml() ?></div>
+        <?php echo $this->getChildHtml('footer_links') ?></div>
     <div class="footer_col">
         <h3>Contacting Us</h3>
+        <div class="contact"><?php echo $this->getChildHtml('contact_link') ?>
         <p><strong>University Communications</strong><br />
         WICK 17<br />
-        Lincoln NE 68583-0218</p></div>
+        Lincoln NE 68583-0218</p></div></div>
     <div class="footer_col">
         <?php virtual('/wdn/templates_3.0/includes/socialmediashare.html'); ?>
     </div>

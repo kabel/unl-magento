@@ -75,6 +75,8 @@
 .subnav ul li a:hover {
     background: transparent url(../images/breadcrumbBarSprite4.png) repeat scroll 0 -36px;
 }
+
+#footer .contact .links { list-style: none; padding: 0; } 
 /* ======================================================================================= */ 
 
 /* Global Styles ========================================================================= */
@@ -106,8 +108,8 @@ input.radio { margin-right:3px; }
 input.checkbox { margin-right:3px; }
 input.qty { width:2.5em !important; }
 button.button::-moz-focus-inner { padding:0; border:0; } /* FF Fix */
-button.button { overflow:visible; width:auto; border:0; padding:0 0 0 12px; background:url(../images/bkg_button.gif) 0 50% no-repeat; cursor:pointer; -webkit-border-fit:lines; /* <- Safari & Google Chrome Fix */ }
-button.button span { float:left; padding:0 12px 0 0; background:url(../images/bkg_button.gif) 100% 50% no-repeat; font:bold 12px/21px Arial, Helvetica, sans-serif; text-align:center; white-space:nowrap; color:#fff; }
+button.button { overflow:visible; width:auto; border:0; padding:0 0 0 12px; background:url(../images/bkg_button_red.png) 0 50% no-repeat; cursor:pointer; -webkit-border-fit:lines; /* <- Safari & Google Chrome Fix */ }
+button.button span { float:left; padding:0 12px 0 0; background:url(../images/bkg_button_red.png) 100% 50% no-repeat; font:bold 12px/21px Arial, Helvetica, sans-serif; text-align:center; white-space:nowrap; color:#fff; }
 button.disabled {}
 button.disabled span {}
 /* Input & Textarea stretched for 100% */
@@ -623,7 +625,7 @@ a.minimal-price-link .price { font-weight:normal; }
 
 
 /* Shopping Cart ========================================================================= */
-.cart .checkout-types { float:right; text-align:right; }
+#maincontent .cart .checkout-types { float:right; text-align:right; list-style: none;}
 
 /* Shopping Cart Table */
 .cart-table .item-msg { font-size:10px; }
@@ -657,7 +659,7 @@ a.minimal-price-link .price { font-weight:normal; }
 
 /* Checkout ============================================================================== */
 /* One Page */
-.opc { border-bottom:1px solid #ddd; position:relative; }
+#maincontent .opc { border-bottom:1px solid #ddd; position:relative; padding:0; list-style: none; }
 .opc li.section { border:1px solid #ddd; border-bottom:0; }
 .opc .step-title { background-color:#f6f6f6; padding:0 5px; text-align:right; }
 .opc .step-title .number { float:left; line-height:22px; margin-right:5px; }
@@ -683,6 +685,8 @@ a.minimal-price-link .price { font-weight:normal; }
 /********** < Common Checkout Styles */
 /* Shipping and Payment methods */
 .sp-methods dt { font-weight:bold; }
+#maincontent .sp-methods dd { padding: 0; }
+#maincontent .sp-methods ul { padding: 0; list-style: none; }
 .sp-methods .price { font-weight:bold; }
 .sp-methods .form-list { padding-left:20px; }
 .sp-methods select.month { width:150px; margin-right:10px; }

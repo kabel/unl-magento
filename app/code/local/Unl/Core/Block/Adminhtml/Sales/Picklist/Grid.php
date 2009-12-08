@@ -61,7 +61,7 @@ class Unl_Core_Block_Adminhtml_Sales_Picklist_Grid extends Mage_Adminhtml_Block_
         
         $this->addColumn('qty', array(
             'header'    =>Mage::helper('sales')->__('Qty'),
-            'index'     =>'qty_invoiced',
+            'index'     =>'qty',
             'type'      => 'number'
         ));
         
@@ -74,5 +74,10 @@ class Unl_Core_Block_Adminhtml_Sales_Picklist_Grid extends Mage_Adminhtml_Block_
         $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));
 
         return parent::_prepareColumns();
+    }
+    
+    public function getRowUrl($row)
+    {
+        return $this->getUrl('adminhtml/sales_order/view', array('order_id'=>$row->getOrderId()));
     }
 }
