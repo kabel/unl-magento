@@ -59,7 +59,7 @@
             <?php endforeach;; ?>
             <?php if (!$this->isLastPage()): ?>
                 <li>
-                    <a href="<?php echo $this->getNextPageUrl() ?>" alt="<?php echo $this->__('Next') ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" /></a>
+                    <a href="<?php echo $this->getNextPageUrl() ?>" title="<?php echo $this->__('Next') ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" /></a>
                 </li>
             <?php endif ?>
             </ol>

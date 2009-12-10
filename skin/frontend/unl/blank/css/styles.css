@@ -119,7 +119,7 @@ button.disabled span {}
 /* Form Highlight */
 /*input.input-text:focus,select:focus,textarea:focus {}*/
 /*.highlight { background:#eee; }*/
-
+.block-content .input-box { margin: 1em 0; }
 /* Form lists */
 #maincontent ul.form-list  { margin-left: 0; padding-left: 0 }
 .form-list li { list-style: none; margin:0 0 5px; }

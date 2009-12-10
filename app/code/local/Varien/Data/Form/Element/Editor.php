@@ -71,30 +71,20 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
 
             $html = '
                 <textarea style="height: 500px" name="'.$this->getName().'" title="'.$this->getTitle().'" id="'.$this->getHtmlId().'" class="textarea '.$this->getClass().'" '.$this->serialize($this->getHtmlAttributes()).' >'.$this->getEscapedValue().'</textarea>
-                <script type="text/javascript" src="' . Mage::getBaseUrl('js') . 'tiny_mce/tiny_mce_src.js"></script>
+                <script type="text/javascript" src="' . Mage::getBaseUrl('js') . 'tiny_mce/tiny_mce.js"></script>
                 <script type="text/javascript">
                 //<![CDATA[
-                var VarienTemplates = {
-                    _decodeRegEx : new RegExp("\\{\\{skin url=[\'\\"]([^\'\\"]*)[\'\\"]\\}\\}", "g"),
-                    _encodeRegEx : new RegExp("' . Mage::getDesign()->getSkinUrl('', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)) . '([^\\\\s\\"\');]*)", "g"),
-                    decode : function(c) {
-                        var skinUrlRE = this._decodeRegEx;
-                        return c.replace(skinUrlRE, "' . Mage::getDesign()->getSkinUrl('', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)) . '$1");
-                    },
-                    encode : function(c) {
-                        var skinUrlRE = this._encodeRegEx;
-                        return c.replace(skinUrlRE, "{{skin url=\'$1\'}}");
-                    }
-                }
                 Event.observe(window, "load", function() {
                     tinyMCE.init({
                         //General options
                         mode : "exact",
                         theme : "advanced",
+                        skin: "o2k7",
                         elements : "' . $element . '",
+                        body_id : "maincontent",
                         body_class : "fixed",
                         plugins : "safari,style,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
-                        theme_advanced_blockformats : "p,div,span,address,pre,code,h1,h2,h3,h4,h5,h6",
+                        theme_advanced_blockformats : "p,div,h1,h2,h3,h4,h5,h6,address,pre,code",
                         plugin_preview_pageurl : "' . Mage::getDesign()->getSkinUrl('include/preview.shtml', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)) . '",
                         plugin_preview_width : "800",
                         plugin_preview_height : "600",
@@ -112,20 +102,11 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
                         },
                         setup: function(ed) {
                             ed.onBeforeSetContent.add(function(ed, o) {
-                                //fix for #maincontent styles
-                                if (o.content.lastIndexOf("<div id=\"maincontent\">") == -1) {
-                                    o.content = "' . $wrapper[0] . '" + o.content + "' . $wrapper[1] . '";
-                                }
-                                
                                 o.content = ed.settings.VarienTemplates.decode(o.content);
                             });
                             ed.onPostProcess.add(function(ed, o) {
                                 var isGet = o.get || false;
                                 if (isGet) {
-                                    var begin = o.content.lastIndexOf("<div id=\"maincontent\">");
-                                    var end = o.content.lastIndexOf("<div class=\"clear mceNonEditable\">");
-                                    o.content = o.content.substring(begin + "<div id=\"maincontent\">".length, end);
-                                    
                                     if (!o.preview) {
                                         o.content = ed.settings.VarienTemplates.encode(o.content)
                                     }
