@@ -328,7 +328,7 @@ dd.even {}
 .block-cart .subtotal { text-align:center; }
 
 .mini-products-list li { padding:5px 0; }
-.mini-products-list .product-image { float:left; width:50px; padding:5px; border:1px solid #ddd; margin-right:-75px; }
+.mini-products-list .product-image { float:left; width:50px; padding:5px; border:1px solid #ddd !important; margin-right:-75px; }
 .mini-products-list .product-details { margin-left:75px; }
 .mini-products-list .product-details h4 { font-size:1em; font-weight:bold; margin:0; }
 .mini-products-list .product-details .btn-remove { float:right; }
@@ -427,6 +427,7 @@ dd.even {}
 .product-view .product-img-box .zoom .btn-zoom-in { position:absolute; right:10px; top:7px; }
 #maincontent .product-view .product-img-box .more-views ul { margin-left:-4px; padding: 0; list-style: none; }
 .product-view .product-img-box .more-views li { float:left; padding:1px; background-color:#ddd; margin:0 0 8px 4px ; }
+.product-view .product-img-box .more-views li a { display: block; }
 
 .product-image-popup { margin:0 auto; }
 .product-image-popup .nav { text-align:center; }
@@ -525,8 +526,8 @@ a.minimal-price-link .price { font-weight:normal; }
 #maincontent .add-to { text-align: left; margin: 10px 0; padding: 0; list-style: none; }
 .add-to li { line-height: 1.25em; padding: 0 12px; margin-left: 12px; background:transparent url(../images/add_to_bg.gif) no-repeat scroll 0 50%; }
 .add-to .separator { display:none; }
-#maincontent .add-to-inline { text-align: right; margin: 10px 0; }
-.add-to-inline li { display: inline; line-height: 1.25em; padding: 0 12px; margin-left: 12px; background:transparent url(../images/add_to_bg.gif) no-repeat scroll 0 50%; }
+#maincontent .add-to-inline { text-align: right; padding: 10px 0; }
+.add-to-inline li { display: inline; line-height: 1.25em; padding-left: 12px; margin-left: 12px; background:transparent url(../images/add_to_bg.gif) no-repeat scroll 0 50%; }
 .add-to-inline .separator { display:none; }
 
 /* Add to Cart */
@@ -538,8 +539,8 @@ a.minimal-price-link .price { font-weight:normal; }
 
 /* Add to Links + Add to Cart */
 .add-to-box {}
-.add-to-box .add-to-cart { float:left; }
-.add-to-box .or { float:left; margin:0 10px; }
+.add-to-box .add-to-cart {}
+.add-to-box .or { display: none; }
 .add-to-box .add-to-links { float:left; }
 
 /* Product Options */

@@ -1,0 +1,64 @@
+<!--@subject Welcome, {{var customer.name}}! @-->
+
+<style>
+ td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+</style>
+
+<div>
+<table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; margin-bottom:10px;">
+<tr>
+    <td align="center" valign="top">
+        <!-- [ header starts here] -->
+        <table cellspacing="0" cellpadding="0" border="0" width="600">
+            <tr>
+                <td valign="top"><a href="{{store url=''}}" style="outline:none;display:block;height:126px;"><img src="http://www.unl.edu/wdn/templates_3.0/images/email/header.png" alt="The University of Nebraska-Lincoln" width="600" height="126" border="0"/></a></td>
+            </tr>
+        </table>
+        <!-- [ middle starts here] -->
+        <table cellspacing="0" cellpadding="0" border="0" width="600">
+            <tr>
+            	<td width="12" bgcolor="#E0E0E0">&nbsp;</td>
+                <td width="10">&nbsp;</td>
+                <td align="left" valign="top" width="556">
+                	<table cellspacing="0" cellpadding="0" border="0">
+                    	<tr>
+                        	<td style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;">
+                              <h1 style="color:#BA0000;font-family:arial;text-decoration:none;font-size:1.6em;line-height:1;font-weight:bold;margin-bottom:1em;">Welcome, {{var customer.name}}!</h1>
+                                <p style="margin:1.1em 0;"><strong>Dear {{htmlescape var=$customer.name}}</strong>:</p>
+                              <p style="margin:1.1em 0;">Welcome to Smart Site Storefront. To log in when visiting our site just click <a href="{{store url='customer/account/'}}" style="color:#ba0000;">Login</a> or <a href="{{store url='customer/account/'}}" style="color:#ba0000;">My Account</a> at the top of every page, and then enter your e-mail address and password.</p>
+                                <p>When you log in to your account, you will be able to do the following:</p>
+                                <ul>
+                                  <li>Proceed through checkout faster when making a purchase</li>
+                                  <li> Check the status of orders</li>
+                                  <li>View past orders</li>
+                                  <li> Make changes to your account information</li>
+                                  <li>Change your password</li>
+                                  <li>Store alternative addresses (for shipping to multiple family members and friends!)                                </li>
+                                </ul>
+                                <p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:storefront@unl.edu" style="color:#ba0000;">storefront@unl.edu</a> or by phone at (402) 472-9964.</p>
+                                <p style="margin:1.1em 0;">Thanks,</p>
+                                <p style="margin:1.1em 0;">&nbsp;</p>
+                                <p style="margin:1.1em 0;"><strong>Smart Site Storefront</strong></p>
+                          </td>
+                        </tr>
+                        <tr background="http://www.unl.ed/wdn/templates_3.0/images/email/insideFooter.png" style="background-image: url(http://www.unl.edu/wdn/templates_3.0/images/email/insideFooter.png)">
+                        	<td style="color:#606060;font-size:10px;line-height:1.4em;padding:12px;font-family:'Lucida Grande',Verdana,Arial;min-height:42px;">
+                            	<!--  This the footer -->
+                                <p style="margin-top:95px;"><img src="http://www.unl.edu/wdn/templates_3.0/images/email/wordmark.png" alt="" width="90" height="37" align="right" />&copy; 2010 University Communications | 1520 R Street, Lincoln, NE 68501 | 402-472-9964</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+              <td width="10"></td>
+                <td width="12" bgcolor="#E0E0E0"></td>
+            </tr>
+        </table>
+        <table cellspacing="0" cellpadding="0" border="0" width="600">
+            <tr>
+            	<td><img src="http://www.unl.edu/wdn/templates_3.0/images/email/footer.png" alt="The University of Nebraska-Lincoln" width="600" height="22" /></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+</table>
+</div>

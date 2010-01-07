@@ -5,6 +5,10 @@
             <active>true</active>
             <codePool>local</codePool>
         </Unl_Core>
+        <Unl_Cas>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Unl_Cas>
         <Unl_TestModule>
             <active>false</active>
             <codePool>local</codePool>

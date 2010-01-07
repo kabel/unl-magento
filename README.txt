@@ -1,4 +1,4 @@
-There are a total of 7 symlinks to get our customizations working in magento. 
+There are a few symlinks to get our customizations working in magento. 
 The svn projects are labeled:
 [Magento] : http://svn.magentocommerce.com/source/branches/1.3
 [Unl-Magento] : http://its-gforge.unl.edu/svn/unl-magento
@@ -10,6 +10,9 @@ The svn projects are labeled:
 [Magento]/app/design/frontend/unl -> [Unl-Magento]/app/design/frontend/unl
 [Magento]/app/design/adminhtml/default/default/template/unl -> [Unl-Magento]/app/design/adminhtml/default/default/template/unl
 [Magento]/js/tiny_mce -> [Unl-Magento]/js/tiny_mce
+[Magento]/lib/SimpleCAS -> [Unl-Magento]/lib/SimpleCAS
+[Magento]/lib/SimpleCAS.php -> [Unl-Magento]/lib/SimpleCAS.php 
+[Magento]/lib/UNL -> [Unl-Magento]/lib/UNL
 
 -- OPTIONAL --
 [Magento]/app/design/adminhtml/default/default/template/tester -> [Unl-Magento]/app/design/adminhtml/default/default/template/tester  (optional: for testing module)
@@ -22,6 +25,9 @@ ln -s /path/to/unl-magento/skin/frontend/unl skin/frontend/unl
 ln -s /path/to/unl-magento/app/design/frontend/unl app/design/frontend/unl
 ln -s /path/to/unl-magento/app/design/adminhtml/default/default/template/unl app/design/adminhtml/default/default/template/unl
 ln -s /path/to/unl-magento/js/tiny_mce js/tiny_mce
+ln -s /path/to/unl-magento/lib/SimpleCAS lib/SimpleCAS
+ln -s /path/to/unl-magento/lib/SimpleCAS.php lib/SimpleCAS.php
+ln -s /path/to/unl-magento/lib/UNL lib/UNL
 
 -- OPTIONAL --
 ln -s /path/to/unl-magento/app/design/adminhtml/default/default/template/tester app/design/adminhtml/default/default/template/tester

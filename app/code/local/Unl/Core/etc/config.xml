@@ -2,10 +2,17 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.2</version>
+            <version>0.1.3</version>
             <depends>
-                <Mage_Catalog />
                 <Mage_Admin />
+                <Mage_Adminhtml />
+                <Mage_Bundle />
+                <Mage_Catalog />
+                <Mage_Cms />
+                <Mage_Core />
+                <Mage_Reports />
+                <Mage_Sales />
+                <Mage_Tax />
             </depends>
         </Unl_Core>
     </modules>
@@ -66,6 +73,11 @@
             </unl_core>
             <unl_core_mysql4>
                 <class>Unl_Core_Model_Mysql4</class>
+                <entities>
+                    <tax_boundary>
+                        <table>unl_tax_boundary</table>
+                    </tax_boundary>
+                </entities>
             </unl_core_mysql4>
             <admin>
                 <rewrite>
@@ -82,11 +94,27 @@
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
                 </rewrite>
             </catalog>
+            <core>
+                <rewrite>
+                    <translate>Unl_Core_Model_Core_Translate</translate>
+                </rewrite>
+            </core>
             <reports_mysql4>
                 <rewrite>
                     <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
+                    <tax_collection>Unl_Core_Model_Reports_Mysql4_Tax_Collection</tax_collection>
                 </rewrite>
             </reports_mysql4>
+            <tax>
+                <rewrite>
+                    <calculation>Unl_Core_Model_Tax_Calculation</calculation>
+                </rewrite>
+            </tax>
+            <tax_mysql4>
+                <rewrite>
+                    <calculation>Unl_Core_Model_Tax_Mysql4_Calculation</calculation>
+                </rewrite>
+            </tax_mysql4>
         </models>
         <resources>
             <unl_core_setup>

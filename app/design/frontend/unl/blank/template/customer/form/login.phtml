@@ -45,6 +45,11 @@
                     <p><?php echo $this->__('By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.') ?></p>
                 </div>
                 <div class="col-2 registered-users">
+                    <h3><?php echo $this->__('UNL Students, Faculty, Staff') ?></h3>
+                    <div class="buttons-set">
+                        <button type="button" class="button" onclick="window.location='<?php echo Mage::helper('unl_cas')->getCasUrl() ?>';"><span><?php echo $this->__('UNL Login') ?></span></button>
+                    </div>
+                    
                     <h3><?php echo $this->__('Registered Customers') ?></h3>
                     <p><?php echo $this->__('If you have an account with us, please log in.') ?></p>
                     <ul class="form-list">

@@ -30,13 +30,13 @@
 <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #bebcb7; background:#f8f7f5;">
     <thead>
         <tr>
-            <th align="left" bgcolor="#d9e5ee" style="padding:3px 9px"><?php echo $this->__('Shipped By') ?></th>
-            <th align="center" bgcolor="#d9e5ee" style="padding:3px 9px"><?php echo $this->__('Tracking Number') ?></th>
+            <th align="left" bgcolor="#3982CE" style="padding:3px 9px"><?php echo $this->__('Shipped By') ?></th>
+            <th align="center" bgcolor="#3982CE" style="padding:3px 9px"><?php echo $this->__('Tracking Number') ?></th>
         </tr>
     </thead>
     <tbody>
     <?php $i=0; foreach ($_shipment->getAllTracks() as $_item): $i++ ?>
-        <tr <?php echo $i%2?'bgcolor="#eeeded"':'' ?>>
+        <tr <?php echo $i%2?'bgcolor="#EFF7FF"':'' ?>>
             <td align="left" valign="top" style="padding:3px 9px"><?php echo $_item->getTitle() ?></td>
             <td align="center" valign="top" style="padding:3px 9px"><?php echo $_item->getNumber() ?></td>
         </tr>
