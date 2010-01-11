@@ -16,13 +16,13 @@ class Unl_Core_Model_Core_Translate extends Mage_Core_Model_Translate
             $localeCode = $this->getLocale();
         }
         
-        $designPackage = Mage::getModel('core/design_package');
-        $filePath = Mage::getBaseDir('design') . DS . 'frontent' .  DS
+        $designPackage = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
+        $filePath = Mage::getBaseDir('design') . DS . 'frontend' .  DS
                   . $designPackage->getPackageName() . DS . $designPackage->getTheme('locale') . DS . 'locale' . DS
                   . $localeCode . DS . 'template' . DS . $type . DS . $file;
 
         if (!file_exists($filePath)) {  // If no template for current design package theme, try default
-            $filePath = Mage::getBaseDir('design') . DS . 'frontent' .  DS
+            $filePath = Mage::getBaseDir('design') . DS . 'frontend' .  DS
                   . $designPackage->getPackageName() . DS . 'default' . DS . 'locale' . DS
                   . $localeCode . DS . 'template' . DS . $type . DS . $file;
         }

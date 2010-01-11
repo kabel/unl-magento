@@ -1,86 +1,103 @@
-<!--@subject {{var order.getStoreGroupName()}}: Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_id}} @-->
+<!--@subject Smart Site Storefront: Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_id}} @-->
 
-<style type="text/css">
-    body,td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; }
+<style>
+ td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
 </style>
 
-<div style="font:11px/1.35em Verdana, Arial, Helvetica, sans-serif;">
-<table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
+<div>
+<table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; margin-bottom:10px;">
 <tr>
     <td align="center" valign="top">
         <!-- [ header starts here] -->
-        <table cellspacing="0" cellpadding="0" border="0" width="650">
+        <table cellspacing="0" cellpadding="0" border="0" width="600">
             <tr>
-                <td valign="top"><a href="{{store url=""}}"><img src="{{skin url="images/logo_email.gif" _area='frontend'}}" alt="Magento"  style="margin-bottom:10px;" border="0"/></a></td>
+                <td valign="top"><a href="{{store url=''}}" style="outline:none;display:block;height:126px;"><img src="http://www.unl.edu/wdn/templates_3.0/images/email/header.png" alt="The University of Nebraska-Lincoln" width="600" height="126" border="0"/></a></td>
             </tr>
         </table>
         <!-- [ middle starts here] -->
-        <table cellspacing="0" cellpadding="0" border="0" width="650">
+        <table cellspacing="0" cellpadding="0" border="0" width="600">
             <tr>
-                <td valign="top">
-                    <p>
-                        <strong>Hello {{htmlescape var=$order.getCustomerName()}}</strong>,<br/>
-                        Thank you for your order from {{var order.getStoreGroupName()}}.
-                        You can check the status of your order by <a href="{{store url="customer/account/"}}" style="color:#1E7EC8;">logging into your account</a>.
-                        If you have any questions about your order please contact us at <a href="mailto:dummyemail@magentocommerce.com" style="color:#1E7EC8;">dummyemail@magentocommerce.com</a> or call us at <span class="nobr">(555) 555-0123</span> Monday - Friday, 8am - 5pm PST.
-                    </p>
-                    <h3 style="border-bottom:2px solid #eee; font-size:1.05em; padding-bottom:1px; ">
-                        Your Credit Memo #{{var creditmemo.increment_id}} for Order #{{var order.increment_id}}
-                    </h3>
-                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
-                        <thead>
-                        <tr>
-                            <th align="left" width="48.5%" bgcolor="#d9e5ee" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em;">Billing Information:</th>
-                            <th width="3%"></th>
-                            <th align="left" width="48.5%" bgcolor="#d9e5ee" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em;">Payment Method:</th>
+            	<td width="12" bgcolor="#E0E0E0">&nbsp;</td>
+                <td width="10">&nbsp;</td>
+                <td align="left" valign="top" width="556">
+                	<table cellspacing="0" cellpadding="0" border="0" width="100%">
+                    	<tr>
+                        	<td style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;">
+                              <h1 style="color:#BA0000;font-family:arial;text-decoration:none;font-size:1.6em;line-height:1;font-weight:bold;margin-bottom:1em;">Smart Site Storefront: Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_id}}</h1>
+                                <p style="margin:1.1em 0;"><strong>Hello {{htmlescape var=$order.getCustomerName()}}</strong>:</p>
+                                <p style="margin:1.1em 0;">Thank you for your order from Smart Site Storefront.
+                        You can check the status of your order by <a href="{{store url='customer/account/'}}" style="color:#ba0000;">logging into your account</a>.
+                        If you have any questions about your order please contact us at <a href="mailto:storefront@unl.edu" style="color:#ba0000;">storefront@unl.edu</a> or call us at <span class="nobr">(402) 472-9964</span> Monday - Friday, 9am - 5pm CST.</p>
+                              <h3 style="border-bottom:2px solid #eee; font-size:1.05em; padding-bottom:1px; "> Your Credit Memo #{{var creditmemo.increment_id}} for Order #{{var order.increment_id}} </h3>
+                              <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <thead>
+                                <tr>
+                                  <th align="left" width="48%" bgcolor="#ba0000" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Billing Information:</th>
+                                  <th width="2%"></th>
+                                  <th align="left" width="48%" bgcolor="#ba0000" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Payment Method:</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
+                                        {{var order.billing_address.format('html')}}
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
+                                        {{var payment_html}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            {{depend order.getIsNotVirtual()}}
+                            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <thead>
+                                <tr>
+                                  <th align="left" width="48%" bgcolor="#ba0000" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Shipping Information:</th>
+                                  <th width="2%"></th>
+                                  <th align="left" width="48%" bgcolor="#ba0000" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Shipping Method:</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
+                                        {{var order.shipping_address.format('html')}}
+                                        &nbsp;
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
+                                        {{var order.shipping_description}}
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            {{/depend}}
+        
+                            {{layout handle="sales_email_order_creditmemo_items" creditmemo=$creditmemo order=$order}}
+                              <p style="margin:1.1em 0;">{{var comment}}</p>
+                              <p style="margin:1.1em 0;">Thank you again,</p>
+                              <p style="margin:1.1em 0;">&nbsp;</p>
+                              <p style="margin:1.1em 0;"><strong>Smart Site Storefront</strong></p>
+                          </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-                                {{var order.billing_address.format('html')}}
-                            </td>
-                            <td>&nbsp;</td>
-                            <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-                                {{var payment_html}}
+                        <tr background="http://www.unl.ed/wdn/templates_3.0/images/email/insideFooter.png" style="background-image: url(http://www.unl.edu/wdn/templates_3.0/images/email/insideFooter.png)">
+                        	<td style="color:#606060;font-size:10px;line-height:1.4em;padding:12px;font-family:'Lucida Grande',Verdana,Arial;min-height:42px;">
+                            	<!--  This the footer -->
+                                <p style="margin-top:95px;"><img src="http://www.unl.edu/wdn/templates_3.0/images/email/wordmark.png" alt="" width="90" height="37" align="right" />&copy; 2010 University Communications | 1520 R Street, Lincoln, NE 68501 | 402-472-9964</p>
                             </td>
                         </tr>
-                        </tbody>
                     </table>
-                    <br/>
-                    {{depend order.getIsNotVirtual()}}
-                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
-                        <thead>
-                        <tr>
-                            <th align="left" width="48.5%" bgcolor="#d9e5ee" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em;">Shipping Information:</th>
-                            <th width="3%"></th>
-                            <th align="left" width="48.5%" bgcolor="#d9e5ee" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em;">Shipping Method:</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-                                {{var order.shipping_address.format('html')}}
-                                &nbsp;
-                            </td>
-                            <td>&nbsp;</td>
-                            <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-                                {{var order.shipping_description}}
-                                &nbsp;
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <br/>
-                    {{/depend}}
-
-                    {{layout handle="sales_email_order_creditmemo_items" creditmemo=$creditmemo order=$order}}
-
-                    <p>{{var comment}}</p>
-                    <p>
-                        Thank you again,<br/><strong>{{var order.getStoreGroupName()}}</strong>
-                    </p>
                 </td>
+              <td width="10"></td>
+                <td width="12" bgcolor="#E0E0E0"></td>
+            </tr>
+        </table>
+        <table cellspacing="0" cellpadding="0" border="0" width="600">
+            <tr>
+            	<td><img src="http://www.unl.edu/wdn/templates_3.0/images/email/footer.png" alt="The University of Nebraska-Lincoln" width="600" height="22" /></td>
             </tr>
         </table>
     </td>

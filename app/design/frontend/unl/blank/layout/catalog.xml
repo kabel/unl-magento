@@ -49,11 +49,11 @@ Default layout, loads most of the pages
             <block type="catalog/navigation" name="catalog.topnav" template="catalog/navigation/top.phtml"/>
         </reference>
         <reference name="left">
-            <block type="core/template" name="left.permanent.callout" template="callouts/left_col.phtml">
+            <!-- block type="core/template" name="left.permanent.callout" template="callouts/left_col.phtml">
                 <action method="setImgSrc"><src>images/media/col_left_callout.jpg</src></action>
                 <action method="setImgAlt" translate="alt" module="catalog"><alt>Callout Placeholder: Goto Cart</alt></action>
                 <action method="setLinkUrl"><url>checkout/cart</url></action>
-            </block>
+            </block -->
             <block type="core/template" before="cart_sidebar" name="catalog.compare.sidebar" template="catalog/product/compare/sidebar.phtml"/>
         </reference>
         <reference name="right">
