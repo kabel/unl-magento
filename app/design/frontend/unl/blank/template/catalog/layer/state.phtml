@@ -34,6 +34,7 @@
 <?php $_filters = $this->getActiveFilters() ?>
 <?php if(!empty($_filters)): ?>
     <h4><?php echo $this->__('Currently Shopping by') ?></h4>
+    <div class="actions"><a href="<?php echo $this->getClearUrl() ?>">(<?php echo $this->__('Clear All') ?>)</a></div>
     <ol class="currently">
     <?php foreach ($_filters as $_filter): ?>
         <li>
@@ -42,5 +43,4 @@
         </li>
     <?php endforeach; ?>
     </ol>
-    <div class="actions"><a href="<?php echo $this->getClearUrl() ?>"><?php echo $this->__('Clear All') ?></a></div>
 <?php endif; ?>

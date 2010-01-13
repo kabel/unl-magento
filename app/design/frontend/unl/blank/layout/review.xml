@@ -31,7 +31,7 @@
     <customer_account>
         <!-- Mage_Review -->
         <reference name="customer_account_navigation">
-            <action method="addLink" translate="label" module="review"><name>reviews</name><path>review/customer</path><label>My Product Reviews</label></action>
+            <action method="addLink" translate="label" module="review"><name>reviews</name><path>review/customer</path><label>Your Product Reviews</label></action>
         </reference>
 
     </customer_account>

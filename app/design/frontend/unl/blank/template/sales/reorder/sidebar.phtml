@@ -34,7 +34,7 @@
 <?php /* @var $this Mage_Sale_Block_Reorder_Sidebar */ ?>
 <?php if($_order = $this->getLastOrder()): ?>
 <div class="zenbox bright block-reorder">
-    <h3><?php echo $this->__('My Orders') ?> <span class="separator">|</span> <a href="<?php echo $this->getUrl('customer/account') ?>"><?php echo $this->__('View All'); ?></a></h3>
+    <h3><?php echo $this->__('Your Orders') ?> <span class="separator">|</span> <a href="<?php echo $this->getUrl('customer/account') ?>"><?php echo $this->__('View All'); ?></a></h3>
     <h4><?php echo $this->__('Last ordered items') ?></h4>
     <form method="post" action="<?php echo $this->getUrl('checkout/cart/addgroup') ?>" id="reorder-validate-detail">
     <fieldset>

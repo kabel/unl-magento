@@ -46,11 +46,16 @@
         </div>
         <div id="pagetitle"> </div>
         <div id="maincontent">
-            <div class="two_col left">
-                <?php echo $this->getChildHtml('topLinks') ?>
-            </div>
-            <div class="two_col right">
-                <?php echo $this->getChildHtml('topSearch') ?>
+            <div class="four_col left">
+                <div class="subnav">
+                    <div class="subnav_wrapper">
+                        <?php echo $this->getChildHtml('topLinks') ?>
+                        <div class="search_wrapper">
+                            <?php echo $this->getChildHtml('topSearchLinks') ?>
+                            <?php echo $this->getChildHtml('topSearch') ?>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="clear"></div>
             <div class="three_col left">

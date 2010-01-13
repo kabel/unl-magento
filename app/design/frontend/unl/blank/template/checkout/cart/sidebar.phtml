@@ -31,8 +31,8 @@
  */
 ?>
 <div class="zenbox primary block-cart">
-    <?php $_cartQty = $this->getSummaryCount() ?>
-    <h3><?php echo $this->__('My Cart') ?></h3>
+<?php $_cartQty = $this->getSummaryCount(); ?>
+    <h3><?php echo $this->__('Your Cart') ?></h3>
     <?php if ($_cartQty>0): ?>
         <?php if ($_cartQty==1): ?>
             <p class="amount"><?php echo $this->__('There is <a href="%s">1 item</a> in your cart.', $this->getUrl('checkout/cart')) ?></p>

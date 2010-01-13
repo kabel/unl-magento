@@ -31,7 +31,7 @@
         <!-- Mage_Reports -->
         <reference name="left">
             <block type="reports/product_viewed" after="catalog.compare.sidebar" name="right.reports.product.viewed" template="reports/product_viewed.phtml" />
-            <block type="reports/product_compared" after="catalog.compare.sidebar" name="right.reports.product.compared" template="reports/product_compared.phtml" />
+            <!-- block type="reports/product_compared" after="catalog.compare.sidebar" name="right.reports.product.compared" template="reports/product_compared.phtml" /-->
         </reference>
     </default>
 </layout>

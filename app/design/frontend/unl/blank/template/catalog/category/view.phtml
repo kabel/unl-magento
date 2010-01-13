@@ -44,7 +44,7 @@
 <?php if($this->isContentMode()): ?>
     <div class="category-title">
     <?php if($this->IsRssCatalogEnable() && $this->IsTopCategory()): ?>
-        <a href="<?php echo $this->getRssLink() ?>" class="link-rss"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+        <a href="<?php echo $this->getRssLink() ?>" class="link-rss" title="<?php echo $this->__('Subscribe to RSS Feed') ?>"> </a>
     <?php endif; ?>
     <h2 class="sec_main"><?php echo $_helper->categoryAttribute($_category, $this->htmlEscape($this->getCurrentCategory()->getName()), 'name') ?></h2>
     </div>
@@ -58,7 +58,7 @@
 <?php elseif($this->isMixedMode()): ?>
     <div class="category-title">
     <?php if($this->IsRssCatalogEnable() && $this->IsTopCategory()): ?>
-        <a href="<?php echo $this->getRssLink() ?>" class="link-rss"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+        <a href="<?php echo $this->getRssLink() ?>" class="link-rss" title="<?php echo $this->__('Subscribe to RSS Feed') ?>"> </a>
     <?php endif; ?>
     <h2 class="sec_main"><?php echo $_helper->categoryAttribute($_category, $this->htmlEscape($this->getCurrentCategory()->getName()), 'name') ?></h2>
     </div>
@@ -79,7 +79,7 @@
 <?php else: ?>
     <div class="category-title">
     <?php if($this->IsRssCatalogEnable() && $this->IsTopCategory()): ?>
-        <a href="<?php echo $this->getRssLink() ?>" class="link-rss"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+        <a href="<?php echo $this->getRssLink() ?>" class="link-rss" title="<?php echo $this->__('Subscribe to RSS Feed') ?>"> </a>
     <?php endif; ?>
     <h2 class="sec_main"><?php echo $_helper->categoryAttribute($_category, $this->htmlEscape($this->getCurrentCategory()->getName()), 'name') ?></h2>
     </div>

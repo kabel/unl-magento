@@ -24,6 +24,7 @@
  * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
+<?php if($this->helper('catalog/product_compare')->getItemCount()>0): ?>
 <div class="zenbox energetic block-compare">
     <h3>
 <?php if($this->helper('catalog/product_compare')->getItemCount()>0): ?>
@@ -52,3 +53,4 @@
     <p><?php echo $this->__('You have no items to compare.') ?></p>
 <?php endif; ?>
 </div>
+<?php endif; ?>

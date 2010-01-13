@@ -47,7 +47,7 @@ Customer account pages, rendered for all tabs in dashboard
     <customer_account>
         <!-- Mage_Tag -->
         <reference name="customer_account_navigation">
-            <action method="addLink" translate="label" module="tag"><name>tags</name><path>tag/customer/</path><label>My Tags</label></action>
+            <action method="addLink" translate="label" module="tag"><name>tags</name><path>tag/customer/</path><label>Your Tags</label></action>
         </reference>
     </customer_account>
 
@@ -99,7 +99,7 @@ All tags page
     <tag_customer_index>
         <update handle="customer_account"/>
         <reference name="root">
-            <action method="setHeaderTitle" translate="title" module="customer"><title>My Account</title></action>
+            <action method="setHeaderTitle" translate="title" module="customer"><title>Your Account</title></action>
         </reference>
         <reference name="content">
             <block type="tag/customer_tags" name="customer_tags" template="tag/customer/tags.phtml"/>
@@ -109,7 +109,7 @@ All tags page
     <tag_customer_view>
         <update handle="customer_account"/>
         <reference name="root">
-            <action method="setHeaderTitle" translate="title" module="customer"><title>My Account</title></action>
+            <action method="setHeaderTitle" translate="title" module="customer"><title>Your Account</title></action>
         </reference>
         <reference name="content">
             <block type="tag/customer_view" name="customer_view" template="tag/customer/view.phtml"/>
@@ -119,7 +119,7 @@ All tags page
     <tag_customer_edit>
         <update handle="customer_account"/>
         <reference name="root">
-            <action method="setHeaderTitle" translate="title" module="customer"><title>My Account</title></action>
+            <action method="setHeaderTitle" translate="title" module="customer"><title>Your Account</title></action>
         </reference>
         <reference name="content">
             <block type="tag/customer_edit" name="customer_edit" template="tag/customer/edit.phtml"/>
