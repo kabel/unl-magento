@@ -50,6 +50,11 @@
                     <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
                 </rewrite>
             </catalog>
+            <checkout>
+                <rewrite>
+                    <links>Unl_Core_Block_Checkout_Links</links>
+                </rewrite>
+            </checkout>
             <cms>
                 <rewrite>
                     <page>Unl_Core_Block_Cms_Page</page>
@@ -58,6 +63,11 @@
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
+            <wishlist>
+                <rewrite>
+                    <links>Unl_Core_Block_Wishlist_Links</links>
+                </rewrite>
+            </wishlist>
         </blocks>
         <helpers>
             <adminhtml>

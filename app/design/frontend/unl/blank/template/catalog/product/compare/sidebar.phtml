@@ -35,6 +35,9 @@
     </h3>
     
 <?php if($this->helper('catalog/product_compare')->getItemCount()>0): ?>
+    <div class="actions">
+        <a href="<?php echo $this->helper('catalog/product_compare')->getClearListUrl() ?>" onclick="return confirm('<?php echo $this->__('Are you sure you would like to remove all products from your comparison?') ?>');"><?php echo $this->__('Clear All') ?></a>
+    </div>
     <ol id="compare-items">
     <?php foreach($this->helper('catalog/product_compare')->getItemCollection() as $_index=>$_item): ?>
         <li>
@@ -45,8 +48,7 @@
     <?php endforeach; ?>
     </ol>
     <script type="text/javascript">decorateList('compare-items')</script>
-    <div class="actions">
-        <a href="<?php echo $this->helper('catalog/product_compare')->getClearListUrl() ?>" onclick="return confirm('<?php echo $this->__('Are you sure you would like to remove all products from your comparison?') ?>');"><?php echo $this->__('Clear All') ?></a>
+    <div>
         <button type="button" class="button" onclick="popWin('<?php echo $this->helper('catalog/product_compare')->getListUrl() ?>','compare','top:50,left:50,width=800,height=600,resizable=yes,scrollbars=yes')"><span><?php echo $this->__('Compare Items') ?></span></button>
     </div>
 <?php else: ?>

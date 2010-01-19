@@ -30,9 +30,13 @@
  * @see Mage_Checkout_Block_Cart_Sidebar
  */
 ?>
-<div class="zenbox primary block-cart">
+<div class="hover-menu block-cart">
 <?php $_cartQty = $this->getSummaryCount(); ?>
-    <h3><?php echo $this->__('Your Cart') ?></h3>
+    <?php if($_cartQty && $this->isPossibleOnepageCheckout()): ?>
+    <div class="buttons">
+        <button class="button" type="button" onclick="setLocation('<?php echo $this->getCheckoutUrl() ?>')"><span><?php echo $this->__('Checkout') ?></span></button>
+    </div>
+    <?php endif ?>
     <?php if ($_cartQty>0): ?>
         <?php if ($_cartQty==1): ?>
             <p class="amount"><?php echo $this->__('There is <a href="%s">1 item</a> in your cart.', $this->getUrl('checkout/cart')) ?></p>
@@ -45,11 +49,6 @@
                 <br />(<?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?> <?php echo Mage::helper('tax')->getIncExcText(true) ?>)
             <?php endif; ?>
         </p>
-    <?php endif ?>
-    <?php if($_cartQty && $this->isPossibleOnepageCheckout()): ?>
-    <div class="actions">
-        <button class="button" type="button" onclick="setLocation('<?php echo $this->getCheckoutUrl() ?>')"><span><?php echo $this->__('Checkout') ?></span></button>
-    </div>
     <?php endif ?>
     <?php $_items = $this->getRecentItems() ?>
     <?php if(count($_items)): ?>
