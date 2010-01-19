@@ -35,6 +35,7 @@
                     <newsletter_template_edit_form>Unl_Core_Block_Adminhtml_Newsletter_Template_Edit_Form</newsletter_template_edit_form>
                     <page_header>Unl_Core_Block_Adminhtml_Page_Header</page_header>
                     <permissions_user_edit_tab_main>Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Main</permissions_user_edit_tab_main>
+                    <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
                     <system_email_template_edit_form>Unl_Core_Block_Adminhtml_System_Email_Template_Edit_Form</system_email_template_edit_form>
                 </rewrite>
             </adminhtml>

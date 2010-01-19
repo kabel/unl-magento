@@ -34,14 +34,14 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
 
         $currency_code = $this->getCurrentCurrencyCode();
 
-        /*$this->addColumn('subtotal', array(
+        $this->addColumn('subtotal', array(
             'header'    =>Mage::helper('reports')->__('Subtotal'),
             'type'      =>'currency',
             'currency_code' => $currency_code,
             'index'     =>'subtotal',
             'total'     =>'sum',
             'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
-        ));*/
+        ));
 
         $this->addColumn('tax', array(
             'header'    =>Mage::helper('reports')->__('Tax'),
@@ -171,6 +171,7 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid extends Mage_Adminhtml_B
             $order = Mage::getModel('sales/order');
             $data['merchant'] = 'Global Shipping/Refunds';
             $data['tax'] = 0;
+            $data['subtotal'] = 0;
             $data['total'] = $data['shipping'];
             $order->setData($data);
             $report->addItem($order);

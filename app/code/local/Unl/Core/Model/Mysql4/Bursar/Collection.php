@@ -31,9 +31,9 @@ class Unl_Core_Model_Mysql4_Bursar_Collection extends Mage_Reports_Model_Mysql4_
     public function setStoreIds($storeIds)
     {
         $vals = array_values($storeIds);
-        $product = Mage::getResourceSingleton('catalog/product');
         
         $this->getSelect()
+            ->from("", array("subtotal" => "SUM(order_item.base_row_total)"))
             ->from("", array("tax" => "SUM(order_item.base_tax_amount)"))
             ->from("", array("shipping" => "0"))
             ->from("", array("total" => "SUM(order_item.base_row_total - order_item.base_discount_amount + order_item.base_tax_amount)"))
@@ -43,19 +43,11 @@ class Unl_Core_Model_Mysql4_Bursar_Collection extends Mage_Reports_Model_Mysql4_
                 array('order_item' => $this->getTable('sales/order_item')), 
                 "order_item.order_id = e.entity_id AND order_item.parent_item_id IS NULL", 
                 array('entity_id' => 'order_item.item_id'))
-            ->joinInner(
-                array('product_int' => $this->getTable('catalog_product_entity_int')),
-                "order_item.product_id = product_int.entity_id AND product_int.entity_type_id = {$product->getTypeId()}",
-                array())
-            ->joinInner(
-                array('eav' => $this->getTable('eav_attribute')),
-                "eav.attribute_id = product_int.attribute_id AND eav.attribute_code = 'source_store_view'",
-                array())
-            ->joinInner(
+            ->joinLeft(
                 array('store' => $this->getTable('core_store')),
-                "product_int.value = store.store_id",
+                "order_item.source_store_view = store.store_id",
                 array())
-            ->joinInner(
+            ->joinLeft(
                 array('stgroup' => $this->getTable('core_store_group')),
                 "store.group_id = stgroup.group_id",
                 array("merchant" => "stgroup.name"))
