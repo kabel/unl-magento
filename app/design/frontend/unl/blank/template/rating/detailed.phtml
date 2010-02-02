@@ -24,23 +24,25 @@
  * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
-<?php if(!empty($collection) && $collection->getSize()): ?>
-    <table class="data-table">
-    <col width="30%" />
-    <col />
-        <tbody>
-            <?php foreach ($collection as $_rating): ?>
-                <?php if($_rating->getSummary()): ?>
-                    <tr>
-                        <td class="label"><?php echo $this->__($_rating->getRatingCode()) ?></td>
-                        <td class="value">
-                            <div class="rating-box">
-                                <div class="rating" style="width:<?php echo ceil($_rating->getSummary()) ?>%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<?php if(!empty($collection) && $collection->getSize()):
+    $hasSummary = false;
+    foreach ($collection as $_rating) {
+        if($_rating->getSummary()) {
+            $hasSummary = true;
+        }
+    } 
+    if ($hasSummary): ?>
+    <dl class="ratings-list">
+    <?php foreach ($collection as $_rating): ?>
+        <?php if($_rating->getSummary()): ?>
+            <dt><?php echo $this->__($_rating->getRatingCode()) ?></dt>
+            <dd>
+                <div class="rating-box">
+                    <div class="rating_" style="width:<?php echo ceil($_rating->getSummary()) ?>%;"></div>
+                </div>
+            </dd>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    </dl>
+    <?php endif; ?>
 <?php endif; ?>

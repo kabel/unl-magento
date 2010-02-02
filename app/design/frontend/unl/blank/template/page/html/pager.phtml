@@ -30,49 +30,45 @@
  *
  * @see Mage_Page_Block_Html_Pager
  */
+/* @var $this Mage_Page_Block_Html_Pager */
 ?>
 <?php if($this->getCollection()->getSize()): ?>
 <div class="pager">
-    <p class="amount">
-        <?php if($this->getLastPageNum()>1): ?>
-            <?php echo $this->__('Items %s to %s of %s total', $this->getFirstNum(), $this->getLastNum(), $this->getTotalNum()) ?>
-        <?php else: ?>
-            <?php echo $this->__('%s Item(s)', $this->getTotalNum()) ?>
-        <?php endif; ?>
-    </p>
-
+    <?php if($this->getLastPageNum()>1): ?>
+    <div class="pages">
+    <?php if (!$this->isFirstPage()): ?>
+        <a href="<?php echo $this->getPreviousPageUrl() ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" /> Previous</a>
+    <?php else: ?>
+        <img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" /> Previous
+    <?php endif ?>
+        
+        <strong><?php echo $this->__('Page:') ?></strong>
+        <select onchange="setLocation(this.value)">
+        <?php foreach ($this->getPages() as $_page): ?>
+            <option value="<?php echo $this->getPageUrl($_page) ?>"<?php if ($this->isPageCurrent($_page)): ?> selected="selected"<?php endif; ?>><?php echo $_page ?></option>
+        <?php endforeach; ?>
+        </select>
+        <strong>of</strong>
+        <?php echo $this->getLastPageNum() ?>
+        
+    <?php if (!$this->isLastPage()): ?>
+        <a href="<?php echo $this->getNextPageUrl() ?>">Next <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" /></a>
+    <?php else: ?>
+        Next <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" />
+    <?php endif ?>
+    </div>
+    <?php endif; ?>
+    
     <?php if($this->getShowPerPage()): ?>
     <fieldset class="limiter">
-        <label><?php echo $this->__('Show') ?></label>
         <select onchange="setLocation(this.value)">
         <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
             <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
-                <?php echo $_limit ?>
+                <?php echo $_limit ?><?php if(is_numeric($_limit)): ?> <?php echo $this->__('per page') ?><?php endif; ?>
             </option>
         <?php endforeach; ?>
-        </select> <?php echo $this->__('per page') ?>
+        </select>
     </fieldset>
-    <?php endif ?>    
-
-    <?php if($this->getLastPageNum()>1): ?>
-    <div class="pages">
-        <strong><?php echo $this->__('Page:') ?></strong>
-        <ol>
-        <?php if (!$this->isFirstPage()): ?>
-            <li><a href="<?php echo $this->getPreviousPageUrl() ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous Page') ?>" class="v-middle" /></a></li>
-        <?php endif ?>
-        <?php foreach ($this->getPages() as $_page): ?>
-            <?php if ($this->isPageCurrent($_page)): ?>
-                <li><span class="current"><?php echo $_page ?></span></li>
-            <?php else: ?>
-                <li><a href="<?php echo $this->getPageUrl($_page) ?>"><?php echo $_page ?></a></li>
-            <?php endif ?>
-        <?php endforeach;; ?>
-        <?php if (!$this->isLastPage()): ?>
-            <li><a href="<?php echo $this->getNextPageUrl() ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next Page') ?>" class="v-middle" /></a></li>
-        <?php endif ?>
-        </ol>
-    </div>
-    <?php endif; ?>
+    <?php endif ?>
 </div>
 <?php endif ?>

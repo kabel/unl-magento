@@ -26,12 +26,14 @@
 ?>
 <?php if ($this->helper('wishlist')->isAllow()) : ?>
 <?php //if($this->getCanDisplayWishlist()): ?>
-<div class="block block-wishlist">
+<div class="hover-menu block-wishlist">
     <div class="block-title">
-        <h2><?php echo $this->__('Your Wishlist - <a href="%s">%d Item(s)</a>',
-            $this->helper('wishlist')->getListUrl(),
-            $this->helper('wishlist')->getItemCount()
-        ) ?></h2>
+        <?php $_itemCount = $this->helper('wishlist')->getItemCount(); ?>
+        <?php if ($_itemCount == 1): ?>
+        <p>There is <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>">1 item</a> in your wishlist.</p>
+        <?php else: ?>
+        <p>There are <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>"><?php echo $_itemCount ?> items</a> in your wishlist.</p>
+        <?php endif; ?>
     </div>
     <div class="block-content">
     <h3><?php echo $this->__('Last Added Items') ?></h3>
@@ -55,9 +57,6 @@
     <?php else: ?>
         <p><?php echo $this->__('You have no items in your wishlist.') ?></p>
     <?php endif ?>
-        <div class="actions">
-            <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>"><?php echo $this->__('Go to Wishlist') ?></a>
-        </div>
     </div>
 </div>
 <?php endif ?>

@@ -1,0 +1,394 @@
+<?php
+/**
+ * Zenprint
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zenprint.com so we can send you a copy immediately.
+ *
+ * @copyright  Copyright (c) 2009 ZenPrint (http://www.zenprint.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<!-- script type="text/javascript" src="<?php echo Mage::getBaseUrl('js') ?>lightbox/prototype.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl('js') ?>lightbox/scriptaculous.js?load=effects,builder"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl('js') ?>lightbox/lightbox.js"></script>
+<link rel="stylesheet" href="<?php echo Mage::getBaseUrl('js') ?>lightbox/css/lightbox.css" type="text/css" media="screen" / -->
+
+<script type="text/javascript">
+
+	function jumpToTop()  {
+		window.scroll(0,0);
+	}
+	
+	function retrieveOrder()  {
+		$('order_details').style.display='none';
+		$('create_shipment_top').style.display='none';
+		$('print_labels').style.display='none';
+		$('messages').innerHTML='';
+		$('curr_order_id').value='';
+		
+		//reset packages
+		var numpackages = parseInt($('number_of_packages').value);
+		var pkgtable = $('package_table');
+		for(x=2; x < numpackages; x++)  {
+			pkgtable.deleteRow(pkgtable.rows.length-1);
+		}
+		$('package_container_1').selectedIndex = 0;
+		$('package_number_items_1').innerHTML = '0';
+		$('package_weight_1').value = '0.0';
+		$('package_tracking_1').innerHTML = '';
+		$('package_label_1').innerHTML = '';
+		$('package_print_1').innerHTML = '';
+		$('package_container_2').selectedIndex = 0;
+		$('package_number_items_2').innerHTML = '0';
+		$('package_weight_2').value = '0.0';
+		$('package_tracking_2').innerHTML = '';
+		$('package_label_2').innerHTML = '';
+		$('package_print_2').innerHTML = '';
+		$('number_of_packages').value = '2';
+		
+		zenajax_getOrderShipDetails($('order_id').value);
+	}
+
+	function addPackage()  {
+		var numpackages = parseInt($('number_of_packages').value) + 1;
+		var pkgtable = $('package_table');
+		var newrow = pkgtable.insertRow(pkgtable.rows.length);
+		newrow.id = 'package_number_' + numpackages;
+		
+		newcell = newrow.insertCell(0);
+		newcell.innerHTML = numpackages;
+		
+		newcell = newrow.insertCell(1);
+		newcell.innerHTML = '<div><select name="package_container_' + numpackages + '" id="package_container_' + numpackages + '" class="left-col-block" ><?php echo str_replace("\n", ' ', $this->getChildHtml('shipContainers')) ?></select></div>';
+		
+		newcell = newrow.insertCell(2);
+		newcell.id = 'package_number_items_' + numpackages;
+		newcell.innerHTML = '0';
+		
+		newcell = newrow.insertCell(3);
+		newcell.innerHTML = '<span class="input-ele"><input class="input-text" id="package_weight_' + numpackages + '" name="package_weight_' + numpackages + '" value="0.0" readonly></span>';
+		
+		newcell = newrow.insertCell(4);
+		newcell.innerHTML = '<span class="input-ele"><input class="input-text" id="package_height_' + numpackages + '" name="package_height_' + numpackages + '" value="0.0"></span>';
+		
+		newcell = newrow.insertCell(5);
+		newcell.innerHTML = '<span class="input-ele"><input class="input-text" id="package_width_' + numpackages + '" name="package_width_' + numpackages + '" value="0.0"></span>';
+		
+		newcell = newrow.insertCell(6);
+		newcell.innerHTML = '<span class="input-ele"><input class="input-text" id="package_length_' + numpackages + '" name="package_length_' + numpackages + '" value="0.0"></span>';
+		
+		newcell = newrow.insertCell(7);
+		newcell.id = 'package_tracking_' + numpackages;
+		
+		newcell = newrow.insertCell(8);
+		newcell.id = 'package_label_' + numpackages;
+		
+		newcell = newrow.insertCell(9);
+		newcell.id = 'package_print_' + numpackages;
+		
+		$('number_of_packages').value = numpackages;
+		
+		//update the item package drop-downs
+		var numitems = parseInt($('number_of_items').value);
+		for(y=1; y <= numitems; y++)  {
+			sel = $('item_package_' + y);
+			if(sel != null)  {
+				sel.options[numpackages - 1] = new Option(numpackages, numpackages);
+				sel.options[numpackages - 1].id = 'item_package_option_' + numpackages;
+			}
+		}
+		
+		//update the default dimensions
+		setPackageDimensions(numpackages);
+		
+		return true;
+	}
+	
+	function setPackageDimensions(itemid)  {
+		//all the potential dimensions
+		var dims = eval('(' + $('package_dimensions').value + ')');
+		
+		//retrieve by container, and dimension
+		$('package_height_' + itemid).value = dims[$('package_container_' + itemid).value]['height'];
+		$('package_width_' + itemid).value = dims[$('package_container_' + itemid).value]['width'];
+		$('package_length_' + itemid).value = dims[$('package_container_' + itemid).value]['length'];
+		
+		return true;
+	}
+	
+	function checkQuantityShip(itemid)  {
+		var qty_invoiced = parseInt($('item_quantity_invoiced_' + itemid).innerHTML,10);
+		var qty_shipped = parseInt($('item_quantity_shipped_' + itemid).innerHTML,10);
+		var qty2ship = $('item_quantity_ship_' + itemid);
+		if(parseInt(qty2ship.value,10) > (qty_invoiced - qty_shipped))  {
+			qty2ship.value = qty_invoiced - qtyshipped;
+		}
+		
+		return true;
+	}
+	
+	function calculatePackages()  {
+		var numpkgs = parseInt($('number_of_packages').value);
+		var numitems = parseInt($('number_of_items').value);
+		for(x=1; x <= numpkgs; x++)  {
+			var itemcnt = 0;
+			var weight = 0;
+			//check each item for package selection
+			for(y=1; y <= numitems; y++)  {
+				selopt = $('item_package_' + y);
+				if(selopt != null)  {
+					selopt = selopt.options[$('item_package_' + y).selectedIndex];
+					//if package number matches
+					if(selopt.value == x)  {
+						itemcnt = itemcnt + parseInt($('item_quantity_ship_' + y).value, 10);
+						weight = weight + (parseFloat($('item_weight_' + y).value) * parseInt($('item_quantity_ship_' + y).value, 10));
+					}
+				}
+			}
+			//set new vals
+			$('package_number_items_' + x).innerHTML = itemcnt;
+			$('package_weight_' + x).value = weight;
+		}
+		
+		return true;
+	}
+	
+	function createShipment()  {
+		$('print_labels').style.display='none';
+		$('messages').innerHTML='';
+		$('package_ids').value='';
+		var orderid = $('curr_order_id').value;
+		
+		//get the package data
+		var numitems = parseInt($('number_of_items').value);
+		var numpkgs = parseInt($('number_of_packages').value);
+		var packages = new Array(); 
+		for(x=1; x <= numpkgs; x++)  {
+			ids_qty = '';
+			weight = $('package_weight_' + x).value;
+			container = $('package_container_' + x).value;
+			height = $('package_height_' + x).value;
+			width = $('package_width_' + x).value;
+			length = $('package_length_' + x).value;
+			//check each item for package selection
+			for(y=1; y <= numitems; y++)  {
+				selopt = $('item_package_' + y);
+				if(selopt != null)  {
+					selopt = selopt.options[$('item_package_' + y).selectedIndex];
+					//if package number matches add to ids_qty
+					if(selopt.value == x)  {
+						if(ids_qty == '')  {
+							ids_qty = $('item_id_' + y).value + ':' + $('item_quantity_ship_' + y).value;
+						}
+						else  {			
+							ids_qty = ids_qty + ',' + $('item_id_' + y).value + ':' + $('item_quantity_ship_' + y).value;
+						}
+					}
+				}
+			}
+		
+			if(ids_qty != '')  {
+				packages[x-1] = new Array(x, ids_qty, weight, container, height, width, length);  //'pkg num', 'id:qty,id:qty,...', 'weight', 'container_code'
+			}
+		}
+		
+		zenajax_createShipment(orderid, packages);
+	}
+	
+	function checkEnterSubmit(e)  {
+		//IE
+		if(window.event)  {
+			code = e.keyCode;
+		}
+		//firefox, netscape, opera
+		else if(e.which)  {
+			code = e.which;
+		}
+		
+		if(code == 13)  {
+			retrieveOrder();
+		}
+		
+		return true;
+	}
+	
+	function printAllLabels()  {
+		printwindow = window.open('<?php echo Mage::getBaseUrl() ?>ordership/index/labelpdf/id/' + $('package_ids').value, 'shipping_label_print');
+		setTimeout("printwindow.print()", 4500);
+		return true;
+	}
+
+</script>
+
+<?php echo $this->_ajaxjs; ?>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td>
+                <h3 class="head-ordership"><?php echo $this->__('Order Ship') ?></h3>
+            </td>
+            <td class="a-right" id="create_shipment_top" style="display: none;">
+               	<button onclick="createShipment();" class="scalable save" type="button" tabindex="3"><span><?php echo $this->__('Create Shipment') ?></span></button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="ordership-container">
+	<input type="hidden" id="curr_order_id" value="">
+    <table cellspacing="25" width="100%">
+        <tr>
+        	<td>
+        		<div class="entry-edit">
+        			<div class="entry-edit-head"><h4><?php echo $this->__('Order To Ship') ?></h4></div>
+        			<fieldset>
+        				<table cellspacing="5">
+        					<tr>
+	        					<td><span class="label"><?php echo str_replace(' ', '&nbsp;', $this->__('Order ID:')) ?></span></td>
+	        					<td><span class="input-ele"><input class="input-text" name="order_id" id="order_id" tabindex="1" onKeyPress="checkEnterSubmit(event);"/></span></td>
+	        					<td><button onclick="retrieveOrder();" class="save" type="button" tabindex="2"><span><?php echo $this->__('Retrieve Order') ?></span></button></td>
+	        					<td width="100%" class="a-right">
+	        						<span id="print_labels" style="display: none;">
+	        							<button onclick="printAllLabels();" type="button" tabindex="4"><span><?php echo $this->__('Print Labels') ?></span></button>
+	        						</span>
+	        					</td>
+	        				</tr>
+	        			</table>
+        			</fieldset>			
+        		</div>
+        	
+        		<div class="entry-edit" id="order_details" style="display: none;">	
+        			<div class="entry-edit-head"><h4><?php echo $this->__('Shipping Details') ?></h4></div>
+        			<fieldset>
+        				<table width="100%">
+        					<tr>
+        						<td>
+        							<div class="label" style="font-weight: bold;"><?php echo $this->__('Order Status:') ?></div>
+        							<div class="label" id="order_status"><?php echo $this->__('Order Status') ?></div>
+        						</td>
+        						<td>
+        							<div class="label" style="font-weight: bold;"><?php echo $this->__('Order Placed:') ?></div>
+        							<div class="label" id="order_placed"><?php echo $this->__('Order Placed') ?></div>
+        						</td>
+        					</tr>
+        					<tr>
+        						<td>
+        							<div class="label" style="font-weight: bold;"><?php echo $this->__('Ship From:') ?></div>
+        							<div class="label" id="ship_from_name"><?php echo $this->__('Ship From Name') ?></div>
+        							<div class="label" id="ship_from_addr1"><?php echo $this->__('Ship From Address 1') ?></div>
+        							<div class="label" id="ship_from_addr2"><?php echo $this->__('Ship From Address 2') ?></div>
+        							<div class="label" id="ship_from_addr3"><?php echo $this->__('Ship From Address 3') ?></div>
+        							<div class="label">
+        								<span id="ship_from_city"><?php echo $this->__('Ship From City, ') ?></span>,
+        								<span id="ship_from_region"><?php echo $this->__('Ship From Region, ') ?></span>&nbsp;
+        								<span id="ship_from_postal_code"><?php echo $this->__('Ship From Postal Code') ?></span>
+        							</div>        							
+        							<div class="label" id="ship_from_country"><?php echo $this->__('Ship From Country') ?></div>
+        						</td>
+        						<td>
+        							<div class="label" style="font-weight: bold;"><?php echo $this->__('Ship To:') ?></div>
+        							<div class="label" id="ship_to_name"><?php echo $this->__('Ship To Name') ?></div>
+        							<div class="label" id="ship_to_addr1"><?php echo $this->__('Ship To Address 1') ?></div>
+        							<div class="label" id="ship_to_addr2"><?php echo $this->__('Ship To Address 2') ?></div>
+        							<div class="label" id="ship_to_addr3"><?php echo $this->__('Ship To Address 3') ?></div>
+        							<div class="label">
+        								<span id="ship_to_city"><?php echo $this->__('Ship To City, ') ?></span>
+        								<span id="ship_to_region"><?php echo $this->__('Ship To Region, ') ?></span>
+        								<span id="ship_to_postal_code"><?php echo $this->__('Ship To Postal Code') ?></span>
+        							</div>        							
+        							<div class="label" id="ship_to_country"><?php echo $this->__('Ship To Country') ?></div>
+        						</td>
+        					</tr>
+        					<tr>
+        						<td>
+        							<div class="label" style="font-weight: bold;"><?php echo $this->__('Carrier:') ?></div>
+        							<div class="label" id="shipping_carrier"><?php echo $this->__('Shipping Carrier') ?></div>
+        						</td>
+        						<td>
+        							<div class="label" style="font-weight: bold;"><?php echo $this->__('Shipping Method:') ?></div>
+        							<div class="label" id="shipping_method"><?php echo $this->__('Shipping Method') ?></div>
+        						</td>
+        					</tr>
+						</table>        			
+        			</fieldset>
+        			
+        			<div class="entry-edit-head"><h4><?php echo $this->__('Shipping Items') ?></h4></div>
+        			<input type="hidden" id="number_of_items" value="">
+        			<fieldset id="item_rows">
+        			</fieldset>
+        			
+        			<div class="entry-edit-head"><h4><?php echo $this->__('Packages') ?></h4></div>
+        			<fieldset>
+        				<input type="hidden" id="number_of_packages" value="2">
+        				<input type="hidden" id="package_ids" value="">
+        				<input type="hidden" id="package_dimensions" value="">
+        				
+        				<table id="package_table" width="100%">
+        					<tr style="font-weight: bold;">
+        						<td><?php echo $this->__('Number') ?></td>
+        						<td><?php echo $this->__('Container') ?></td>
+        						<td><?php echo $this->__('Number of Items') ?></td>
+        						<td id="weight_header"><?php echo $this->__('Weight') ?></td>
+        						<td id="height_header"><?php echo $this->__('Height') ?></td>
+        						<td id="width_header"><?php echo $this->__('Width') ?></td>
+        						<td id="length_header"><?php echo $this->__('Length') ?></td>
+        						<td><?php echo $this->__('Tracking Number') ?></td>
+        						<td></td>
+        					</tr>
+        					<tr id="package_number_1">	
+        						<td>1</td>
+        						<td>
+        							<div>
+        								<select name="package_container_1" id="package_container_1" class="left-col-block" onchange="setPackageDimensions(1);">
+        									<?php echo $this->getChildHtml('shipContainers') ?>
+        								</select>
+        							</div>
+        						</td>
+        						<td id="package_number_items_1">0</td>
+        						<td><span class="input-ele"><input class="input-text" id="package_weight_1" name="package_weight_1" value="0.0" readonly></span></td>
+        						<td><span class="input-ele"><input class="input-text" id="package_height_1" name="package_height_1" value="0.0"></span></td>
+        						<td><span class="input-ele"><input class="input-text" id="package_width_1" name="package_width_1" value="0.0"></span></td>
+        						<td><span class="input-ele"><input class="input-text" id="package_length_1" name="package_length_1" value="0.0"></span></td>
+        						<td id="package_tracking_1"></td>
+        						<td id="package_label_1"></td>
+        						<td id="package_print_1"></td>
+        					</tr>
+							<tr id="package_number_2">	
+	        					<td>2</td>
+	        					<td>
+	        						<div>
+        								<select name="package_container_2" id="package_container_2" class="left-col-block" onchange="setPackageDims(2);">
+        									<?php echo $this->getChildHtml('shipContainers') ?>
+        								</select>
+        							</div>
+        						</td>
+	        					<td id="package_number_items_2">0</td>
+	        					<td><span class="input-ele"><input class="input-text" id="package_weight_2" name="package_weight_2" value="0.0" readonly></span></td>
+	        					<td><span class="input-ele"><input class="input-text" id="package_height_2" name="package_height_2" value="0.0"></span></td>
+	        					<td><span class="input-ele"><input class="input-text" id="package_width_2" name="package_width_2" value="0.0"></span></td>
+	        					<td><span class="input-ele"><input class="input-text" id="package_length_2" name="package_length_2" value="0.0"></span></td>
+	        					<td id="package_tracking_2"></td>
+	        					<td id="package_label_2"></td>
+	        					<td id="package_print_2"></td>
+	        				</tr>
+        				</table>
+        				<div class="a-right">
+			                <button onclick="addPackage();" class="none" type="button"><span><?php echo $this->__('Add Package') ?></span></button>
+			            </div>
+        			</fieldset>	
+        		</div>
+        	</td>
+        </tr>	
+	</table>
+</div>
+
+<?php echo $this->_loadorderjs; ?>

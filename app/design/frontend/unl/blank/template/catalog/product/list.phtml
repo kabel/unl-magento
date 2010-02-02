@@ -51,7 +51,7 @@
 
             <?php // Product description ?>
             <div class="product-shop">
-                <div class="f-right a-right">
+                <div class="right-box">
                     <?php echo $this->getPriceHtml($_product, true) ?>
                     <?php if($_product->isSaleable()): ?>
                     <p><button class="button" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><?php echo $this->__('Add to Cart') ?></span></button></p>
@@ -123,7 +123,7 @@
         <?php endif ?>
         <?php endforeach ?>
         <?php for($i;$i%$_columnCount!=0;$i++): ?>
-              <td class="empty">&nbsp;</td>
+              <td class="empty"><div class="box"></div></td>
         <?php endfor ?>
         <?php if ($i%$_columnCount==0): ?>
         </tr>

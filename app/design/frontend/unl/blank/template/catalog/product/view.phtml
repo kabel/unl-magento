@@ -47,11 +47,11 @@
         <input type="hidden" name="related_product" id="related-products-field" value="" />
     </fieldset>
 
-        <div class="col left product-img-box">
+        <div class="product-img-box">
             <?php echo $this->getChildHtml('media') ?>
         </div>
 
-        <div class="two_col right product-shop">
+        <div class="product-shop">
             <div class="product-name">
                 <h2 class="sec_main"><?php echo $_helper->productAttribute($_product, $this->htmlEscape($_product->getName()), 'name') ?></h2>
             </div>

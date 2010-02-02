@@ -101,8 +101,30 @@
     <?php if ($_item->getParentItem()) continue; ?>
     <tbody>
         <?php echo $this->getItemHtml($_item) ?>
+        <?php if($this->helper('giftmessage/message')->getIsMessagesAvailable('order_item', $_item) && $_item->getGiftMessageId()): ?>
+        <tr id="order-item-gift-message-<?php echo $_item->getId() ?>">
+            <?php $_giftMessage=$this->helper('giftmessage/message')->getGiftMessageForEntity($_item); ?>
+            <td class="gift-message-row" colspan="7">
+                <dl class="gift-message">
+                    <dt><strong><?php echo $this->__('From') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getRecipient()) ?></dt>
+                    <dt><strong><?php echo $this->__('To') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?></dt>
+                    <dd><?php echo $this->helper('giftmessage/message')->getEscapedGiftMessage($_item) ?></dd>
+                </dl>
+            </td>
+        </tr>
+        <?php endif ?>
     </tbody>
         <?php endforeach; ?>
 </table>
+
+<?php if($this->helper('giftmessage/message')->getIsMessagesAvailable('order', $_order) && $_order->getGiftMessageId()): ?>
+    <h3><?php echo $this->__('Gift Message for this Order') ?></h3>
+    <?php $_giftMessage=$this->helper('giftmessage/message')->getGiftMessageForEntity($_order); ?>
+    <dl class="gift-message">
+        <dt><strong><?php echo $this->__('From') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?></dt>
+        <dt><strong><?php echo $this->__('To') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getRecipient()) ?></dt>
+        <dd><?php echo $this->helper('giftmessage/message')->getEscapedGiftMessage($_order) ?></dd>
+    </dl>
+<?php endif; ?>
 <script type="text/javascript">decorateTable('my-orders-table', {'tbody' : ['odd', 'even'], 'tbody tr' : ['first', 'last']})</script>
 <script type="text/javascript">window.print();</script>

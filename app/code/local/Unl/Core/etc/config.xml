@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.3</version>
+            <version>0.1.5</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -43,6 +43,10 @@
                 <rewrite>
                     <adminhtml_catalog_product_edit_tab_bundle_option>Unl_Core_Block_Bundle_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option</adminhtml_catalog_product_edit_tab_bundle_option>
                     <adminhtml_catalog_product_edit_tab_bundle_option_selection>Unl_Core_Block_Bundle_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Selection</adminhtml_catalog_product_edit_tab_bundle_option_selection>
+                    <catalog_product_view_type_bundle_option_checkbox>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Checkbox</catalog_product_view_type_bundle_option_checkbox>
+                    <catalog_product_view_type_bundle_option_multi>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Multi</catalog_product_view_type_bundle_option_multi>
+                    <catalog_product_view_type_bundle_option_radio>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Radio</catalog_product_view_type_bundle_option_radio>
+                    <catalog_product_view_type_bundle_option_select>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Select</catalog_product_view_type_bundle_option_select>
                 </rewrite>
              </bundle>
             <catalog>
@@ -264,4 +268,17 @@
         </acl>
     </adminhtml>
     
+    <stores>
+        <admin>
+            <!-- default admin design package and theme -->
+            <design>
+                <package>
+                    <name>default</name>
+                </package>
+                <theme>
+                    <default>unl</default>
+                </theme>
+            </design>
+        </admin>
+    </stores>
 </config>

@@ -43,18 +43,20 @@
             <?php foreach($this->getAvailableOrders() as $_key=>$_order): ?>
                 <?php $_type = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', $_key)->getBackendType(); ?>
                 <?php if (in_array($_type, array('varchar', 'text'))): ?>
-                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('alphabetical') ?></option>
-                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('reverse alphabetical') ?></option>
+                <?php $ascLabel = $this->__('alphabetical'); ?>
+                <?php $descLabel = $this->__('reverse alphabetical'); ?>
                 <?php elseif (in_array($_type, array('int', 'decimal'))): ?>
-                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('low to high') ?></option>
-                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('high to low') ?></option>
+                <?php $ascLabel = $this->__('low to high'); ?>
+                <?php $descLabel = $this->__('high to low'); ?>
                 <?php elseif ($_type == 'datetime'): ?>
-                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('earliest') ?></option>
-                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('latest') ?></option>
+                <?php $ascLabel = $this->__('earliest'); ?>
+                <?php $descLabel = $this->__('latest'); ?>
                 <?php else:?>
-                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('ascending') ?></option>
-                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $this->__('descending') ?></option>
+                <?php $ascLabel = $this->__('ascending'); ?>
+                <?php $descLabel = $this->__('descending'); ?>
                 <?php endif; ?>
+                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $ascLabel ?></option>
+                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $descLabel ?></option>
                 <?php $count++; ?>
             <?php endforeach; ?>
             </select>
@@ -95,7 +97,7 @@
     <strong><?php echo $this->__('Page') ?></strong>
     <select onchange="setLocation(this.value)">
     <?php foreach ($this->getPages() as $_page): ?>
-        <option value="<?php echo $this->getPageUrl($_page) ?>"<?php if ($this->isPageCurrent($_page)) { echo ' selected="selected"'; } ?>><?php echo $_page ?></option>
+        <option value="<?php echo $this->getPageUrl($_page) ?>"<?php if ($this->isPageCurrent($_page)): ?> selected="selected"<?php endif; ?>><?php echo $_page ?></option>
     <?php endforeach; ?>
     </select>
     <strong>of</strong>
@@ -107,7 +109,7 @@
     <?php echo $this->__('Next') ?> <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" />
     <?php endif ?>
     
-    <select class="limit" onchange="setLocation(this.value)">
+    <select class="limiter" onchange="setLocation(this.value)">
         <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
             <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
                 <?php echo $_limit ?><?php if(is_numeric($_limit)): ?> <?php echo $this->__('per page') ?><?php endif; ?>

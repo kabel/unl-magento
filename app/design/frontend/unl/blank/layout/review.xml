@@ -68,10 +68,11 @@ Product reviews page
 
     <review_product_list>
         <reference name="root">
-            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
         </reference>
         <reference name="head">
             <action method="addJs"><script>varien/product.js</script></action>
+            <action method="addItem"><type>skin_js</type><name>js/rating.js</name><params/></action>
         </reference>
         <reference name="content">
             <block type="review/product_view" name="product.info" template="catalog/product/view.phtml">
@@ -93,7 +94,7 @@ Product reviews page
 
     <review_product_view>
         <reference name="root">
-            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
         </reference>
         <reference name="content">
             <block type="review/view" name="review_view"/>

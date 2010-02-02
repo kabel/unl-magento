@@ -27,33 +27,30 @@
 
 <?php $_items = $this->getReviewsCollection()->getItems();?>
 <?php if (count($_items)):?>
-<div class="reviews" id="customer-reviews">
+<div class="two_col left reviews" id="customer-reviews">
     <h3><?php echo $this->__('Customer Reviews') ?></h3>
     <?php echo $this->getChildHtml('toolbar') ?>
     <dl>
     <?php foreach ($_items as $_review):?>
         <dt>
-            <a href="<?php echo $this->getReviewUrl($_review->getId()) ?>"><?php echo $this->htmlEscape($_review->getTitle()) ?></a> <?php echo $this->__('Review by %s', $this->htmlEscape($_review->getNickname())) ?>
+            <a href="<?php echo $this->getReviewUrl($_review->getId()) ?>"><?php echo $this->htmlEscape($_review->getTitle()) ?></a>
+            <?php echo $this->__('Review by %s', $this->htmlEscape($_review->getNickname())) ?>
+            <span class="date"><?php echo $this->__('(Posted on %s)', $this->formatDate($_review->getCreatedAt()), 'long') ?></span>
         </dt>
         <dd>
-            <table class="data-table">
-                <col width="30%" />
-                <col />
-                <tbody>
-                    <?php foreach ($_review->getRatingVotes() as $_vote): ?>
-                    <tr>
-                        <th class="label"><?php echo $_vote->getRatingCode() ?></th>
-                        <td class="value">
-                            <div class="rating-box">
-                                <div class="rating" style="width:<?php echo $_vote->getPercent() ?>%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <?php if ($_review->getRatingVotes()): ?>
+            <dl class="ratings-list">
+            <?php foreach ($_review->getRatingVotes() as $_vote): ?>
+                <dt><?php echo $_vote->getRatingCode() ?></dt>
+                <dd>
+                    <div class="rating-box">
+                        <div class="rating_" style="width:<?php echo $_vote->getPercent() ?>%;"></div>
+                    </div>
+                </dd>
+            <?php endforeach; ?>
+            </dl>
+            <?php endif; ?>
             <p><?php echo nl2br($this->htmlEscape($_review->getDetail())) ?></p>
-            <p class="date"><?php echo $this->__('(Posted on %s)', $this->formatDate($_review->getCreatedAt()), 'long') ?></p>
         </dd>
     <?php endforeach; ?>
     </dl>

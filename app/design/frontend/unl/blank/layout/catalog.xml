@@ -84,9 +84,9 @@ Category default layout
                     <block type="catalog/product_list_toolbar" name="product_list_toolbar" template="catalog/product/list/toolbar.phtml">
                         <!-- The following code shows how to set your own pager increments -->
                             <action method="setDefaultListPerPage"><limit>10</limit></action>
-                            <action method="setDefaultGridPerPage"><limit>8</limit></action>
-                            <action method="addPagerLimit"><mode>grid</mode><limit>8</limit></action>
-                            <action method="addPagerLimit"><mode>grid</mode><limit>16</limit></action>
+                            <action method="setDefaultGridPerPage"><limit>12</limit></action>
+                            <action method="addPagerLimit"><mode>grid</mode><limit>12</limit></action>
+                            <action method="addPagerLimit"><mode>grid</mode><limit>20</limit></action>
                             <action method="addPagerLimit"><mode>grid</mode><limit>32</limit></action>
                             <action method="addPagerLimit"><mode>grid</mode><limit>all</limit><label>All</label></action>
                             <action method="addPagerLimit"><mode>list</mode><limit>10</limit></action>

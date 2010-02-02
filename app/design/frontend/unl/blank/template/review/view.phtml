@@ -46,14 +46,14 @@
                     <dt><?php echo $this->__($_rating->getRatingCode()) ?></dt>
                     <dd>
                         <div class="rating-box">
-                            <div class="rating" style="width:<?php echo ceil($_rating->getPercent()) ?>%;"></div>
+                            <div class="rating_" style="width:<?php echo ceil($_rating->getPercent()) ?>%;"></div>
                         </div>
                     </dd>
                 <?php endif; ?>
                 <?php endforeach; ?>
             </dl>
         <?php endif; ?>
-        <p><?php echo $this->__('Product Review (submitted on %s):', $this->dateFormat($this->getReviewData()->getCreatedAt())) ?></p>
+        <p class="date"><?php echo $this->__('Product Review (submitted on %s):', $this->dateFormat($this->getReviewData()->getCreatedAt())) ?></p>
         <p><?php echo nl2br($this->htmlEscape($this->getReviewData()->getDetail())) ?></p>
     </div>
     <div class="buttons-set">

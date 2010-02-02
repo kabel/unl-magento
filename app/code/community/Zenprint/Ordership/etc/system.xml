@@ -1,0 +1,493 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Zenprint
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zenprint.com so we can send you a copy immediately.
+ *
+ * @copyright  Copyright (c) 2009 ZenPrint (http://www.zenprint.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <sections>
+    	<shipping translate="label" module="shipping">
+            <groups>
+                <origin translate="label">
+                    <fields>
+                        <address1 translate="label">
+                            <label>Address 1</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </address1>
+                        <address2 translate="label">
+                            <label>Address 2</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </address2>
+                        <address3 translate="label">
+                            <label>Address 3</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </address3>
+                        <phone translate="label">
+                            <label>Phone</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </phone>
+                    </fields>
+                </origin>
+            </groups>
+        </shipping>
+        
+        <carriers>
+            <groups>
+                <fedex>
+                    <fields>
+                    	<active translate="label">
+                    		<label>Enabled</label>
+                            <sort_order>1</sort_order>
+                        </active>
+                        <test_mode translate="label">
+                            <label>Test Mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </test_mode>
+                        <gateway_url translate="label">
+                            <label>Gateway URL</label>
+                            <sort_order>3</sort_order>
+                        </gateway_url>
+                        <title translate="label">
+                            <label>Title</label>
+                            <sort_order>10</sort_order>
+                        </title>
+                        <account translate="label">
+                            <label>Account ID</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </account>
+                        <account_country translate="label">
+                            <label>Account Country</label>
+                            <frontend_type>select</frontend_type>
+                            <frontend_class>countries3</frontend_class>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>21</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </account_country>
+                        <password translate="label">
+                            <label>Password</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </password>
+                        <key translate="label">
+                            <label>Key</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </key>
+                        <meter translate="label">
+                            <label>Meter</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meter>
+                        <third_party translate="label">
+                            <label>Ship with Third Party Fedex Account</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party>
+                        <third_party_fedex_account translate="label">
+                            <label>Third Party Fedex Account ID</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>70</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party_fedex_account>
+                        <third_party_fedex_account_country translate="label">
+                            <label>Third Party Fedex Account Country</label>
+                            <frontend_type>select</frontend_type>
+                            <frontend_class>countries2</frontend_class>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>71</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party_fedex_account_country>
+                        <packaging translate="label">
+                            <label>Packaging</label>
+                            <sort_order>100</sort_order>
+                        </packaging>
+                        <dimension_units translate="label">
+                            <label>Dimension Units</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>usa/shipping_carrier_fedex_source_unitofdimension</source_model>
+                            <sort_order>101</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </dimension_units>
+                        <default_height translate="label">
+                            <label>Default Height</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>102</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_height>
+                        <default_width translate="label">
+                            <label>Default Width</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>103</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_width>
+                        <default_length translate="label">
+                            <label>Default Length</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>104</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_length>                        
+                        <max_package_weight translate="label">
+                            <label>Maximum Package Weight (Please consult your shipping carrier for maximum supported shipping weight)</label>
+                            <sort_order>110</sort_order>
+                        </max_package_weight>
+                        <dropoff translate="label">
+                            <label>Dropoff</label>
+                            <sort_order>120</sort_order>
+                        </dropoff>
+                        <handling_type translate="label">
+                            <label>Calculate Handling Fee</label>
+                            <sort_order>130</sort_order>
+                        </handling_type>
+                        <handling_action translate="label">
+                            <label>Handling Applied</label>
+                            <sort_order>140</sort_order>
+                        </handling_action>
+                        <handling_fee translate="label">
+                            <label>Handling fee</label>
+                            <sort_order>150</sort_order>
+                        </handling_fee>
+                        <residence_delivery>
+                            <label>Residential Delivery</label>
+                            <sort_order>160</sort_order>
+                        </residence_delivery>
+                        <allowed_methods translate="label">
+                            <label>Allowed methods</label>
+                            <sort_order>170</sort_order>
+                        </allowed_methods>
+                        <free_method translate="label">
+                            <label>Free method</label>
+                            <sort_order>180</sort_order>
+                        </free_method>
+                        <free_shipping_enable translate="label">
+                            <label>Free shipping with minimum order amount</label>
+                            <sort_order>190</sort_order>
+                        </free_shipping_enable>
+                        <free_shipping_subtotal translate="label">
+                            <label>Minimum order amount for free shipping</label>
+                            <sort_order>200</sort_order>
+                        </free_shipping_subtotal>
+                        <specificerrmsg translate="label">
+                            <label>Displayed Error Message</label>
+                            <sort_order>210</sort_order>
+                        </specificerrmsg>
+                        <sallowspecific translate="label">
+                            <label>Ship to applicable countries</label>
+                            <sort_order>220</sort_order>
+                        </sallowspecific>
+                        <specificcountry translate="label">
+                            <label>Ship to Specific countries</label>
+                            <sort_order>230</sort_order>
+                        </specificcountry>
+                        <sort_order translate="label">
+                            <label>Sort order</label>
+                            <sort_order>240</sort_order>
+                        </sort_order>
+                    </fields>
+                </fedex>
+                <ups>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <sort_order>1</sort_order>
+                        </active>
+                        <title translate="label">
+                            <label>Title</label>
+                            <sort_order>2</sort_order>
+                        </title>
+                        <type translate="label">
+                            <label>UPS type</label>
+                            <sort_order>3</sort_order>
+                        </type>
+                        <access_license_number translate="label">
+                            <label>Access license number</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </access_license_number>
+                        <username translate="label">
+                            <label>UserId</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </username>
+                        <password translate="label">
+                            <label>Password</label>
+                            <frontend_type>password</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>13</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </password>
+                        <ups_account_number translate="label">
+                            <label>UPS Account Number</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </ups_account_number>
+                        <third_party translate="label">
+                            <label>Ship with Third Party UPS Account</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>21</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party>
+                        <third_party_ups_account_number translate="label">
+                            <label>Third Party UPS Account Number</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>22</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party_ups_account_number>
+                        <third_party_country translate="label">
+                            <label>Third Party Country</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>23</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party_country>
+                        <third_party_postcode translate="label">
+                            <label>Third Party Postcode</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>24</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </third_party_postcode>
+                        <gateway_url translate="label">
+                            <label>Gateway URL</label>
+                            <sort_order>31</sort_order>
+                        </gateway_url>
+                        <gateway_xml_url translate="label">
+                            <label>Gateway XML URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>31</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </gateway_xml_url>
+                        <tracking_xml_url translate="label">
+                            <label>Tracking XML URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>32</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tracking_xml_url>
+                        <shipping_xml_url translate="label">
+                            <label>Shipping XML URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>33</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipping_xml_url>
+                        <origin_shipment translate="label">
+                            <label>Origin of the shipment</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>usa/shipping_carrier_ups_source_originShipment</source_model>
+                            <sort_order>41</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </origin_shipment>
+                        <shipper_attention translate="label">
+                            <label>Shipper Attention</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>43</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipper_attention>
+                        <pickup translate="label">
+                            <label>Pickup method</label>
+                            <sort_order>44</sort_order>
+                        </pickup>
+                        <specificerrmsg translate="label">
+                            <label>Displayed Error Message</label>
+                            <sort_order>45</sort_order>
+                        </specificerrmsg>
+                        <handling_type translate="label">
+                            <label>Calculate Handling Fee</label>
+                            <sort_order>51</sort_order>
+                        </handling_type>
+                        <handling_action translate="label">
+                            <label>Handling Applied</label>
+                            <sort_order>52</sort_order>
+                        </handling_action>
+                        <handling_fee translate="label">
+                            <label>Handling fee</label>
+                            <sort_order>53</sort_order>
+                        </handling_fee>
+                        <allowed_methods translate="label">
+                            <label>Allowed methods</label>
+                            <sort_order>61</sort_order>
+                        </allowed_methods>
+                        <showmethod translate="label">
+                            <label>Show method if not applicable</label>
+                            <sort_order>62</sort_order>
+                        </showmethod>
+                        <dest_type translate="label">
+                            <label>Destination type</label>
+                            <sort_order>63</sort_order>
+                        </dest_type>
+                        <container translate="label">
+                            <label>Container</label>
+                            <sort_order>64</sort_order>
+                        </container>
+                        <dimension_units translate="label">
+                            <label>Dimension Units</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>usa/shipping_carrier_ups_source_unitofdimension</source_model>
+                            <sort_order>65</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </dimension_units>
+                        <default_height translate="label">
+                            <label>Default Height</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>66</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_height>
+                        <default_width translate="label">
+                            <label>Default Width</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>67</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_width>
+                        <default_length translate="label">
+                            <label>Default Length</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>68</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_length>
+                        <unit_of_measure translate="label">
+                            <label>Weight Unit</label>
+                            <sort_order>75</sort_order>
+                        </unit_of_measure>
+                        <max_package_weight translate="label">
+                            <label>Maximum Package Weight (Please consult your shipping carrier for maximum supported shipping weight)</label>
+                            <sort_order>76</sort_order>
+                        </max_package_weight>
+						<sallowspecific translate="label">
+                            <label>Ship to applicable countries</label>
+                            <sort_order>77</sort_order>
+                        </sallowspecific>
+                        <specificcountry translate="label">
+                            <label>Ship to Specific countries</label>>
+                            <sort_order>78</sort_order>
+                        </specificcountry>
+                        <free_method translate="label">
+                            <label>Free method</label>
+                            <sort_order>81</sort_order>
+                        </free_method>
+                        <free_shipping_enable translate="label">
+                            <label>Free shipping with minimum order amount</label>
+                            <sort_order>82</sort_order>
+                        </free_shipping_enable>
+                        <free_shipping_subtotal translate="label">
+                            <label>Minimum order amount for free shipping</label>
+                            <sort_order>83</sort_order>
+                        </free_shipping_subtotal>
+                        <sort_order translate="label">
+                            <label>Sort order</label>
+                            <sort_order>91</sort_order>
+                        </sort_order>
+                    </fields>
+                </ups>
+            </groups>
+        </carriers>
+    </sections>
+</config>

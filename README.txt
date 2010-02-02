@@ -1,23 +1,9 @@
 There are a few symlinks to get our customizations working in magento. 
-The svn projects are labeled:
-[Magento] : http://svn.magentocommerce.com/source/branches/1.3
-[Unl-Magento] : http://its-gforge.unl.edu/svn/unl-magento
 
-[Magento]/app/code/local/Unl -> [Unl-Magento]/app/code/local/Unl
-[Magento]/app/code/local/Varien -> [Unl-Magento]/app/code/local/Varien
-[Magento]/app/etc/modules/Unl_All.xml -> [Unl-Magento]/app/etc/modules/Unl_All.xml
-[Magento]/skin/frontend/unl -> [Unl-Magento]/skin/frontend/unl
-[Magento]/app/design/frontend/unl -> [Unl-Magento]/app/design/frontend/unl
-[Magento]/app/design/adminhtml/default/default/template/unl -> [Unl-Magento]/app/design/adminhtml/default/default/template/unl
-[Magento]/js/tiny_mce -> [Unl-Magento]/js/tiny_mce
-[Magento]/lib/SimpleCAS -> [Unl-Magento]/lib/SimpleCAS
-[Magento]/lib/SimpleCAS.php -> [Unl-Magento]/lib/SimpleCAS.php 
-[Magento]/lib/UNL -> [Unl-Magento]/lib/UNL
+[magento] : http://svn.magentocommerce.com/source/branches/1.3
+[unl-magento] : http://its-gforge.unl.edu/svn/unl-magento
 
--- OPTIONAL --
-[Magento]/app/design/adminhtml/default/default/template/tester -> [Unl-Magento]/app/design/adminhtml/default/default/template/tester  (optional: for testing module)
-
-cd magento
+cd /path/to/magento
 ln -s /path/to/unl-magento/app/code/local/Unl app/code/local/Unl
 ln -s /path/to/unl-magento/app/code/local/Varien app/code/local/Varien
 ln -s /path/to/unl-magento/app/etc/modules/Unl_All.xml app/etc/modules/Unl_All.xml
@@ -28,6 +14,13 @@ ln -s /path/to/unl-magento/js/tiny_mce js/tiny_mce
 ln -s /path/to/unl-magento/lib/SimpleCAS lib/SimpleCAS
 ln -s /path/to/unl-magento/lib/SimpleCAS.php lib/SimpleCAS.php
 ln -s /path/to/unl-magento/lib/UNL lib/UNL
+
+ln -s /path/to/unl-magento/app/etc/modules/Zenprint_Xajax.xml app/etc/modules/
+ln -s /path/to/unl-magento/app/etc/modules/Zenprint_Ordership.xml app/etc/modules/
+ln -s /path/to/unl-magento/app/code/community/Zenprint app/etc/code/community/
+ln -s /path/to/unl-magento/js/xajax_js js/
+ln -s /path/to/unl-magento/lib/Xajax lib/
+
 
 -- OPTIONAL --
 ln -s /path/to/unl-magento/app/design/adminhtml/default/default/template/tester app/design/adminhtml/default/default/template/tester
