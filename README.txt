@@ -28,7 +28,6 @@ ln -s /path/to/unl-magento/app/design/adminhtml/default/default/template/tester 
 There are two configration settings for the theme to work:
 System>Configuration>Design
 Package:Current Package Name:unl
-Themes:Default:blank
 
 For a production server the configuration settings for "Web", "Store Email Addresses", "Contacts", "Catalog", "Inventory", "Sales", "Shipping ...", and "Payment ..." will need to be set to match the business practices.
 
