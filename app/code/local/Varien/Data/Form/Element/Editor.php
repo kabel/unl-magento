@@ -52,21 +52,19 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
     {
         if( $this->getWysiwyg() === true )
         {
-            $wrapper = Mage::helper('core')->getLayout()->getBlockSingleton('unl_core/adminhtml_cms_editor_wrapper')->renderView();
+            /*$wrapper = Mage::helper('core')->getLayout()->getBlockSingleton('unl_core/adminhtml_cms_editor_wrapper')->renderView();
             $wrapper = str_replace(array("\r\n", "\r", "\n"), '', addslashes($wrapper));
-            $wrapper = explode('{0}', $wrapper);
+            $wrapper = explode('{0}', $wrapper);*/
             
             $element = ($this->getState() == 'html') ? '' : $this->getHtmlId();
-            $stores = Mage::app()->getStores();
-            $frontStore = array_shift($stores);
             
-            $package = Mage::getStoreConfig('design/package/name', $frontStore);
-            $theme = Mage::getStoreConfig('design/theme/default', $frontStore);
+            /* @var $design Mage_Core_Model_Design_Package */
+            $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
             
             $css = array(
                 '/wdn/templates_3.0/css/all.css',
-                Mage::getDesign()->getSkinUrl('css/reset.css', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)),
-                Mage::getDesign()->getSkinUrl('css/styles.css', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme))
+                $design->getSkinUrl('css/reset.css'),
+                $design->getSkinUrl('css/styles.css')
             );
 
             $html = '
@@ -85,15 +83,15 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
                         body_class : "fixed",
                         plugins : "safari,style,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
                         theme_advanced_blockformats : "p,div,h1,h2,h3,h4,h5,h6,address,pre,code",
-                        plugin_preview_pageurl : "' . Mage::getDesign()->getSkinUrl('include/preview.shtml', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)) . '",
+                        plugin_preview_pageurl : "' . $design->getSkinUrl('include/preview.shtml') . '",
                         plugin_preview_width : "800",
                         plugin_preview_height : "600",
                         VarienTemplates : {
                             _decodeRegEx : new RegExp("\\{\\{skin url=[\'\\"]([^\'\\"]*)[\'\\"]\\}\\}", "g"),
-                            _encodeRegEx : new RegExp("' . Mage::getDesign()->getSkinUrl('', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)) . '([^\\\\s\\"\');]*)", "g"),
+                            _encodeRegEx : new RegExp("' . $design->getSkinUrl('') . '([^\\\\s\\"\');]*)", "g"),
                             decode : function(c) {
                                 var skinUrlRE = this._decodeRegEx;
-                                return c.replace(skinUrlRE, "' . Mage::getDesign()->getSkinUrl('', array('_area' => 'frontend', '_package' => $package, '_theme' => $theme)) . '$1");
+                                return c.replace(skinUrlRE, "' . $design->getSkinUrl('') . '$1");
                             },
                             encode : function(c) {
                                 var skinUrlRE = this._encodeRegEx;

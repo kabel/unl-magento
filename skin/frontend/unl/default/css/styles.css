@@ -673,6 +673,7 @@ a.minimal-price-link .price { font-weight:normal; }
 
 /* Mini Search */
 #search_mini_form { text-align: right; }
+#search_mini_form input.input-text { width: 200px; }
 #search_mini_form button { width: 20px; height: 20px; text-indent: -9999em; background: transparent url(../images/magnifyingGlass.png) no-repeat scroll 0 0; }
 #search_mini_form button span { display: none; }
 
@@ -787,6 +788,7 @@ a.minimal-price-link .price { font-weight:normal; }
 .add-gift-message {}
 .gift-message-form { border:1px solid #ddd; background-color:#f5f5f5; }
 .gift-message-form .inner-box { padding:5px; height:300px; overflow:auto; }
+#maincontent .gift-message-form ol, #maincontent .gift-message-form ul { list-style: none; padding: 0; }
 .gift-message-form .gift-item {}
 
 .gift-message-link { display:block; background:url(../images/bg_collapse.gif) 0 4px no-repeat; padding-left:20px; }
