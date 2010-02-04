@@ -149,13 +149,19 @@ Bundle.Option.prototype = {
                 }
             );
             /**
-             * Hide not needed elements (user defined qty select box)
+             * Hide/Show (user defined qty select box)
              */
+            inputs = $A($$('#' + bSelection.idLabel + '_box_' + i + ' .qty-box'));
             if (element.value == 'multi') { 
-                inputs = $A($$('#' + bSelection.idLabel + '_box_' + i + ' .qty-box'));
                 inputs.each(
                     function(elem){
                         elem.hide();
+                    }
+                );
+            } else {
+            	inputs.each(
+                    function(elem){
+                        elem.show();
                     }
                 );
             }

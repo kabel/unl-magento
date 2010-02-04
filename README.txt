@@ -29,6 +29,8 @@ There are two configration settings for the theme to work:
 System>Configuration>Design
 Package:Current Package Name:unl
 
+In order to help the JavaScript Proxy the /path/to/mageno/js/index.php file should have lines 77-79 commented out to prevent issues that arise from the symlinks.
+
 For a production server the configuration settings for "Web", "Store Email Addresses", "Contacts", "Catalog", "Inventory", "Sales", "Shipping ...", and "Payment ..." will need to be set to match the business practices.
 
 For help on general design and configuration refer to the documentation provided by Varien at http://www.magentocommerce.com/

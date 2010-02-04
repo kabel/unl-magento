@@ -24,8 +24,6 @@
                     <catalog_category_tree>Unl_Core_Block_Adminhtml_Catalog_Category_Tree</catalog_category_tree>
                     <catalog_product>Unl_Core_Block_Adminhtml_Catalog_Product</catalog_product>
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
-                    <cms_block_edit_form>Unl_Core_Block_Adminhtml_Cms_Block_Edit_Form</cms_block_edit_form>
-                    <cms_page_edit_tab_main>Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Main</cms_page_edit_tab_main>
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
                     <dashboard_tab_products_ordered>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Ordered</dashboard_tab_products_ordered>
@@ -33,16 +31,13 @@
                     <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
                     <newsletter_template_edit_form>Unl_Core_Block_Adminhtml_Newsletter_Template_Edit_Form</newsletter_template_edit_form>
-                    <page_header>Unl_Core_Block_Adminhtml_Page_Header</page_header>
                     <permissions_user_edit_tab_main>Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Main</permissions_user_edit_tab_main>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
-                    <system_email_template_edit_form>Unl_Core_Block_Adminhtml_System_Email_Template_Edit_Form</system_email_template_edit_form>
                 </rewrite>
             </adminhtml>
              <bundle>
+                <!-- Fix Price Display when +$0.00 -->
                 <rewrite>
-                    <adminhtml_catalog_product_edit_tab_bundle_option>Unl_Core_Block_Bundle_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option</adminhtml_catalog_product_edit_tab_bundle_option>
-                    <adminhtml_catalog_product_edit_tab_bundle_option_selection>Unl_Core_Block_Bundle_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Selection</adminhtml_catalog_product_edit_tab_bundle_option_selection>
                     <catalog_product_view_type_bundle_option_checkbox>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Checkbox</catalog_product_view_type_bundle_option_checkbox>
                     <catalog_product_view_type_bundle_option_multi>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Multi</catalog_product_view_type_bundle_option_multi>
                     <catalog_product_view_type_bundle_option_radio>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Radio</catalog_product_view_type_bundle_option_radio>
@@ -94,11 +89,6 @@
                     </tax_boundary>
                 </entities>
             </unl_core_mysql4>
-            <admin>
-                <rewrite>
-                    <user>Unl_Core_Model_Admin_User</user>
-                </rewrite>
-            </admin>
             <bundle>
                 <rewrite>
                     <product_type>Unl_Core_Model_Bundle_Product_Type</product_type>
@@ -186,6 +176,33 @@
     
     <adminhtml>
         <events>
+            <admin_user_save_before>
+                <observers>
+                    <save_store>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>beforeUserSave</method>
+                    </save_store>
+                </observers>
+            </admin_user_save_before>
+            <adminhtml_block_html_before>
+                <observers>
+                    <wysiwyg_setup>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>setupWysiwyg</method>
+                    </wysiwyg_setup>
+                </observers>
+            </adminhtml_block_html_before>
+            <adminhtml_catalog_product_edit_prepare_form>
+                <observers>
+                    <wysiwyg_descriptions>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>descriptionWysiwyg</method>
+                    </wysiwyg_descriptions>
+                </observers>
+            </adminhtml_catalog_product_edit_prepare_form>
             <controller_action_predispatch_adminhtml_catalog_category_edit>
 		        <observers>
 		            <category_auth>

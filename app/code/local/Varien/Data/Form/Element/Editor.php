@@ -32,7 +32,7 @@
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
-{
+{   
     public function __construct($attributes=array())
     {
         parent::__construct($attributes);
@@ -56,7 +56,7 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
             $wrapper = str_replace(array("\r\n", "\r", "\n"), '', addslashes($wrapper));
             $wrapper = explode('{0}', $wrapper);*/
             
-            $element = ($this->getState() == 'html') ? '' : $this->getHtmlId();
+            $element = $this->getHtmlId();
             
             /* @var $design Mage_Core_Model_Design_Package */
             $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
@@ -68,8 +68,7 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
             );
 
             $html = '
-                <textarea style="height: 500px" name="'.$this->getName().'" title="'.$this->getTitle().'" id="'.$this->getHtmlId().'" class="textarea '.$this->getClass().'" '.$this->serialize($this->getHtmlAttributes()).' >'.$this->getEscapedValue().'</textarea>
-                <script type="text/javascript" src="' . Mage::getBaseUrl('js') . 'tiny_mce/tiny_mce.js"></script>
+                <textarea name="'.$this->getName().'" title="'.$this->getTitle().'" id="'.$this->getHtmlId().'" class="textarea '.$this->getClass().'" '.$this->serialize($this->getHtmlAttributes()).' >'.$this->getEscapedValue().'</textarea>
                 <script type="text/javascript">
                 //<![CDATA[
                 Event.observe(window, "load", function() {
@@ -83,8 +82,8 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
                         body_class : "fixed",
                         plugins : "safari,style,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
                         theme_advanced_blockformats : "p,div,h1,h2,h3,h4,h5,h6,address,pre,code",
-                        plugin_preview_pageurl : "' . $design->getSkinUrl('include/preview.shtml') . '",
-                        plugin_preview_width : "800",
+                        ' . (!$this->getData('disable_css') ? 'plugin_preview_pageurl : "' . $design->getSkinUrl('include/preview.shtml') . '",' : '') .
+                        'plugin_preview_width : "800",
                         plugin_preview_height : "600",
                         VarienTemplates : {
                             _decodeRegEx : new RegExp("\\{\\{skin url=[\'\\"]([^\'\\"]*)[\'\\"]\\}\\}", "g"),
@@ -113,7 +112,7 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
                         },
                         
                         //CSS
-                        ' . (!$this->getData('disableCss') ? 'content_css: "' . implode(',', $css) . '",' : '') . '
+                        ' . (!$this->getData('disable_css') ? 'content_css: "' . implode(',', $css) . '",' : '') . '
                         
                         //Theme options
                         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
@@ -126,20 +125,13 @@ class Varien_Data_Form_Element_Editor extends Varien_Data_Form_Element_Textarea
                         theme_advanced_resizing : true,
                         
                         //Cleanup options
-                        extended_valid_elements : "' . ($this->getData('disableCss') ? 'style[type]' : '') . '",
+                        extended_valid_elements : "' . ($this->getData('disable_css') ? 'style[type],' : '') . 'div[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|onmousedown|onmouseup|onmouseover|onmousemove|onmouseout|onkeypress|onkeydown|onkeyup]",
                         convert_urls : false,
                         doctype : \'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\'
                     });
                 });
                 //]]>
                 </script>';
-
-                /*plugins : "inlinepopups,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,zoom,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
-                theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-                theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
-                theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
-                theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking"*/
-
             $html.= $this->getAfterElementHtml();
             return $html;
         }

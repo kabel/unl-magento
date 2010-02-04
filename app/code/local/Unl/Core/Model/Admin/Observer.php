@@ -1,9 +1,15 @@
 <?php
 
-
 class Unl_Core_Model_Admin_Observer
 {
-    public function setStoreParamFromUser($event)
+    public function beforeUserSave($observer)
+    {
+        $user = $observer->getEvent()->getObject();
+        /* @var $user Mage_Admin_Model_User */
+        $user->setData(($user->getStore() == '') ? null : $user->getStore());
+    }
+    
+    public function setStoreParamFromUser($observer)
     {
         $session  = Mage::getSingleton('admin/session');
         /* @var $session Mage_Admin_Model_Session */
@@ -15,7 +21,7 @@ class Unl_Core_Model_Admin_Observer
         }
     }
     
-    public function catalogProductEditActionPreDispatch($event)
+    public function catalogProductEditActionPreDispatch($observer)
     {
         $session  = Mage::getSingleton('admin/session');
         /* @var $session Mage_Admin_Model_Session */
