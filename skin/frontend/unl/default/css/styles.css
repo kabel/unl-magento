@@ -833,7 +833,7 @@ a.minimal-price-link .price { font-weight:normal; }
 
 /* Order View */
 .order-info {}
-#maincontent div.order-info ul { padding: 0 5px; text-align:center; list-style: none; }
+#maincontent div.order-info ul { padding: 0 5px !important; text-align:center; list-style: none; }
 #maincontent div.order-info.zenbox ul li { border: none; }
 #maincontent .order-info ul li { height: 84px; width: 96px; float: left; overflow: hidden; }
 .order-info ul li.current { background-color: #ddd; }
