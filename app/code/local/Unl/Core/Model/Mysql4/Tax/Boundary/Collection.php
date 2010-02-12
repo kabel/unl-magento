@@ -1021,7 +1021,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
         $select = $this->getSelect()->where('record_type = ?', 'A')
             ->where('NOW() BETWEEN begin_date AND end_date')
             ->where('? BETWEEN low_address_range AND high_address_range', $search['address'])
-            ->where('street_name = ?', implode(' ', $search['street_name']));
+            ->where('street_name LIKE ?', implode(' ', $search['street_name']) . '%');
             
         if ($zipInstead) {
             $select->where('zip_code = ?', $address->getPostcode());

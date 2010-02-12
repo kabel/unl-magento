@@ -5,8 +5,20 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid extends Mage_Adminhtml_Bloc
     protected function _prepareColumns()
     {
         $this->addColumn('code', array(
-            'header'    =>Mage::helper('reports')->__('Tax'),
+            'header'    =>Mage::helper('reports')->__('Tax Code'),
             'index'     =>'code',
+            'type'      =>'string'
+        ));
+        
+        $this->addColumn('city', array(
+            'header'    =>Mage::helper('reports')->__('City'),
+            'index'     =>'city',
+            'type'      =>'string'
+        ));
+        
+        $this->addColumn('county', array(
+            'header'    =>Mage::helper('reports')->__('County'),
+            'index'     =>'county',
             'type'      =>'string'
         ));
         

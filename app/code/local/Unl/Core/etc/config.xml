@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.5</version>
+            <version>0.1.7</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -21,17 +21,12 @@
         <blocks>
             <adminhtml>
                 <rewrite>
-                    <catalog_category_tree>Unl_Core_Block_Adminhtml_Catalog_Category_Tree</catalog_category_tree>
-                    <catalog_product>Unl_Core_Block_Adminhtml_Catalog_Product</catalog_product>
-                    <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
                     <dashboard_tab_products_ordered>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Ordered</dashboard_tab_products_ordered>
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
                     <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
-                    <newsletter_template_edit_form>Unl_Core_Block_Adminhtml_Newsletter_Template_Edit_Form</newsletter_template_edit_form>
-                    <permissions_user_edit_tab_main>Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Main</permissions_user_edit_tab_main>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
                 </rewrite>
             </adminhtml>
@@ -42,6 +37,7 @@
                     <catalog_product_view_type_bundle_option_multi>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Multi</catalog_product_view_type_bundle_option_multi>
                     <catalog_product_view_type_bundle_option_radio>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Radio</catalog_product_view_type_bundle_option_radio>
                     <catalog_product_view_type_bundle_option_select>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Select</catalog_product_view_type_bundle_option_select>
+                    <checkout_cart_item_renderer>Unl_Core_Block_Bundle_Checkout_Cart_Item_Renderer</checkout_cart_item_renderer>
                 </rewrite>
              </bundle>
             <catalog>
@@ -55,11 +51,6 @@
                     <links>Unl_Core_Block_Checkout_Links</links>
                 </rewrite>
             </checkout>
-            <cms>
-                <rewrite>
-                    <page>Unl_Core_Block_Cms_Page</page>
-                </rewrite>
-            </cms>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
@@ -90,32 +81,43 @@
                 </entities>
             </unl_core_mysql4>
             <bundle>
+                <!-- User Defined Qty for Checkbox Bundle Option -->
                 <rewrite>
                     <product_type>Unl_Core_Model_Bundle_Product_Type</product_type>
                 </rewrite>
             </bundle>
             <catalog>
+                <!-- Allow product import of configs/upsells/related -->
                 <rewrite>
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
                 </rewrite>
             </catalog>
             <core>
+                <!-- Allow locale templates in Design -->
                 <rewrite>
                     <translate>Unl_Core_Model_Core_Translate</translate>
                 </rewrite>
             </core>
             <reports_mysql4>
+                <!-- Nebraska Tax and Store Owned Products -->
                 <rewrite>
                     <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
                     <tax_collection>Unl_Core_Model_Reports_Mysql4_Tax_Collection</tax_collection>
                 </rewrite>
             </reports_mysql4>
+            <sales>
+                <!-- Adds the total product amount applied to the tax rate -->
+                <rewrite>
+                    <quote_address_total_tax>Unl_Core_Model_Sales_Quote_Address_Total_Tax</quote_address_total_tax>
+                </rewrite>
+            </sales>
             <tax>
                 <rewrite>
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
                 </rewrite>
             </tax>
             <tax_mysql4>
+                <!-- Tax report fix -->
                 <rewrite>
                     <calculation>Unl_Core_Model_Tax_Mysql4_Calculation</calculation>
                 </rewrite>
@@ -159,6 +161,15 @@
                     </source_store_set>
                 </observers>
             </sales_quote_item_set_product>
+            <sales_order_save_after>
+                <observers>
+                    <tax>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>salesEventOrderAfterSave</method>
+                    </tax>
+                </observers>
+            </sales_order_save_after>
         </events>
     </global>
     
@@ -187,13 +198,22 @@
             </admin_user_save_before>
             <adminhtml_block_html_before>
                 <observers>
-                    <wysiwyg_setup>
+                    <correct_admin_blocks>
                         <type>singleton</type>
                         <class>unl_core/observer</class>
-                        <method>setupWysiwyg</method>
-                    </wysiwyg_setup>
+                        <method>correctAdminBlocks</method>
+                    </correct_admin_blocks>
                 </observers>
             </adminhtml_block_html_before>
+            <adminhtml_catalog_category_tree_can_add_root_category>
+                <observers>
+                    <add_root_acl>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>isAllowedAddRootCategory</method>
+                    </add_root_acl>
+                </observers>
+            </adminhtml_catalog_category_tree_can_add_root_category>
             <adminhtml_catalog_product_edit_prepare_form>
                 <observers>
                     <wysiwyg_descriptions>
@@ -230,6 +250,24 @@
                     </category_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_categories>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <unlcore_before_block_to_html>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>beforeCoreBlockToHtml</method>
+                    </unlcore_before_block_to_html>
+                </observers>
+            </core_block_abstract_to_html_before>
+            <eav_collection_abstract_load_before>
+                <observers>
+                    <unlcore_before_eav_collection_load>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>beforeEavCollectionLoad</method>
+                    </unlcore_before_eav_collection_load>
+                </observers>
+            </eav_collection_abstract_load_before>
         </events>
         
         <menu>

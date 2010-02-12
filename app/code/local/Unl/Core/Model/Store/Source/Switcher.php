@@ -1,4 +1,4 @@
-   <?php
+<?php
 
 class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
 {
@@ -67,6 +67,11 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
         }
         
         return false;
+    }
+    
+    public function getOptionArray()
+    {
+        return $this->getAllOptions(false);
     }
     
     public function toOptionArray()

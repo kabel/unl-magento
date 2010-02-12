@@ -1,0 +1,34 @@
+<?php /* @var $this Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Scope */ ?>
+<?php echo $this->getChildHtml(); ?>
+
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('User Scope') ?></h4>
+    </div>
+    <fieldset id="user_scope">
+
+        <div class="field-row">
+            <label for="all"><?php echo $this->__('User Scope') ?></label>
+            <select id="all" name="all" onchange="$('scope_container').toggle()" class="select">
+                <option value="0" <?php echo ($this->getEverythingAllowed()?'':'selected="selected"'); ?>><?php echo $this->__('Custom') ?></option>
+                <option value="1" <?php echo ($this->getEverythingAllowed()?'selected="selected"':''); ?>><?php echo $this->__('All') ?></option>
+            </select>
+        </div>
+
+        <div class="field-row" id="scope_container"<?php if ($this->getEverythingAllowed()): ?> style="display: none;"<?php endif; ?>>
+            <label>&nbsp;</label>
+            <div class="f-left" style="line-height: 2em;">
+                <small>If no stores are selected, scope will be set to 'All'.</small>
+                <dl>
+                <?php foreach ($this->getWebsiteCollection() as $_website): ?>
+                    <dt><?php echo $this->htmlEscape($_website->getName()) ?></dt>
+                    <?php foreach ($this->getGroupCollection($_website) as $_group): ?>
+                    <dd style="padding-left: 20px"><label style="width: auto; float: none;"><input type="checkbox" name="scope[]"<?php if ($this->isGroupSelected($_group)): ?> checked="checked"<?php endif; ?> value="<?php echo $this->getSelectionValue($_group) ?>" /> <?php echo $this->htmlEscape($_group->getName()) ?></label></dd>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+                </dl>
+            </div>
+        </div>
+
+    </fieldset>
+</div>

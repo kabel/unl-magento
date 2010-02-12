@@ -5,6 +5,6 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->getConnection()->addColumn($this->getTable('admin/user'), 'store', 'int(10) unsigned default NULL');
+$installer->getConnection()->addColumn($this->getTable('admin/user'), 'scope', 'text default NULL');
 
 $installer->endSetup();

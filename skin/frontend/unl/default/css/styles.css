@@ -719,7 +719,7 @@ a.minimal-price-link .price { font-weight:normal; }
 .cart .shipping {}
 
 /* Shopping Cart Totals */
-.cart .totals { float:right; }
+.cart .totals { float:right; width: 220px; }
 .cart .totals table { width:100%; }
 .cart .totals table th,
 .cart .totals table td { padding:5px; }
