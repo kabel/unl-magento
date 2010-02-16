@@ -5,7 +5,7 @@ The 1.3 branch of magento is NOT compatible with PHP 5.3 and there are some secu
 A patch ( magento1.3.patch ) has been included to run in the magento project space to correct these various issues.
 
 cd /path/to/magento
-patch < /path/to/unl-magento/magento1.3.patch
+patch -p0 < /path/to/unl-magento/magento1.3.patch
 
 
 [magento] : http://svn.magentocommerce.com/source/branches/1.3
