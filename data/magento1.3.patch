@@ -1,0 +1,478 @@
+Index: .htaccess
+===================================================================
+--- .htaccess	(revision 54749)
++++ .htaccess	(working copy)
+@@ -32,8 +32,10 @@
+ ## adjust memory limit
+ 
+ #    php_value memory_limit 64M
+-    php_value memory_limit 128M
++    php_value memory_limit 1024M
+     php_value max_execution_time 18000
++    php_value post_max_size 16M
++    php_value upload_max_filesize 10M
+ 
+ ############################################
+ ## disable magic quotes for php request vars
+Index: app/code/core/Mage/Admin/Model/User.php
+===================================================================
+--- app/code/core/Mage/Admin/Model/User.php	(revision 54749)
++++ app/code/core/Mage/Admin/Model/User.php	(working copy)
+@@ -371,7 +371,7 @@
+         $startupPage = Mage::getStoreConfig(self::XML_PATH_STARTUP_PAGE);
+         $aclResource = 'admin/' . $startupPage;
+         if (Mage::getSingleton('admin/session')->isAllowed($aclResource)) {
+-            $nodePath = 'adminhtml/menu/' . join('/children/', split('/', $startupPage)) . '/action';
++            $nodePath = 'adminhtml/menu/' . join('/children/', explode('/', $startupPage)) . '/action';
+             if ($url = Mage::getConfig()->getNode($nodePath)) {
+                 return $url;
+             }
+Index: app/code/core/Mage/Adminhtml/Model/Observer.php
+===================================================================
+--- app/code/core/Mage/Adminhtml/Model/Observer.php	(revision 54749)
++++ app/code/core/Mage/Adminhtml/Model/Observer.php	(working copy)
+@@ -60,7 +60,7 @@
+     {
+         $request = Mage::app()->getFrontController()->getRequest();
+         if ($key = $request->getPost('massaction_prepare_key')) {
+-            $value = is_array($request->getPost($key)) ? $request->getPost($key) : split(',', $request->getPost($key));
++            $value = is_array($request->getPost($key)) ? $request->getPost($key) : explode(',', $request->getPost($key));
+             $request->setPost($key, $value ? $value : null);
+         }
+         return $this;
+Index: app/code/core/Mage/Adminhtml/Model/System/Config/Backend/Locale.php
+===================================================================
+--- app/code/core/Mage/Adminhtml/Model/System/Config/Backend/Locale.php	(revision 54749)
++++ app/code/core/Mage/Adminhtml/Model/System/Config/Backend/Locale.php	(working copy)
+@@ -46,7 +46,7 @@
+             ->getCollection()
+             ->addPathFilter('currency/options');
+ 
+-        $values     = split(',', $this->getValue());
++        $values     = explode(',', $this->getValue());
+         $exceptions = array();
+         foreach ($collection as $data) {
+             $match = false;
+Index: app/code/core/Mage/Adminhtml/Model/System/Config/Backend/Currency/Abstract.php
+===================================================================
+--- app/code/core/Mage/Adminhtml/Model/System/Config/Backend/Currency/Abstract.php	(revision 54749)
++++ app/code/core/Mage/Adminhtml/Model/System/Config/Backend/Currency/Abstract.php	(working copy)
+@@ -44,7 +44,7 @@
+     protected function _getAllowedCurrencies()
+     {
+         if ($this->getData('groups/options/fields/allow/inherit')) {
+-            return split(',', Mage::getConfig()->getNode('currency/options/allow', $this->getScope(), $this->getScopeId()));
++            return explode(',', Mage::getConfig()->getNode('currency/options/allow', $this->getScope(), $this->getScopeId()));
+         }
+         return $this->getData('groups/options/fields/allow/value');
+     }
+@@ -56,7 +56,7 @@
+      */
+     protected function _getInstalledCurrencies()
+     {
+-        return split(',', Mage::getStoreConfig('system/currency/installed'));
++        return explode(',', Mage::getStoreConfig('system/currency/installed'));
+     }
+ 
+     /**
+Index: app/code/core/Mage/Adminhtml/controllers/System/ConfigController.php
+===================================================================
+--- app/code/core/Mage/Adminhtml/controllers/System/ConfigController.php	(revision 54749)
++++ app/code/core/Mage/Adminhtml/controllers/System/ConfigController.php	(working copy)
+@@ -151,7 +151,7 @@
+             $session->addSuccess(Mage::helper('adminhtml')->__('Configuration successfully saved'));
+         }
+         catch (Mage_Core_Exception $e) {
+-            foreach(split("\n", $e->getMessage()) as $message) {
++            foreach(explode("\n", $e->getMessage()) as $message) {
+                 $session->addError($message);
+             }
+         }
+Index: app/code/core/Mage/Bundle/sql/bundle_setup/mysql4-install-0.1.0.php
+===================================================================
+--- app/code/core/Mage/Bundle/sql/bundle_setup/mysql4-install-0.1.0.php	(revision 54749)
++++ app/code/core/Mage/Bundle/sql/bundle_setup/mysql4-install-0.1.0.php	(working copy)
+@@ -159,7 +159,7 @@
+ $fieldList = array('price','special_price','special_from_date','special_to_date',
+     'minimal_price','cost','tier_price','weight','tax_class_id');
+ foreach ($fieldList as $field) {
+-    $applyTo = split(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
++    $applyTo = explode(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
+     if (!in_array('bundle', $applyTo)) {
+         $applyTo[] = 'bundle';
+         $installer->updateAttribute('catalog_product', $field, 'apply_to', join(',', $applyTo));
+Index: app/code/core/Mage/Catalog/Model/Category.php
+===================================================================
+--- app/code/core/Mage/Catalog/Model/Category.php	(revision 54749)
++++ app/code/core/Mage/Catalog/Model/Category.php	(working copy)
+@@ -762,7 +762,7 @@
+             return array();
+         }
+         if ($available && !is_array($available)) {
+-            $available = split(',', $available);
++            $available = explode(',', $available);
+         }
+         return $available;
+     }
+Index: app/code/core/Mage/Catalog/Model/Category/Attribute/Backend/Sortby.php
+===================================================================
+--- app/code/core/Mage/Catalog/Model/Category/Attribute/Backend/Sortby.php	(revision 54749)
++++ app/code/core/Mage/Catalog/Model/Category/Attribute/Backend/Sortby.php	(working copy)
+@@ -51,7 +51,7 @@
+         if ($attributeCode == 'default_sort_by') {
+             if ($available = $object->getData('available_sort_by')) {
+                 if (!is_array($available)) {
+-                    $available = split(',', $available);
++                    $available = explode(',', $available);
+                 }
+                 if (!in_array($object->getData($attributeCode), $available)) {
+                     Mage::throwException(Mage::helper('eav')->__('Default Product Listing Sort by not exists on Available Product Listing Sort by'));
+@@ -85,7 +85,7 @@
+         if ($attributeCode == 'available_sort_by') {
+             $data = $object->getData($attributeCode);
+             if ($data) {
+-                $object->setData($attributeCode, split(',', $data));
++                $object->setData($attributeCode, explode(',', $data));
+             }
+         }
+         return $this;
+Index: app/code/core/Mage/Catalog/Model/Convert/Adapter/Product.php
+===================================================================
+--- app/code/core/Mage/Catalog/Model/Convert/Adapter/Product.php	(revision 54749)
++++ app/code/core/Mage/Catalog/Model/Convert/Adapter/Product.php	(working copy)
+@@ -599,7 +599,7 @@
+             if (!is_array($websiteIds)) {
+                 $websiteIds = array();
+             }
+-            $websiteCodes = split(',', $importData['websites']);
++            $websiteCodes = explode(',', $importData['websites']);
+             foreach ($websiteCodes as $websiteCode) {
+                 try {
+                     $website = Mage::app()->getWebsite(trim($websiteCode));
+@@ -630,7 +630,7 @@
+             $setValue = $value;
+ 
+             if ($attribute->getFrontendInput() == 'multiselect') {
+-                $value = split(self::MULTI_DELIMITER, $value);
++                $value = explode(self::MULTI_DELIMITER, $value);
+                 $isArray = true;
+                 $setValue = array();
+             }
+Index: app/code/core/Mage/Catalog/Model/Resource/Eav/Mysql4/Url.php
+===================================================================
+--- app/code/core/Mage/Catalog/Model/Resource/Eav/Mysql4/Url.php	(revision 54749)
++++ app/code/core/Mage/Catalog/Model/Resource/Eav/Mysql4/Url.php	(working copy)
+@@ -499,7 +499,7 @@
+     protected function _prepareCategoryParentId(Varien_Object $category)
+     {
+         if ($category->getPath() != $category->getId()) {
+-            $split = split('/', $category->getPath());
++            $split = explode('/', $category->getPath());
+             $category->setParentId($split[(count($split) - 2)]);
+         }
+         else {
+@@ -707,7 +707,7 @@
+         while ($row = $query->fetch()) {
+             $product = new Varien_Object($row);
+             $product->setIdFieldName('entity_id');
+-            $product->setCategoryIds(split(',', $product->getCategoryIds()));
++            $product->setCategoryIds(explode(',', $product->getCategoryIds()));
+             $products[$product->getId()] = $product;
+             $lastEntityId = $product->getId();
+         }
+Index: app/code/core/Mage/Catalog/sql/catalog_setup/mysql4-upgrade-0.7.39-0.7.40.php
+===================================================================
+--- app/code/core/Mage/Catalog/sql/catalog_setup/mysql4-upgrade-0.7.39-0.7.40.php	(revision 54749)
++++ app/code/core/Mage/Catalog/sql/catalog_setup/mysql4-upgrade-0.7.39-0.7.40.php	(working copy)
+@@ -32,7 +32,7 @@
+ $fieldList = array('price','special_price','special_from_date','special_to_date',
+     'minimal_price','cost','tier_price');
+ foreach ($fieldList as $field) {
+-    $applyTo = split(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
++    $applyTo = explode(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
+     if (!in_array('virtual', $applyTo)) {
+         $applyTo[] = 'virtual';
+         $installer->updateAttribute('catalog_product', $field, 'apply_to', join(',', $applyTo));
+Index: app/code/core/Mage/CatalogIndex/Model/Aggregation.php
+===================================================================
+--- app/code/core/Mage/CatalogIndex/Model/Aggregation.php	(revision 54749)
++++ app/code/core/Mage/CatalogIndex/Model/Aggregation.php	(working copy)
+@@ -151,11 +151,11 @@
+     {
+         $newTags = array();
+         foreach ($tags as $tag) {
+-            $tagInfo = split(':', $tag);
++            $tagInfo = explode(':', $tag);
+             if (count($tagInfo)==1) {
+                 $newTags[] = $tagInfo[0];
+             } else {
+-                $tagVariants = split('/', $tagInfo[1]);
++                $tagVariants = explode('/', $tagInfo[1]);
+                 foreach ($tagVariants as $tagVariant) {
+                     $newTags[] = $tagInfo[0] . $tagVariant;
+                 }
+Index: app/code/core/Mage/CatalogRule/Model/Rule/Condition/Product.php
+===================================================================
+--- app/code/core/Mage/CatalogRule/Model/Rule/Condition/Product.php	(revision 54749)
++++ app/code/core/Mage/CatalogRule/Model/Rule/Condition/Product.php	(working copy)
+@@ -358,7 +358,7 @@
+             if (!strlen($value)) {
+                 $value = array();
+             } else {
+-                $value = split(',', $value);
++                $value = explode(',', $value);
+             }
+             return $this->validateAttribute($value);
+         }
+Index: app/code/core/Mage/CatalogRule/sql/catalogrule_setup/mysql4-upgrade-0.7.1-0.7.2.php
+===================================================================
+--- app/code/core/Mage/CatalogRule/sql/catalogrule_setup/mysql4-upgrade-0.7.1-0.7.2.php	(revision 54749)
++++ app/code/core/Mage/CatalogRule/sql/catalogrule_setup/mysql4-upgrade-0.7.1-0.7.2.php	(working copy)
+@@ -41,7 +41,7 @@
+ 
+     foreach ($rows as $r) {
+         $websiteIds = array();
+-        foreach (split(',', $r['store_ids']) as $storeId) {
++        foreach (explode(',', $r['store_ids']) as $storeId) {
+             if (($storeId!=='') && isset($websites[$storeId])) {
+                 $websiteIds[$websites[$storeId]] = true;
+             }
+Index: app/code/core/Mage/Core/Controller/Request/Http.php
+===================================================================
+--- app/code/core/Mage/Core/Controller/Request/Http.php	(revision 54749)
++++ app/code/core/Mage/Core/Controller/Request/Http.php	(working copy)
+@@ -271,7 +271,7 @@
+             return false;
+         }
+         if ($trimPort) {
+-            $host = split(':', $_SERVER['HTTP_HOST']);
++            $host = explode(':', $_SERVER['HTTP_HOST']);
+             return $host[0];
+         }
+         return $_SERVER['HTTP_HOST'];
+Index: app/code/core/Mage/Customer/Model/Convert/Adapter/Customer.php
+===================================================================
+--- app/code/core/Mage/Customer/Model/Convert/Adapter/Customer.php	(revision 54749)
++++ app/code/core/Mage/Customer/Model/Convert/Adapter/Customer.php	(working copy)
+@@ -497,7 +497,7 @@
+             $setValue = $value;
+ 
+             if ($attribute->getFrontendInput() == 'multiselect') {
+-                $value = split(self::MULTI_DELIMITER, $value);
++                $value = explode(self::MULTI_DELIMITER, $value);
+                 $isArray = true;
+                 $setValue = array();
+             }
+Index: app/code/core/Mage/Downloadable/Helper/Download.php
+===================================================================
+--- app/code/core/Mage/Downloadable/Helper/Download.php	(revision 54749)
++++ app/code/core/Mage/Downloadable/Helper/Download.php	(working copy)
+@@ -207,7 +207,7 @@
+         }
+         elseif ($this->_linkType == self::LINK_TYPE_URL) {
+             if (isset($this->_urlHeaders['content-type'])) {
+-                $contentType = split('; ', $this->_urlHeaders['content-type']);
++                $contentType = explode('; ', $this->_urlHeaders['content-type']);
+                 return $contentType[0];
+             }
+         }
+@@ -222,7 +222,7 @@
+         }
+         elseif ($this->_linkType == self::LINK_TYPE_URL) {
+             if (isset($this->_urlHeaders['content-disposition'])) {
+-                $contentDisposition = split('; ', $this->_urlHeaders['content-disposition']);
++                $contentDisposition = explode('; ', $this->_urlHeaders['content-disposition']);
+                 if (!empty($contentDisposition[1]) && strpos($contentDisposition[1], 'filename=') !== false) {
+                     return substr($contentDisposition[1], 9);
+                 }
+Index: app/code/core/Mage/Downloadable/sql/downloadable_setup/mysql4-install-0.1.0.php
+===================================================================
+--- app/code/core/Mage/Downloadable/sql/downloadable_setup/mysql4-install-0.1.0.php	(revision 54749)
++++ app/code/core/Mage/Downloadable/sql/downloadable_setup/mysql4-install-0.1.0.php	(working copy)
+@@ -43,7 +43,7 @@
+ 
+ // make these attributes applicable to downloadable products
+ foreach ($fieldList as $field) {
+-    $applyTo = split(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
++    $applyTo = explode(',', $installer->getAttribute('catalog_product', $field, 'apply_to'));
+     if (!in_array('downloadable', $applyTo)) {
+         $applyTo[] = 'downloadable';
+         $installer->updateAttribute('catalog_product', $field, 'apply_to', join(',', $applyTo));
+Index: app/code/core/Mage/Downloadable/sql/downloadable_setup/mysql4-upgrade-0.1.0-0.1.1.php
+===================================================================
+--- app/code/core/Mage/Downloadable/sql/downloadable_setup/mysql4-upgrade-0.1.0-0.1.1.php	(revision 54749)
++++ app/code/core/Mage/Downloadable/sql/downloadable_setup/mysql4-upgrade-0.1.0-0.1.1.php	(working copy)
+@@ -29,7 +29,7 @@
+ 
+ $installer->startSetup();
+ // make attribute 'weight' not applicable to downloadable products
+-$applyTo = split(',', $installer->getAttribute('catalog_product', 'weight', 'apply_to'));
++$applyTo = explode(',', $installer->getAttribute('catalog_product', 'weight', 'apply_to'));
+ if (in_array('downloadable', $applyTo)) {
+     $newApplyTo = array();
+     foreach ($applyTo as $key=>$value) {
+Index: app/code/core/Mage/Eav/Model/Convert/Adapter/Entity.php
+===================================================================
+--- app/code/core/Mage/Eav/Model/Convert/Adapter/Entity.php	(revision 54749)
++++ app/code/core/Mage/Eav/Model/Convert/Adapter/Entity.php	(working copy)
+@@ -104,7 +104,7 @@
+             if ($type == 'dateFromTo' || $type == 'datetimeFromTo') {
+                 foreach ($filters as $k => $v) {
+                     if (strpos($k, $key . '/') === 0) {
+-                        $split = split('/', $k);
++                        $split = explode('/', $k);
+                         $filters[$key][$split[1]] = $v;
+                     }
+                 }
+Index: app/code/core/Mage/Sales/Model/Order/Pdf/Abstract.php
+===================================================================
+--- app/code/core/Mage/Sales/Model/Order/Pdf/Abstract.php	(revision 54749)
++++ app/code/core/Mage/Sales/Model/Order/Pdf/Abstract.php	(working copy)
+@@ -166,7 +166,7 @@
+     protected function _formatAddress($address)
+     {
+         $return = array();
+-        foreach (split('\|', $address) as $str) {
++        foreach (explode('|', $address) as $str) {
+             foreach (Mage::helper('core/string')->str_split($str, 65, true, true) as $part) {
+                 if (empty($part)) {
+                     continue;
+Index: downloader/pearlib/php/OS/Guess.php
+===================================================================
+--- downloader/pearlib/php/OS/Guess.php	(revision 54749)
++++ downloader/pearlib/php/OS/Guess.php	(working copy)
+@@ -128,7 +128,7 @@
+         if ($uname === null) {
+             $uname = php_uname();
+         }
+-        $parts = split('[[:space:]]+', trim($uname));
++        $parts = preg_split('/\s+/', trim($uname));
+         $n = count($parts);
+ 
+         $release = $machine = $cpu = '';
+Index: js/index.php
+===================================================================
+--- js/index.php	(revision 54749)
++++ js/index.php	(working copy)
+@@ -74,7 +74,7 @@
+ foreach ($files as $f) {
+     $fileRealPath = realpath($f);
+     // check file path (security)
+-    if (strpos($fileRealPath, realpath(dirname(__FILE__))) !== 0) {
++    if (strpos($fileRealPath, realpath(dirname(__FILE__))) !== 0 && strpos($fileRealPath, realpath(dirname(__FILE__).'/tiny_mce')) !== 0) {
+         continue;
+     }
+ 
+Index: lib/PEAR/SOAP/Parser.php
+===================================================================
+--- lib/PEAR/SOAP/Parser.php	(revision 54749)
++++ lib/PEAR/SOAP/Parser.php	(working copy)
+@@ -378,7 +378,7 @@
+                 $this->message[$pos]['arrayType'] = $vqn->name;
+ 
+             } elseif ($kqn->name == 'offset') {
+-                $this->message[$pos]['arrayOffset'] = split(',', substr($value, 1, strlen($value) - 2));
++                $this->message[$pos]['arrayOffset'] = explode(',', substr($value, 1, strlen($value) - 2));
+ 
+             } elseif ($kqn->name == 'id') {
+                 // Save id to reference array.
+Index: lib/PEAR/SOAP/WSDL.php
+===================================================================
+--- lib/PEAR/SOAP/WSDL.php	(revision 54749)
++++ lib/PEAR/SOAP/WSDL.php	(working copy)
+@@ -938,7 +938,7 @@
+     {
+         static $trail = array();
+ 
+-        $arrayType = ereg_replace('\[\]$', '', $arrayType);
++        $arrayType = preg_replace('/\[\]$/', '', $arrayType);
+ 
+         // Protect against circular references XXX We really need to remove
+         // trail from this altogether (it's very inefficient and in the wrong
+Index: lib/PEAR/SOAP/Transport/HTTP.php
+===================================================================
+--- lib/PEAR/SOAP/Transport/HTTP.php	(revision 54749)
++++ lib/PEAR/SOAP/Transport/HTTP.php	(working copy)
+@@ -269,13 +269,13 @@
+     {
+         /* Largely borrowed from HTTP_Request. */
+         $this->result_headers = array();
+-        $headers = split("\r?\n", $headers);
++        $headers = preg_split("/\r?\n/", $headers);
+         foreach ($headers as $value) {
+             if (strpos($value,':') === false) {
+                 $this->result_headers[0] = $value;
+                 continue;
+             }
+-            list($name, $value) = split(':', $value);
++            list($name, $value) = explode(':', $value);
+             $headername = strtolower($name);
+             $headervalue = trim($value);
+             $this->result_headers[$headername] = $headervalue;
+Index: lib/PEAR/XML/Parser.php
+===================================================================
+--- lib/PEAR/XML/Parser.php	(revision 54749)
++++ lib/PEAR/XML/Parser.php	(working copy)
+@@ -417,7 +417,7 @@
+         /**
+          * check, if file is a remote file
+          */
+-        if (eregi('^(http|ftp)://', substr($file, 0, 10))) {
++        if (preg_match('#^(http|ftp)://#i', substr($file, 0, 10))) {
+             if (!ini_get('allow_url_fopen')) {
+                 return $this->
+                 raiseError('Remote files cannot be parsed, as safe mode is enabled.',
+@@ -474,7 +474,7 @@
+         if (is_resource($fp)) {
+             $this->fp = $fp;
+             return true;
+-        } elseif (eregi('^[a-z]+://', substr($fp, 0, 10))) {
++        } elseif (preg_match('#^[a-z]+://#i', substr($fp, 0, 10))) {
+             // see if it's an absolute URL (has a scheme at the beginning)
+             return $this->setInputFile($fp);
+         } elseif (file_exists($fp)) {
+Index: lib/Varien/Object.php
+===================================================================
+--- lib/Varien/Object.php	(revision 54749)
++++ lib/Varien/Object.php	(working copy)
+@@ -481,11 +481,11 @@
+      * @param  string $valueSeparator
+      * @return string
+      */
+-    public function __toString(array $arrAttributes = array(), $valueSeparator=',')
+-    {
+-        $arrData = $this->toArray($arrAttributes);
+-        return implode($valueSeparator, $arrData);
+-    }
++//    public function __toString(array $arrAttributes = array(), $valueSeparator=',')
++//    {
++//        $arrData = $this->toArray($arrAttributes);
++//        return implode($valueSeparator, $arrData);
++//    }
+ 
+     /**
+      * Public wrapper for __toString
+Index: lib/Zend/Cache/Frontend/Page.php
+===================================================================
+--- lib/Zend/Cache/Frontend/Page.php	(revision 54749)
++++ lib/Zend/Cache/Frontend/Page.php	(working copy)
+@@ -313,7 +313,7 @@
+         $headersList = headers_list();
+         foreach($this->_specificOptions['memorize_headers'] as $key=>$headerName) {
+             foreach ($headersList as $headerSent) {
+-                $tmp = split(':', $headerSent);
++                $tmp = explode(':', $headerSent);
+                 $headerSentName = trim(array_shift($tmp));
+                 if (strtolower($headerName) == strtolower($headerSentName)) {
+                     $headerSentValue = trim(implode(':', $tmp));
+Index: report/index.php
+===================================================================
+--- report/index.php	(revision 54749)
++++ report/index.php	(working copy)
+@@ -153,5 +153,5 @@
+ include_once ('skin/' . $store . '/' . ($design ? $design->template : 'index.phtml'));
+ 
+ function checkEmail($email) {
+-    return eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email);
++    return preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $email);
+ }
