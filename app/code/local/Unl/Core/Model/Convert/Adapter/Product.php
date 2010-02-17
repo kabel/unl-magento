@@ -195,7 +195,7 @@ class Unl_Core_Model_Convert_Adapter_Product
         }
 
         foreach ($importData as $field => $value) {
-            if (in_array($field, $this->_inventorySimpleFields)) {
+            if (in_array($field, $this->_inventoryFields)) {
                 continue;
             }
             if (in_array($field, $this->_imageFields)) {
@@ -264,7 +264,9 @@ class Unl_Core_Model_Convert_Adapter_Product
         }
 
         $stockData = array();
-        $inventoryFields = $product->getTypeId() == 'simple' ? $this->_inventorySimpleFields : $this->_inventoryOtherFields;
+        $inventoryFields = isset($this->_inventoryFieldsProductTypes[$product->getTypeId()])
+            ? $this->_inventoryFieldsProductTypes[$product->getTypeId()]
+            : array();
         foreach ($inventoryFields as $field) {
             if (isset($importData[$field])) {
                 if (in_array($field, $this->_toNumber)) {
