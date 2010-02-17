@@ -31,10 +31,10 @@
  * @see Mage_Catalog_Block_Navigation
  */
 ?>
-<?php //if(count($this->getStoreCategories())>1): ?>
+<?php if(count($this->getStoreCategories())>1): ?>
     <ul>
     <?php foreach ($this->getStoreCategories() as $_category): ?>
         <?php echo $this->drawItem($_category) ?>
     <?php endforeach ?>
     </ul>
-<?php //endif; ?>
+<?php endif; ?>
