@@ -33,10 +33,10 @@
 ?>
 
 <ul>
-<?php if(count($this->getStoreCategories())>1): ?>
+<?php if(count($this->getStoreCategories())): ?>
 <?php foreach ($this->getStoreCategories() as $_category): ?>
     <?php echo $this->drawItem($_category) ?>
-<?php endforeach ?>
+<?php endforeach; ?>
 <?php else: ?>
     <li>&nbsp;</li>
 <?php endif; ?>
