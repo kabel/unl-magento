@@ -30,6 +30,9 @@ ln -s /path/to/unl-magento/app/code/community/Zenprint app/etc/code/community/
 ln -s /path/to/unl-magento/js/xajax_js js/
 ln -s /path/to/unl-magento/lib/Xajax lib/
 
+ln -s /path/to/unl-magento/maintenance.shtml
+ln -s /path/to/unl-magento/.htaccess.maint
+
 For the "online" install to run, you must
     chmod a+w app/etc
     chmod -R a+w var/
@@ -58,6 +61,15 @@ FIELDS TERMINATED BY ',' ENCLOSED BY '"'
 (`code`, `tax_country_id`, `tax_region_id`, `tax_postcode`, `rate`);
 
 SOURCE MageTaxSetup.sql;
+
+
+
+== MAINTENANCE ==
+
+When running maintenance on the magento project that may require temporary shutdown of magento run the following command.
+    cd /path/to/magento
+    /path/to/unl-magento/swapMaintenance.sh
+Once the maintenance is over run the command again to restore access
 
 
 

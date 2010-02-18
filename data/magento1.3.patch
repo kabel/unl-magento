@@ -162,11 +162,12 @@ Index: app/code/core/Mage/Catalog/Model/Layer/Filter/Price.php
 ===================================================================
 --- app/code/core/Mage/Catalog/Model/Layer/Filter/Price.php	(revision 54749)
 +++ app/code/core/Mage/Catalog/Model/Layer/Filter/Price.php	(working copy)
-@@ -136,7 +136,7 @@
+@@ -136,7 +136,8 @@
              . '_LOC_'
              ;
          $taxReq = Mage::getSingleton('tax/calculation')->getRateRequest(false, false, false);
 -        $key.= $taxReq->__toString(array(), '_');
++        $taxReq->unsFullAddress();
 +        $key.= implode('_', $taxReq->getData());
          return $key;
      }
