@@ -9,14 +9,7 @@
 ############################################
 ## always send 404 on missing files in these folders
 
-    RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
-
-############################################
-## never rewrite for existing files, directories and links
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteCond %{REQUEST_URI} !^/(media|skin|js|wdn)/
 
 ############################################
 ## rewrite everything else to maintenance.shtml
