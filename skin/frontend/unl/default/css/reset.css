@@ -43,3 +43,5 @@
 .no-bg        { background:none !important; }
 .pipe,
 .separator { padding:0 3px; font-size:.85em; }
+
+.mceContentBody { float: none !important; width: 940px; margin: auto; background: none; }
