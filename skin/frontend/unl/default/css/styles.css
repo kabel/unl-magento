@@ -523,7 +523,7 @@ dd.even {}
 .price-box {}
 .price-box .price { font-weight:bold; color: #396F00; }
 
-.price-box-bundle {}
+.price-box-bundle { display: none; }
 
 /* Regular price */
 .regular-price {}
