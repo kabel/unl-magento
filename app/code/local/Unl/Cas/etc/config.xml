@@ -47,6 +47,14 @@
             </unl_cas_read>
         </resources>
     </global>
+    
+    <admin>
+        <fieldsets>
+            <customer_dataflow>
+                <unl_cas_uid><system>1</system></unl_cas_uid>
+            </customer_dataflow>
+        </fieldsets>
+    </admin>
         
     <frontend>
         <secure_url>
