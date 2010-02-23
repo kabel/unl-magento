@@ -207,4 +207,26 @@ class Unl_Core_Model_Observer
             }
         }
     }
+    
+    /**
+     * Daily DB backup (called from cron)
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Unl_Core_Model_Observer
+     */
+    public function generateNightlyBackup($observer)
+    {
+        try {
+            $backupDb = Mage::getModel('backup/db');
+            $backup   = Mage::getModel('backup/backup')
+                ->setTime(time())
+                ->setType('db')
+                ->setPath(Mage::getBaseDir("var") . DS . "backups");
+
+            $backupDb->createBackup($backup);
+        }
+        catch (Exception  $e) { }
+        
+        return $this;
+    }
 }

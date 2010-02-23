@@ -80,6 +80,11 @@
                     </tax_boundary>
                 </entities>
             </unl_core_mysql4>
+            <backup>
+                <rewrite>
+                    <db>Unl_Core_Model_Backup_Db</db>
+                </rewrite>
+            </backup>
             <bundle>
                 <!-- User Defined Qty for Checkbox Bundle Option -->
                 <rewrite>
@@ -322,6 +327,17 @@
             </resources>
         </acl>
     </adminhtml>
+    
+    <!-- 
+    <crontab>
+        <jobs>
+            <unl_core_nightly_backup>
+                <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
+                <run><model>unl_core/observer::generateNightlyBackup</model></run>
+            </unl_core_nightly_backup>
+        </jobs>
+    </crontab>
+     -->
     
     <stores>
         <admin>
