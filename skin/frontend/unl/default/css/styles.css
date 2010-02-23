@@ -520,7 +520,7 @@ dd.even {}
 /********** < Product Prices */
 .price { white-space:nowrap !important; }
 
-.price-box {}
+.price-box { margin-bottom: 1em; }
 .price-box .price { font-weight:bold; color: #396F00; }
 
 .price-box-bundle { display: none; }
