@@ -367,6 +367,11 @@
     </stores>
     
     <default>
+        <design>
+            <header>
+                <storearticle>the</storearticle>
+            </header>
+        </design>
         <payment>
             <cash>
                 <active>0</active>

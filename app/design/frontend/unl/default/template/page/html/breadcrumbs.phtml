@@ -30,11 +30,11 @@
         <ul>
             <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
             <li>
-                <a href="#">Storefront</a>
+                <a href="#">Marketplace</a>
                 <?php echo $this->getChildHtml('store_switcher') ?>
             </li>
             <li class="selected">
-                <a href="<?php echo $this->getBaseUrl(); ?>"><?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?></a>
+                <a href="<?php echo $this->getBaseUrl(); ?>">Shop <?php echo $this->__(Mage::getStoreConfig('design/header/storearticle')) ?> <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?></a>
             </li>
             <?php if($crumbs && is_array($crumbs)): ?>
             <?php foreach($crumbs as $_crumbName=>$_crumbInfo): ?>
