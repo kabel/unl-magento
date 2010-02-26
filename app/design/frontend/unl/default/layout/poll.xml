@@ -34,14 +34,14 @@ Default layout, loads most of the pages
 
     <default>
 
-        <!-- Mage_Poll -->
+        <!-- Mage_Poll 
         <reference name="right">
             <block type="poll/activePoll" name="right.poll">
                 <action method="setPollTemplate"><template>poll/active.phtml</template><type>poll</type></action>
                 <action method="setPollTemplate"><template>poll/result.phtml</template><type>results</type></action>
             </block>
         </reference>
-
+        -->
     </default>
 
 <!--
