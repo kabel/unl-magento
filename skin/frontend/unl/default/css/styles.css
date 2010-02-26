@@ -147,7 +147,7 @@ select { padding:1px; }
 select option { padding-right:10px; }
 select.multiselect option {}
 textarea { overflow:auto; }
-input.radio { margin-right:3px; }
+input.radio { margin-right:3px; margin-top: 0; }
 input.checkbox { margin-right:3px; }
 input.qty { width:2.5em !important; }
 button.button::-moz-focus-inner { padding:0; border:0; } /* FF Fix */
@@ -708,6 +708,7 @@ a.minimal-price-link .price { font-weight:normal; }
 
 /* Shopping Cart ========================================================================= */
 #maincontent .cart .checkout-types { float:right; text-align:right; list-style: none;}
+.cart .checkout-types li { margin-bottom: 1em; }
 
 /* Shopping Cart Table */
 .cart-table .item-msg { font-size:10px; }
@@ -717,6 +718,7 @@ a.minimal-price-link .price { font-weight:normal; }
 .cart .crosssell .product-image { float:left; margin-right:-90px; }
 .cart .crosssell .product-shop { margin-left:90px; }
 .cart .shipping {}
+.cart .discount { margin-bottom: 1em; }
 
 /* Shopping Cart Totals */
 .cart .totals { float:right; width: 220px; }
@@ -767,8 +769,10 @@ a.minimal-price-link .price { font-weight:normal; }
 
 /********** < Common Checkout Styles */
 /* Shipping and Payment methods */
+.sp-methods { margin-bottom: 1em; }
 .sp-methods dt { font-weight:bold; }
-#maincontent .sp-methods dd { padding: 0; }
+.sp-methods .pickup-address { margin-left: 25px; }
+#maincontent .sp-methods dd { padding: 0; margin-bottom: 7px; }
 #maincontent .sp-methods ul { padding: 0; list-style: none; }
 .sp-methods .price { font-weight:bold; }
 .sp-methods .form-list { padding-left:20px; }

@@ -281,8 +281,21 @@
                     <salesroot>
                         <children>
                             <bursar translate="title" module="reports">
-                                <title>Bursar Report</title>
-                                <action>unl/report_sales/bursar</action>
+                                <title>Bursar Reports</title>
+                                <children>
+                                    <cc translate="title" module="reports">
+                                        <title>Credit Card</title>
+                                        <action>unl/report_sales_bursar/cc</action>
+                                    </cc>
+                                    <co translate="title" module="reports">
+                                        <title>Cost Object</title>
+                                        <action>unl/report_sales_bursar/co</action>
+                                    </co>
+                                    <nocap translate="title" module="reports">
+                                        <title>Non-Captured</title>
+                                        <action>unl/report_sales_bursar/nocap</action>
+                                    </nocap>
+                                </children>
                             </bursar>
                         </children>
                     </salesroot>
@@ -308,7 +321,7 @@
                                 <salesroot>
                                     <children>
                                         <bursar translate="title">
-                                            <title>Bursar Report</title>
+                                            <title>Bursar Reports</title>
                                         </bursar>
                                     </children>
                                 </salesroot>
@@ -352,4 +365,25 @@
             </design>
         </admin>
     </stores>
+    
+    <default>
+        <payment>
+            <cash>
+                <active>0</active>
+                <model>unl_core/payment_method_cash</model>
+                <order_status>pending</order_status>
+                <title>Internal Cash/Check</title>
+                <allowspecific>0</allowspecific>
+            </cash>
+        </payment>
+        <carriers>
+            <pickup>
+                <active>0</active>
+                <model>unl_core/shipping_carrier_pickup</model>
+                <name>Store Pickup</name>
+                <title>Pickup</title>
+                <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+            </pickup>
+        </carriers>
+    </default>
 </config>
