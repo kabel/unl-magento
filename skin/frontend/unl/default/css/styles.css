@@ -451,7 +451,7 @@ dd.even {}
 .products-grid td.empty .box { width: 154px; height: 154px; padding: 10px; border-color: #ddd; border-style: solid; border-width: 1px 0 1px 1px; }
 .products-grid td.empty.last .box { border-width: 1px; }
 .products-grid tr.first td.empty .box { border-top: none; }
-#maincontent .products-grid .product-name { font-size: 1.2em; font-weight: normal; padding: 0 10px 0 0; width: 165px; overflow: hidden; }
+#maincontent .products-grid .product-name { font-size: 1.3em; font-weight: normal; padding: 0 10px 0 0; width: 165px; overflow: hidden; }
 
 /* View Type: List */
 #maincontent .products-list { margin: 0; padding: 0; }
@@ -459,7 +459,6 @@ dd.even {}
 .products-list .product-image { float:left; }
 .products-list .product-shop { float:right; width:506px; }
 .products-list .product-shop .right-box { float:right; text-align: right; padding: 0 0 10px 10px; }
-#maincontent .products-list .product-name { font-size: 1.2em; font-weight: normal; padding: 0 10px 10px 0; }
 /* ======================================================================================= */
 
 /* Featured Product ====================================================================== */
@@ -467,6 +466,16 @@ dd.even {}
 .featured .product-image { display: block; float: left; padding: 10px; border: 1px solid #ddd; background-color: #fff; }
 .featured .product-shop { float: left; padding-left: 20px; width: 470px; }
 .featured .product-shop .right-box { float:right; text-align: right; padding: 0 0 10px 10px; }
+
+.featured2 {}
+.featured2 .product-image { display: block; float: left; padding: 10px; border: 1px solid #ddd; background-color: #fff; }
+.featured2 .product-shop { float: left; padding-left: 20px; width: 275px; }
+.featured2 .product-shop .price-box { float: right; }
+
+/* Dairy Store Overrides */
+#maincontent .dairystore div.featured2 { border-width: 3px; border-color: #79BDE8; background-color: #FFF0D8; }
+#maincontent .dairystore .featured2 .sec_main { border-color: #79BDE8; background-color: #CC0000; color: #FFF; }
+
 
 /* Product View ========================================================================== */
 .product-view {}
@@ -521,7 +530,7 @@ dd.even {}
 .price { white-space:nowrap !important; }
 
 .price-box { margin-bottom: 1em; }
-.price-box .price { font-weight:bold; color: #396F00; }
+.price-box .price { font-weight:bold; color: #000080; }
 
 .price-box-bundle { display: none; }
 
