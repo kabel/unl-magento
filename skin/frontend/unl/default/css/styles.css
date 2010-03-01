@@ -756,7 +756,7 @@ a.minimal-price-link .price { font-weight:normal; }
 #maincontent .opc { border-bottom:1px solid #ddd; position:relative; padding:0; list-style: none; }
 .opc li.section { border:1px solid #ddd; border-bottom:0; }
 .opc .step-title { background-color:#f6f6f6; padding:0 5px; text-align:right; }
-.opc .step-title .number { float:left; line-height:22px; margin-right:5px; }
+.opc .step-title .number { width:22px; height:22px; background:url("../images/checkout_step_bg.png") no-repeat 0 0; float:left; font-size:0.9em; text-align:center; line-height:22px; margin:5px 5px 0 0; }
 .opc .step-title h3 { float:left; }
 .opc .allow .step-title { cursor:pointer; }
 .opc .active {}

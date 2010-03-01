@@ -65,6 +65,10 @@
         <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
         <form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post">
         <fieldset>
+            <p><strong><?php echo $this->__('UNL Students, Faculty, Staff') ?></strong></p>
+            <div class="buttons-set">
+                <button type="button" class="button" onclick="window.location='<?php echo Mage::helper('unl_cas')->getCasUrl() ?>';"><span><?php echo $this->__('UNL Login') ?></span></button>
+            </div>
             <p><strong><?php echo $this->__('Already registered?') ?></strong><br />
             <?php echo $this->__('Please log in below:') ?></p>
             <ul class="form-list">
