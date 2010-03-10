@@ -18,10 +18,10 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_blank
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
 <?php
@@ -34,7 +34,7 @@
 <head>
 <?php echo $this->getChildHtml('head') ?>
 </head>
-<body class="popup <?php echo $this->getBodyClass()?$this->getBodyClass() : ''?>">
+<body class="popup page-popup<?php echo $this->getBodyClass()?$this->getBodyClass() : ''?>">
 
 <p class="skipnav"> <a class="skipnav" href="#maincontent">Skip Navigation</a> </p>
 <div id="wdn_wrapper">
@@ -47,6 +47,7 @@
         </div>
         <div id="pagetitle"> </div>
         <div id="maincontent">
+            <?php echo $this->getChildHtml('after_body_start') ?>
             <?php echo $this->getChildHtml('content') ?>
             <?php echo $this->getChildHtml('before_body_end') ?>
             <div class="clear"></div>

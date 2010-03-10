@@ -19,10 +19,10 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_default
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 -->
 <layout version="0.1.0">
@@ -42,14 +42,20 @@ Default layout, loads most of the pages
         </reference>
     </default>
     
-    <cms_page>
+    <cms_page translate="label">
+        <label>CMS Pages (All)</label>
         <reference name="content">
-            <block type="core/template" name="cms.wrapper" template="cms/wrapper.phtml">
+            <block type="core/template" name="page_content_heading" template="cms/content_heading.phtml"/>
+            <block type="page/html_wrapper" name="cms.wrapper">
+                <action method="setElementClass"><value>std</value></action>
                 <block type="cms/page" name="cms_page"/>
             </block>
         </reference>
     </cms_page>
-    
+
+    <cms_index_index translate="label">
+        <label>CMS Home Page</label>
+    </cms_index_index>
 
     <cms_index_defaultindex>
         <remove name="right"/>
@@ -62,6 +68,10 @@ Default layout, loads most of the pages
             <block type="core/template" name="default_home_page" template="cms/default/home.phtml"/>
         </reference>
     </cms_index_defaultindex>
+
+    <cms_index_noroute translate="label">
+        <label>CMS No-Route Page</label>
+    </cms_index_noroute>
 
     <cms_index_defaultnoroute>
         <remove name="right"/>

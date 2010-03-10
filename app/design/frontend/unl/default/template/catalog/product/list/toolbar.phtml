@@ -88,26 +88,7 @@
 </table>
 <?php endif; ?>
 <div class="pages<?php if( !$this->isExpanded() ): ?> bottom<?php endif; ?>">
-    <?php if (!$this->isFirstPage()): ?>
-    <a href="<?php echo $this->getPreviousPageUrl() ?>" title="<?php echo $this->__('Previous') ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" /> <?php echo $this->__('Previous') ?></a>
-    <?php else: ?>
-    <img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" /> <?php echo $this->__('Previous') ?>
-    <?php endif; ?>
-    
-    <strong><?php echo $this->__('Page') ?></strong>
-    <select onchange="setLocation(this.value)">
-    <?php foreach ($this->getPages() as $_page): ?>
-        <option value="<?php echo $this->getPageUrl($_page) ?>"<?php if ($this->isPageCurrent($_page)): ?> selected="selected"<?php endif; ?>><?php echo $_page ?></option>
-    <?php endforeach; ?>
-    </select>
-    <strong>of</strong>
-    <?php echo $this->getLastPageNum() ?>
-    
-    <?php if (!$this->isLastPage()): ?>
-    <a href="<?php echo $this->getNextPageUrl() ?>" title="<?php echo $this->__('Next') ?>"><?php echo $this->__('Next') ?> <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" /></a>
-    <?php else: ?>
-    <?php echo $this->__('Next') ?> <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" />
-    <?php endif ?>
+    <?php echo $this->getPagerHtml() ?>
     
     <select class="limiter" onchange="setLocation(this.value)">
         <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
@@ -116,6 +97,7 @@
             </option>
         <?php endforeach; ?>
     </select>
+    <div class="clear"></div>
 </div>
 <?php endif ?>
 

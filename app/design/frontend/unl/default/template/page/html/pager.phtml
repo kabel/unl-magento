@@ -18,10 +18,10 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_blank
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
 <?php
@@ -33,42 +33,73 @@
 /* @var $this Mage_Page_Block_Html_Pager */
 ?>
 <?php if($this->getCollection()->getSize()): ?>
-<div class="pager">
+
+    <?php if($this->getUseContainer()): ?>
+    <div class="pager">
+    <?php endif ?>
+
+    <?php if($this->getShowAmounts()): ?>
+    <p class="amount">
+        <?php if($this->getLastPageNum()>1): ?>
+            <?php echo $this->__('Items %s to %s of %s total', $this->getFirstNum(), $this->getLastNum(), $this->getTotalNum()) ?>
+        <?php else: ?>
+            <strong><?php echo $this->__('%s Item(s)', $this->getTotalNum()) ?></strong>
+        <?php endif; ?>
+    </p>
+    <?php endif ?>
+
     <?php if($this->getLastPageNum()>1): ?>
-    <div class="pages">
+
     <?php if (!$this->isFirstPage()): ?>
-        <a href="<?php echo $this->getPreviousPageUrl() ?>"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" /> Previous</a>
+        <a class="previous" href="<?php echo $this->getPreviousPageUrl() ?>" title="<?php echo $this->__('Previous') ?>">
+            <img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" />
+            <?php echo $this->__('Previous') ?>
+        </a>
     <?php else: ?>
-        <img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" /> Previous
-    <?php endif ?>
-        
-        <strong><?php echo $this->__('Page:') ?></strong>
-        <select onchange="setLocation(this.value)">
-        <?php foreach ($this->getPages() as $_page): ?>
-            <option value="<?php echo $this->getPageUrl($_page) ?>"<?php if ($this->isPageCurrent($_page)): ?> selected="selected"<?php endif; ?>><?php echo $_page ?></option>
-        <?php endforeach; ?>
-        </select>
-        <strong>of</strong>
-        <?php echo $this->getLastPageNum() ?>
-        
+        <span class="previous">
+            <img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="<?php echo $this->__('Previous') ?>" class="v-middle" />
+            <?php echo $this->__('Previous') ?>
+        </span>
+    <?php endif;?>
+    
+    <strong><?php echo $this->__('Page:') ?></strong>
+    <select onchange="setLocation(this.value)">
+    <?php foreach ($this->getPages() as $_page): ?>
+        <option value="<?php echo $this->getPageUrl($_page) ?>"<?php if ($this->isPageCurrent($_page)): ?> selected="selected"<?php endif; ?>><?php echo $_page ?></option>
+    <?php endforeach; ?>
+    </select>
+    <strong>of</strong>
+    <?php echo $this->getLastPageNum() ?>
+
     <?php if (!$this->isLastPage()): ?>
-        <a href="<?php echo $this->getNextPageUrl() ?>">Next <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" /></a>
+        <a class="next" href="<?php echo $this->getNextPageUrl() ?>" title="<?php echo $this->__('Next') ?>">
+            <?php echo $this->__('Next') ?>
+            <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" />
+        </a>
     <?php else: ?>
-        Next <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" />
-    <?php endif ?>
-    </div>
+        <span class="next">
+            <?php echo $this->__('Next') ?>
+            <img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="<?php echo $this->__('Next') ?>" class="v-middle" />
+        </span>
+    <?php endif;?>
+    
     <?php endif; ?>
     
     <?php if($this->getShowPerPage()): ?>
-    <fieldset class="limiter">
+    <div class="limiter">
+        <label><?php echo $this->__('Show') ?></label>
         <select onchange="setLocation(this.value)">
         <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
             <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
-                <?php echo $_limit ?><?php if(is_numeric($_limit)): ?> <?php echo $this->__('per page') ?><?php endif; ?>
+                <?php echo $_limit ?>
             </option>
         <?php endforeach; ?>
-        </select>
-    </fieldset>
+        </select> <?php echo $this->__('per page') ?>
+    </div>
     <?php endif ?>
-</div>
+
+    <?php if($this->getUseContainer()): ?>
+    </div>
+    <?php endif ?>
+
 <?php endif ?>

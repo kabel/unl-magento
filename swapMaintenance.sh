@@ -1,9 +1,7 @@
 #!/bin/sh
-if [ -f .htaccess.maint ]
+if [ -f .htmaint ]
 then
-	mv .htaccess .htaccess.live
-	mv .htaccess.maint .htaccess
+	rm .htmaint
 else
-	mv .htaccess .htaccess.maint
-	mv .htaccess.live .htaccess
+	touch .htmaint
 fi

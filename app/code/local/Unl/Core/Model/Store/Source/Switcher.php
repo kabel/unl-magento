@@ -26,9 +26,9 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
                         }
                         if ($showGroup == false) {
                             $showGroup = true;
-                            $optGroup['label'] = '&nbsp;&nbsp;&nbsp;' . $_group->getName();
+                            $optGroup['label'] = '-' . $_group->getName();
                         }
-                        $optGroup['value'][] = array('label' => '&nbsp;&nbsp;&nbsp;&nbsp;' . $_store->getName(), 'value' => $_store->getId());
+                        $optGroup['value'][] = array('label' => '--' . $_store->getName(), 'value' => $_store->getId());
                     }
                     if ($showGroup) {
                         $options[] = $optGroup;

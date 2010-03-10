@@ -23,6 +23,8 @@ class Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most extends Mage_Adminht
             $storeIds = Mage::app()->getGroup($this->getParam('group'))->getStoreIds();
             $collection->filterSourceStore($storeIds)
                 ->addOrdersCount(1);
+        } else {
+            $collection->addOrdersCount();
         }
 
         $collection->addSumAvgTotals($storeFilter)

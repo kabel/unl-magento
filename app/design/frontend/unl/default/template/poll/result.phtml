@@ -18,29 +18,26 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_blank
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
 <?php if(isset($poll)) : ?>
-<div class="block block-poll">
-    <div class="block-title">
-        <h2><?php echo $this->__('Community Poll') ?></h2>
-    </div>
-    <div class="block-content">
-        <h3><?php echo $poll->getPollTitle(); ?></h3>
+<div class="zenbox smooth block-poll">
+    <h3><?php echo $this->__('Community Poll') ?></h3>
+        <p class="block-subtitle"><?php echo $this->htmlEscape($poll->getPollTitle()); ?></p>
         <?php if( $poll_answers ): ?>
-        <ol>
+        <ol id="poll-answers">
             <?php foreach( $poll_answers as $answer ): ?>
                 <li>
-                    <span class="answer"><?php echo $answer->getAnswerTitle() ?>:</span>
                     <span class="votes"><?php echo $answer->getVotesCount() ?> (<?php echo $answer->getPercent() ?>%)</span>
+                    <span class="answer"><?php echo $this->htmlEscape($answer->getAnswerTitle()) ?>:</span>
                 </li>
             <?php endforeach; ?>
         </ol>
+        <script type="text/javascript">decorateList('poll-answers');</script>
         <?php endif; ?>
-    </div>
 </div>
 <?php endif; ?>

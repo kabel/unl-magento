@@ -18,34 +18,28 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_blank
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
 <div class="zenbox cool block-subscribe">
-    <h3><?php echo $this->__('Newsletter') ?><a name="newsletter-box"></a></h3>
-    <form action="<?php echo $this->getUrl('newsletter/subscriber/new') ?>" method="post" id="newsletter-validate-detail">
-        <fieldset class="block-content">
-            <?php /*
-            <?php if( $message = $this->getErrorMessage() ): ?>
-                <p class="error"><?php echo $message ?></p>
-            <?php endif; ?>
-            <?php if( $message = $this->getSuccessMessage() ): ?>
-                <p class="success"><?php echo $message ?></p>
-            <?php endif; ?>
-            */ ?>
+    <h3><?php echo $this->__('Newsletter') ?></h3>
+    <form action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail">
+        <div class="block-content">
             <label for="newsletter"><?php echo $this->__('Sign up for our newsletter:') ?></label>
             <div class="input-box">
-               <input name="email" type="text" id="newsletter" class="input-text required-entry validate-email" />
+               <input type="text" name="email" id="newsletter" title="<?php echo $this->__('Sign up for our newsletter') ?>" class="input-text required-entry validate-email" />
             </div>
-            <button type="submit" class="button"><span><?php echo $this->__('Subscribe') ?></span></button>
-        </fieldset>
+            <div class="actions">
+                <button type="submit" title="<?php echo $this->__('Subscribe') ?>" class="button"><span><span><?php echo $this->__('Subscribe') ?></span></span></button>
+            </div>
+        </div>
     </form>
-<script type="text/javascript">
-//<![CDATA[
-    var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail');
-//]]>
-</script>
+    <script type="text/javascript">
+    //<![CDATA[
+        var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail');
+    //]]>
+    </script>
 </div>

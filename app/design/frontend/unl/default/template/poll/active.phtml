@@ -18,10 +18,10 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_blank
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
 <?php if(isset($poll)) : ?>
@@ -39,28 +39,26 @@
     }
 //]]>
 </script>
-<div class="block block-poll">
-    <div class="block-title">
-        <h2><?php echo $this->__('Community Poll') ?></h2>
-    </div>
+<div class="zenbox smooth block-poll">
+    <h3><?php echo $this->__('Community Poll') ?></h3>
     <form id="pollForm" action="<?php echo $action ?>" method="post" onsubmit="return validatePollAnswerIsSelected();">
-    <fieldset class="block-content">
-        <legend><?php echo $this->__('Community Poll') ?></legend>
-        <h3><?php echo $poll->getPollTitle(); ?></h3>
-        <?php if( $poll_answers ): ?>
-        <ol>
-            <?php foreach( $poll_answers as $answer ): ?>
-            <li>
-                <input type="radio" name="vote" class="radio poll_vote" id="vote_<?php echo $answer->getId() ?>" value="<?php echo $answer->getAnswerId() ?>" />
-                <span class="label"><label for="vote_<?php echo $answer->getId() ?>"><?php echo $answer->getAnswerTitle() ?></label></span>
-            </li>
-            <?php endforeach; ?>
-        </ol>
-        <?php endif; ?>
-        <div class="actions">
-            <button type="submit" class="button"><span><?php echo $this->__('Vote') ?></span></button>
+        <div>
+            <p class="block-subtitle"><?php echo $this->htmlEscape($poll->getPollTitle()); ?></p>
+            <?php if( $poll_answers ): ?>
+            <ul id="poll-answers">
+                <?php foreach( $poll_answers as $answer ): ?>
+                <li>
+                    <input type="radio" name="vote" class="radio poll_vote" id="vote_<?php echo $answer->getId() ?>" value="<?php echo $answer->getAnswerId() ?>" />
+                    <span class="label"><label for="vote_<?php echo $answer->getId() ?>"><?php echo $this->htmlEscape($answer->getAnswerTitle()) ?></label></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <script type="text/javascript">decorateList('poll-answers');</script>
+            <?php endif; ?>
+            <div class="actions">
+                <button type="submit" title="<?php echo $this->__('Vote') ?>" class="button"><span><span><?php echo $this->__('Vote') ?></span></span></button>
+            </div>
         </div>
-    </fieldset>
     </form>
 </div>
 <?php endif; ?>

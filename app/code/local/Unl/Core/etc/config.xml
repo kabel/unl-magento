@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.7</version>
+            <version>0.1.8</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -27,6 +27,7 @@
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
                     <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
+                    <report_sales_sales_grid>Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid</report_sales_sales_grid>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
                 </rewrite>
             </adminhtml>
@@ -116,6 +117,12 @@
                     <quote_address_total_tax>Unl_Core_Model_Sales_Quote_Address_Total_Tax</quote_address_total_tax>
                 </rewrite>
             </sales>
+            <sales_mysql4>
+                <rewrite>
+                    <order>Unl_Core_Model_Sales_Mysql4_Order</order>
+                    <report_order_updatedat_collection>Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection</report_order_updatedat_collection>
+                </rewrite>
+            </sales_mysql4>
             <tax>
                 <rewrite>
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
@@ -125,6 +132,9 @@
                 <!-- Tax report fix -->
                 <rewrite>
                     <calculation>Unl_Core_Model_Tax_Mysql4_Calculation</calculation>
+                    <report_collection>Unl_Core_Model_Tax_Mysql4_Report_Collection</report_collection>
+                    <report_updatedat_collection>Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection</report_updatedat_collection>
+                    <tax>Unl_Core_Model_Tax_Mysql4_Tax</tax>
                 </rewrite>
             </tax_mysql4>
         </models>
@@ -166,6 +176,15 @@
                     </unlcore_before_block_to_html>
                 </observers>
             </core_block_abstract_to_html_before>
+            <payment_method_is_active>
+                <observers>
+                    <unlcore_is_payment_active>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>isPaymentMethodActive</method>
+                    </unlcore_is_payment_active>
+                </observers>
+            </payment_method_is_active>
             <sales_quote_item_set_product>
                 <observers>
                     <source_store_set>
@@ -228,15 +247,15 @@
                     </add_root_acl>
                 </observers>
             </adminhtml_catalog_category_tree_can_add_root_category>
-            <adminhtml_catalog_product_edit_prepare_form>
+            <cms_wysiwyg_config_prepare>
                 <observers>
-                    <wysiwyg_descriptions>
+                    <unl_prep_wysiwyg>
                         <type>singleton</type>
                         <class>unl_core/observer</class>
-                        <method>descriptionWysiwyg</method>
-                    </wysiwyg_descriptions>
+                        <method>prepareWysiwygConfig</method>
+                    </unl_prep_wysiwyg>
                 </observers>
-            </adminhtml_catalog_product_edit_prepare_form>
+            </cms_wysiwyg_config_prepare>
             <controller_action_predispatch_adminhtml_catalog_category_edit>
 		        <observers>
 		            <category_auth>
@@ -339,6 +358,14 @@
                 </admin>
             </resources>
         </acl>
+        
+        <layout>
+            <updates>
+                <unlcore module="Unl_Core">
+                    <file>unl.xml</file>
+                </unlcore>
+            </updates>
+        </layout>
     </adminhtml>
     
     <!-- 

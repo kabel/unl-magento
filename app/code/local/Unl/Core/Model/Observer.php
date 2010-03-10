@@ -2,62 +2,28 @@
 
 class Unl_Core_Model_Observer
 {
-    protected $_wysiwygFields = array(
-        'Mage_Adminhtml_Block_Cms_Block_Edit_Form' => array(
-            'base_fieldset' => array(
-                'content' => array()
-            )
-        ),
-        'Mage_Adminhtml_Block_Cms_Page_Edit_Tab_Main' => array(
-            'base_fieldset' => array(
-                'content' => array()
-            )
-        ),
-        'Mage_Adminhtml_Block_Newsletter_Template_Edit_Form' => array(
-            'base_fieldset' => array(
-                'text' => array('followSpec' => true, 'disableCss' => true)
-            )
-        ),
-        'Mage_Adminhtml_Block_System_Email_Template_Edit_Form' => array(
-            'base_fieldset' => array(
-                'template_text' => array('followSpec' => true, 'disableCss' => true)
-            )
-        )
-    );
+    public function prepareWysiwygConfig($observer)
+    {
+        $config = $observer->getEvent()->getConfig();
+        $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
+        $css = array(
+            '/wdn/templates_3.0/css/all.css',
+            $design->getSkinUrl('css/reset.css'),
+            $design->getSkinUrl('css/styles.css')
+        );
+        
+        if ($config->getContentCss()) {
+            array_unshift($css, $config->getContentCss());
+        }
+        
+        $config->setContentCss(implode(',', $css));
+    }
     
     public function correctAdminBlocks($observer)
     {
         $block = $observer->getEvent()->getBlock();
         
         //Do actions based on block type
-        
-        foreach (array_keys($this->_wysiwygFields) as $type) {
-            if ($block instanceof $type) {
-                /* @var $form Varien_Data_Form */
-                $form = $block->getForm();
-                foreach ($this->_wysiwygFields[$type] as $fieldset => $fields) {
-                    $collection = $form;
-                    if (is_string($fieldset)) {
-                        $collection = $form->getElement($fieldset);
-                    }
-                    
-                    foreach ($fields as $id => $def) {
-                        $element = $collection->getElements()->searchById($id);
-                        if (!empty($def['followSpec']) && !$element->getWysiwyg()) {
-                            continue;
-                        }
-                        $element->setWysiwyg(true);
-                        $element->setType('wysiwyg');
-                        $element->setExtType('wysiwyg');
-                        
-                        if (!empty($def['disableCss'])) {
-                            $element->setDisableCss(true);
-                        }
-                    }
-                }
-                break;
-            }
-        }
         
         $type = 'Mage_Adminhtml_Block_Catalog_Category_Tree';
         if ($block instanceof $type) {
@@ -134,34 +100,6 @@ class Unl_Core_Model_Observer
         }
     }
     
-    public function descriptionWysiwyg($observer)
-    {
-        $form = $observer->getEvent()->getForm();
-        
-        if ($element = $form->getElement('description')) {
-            /* @var $element Varien_Data_Form_Element_Textarea */
-            $data = $element->getData();
-            $data['wysiwyg'] = true;
-            $data['type'] = 'wysiwyg';
-            $data['ext_type'] = 'wysiwyg';
-            
-            $fieldset = $element->getContainer();
-            $fieldset->removeField($element->getId());
-            $fieldset->addField('description', 'editor', $data);
-        }
-        
-        if ($element = $form->getElement('short_description')) {
-            $data = $element->getData();
-            $data['wysiwyg'] = true;
-            $data['type'] = 'wysiwyg';
-            $data['ext_type'] = 'wysiwyg';
-            
-            $fieldset = $element->getContainer();
-            $fieldset->removeField($element->getId());
-            $fieldset->addField('short_description', 'editor', $data);
-        }
-    }
-    
     /**
      * Save order tax information
      *
@@ -228,5 +166,27 @@ class Unl_Core_Model_Observer
         catch (Exception  $e) { }
         
         return $this;
+    }
+    
+    public function isPaymentMethodActive($observer)
+    {
+        $method = $observer->getEvent()->getMethodInstance();
+        $result = $observer->getEvent()->getResult();
+        
+        if ($method instanceof Mage_Payment_Model_Method_Purchaseorder) {
+            /* @var $customerSession Mage_Customer_Model_Session */
+            $customerSession = Mage::getSingleton('customer/session');
+            if (!$customerSession->isLoggedIn()) {
+                $result->isAvailable = false;
+                return;
+            } else {
+                $customer = $customerSession->getCustomer();
+                $facStaffModel = Mage::getModel('customer/group')->load('UNL Faculty/Staff', 'customer_group_code');
+                if ($customer->getGroupId() !== $facStaffModel->getId()) {
+                    $result->isAvailable = false;
+                    return;
+                }
+            }
+        }
     }
 }

@@ -63,9 +63,13 @@ class Unl_Core_Model_Tax_Calculation extends Mage_Tax_Model_Calculation
             ->setCountryId($address->getCountryId())
             ->setRegionId($address->getRegionId())
             ->setPostcode($address->getPostcode())
-            ->setFullAddress($address)
             ->setStore($store)
             ->setCustomerClassId($customerTaxClass);
+            
+        if ($basedOn != 'default' && $basedOn != 'origin') {
+            $request->setFullAddress($address);
+        }
+        
         return $request;
     }
 }

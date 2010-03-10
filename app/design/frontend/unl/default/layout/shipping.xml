@@ -19,10 +19,10 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_default
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 -->
@@ -36,7 +36,8 @@
             <block type="shipping/tracking_ajax" name="shipping.tracking.ajax" template="shipping/tracking/ajax.phtml" />
         </reference>
     </shipping_tracking_ajax>
-    <shipping_tracking_popup>
+    <shipping_tracking_popup translate="label">
+        <label>Shipment Tracking Popup</label>
         <reference name="root">
             <action method="setTemplate"><template>page/popup.phtml</template></action>
         </reference>

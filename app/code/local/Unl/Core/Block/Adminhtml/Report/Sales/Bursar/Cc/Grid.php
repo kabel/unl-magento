@@ -1,145 +1,137 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Cc_Grid extends Mage_Adminhtml_Block_Report_Grid
+class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Cc_Grid extends Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Abstract
 {
-    public function __construct()
+    public function getResourceCollectionName()
     {
-        parent::__construct();
-        $this->setId('gridBursarCc');
-        $this->setStoreSwitcherVisibility(false);
-        $this->setSubtotalVisibility(true);
-        //$this->setExportVisibility(false);
-    }
-
-    protected function _prepareCollection()
-    {
-        parent::_prepareCollection();
-        $this->getCollection()->initReport('unl_core/bursar_cc_collection');
+        return ($this->getFilterData()->getData('report_type') == 'updated_at_order')
+            ? 'unl_core/report_bursar_cc_updatedat_collection'
+            : 'unl_core/report_bursar_cc_collection';
     }
 
     protected function _prepareColumns()
     {
-        $this->addColumn('group', array(
-            'header'    =>Mage::helper('reports')->__('Merchant'),
-            'index'     =>'merchant'
+        $this->addColumn('period', array(
+            'header'        => Mage::helper('sales')->__('Period'),
+            'index'         => 'period',
+            'width'         => 100,
+            'sortable'      => false,
+            'period_type'   => $this->getPeriodType(),
+            'renderer'      => 'adminhtml/report_sales_grid_column_renderer_date',
+            'totals_label'  => Mage::helper('adminhtml')->__('Total')
         ));
+        
+        $this->addColumn('merchant', array(
+            'header'    => Mage::helper('sales')->__('Merchant'),
+            'index'     => 'merchant',
+            'sortable'  => false
+        ));
+
+        /* Space Wasters
+        $this->addColumn('orders_count', array(
+            'header'    => Mage::helper('sales')->__('# of Orders'),
+            'index'     => 'orders_count',
+            'type'      => 'number',
+            'sortable'  => false
+        ));
+
+        $this->addColumn('total_qty_ordered', array(
+            'header'    => Mage::helper('sales')->__('Items Ordered'),
+            'index'     => 'total_qty_ordered',
+            'type'      => 'number',
+            'total'     => 'sum',
+            'sortable'  => false
+        ));
+        */
 
         $currency_code = $this->getCurrentCurrencyCode();
 
-        $this->addColumn('subtotal', array(
-            'header'    =>Mage::helper('reports')->__('Subtotal'),
-            'type'      =>'currency',
+        /* Broken Total?
+        $this->addColumn('base_profit_amount', array(
+            'header'        => Mage::helper('sales')->__('Profit'),
+            'type'          => 'currency',
             'currency_code' => $currency_code,
-            'index'     =>'subtotal',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
+            'index'         => 'base_profit_amount',
+            'total'         => 'sum',
+            'sortable'      => false
+        ));
+        */
+
+        $this->addColumn('base_subtotal_amount', array(
+            'header'        => Mage::helper('sales')->__('Subtotal'),
+            'type'          => 'currency',
+            'currency_code' => $currency_code,
+            'index'         => 'base_subtotal_amount',
+            'total'         => 'sum',
+            'sortable'      => false
         ));
 
-        $this->addColumn('tax', array(
-            'header'    =>Mage::helper('reports')->__('Tax'),
-            'type'      =>'currency',
+        $this->addColumn('base_tax_amount', array(
+            'header'        => Mage::helper('sales')->__('Tax'),
+            'type'          => 'currency',
             'currency_code' => $currency_code,
-            'index'     =>'tax',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
+            'index'         => 'base_tax_amount',
+            'total'         => 'sum',
+            'sortable'      => false
         ));
 
-        $this->addColumn('shipping', array(
-            'header'    =>Mage::helper('reports')->__('Shipping'),
-            'type'      =>'currency',
+        $this->addColumn('base_shipping_amount', array(
+            'header'        => Mage::helper('sales')->__('Shipping'),
+            'type'          => 'currency',
             'currency_code' => $currency_code,
-            'index'     =>'shipping',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
+            'index'         => 'base_shipping_amount',
+            'total'         => 'sum',
+            'sortable'      => false
         ));
 
-        /*$this->addColumn('discount', array(
-            'header'    =>Mage::helper('reports')->__('Discounts'),
-            'type'      =>'currency',
+        $this->addColumn('base_discount_amount', array(
+            'header'        => Mage::helper('sales')->__('Discounts'),
+            'type'          => 'currency',
             'currency_code' => $currency_code,
-            'index'     =>'discount',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
-        ));*/
-
-        $this->addColumn('total', array(
-            'header'    =>Mage::helper('reports')->__('Total'),
-            'type'      =>'currency',
-            'currency_code' => $currency_code,
-            'index'     =>'total',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
+            'index'         => 'base_discount_amount',
+            'total'         => 'sum',
+            'sortable'      => false
         ));
 
-        $this->addColumn('invoiced', array(
-            'header'    =>Mage::helper('reports')->__('Invoiced'),
-            'type'      =>'currency',
+        $this->addColumn('base_grand_total_amount', array(
+            'header'        => Mage::helper('sales')->__('Total'),
+            'type'          => 'currency',
             'currency_code' => $currency_code,
-            'index'     =>'invoiced',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
+            'index'         => 'base_grand_total_amount',
+            'total'         => 'sum',
+            'sortable'      => false
         ));
 
-        $this->addColumn('refunded', array(
-            'header'    =>Mage::helper('reports')->__('Refunded'),
-            'type'      =>'currency',
+        $this->addColumn('base_invoiced_amount', array(
+            'header'        => Mage::helper('sales')->__('Invoiced'),
+            'type'          => 'currency',
             'currency_code' => $currency_code,
-            'index'     =>'refunded',
-            'total'     =>'sum',
-            'renderer'  =>'adminhtml/report_grid_column_renderer_currency'
+            'index'         => 'base_invoiced_amount',
+            'total'         => 'sum',
+            'sortable'      => false
+        ));
+
+        $this->addColumn('base_refunded_amount', array(
+            'header'        => Mage::helper('sales')->__('Refunded'),
+            'type'          => 'currency',
+            'currency_code' => $currency_code,
+            'index'         => 'base_refunded_amount',
+            'total'         => 'sum',
+            'sortable'      => false
+        ));
+
+        $this->addColumn('base_canceled_amount', array(
+            'header'        => Mage::helper('sales')->__('Canceled'),
+            'type'          => 'currency',
+            'currency_code' => $currency_code,
+            'index'         => 'base_canceled_amount',
+            'total'         => 'sum',
+            'sortable'      => false
         ));
 
         $this->addExportType('*/*/exportCcCsv', Mage::helper('reports')->__('CSV'));
         $this->addExportType('*/*/exportCcExcel', Mage::helper('reports')->__('Excel'));
 
         return parent::_prepareColumns();
-    }
-    
-    public function getReport($from, $to)
-    {
-        if ($from == '') {
-            $from = $this->getFilter('report_from');
-        }
-        if ($to == '') {
-            $to = $this->getFilter('report_to');
-        }
-        
-        $totalObj = Mage::getModel('reports/totals');
-        $totals = $totalObj->countTotals($this, $from, $to);
-        
-        $totalCollection = Mage::getResourceModel('unl_core/bursar_cc_collection');
-        $totalCollection->setDateRange($from, $to)->initSelect(array(), true)->load();
-        foreach ($totalCollection as $item) {
-            $data = $item->getData();
-            $totals['shipping'] += (isset($data['shipping']) ? $data['shipping'] : 0);
-            $totals['refunded'] += (isset($data['refunded']) ? $data['refunded'] : 0);
-        }
-        
-        $this->setTotals($totals);
-        $this->addGrandTotals($this->getTotals());
-        
-        $report = $this->getCollection()->getReport($from, $to);
-        if (count($report)) {
-            $order = Mage::getModel('sales/order');
-            $data = array(
-                'entity_id' => 0,
-                'merchant'  => 'Global Shipping/Refunds',
-                'tax'       => 0,
-                'subtotal'  => 0,
-                'shipping'  => $totals['shipping'],
-                'total'     => $totals['shipping'],
-                'invoiced'  => $totals['invoiced'],
-                'refunded'  => $totals['refunded']
-            );
-            $groupInvoiced = 0;
-            foreach ($report as $row) {
-                $groupInvoiced += $row->getInvoiced();
-            }
-            $data['invoiced'] -= $groupInvoiced;
-            $order->setData($data);
-            $report->addItem($order);
-        }
-        
-        return $report;
     }
 }
