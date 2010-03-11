@@ -18,10 +18,10 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @category   design_blank
- * @package    Mage_Bundle
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 ?>
@@ -34,7 +34,7 @@
     <?php echo $this->getSelectionQtyTitlePrice($_selections[0]) ?>
     <input type="hidden" name="bundle_option[<?php echo $_option->getId() ?>]" value="<?php echo $_selections[0]->getSelectionId() ?>" />
 <?php else:?>
-    <ul class="options-list" style="list-style:none">
+    <ul class="options-list">
         <?php foreach($_selections as $_selection): ?>
         <?php /* @var $_selection Mage_Bundle_Model_Selection */ ?>
         <li>

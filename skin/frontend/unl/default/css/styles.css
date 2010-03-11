@@ -359,6 +359,7 @@ dd.even {}
 
 /* Block: Account */
 .block-account {}
+.box-account { margin-bottom: 1.1em; }
 
 /* Block: Currency Switcher */
 .block-currency {}
