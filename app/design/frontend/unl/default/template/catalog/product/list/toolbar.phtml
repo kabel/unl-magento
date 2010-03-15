@@ -30,74 +30,79 @@
  *
  * @see Mage_Catalog_Block_Product_List_Toolbar
  */
-/* @var $this Mage_Catalog_Block_Product_List_Toolbar */
 ?>
 <?php if($this->getCollection()->getSize()): ?>
-<?php if( $this->isExpanded() ): ?>
-<table class="pager" cellspacing="0">
-    <tr>
-        <td class="sort-by">
-            <strong><?php echo $this->__('Sort by') ?>:</strong> 
+<div class="toolbar">
+    <div class="pager">
+        <p class="amount">
+            <?php if($this->getLastPageNum()>1): ?>
+                <?php echo $this->__('Items %s to %s of %s total', $this->getFirstNum(), $this->getLastNum(), $this->getTotalNum()) ?>
+            <?php else: ?>
+                <strong><?php echo $this->__('%s Item(s)', $this->getTotalNum()) ?></strong>
+            <?php endif; ?>
+        </p>
+
+        <div class="limiter">
+            <label><?php echo $this->__('Show') ?></label>
             <select onchange="setLocation(this.value)">
-            <?php $count = 1; ?>
-            <?php foreach($this->getAvailableOrders() as $_key=>$_order): ?>
-                <?php $_type = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', $_key)->getBackendType(); ?>
-                <?php if (in_array($_type, array('varchar', 'text'))): ?>
-                <?php $ascLabel = $this->__('A-Z'); ?>
-                <?php $descLabel = $this->__('Z-A'); ?>
-                <?php elseif (in_array($_type, array('int', 'decimal'))): ?>
-                <?php $ascLabel = $this->__('low to high'); ?>
-                <?php $descLabel = $this->__('high to low'); ?>
-                <?php elseif ($_type == 'datetime'): ?>
-                <?php $ascLabel = $this->__('earliest'); ?>
-                <?php $descLabel = $this->__('latest'); ?>
-                <?php else:?>
-                <?php $ascLabel = $this->__('ascending'); ?>
-                <?php $descLabel = $this->__('descending'); ?>
-                <?php endif; ?>
-                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $ascLabel ?></option>
-                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>><?php echo $_order ?> <?php echo $descLabel ?></option>
-                <?php $count++; ?>
+            <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
+                <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
+                    <?php echo $_limit ?>
+                </option>
             <?php endforeach; ?>
-            </select>
-        </td>
+            </select> <?php echo $this->__('per page') ?>
+        </div>
+
+        <?php echo $this->getPagerHtml() ?>
+
+    </div>
+
+    <?php if( $this->isExpanded() ): ?>
+    <div class="sorter">
         <?php if( $this->isEnabledViewSwitcher() ): ?>
-        <td class="a-right">
+        <p class="view-mode">
             <?php $_modes = $this->getModes(); ?>
             <?php if($_modes && count($_modes)>1): ?>
-            <strong><?php echo $this->__('View as') ?>:</strong>
-            <?php $count = 1; ?>
+            <label><?php echo $this->__('View as') ?>:</label>
             <?php foreach ($this->getModes() as $_code=>$_label): ?>
                 <?php if($this->isModeActive($_code)): ?>
-                    <?php echo $_label ?>
+                    <strong title="<?php echo $_label ?>" class="<?php echo strtolower($_code); ?>"><?php echo $_label ?></strong>&nbsp;
                 <?php else: ?>
-                    <a href="<?php echo $this->getModeUrl($_code) ?>"><?php echo $_label ?></a>
+                    <a href="<?php echo $this->getModeUrl($_code) ?>" title="<?php echo $_label ?>" class="<?php echo strtolower($_code); ?>"><?php echo $_label ?></a>&nbsp;
                 <?php endif; ?>
-                <?php if ($count < count($this->getModes())): ?>
-                    <span class="separator">|</span>
-                <?php endif; ?>
-                <?php $count++; ?>
             <?php endforeach; ?>
             <?php endif; ?>
-        </td>
+        </p>
         <?php endif; ?>
-        <?php if ($this->helper('rss/catalog')->getTagFeedUrl()): ?>
-        <td class="a-right"><a href="<?php echo $this->helper('rss/catalog')->getTagFeedUrl() ?>" class="nobr link-feed"><?php echo $this->__('Subscribe to Feed') ?></a></td>
-        <?php endif; ?>
-    </tr>
-</table>
-<?php endif; ?>
-<div class="pages<?php if( !$this->isExpanded() ): ?> bottom<?php endif; ?>">
-    <?php echo $this->getPagerHtml() ?>
     
-    <select class="limiter" onchange="setLocation(this.value)">
-        <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
-            <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
-                <?php echo $_limit ?><?php if(is_numeric($_limit)): ?> <?php echo $this->__('per page') ?><?php endif; ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-    <div class="clear"></div>
+        <div class="sort-by">
+            <label><?php echo $this->__('Sort by') ?></label>
+            <select onchange="setLocation(this.value)">
+            <?php foreach($this->getAvailableOrders() as $_key=>$_order): ?>
+                <?php $_type = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', $_key)->getBackendType();
+                if (in_array($_type, array('varchar', 'text'))) {
+                    $ascLabel = $this->__('A-Z');
+                    $descLabel = $this->__('Z-A'); 
+                } elseif (in_array($_type, array('int', 'decimal'))) {
+                    $ascLabel = $this->__('low to high');
+                    $descLabel = $this->__('high to low');
+                } elseif ($_type == 'datetime') {
+                    $ascLabel = $this->__('earliest');
+                    $descLabel = $this->__('latest');
+                } else {
+                    $ascLabel = $this->__('ascending');
+                    $descLabel = $this->__('descending');
+                } ?>
+                <option value="<?php echo $this->getOrderUrl($_key, 'asc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() != 'desc') { echo ' selected="selected"'; } ?>>
+                    <?php echo $_order ?> <?php echo $ascLabel ?>
+                </option>
+                <option value="<?php echo $this->getOrderUrl($_key, 'desc') ?>"<?php if ($this->isOrderCurrent($_key) && $this->getCurrentDirection() == 'desc') { echo ' selected="selected"'; } ?>>
+                    <?php echo $_order ?> <?php echo $descLabel ?>
+                </option>
+            <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 <?php endif ?>
-

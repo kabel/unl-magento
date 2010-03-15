@@ -8,7 +8,6 @@ class Unl_Core_Model_Observer
         $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
         $css = array(
             '/wdn/templates_3.0/css/all.css',
-            $design->getSkinUrl('css/reset.css'),
             $design->getSkinUrl('css/styles.css')
         );
         

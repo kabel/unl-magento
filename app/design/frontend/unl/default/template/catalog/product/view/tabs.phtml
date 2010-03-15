@@ -15,7 +15,7 @@
 <div class="wdn_tabs_content">
     <?php foreach ($this->getTabs() as $_index => $_tab): ?>
         <?php if($this->getChildHtml($_tab['alias'])): ?>
-            <div id="product_tabs_<?php echo $_tab['alias'] ?>_contents"><?php echo $this->getChildHtml($_tab['alias']) ?></div>
+            <div id="product_tabs_<?php echo $_tab['alias'] ?>_contents" class="product-tabs-content"><?php echo $this->getChildHtml($_tab['alias']) ?></div>
         <?php endif; ?>
     <?php endforeach; ?>
 </div>

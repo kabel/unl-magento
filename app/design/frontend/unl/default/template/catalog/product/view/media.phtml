@@ -78,7 +78,7 @@
     <?php foreach ($this->getGalleryImages() as $_image): ?>
         <li>
             <a href="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'image', $_image->getFile()); ?>" rel="colorbox" title="<?php echo $this->htmlEscape($_image->getLabel()) ?>">
-                <img src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(48, 48); ?>" width="48" height="48" alt="<?php echo $this->htmlEscape($_image->getLabel()) ?>" /></a>
+                <img src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(66); ?>" width="66" height="66" alt="<?php echo $this->htmlEscape($_image->getLabel()) ?>" /></a>
         </li>
     <?php endforeach; ?>
     </ul>

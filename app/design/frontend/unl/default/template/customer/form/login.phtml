@@ -40,9 +40,12 @@
         <div class="col2-set">
             <div class="col-1 new-users">
                 <div class="content">
-                    <h2><?php echo $this->__('UNL Students, Faculty, Staff') ?></h2>
-                    <div class="buttons-set">
-                        <button type="button" class="button" title="<?php echo $this->__('UNL Login') ?>" onclick="window.location='<?php echo Mage::helper('unl_cas')->getCasUrl() ?>';"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
+                    <div class="login-unl-cas">
+                        <h2><?php echo $this->__('UNL Students, Faculty, Staff') ?></h2>
+                        <p><?php echo $this->__('Login with the UNL Centralized Authentication Service. If this is your first time shopping with us, you will be prompted to create an account after logging in.') ?></p>
+                        <div class="buttons-set">
+                            <button type="button" class="button" title="<?php echo $this->__('UNL Login') ?>" onclick="window.location='<?php echo Mage::helper('unl_cas')->getCasUrl() ?>';"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
+                        </div>
                     </div>
                     <h2><?php echo $this->__('New Customers') ?></h2>
                     <p><?php echo $this->__('By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.') ?></p>

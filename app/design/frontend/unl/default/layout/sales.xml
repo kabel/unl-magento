@@ -42,9 +42,9 @@ Customer account pages, rendered for all tabs in dashboard
         <remove name="sale.reorder.sidebar"/>
     </checkout_onepage_index>
     <checkout_onepage_reorder>
-        <reference name="left">
+        <!-- reference name="left">
             <action method="unsetChild"><name>reorder</name></action>
-        </reference>
+        </reference -->
     </checkout_onepage_reorder>
 
     <customer_account>

@@ -22,7 +22,7 @@
  * @category    design
  * @package     base_default
  * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 -->
@@ -31,7 +31,7 @@
     <customer_account>
         <!-- Mage_Review -->
         <reference name="customer_account_navigation">
-            <action method="addLink" translate="label" module="review"><name>reviews</name><path>review/customer</path><label>Your Product Reviews</label></action>
+            <action method="addLink" translate="label" module="review"><name>reviews</name><path>review/customer</path><label>My Product Reviews</label></action>
         </reference>
 
     </customer_account>
@@ -69,7 +69,7 @@ Product reviews page
     <review_product_list translate="label">
         <label>Catalog Product Reviews List</label>
         <reference name="root">
-            <action method="setTemplate"><template>page/1column.phtml</template></action>
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
         </reference>
         <reference name="head">
             <action method="addJs"><script>varien/product.js</script></action>
@@ -100,7 +100,7 @@ Product reviews page
     <review_product_view translate="label">
         <label>Catalog Product Review View</label>
         <reference name="root">
-            <action method="setTemplate"><template>page/1column.phtml</template></action>
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
         </reference>
         <reference name="content">
             <block type="review/view" name="review_view"/>
