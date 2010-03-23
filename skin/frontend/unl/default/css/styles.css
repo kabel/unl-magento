@@ -634,7 +634,7 @@ tr.tax-details-first td { border-top:1px solid #d2d8db; }
 .featured2 .price-box { float:left; margin: 4px 13px 0 0; }
 
 /* Dairy Store Overrides */
-#maincontent .dairystore div.featured2 { border-width: 3px; border-color: #79BDE8; background-color: #FFF0D8; }
+#maincontent .dairystore div.featured2 { border:none; background:none; }
 #maincontent .dairystore .featured2 .sec_main { border-color: #79BDE8; background-color: #CC0000; color: #FFF; }
 /* ======================================================================================= */
 
@@ -1118,6 +1118,8 @@ f/********** Product Prices > */
 .checkout-agreements .agree { margin:0; padding:10px 0 10px 11px; }
 .checkout-agreements .agree input.checkbox { margin-right:6px; }
 .checkout-agreements .agree label { font-weight:bold; color:#555; }
+
+#checkout-review-table { margin-top: 1em; }
 
 .opc .checkout-agreements { padding:5px 30px; }
 .opc .checkout-agreements li { margin:20px 0 0; }

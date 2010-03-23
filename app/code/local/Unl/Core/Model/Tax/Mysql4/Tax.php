@@ -47,7 +47,7 @@ class Unl_Core_Model_Tax_Mysql4_Tax extends Mage_Tax_Model_Mysql4_Tax
                 'percent'               => 'tax.percent',
                 'orders_count'          => 'COUNT(DISTINCT(e.entity_id))',
                 'tax_base_amount_sum'   => 'SUM(tax.base_real_amount * e.base_to_global_rate)',
-                'base_sales_amount_sum' => 'SUM(tax.base_sales_amount * e.base_to_global_rate)'
+                'base_sales_amount_sum' => 'SUM(tax.base_sale_amount * e.base_to_global_rate)'
             );
 
             $select = $writeAdapter->select()

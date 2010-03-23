@@ -114,7 +114,7 @@
             <sales>
                 <!-- Adds the total product amount applied to the tax rate -->
                 <rewrite>
-                    <quote_address_total_tax>Unl_Core_Model_Sales_Quote_Address_Total_Tax</quote_address_total_tax>
+                    <order>Unl_Core_Model_Sales_Order</order>
                 </rewrite>
             </sales>
             <sales_mysql4>
@@ -126,6 +126,7 @@
             <tax>
                 <rewrite>
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
+                    <sales_total_quote_tax>Unl_Core_Model_Tax_Sales_Total_Quote_Tax</sales_total_quote_tax>
                 </rewrite>
             </tax>
             <tax_mysql4>

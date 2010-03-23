@@ -1060,6 +1060,9 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             $zip = $this->_runOnMatch($address, $matches);
         }
         
+        //FIXME: There should be some logic here that tries again to find a plus4 using only $address->getPostcode()
+        //       Simply group by fips_place_number and filter by zip_code and fips_place_number <> '' limit 1
+        
         return $zip;
     }
 }

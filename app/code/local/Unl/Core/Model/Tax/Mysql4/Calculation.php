@@ -14,10 +14,17 @@ class Unl_Core_Model_Tax_Mysql4_Calculation  extends Mage_Tax_Model_Mysql4_Calcu
 
         $select->join(array('rule'=>$this->getTable('tax/tax_calculation_rule')), 'rule.tax_calculation_rule_id = main_table.tax_calculation_rule_id', array('rule.priority', 'rule.position'));
         $select->join(array('rate'=>$this->getTable('tax/tax_calculation_rate')), 'rate.tax_calculation_rate_id = main_table.tax_calculation_rate_id', array('value'=>'rate.rate', 'rate.tax_country_id', 'rate.tax_region_id', 'rate.tax_postcode', 'rate.tax_calculation_rate_id', 'rate.code'));
+        
+        $select->joinLeft(array('title_table'=>$this->getTable('tax/tax_calculation_rate_title')), "rate.tax_calculation_rate_id = title_table.tax_calculation_rate_id AND title_table.store_id = '{$storeId}'", array('title'=>'IFNULL(title_table.value, rate.code)'));
 
         $select
             ->where("rate.tax_country_id = ?", $request->getCountryId())
             ->where("rate.tax_region_id in ('*', '', ?)", $request->getRegionId());
+        
+        $order = array('rule.priority ASC', 'rule.tax_calculation_rule_id ASC', 'rate.tax_country_id DESC', 'rate.tax_region_id DESC', 'rate.tax_postcode DESC', 'rate.rate DESC');
+        $select->order($order);
+        
+        $selectClone = clone $select;
         
         $in = array("'*'", "''", "?");
         if (preg_match('/^(\d{5})(?:-(\d{4}))?$/', $request->getPostcode(), $matches)) {
@@ -28,20 +35,27 @@ class Unl_Core_Model_Tax_Mysql4_Calculation  extends Mage_Tax_Model_Mysql4_Calcu
                 $region->load($request->getRegionId());
                 if ($region->getCountryId() == 'US' && $region->getCode() == 'NE') {
                     $boundry = Mage::getModel('unl_core/tax_boundary');
-                    $zip = $boundry->getZipFromAddress($request->getFullAddress());
+                    $zip = $boundry->getZipFromAddress($address);
                     if (!empty($zip)) {
                         $request->setPostcode($zip);
                     }
                 }
             }
         }
-        $select->where("rate.tax_postcode in (" . implode(',', $in) . ")", $request->getPostcode());
+        
+        $select
+            ->where("rate.zip_is_range IS NULL")
+            ->where("rate.tax_postcode in (" . implode(',', $in) . ")", $request->getPostcode());
+        
+        $selectClone
+            ->where("rate.zip_is_range IS NOT NULL")
+            ->where("? BETWEEN rate.zip_from AND rate.zip_to", $request->getPostcode());
 
-        $select->joinLeft(array('title_table'=>$this->getTable('tax/tax_calculation_rate_title')), "rate.tax_calculation_rate_id = title_table.tax_calculation_rate_id AND title_table.store_id = '{$storeId}'", array('title'=>'IFNULL(title_table.value, rate.code)'));
-
-        $order = array('rule.priority ASC', 'rule.tax_calculation_rule_id ASC', 'rate.tax_country_id DESC', 'rate.tax_region_id DESC', 'rate.tax_postcode DESC', 'rate.rate DESC');
-        $select->order($order);
-
+        /**
+         * @see ZF-7592 issue http://framework.zend.com/issues/browse/ZF-7592
+         */
+        $select = $this->_getReadAdapter()->select()->union(array('(' . $select . ')', '(' . $selectClone . ')'));
+        
         return $this->_getReadAdapter()->fetchAll($select);
     }
 }

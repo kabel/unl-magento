@@ -195,7 +195,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 $sql2->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
             }
             
-            $select->union(array($sql1, $sql2));
+            $select->union(array('(' . $sql1 . ')', '(' . $sql2 . ')'));
         }
 
         $this->_inited = true;
