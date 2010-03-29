@@ -33,12 +33,10 @@
 ?>
 
 <ul>
-<?php if(count($this->getStoreCategories())): ?>
+<?php $_menu = ''?>
 <?php foreach ($this->getStoreCategories() as $_category): ?>
-    <?php echo $this->drawItem($_category) ?>
+    <?php $_menu .= $this->drawItem($_category) ?>
 <?php endforeach ?>
-<?php else: ?>
-    <li>&nbsp;</li>
-<?php endif; ?>
+    <?php echo empty($_menu) ? '<li>&nbsp;</li>' : $_menu; ?>
 </ul>
 
