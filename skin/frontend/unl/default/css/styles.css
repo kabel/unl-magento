@@ -63,8 +63,8 @@ button.button span span { background-position:100% 0; padding:0 24px 0 9px; }
 button.disabled span { color:#bbb !important; }
 
 /*button.btn-cart span {}*/
-button.btn-checkout span { height:28px; border:0; background-image:url(../images/btn_checkout.png); padding:0 0 0 15px; font:bold 12px/26px Arial, Helvetica, sans-serif; color:#fff; }
-button.btn-checkout span span { padding:0 40px 0 25px; }
+button.btn-checkout span, button.btn-enter span { height:28px; border:0; background-image:url(../images/btn_checkout.png); padding:0 0 0 15px; font:bold 12px/26px Arial, Helvetica, sans-serif; color:#fff; }
+button.btn-checkout span span, button.btn-enter span span { padding:0 40px 0 25px; }
 button.btn-checkout.no-checkout span { background-position:0 100%; color:#cfcfcf; }
 button.btn-checkout.no-checkout span span { background-position:100% 100%; }
 

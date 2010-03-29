@@ -30,7 +30,7 @@
         <ul>
             <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
             <li>
-                <a href="#">Marketplace</a>
+                <a href="<?php echo (Mage::app()->getStore()->getCode() == 'default') ? '#' : (Mage::getBaseUrl() . '?___store=default') ?>">Marketplace</a>
                 <?php echo $this->getChildHtml('store_switcher') ?>
             </li>
             <li class="selected">
