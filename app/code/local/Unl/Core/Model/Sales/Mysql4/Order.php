@@ -88,7 +88,7 @@ class Unl_Core_Model_Sales_Mysql4_Order extends Mage_Sales_Model_Mysql4_Order
                 'base_shipping_amount'      => 'SUM(e.base_shipping_amount * e.base_to_global_rate)',
                 'base_discount_amount'      => new Zend_Db_Expr('0'),
                 'base_grand_total_amount'   => 'SUM((e.base_shipping_amount + IFNULL(e.base_shipping_tax_amount, 0)) * e.base_to_global_rate)',
-                'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced, 0) * e.base_to_global_rate)',
+                'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced + e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM((IFNULL(e.base_subtotal_refunded, 0) - IFNULL(e.base_discount_refunded, 0) + IFNULL(e.base_tax_refunded, 0) + IFNULL(e.base_shipping_refunded, 0)) * e.base_to_global_rate)',
                 'base_canceled_amount'      => 'SUM(IFNULL(e.base_shipping_canceled, 0))'
             );

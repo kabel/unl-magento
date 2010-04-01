@@ -47,8 +47,8 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             )
             : 'undefined';
 
-        $refreshStatsLink = $this->getUrl('*/*/refreshstatistics');
-        $directRefreshLink = $this->getUrl('*/*/refreshRecent', array('code' => $refreshCode));
+        $refreshStatsLink = $this->getUrl('adminhtml/report_sales/refreshstatistics');
+        $directRefreshLink = $this->getUrl('adminhtml/report_sales/refreshRecent', array('code' => $refreshCode));
 
         Mage::getSingleton('adminhtml/session')->addNotice(Mage::helper('adminhtml')->__('Last updated: %s. To refresh last day\'s <a href="%s">statistics</a>, click <a href="%s">here</a>', $updatedAt, $refreshStatsLink, $directRefreshLink));
         return $this;

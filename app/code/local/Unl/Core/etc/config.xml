@@ -345,6 +345,17 @@
                                     <children>
                                         <bursar translate="title">
                                             <title>Bursar Reports</title>
+                                            <children>
+                                                <cc translate="title">
+                                                    <title>Credit Card</title>
+                                                </cc>
+                                                <co translate="title">
+                                                    <title>Cost Object</title>
+                                                </co>
+                                                <nocap translate="title">
+                                                    <title>Non-Captured</title>
+                                                </nocap>
+                                            </children>
                                         </bursar>
                                     </children>
                                 </salesroot>
