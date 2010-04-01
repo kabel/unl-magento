@@ -16,7 +16,7 @@ class Unl_Core_Block_Adminhtml_Sales_Picklist_Grid extends Mage_Adminhtml_Block_
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        $this->getChild('store_switcher')->setTemplate('unl/store/switcher.phtml');
+        $this->getChild('store_switcher')->setTemplate('unl/report/store/switcher.phtml');
     }
     
     protected function _prepareCollection()

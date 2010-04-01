@@ -27,14 +27,51 @@ class Unl_Core_Model_Observer
         $type = 'Mage_Adminhtml_Block_Catalog_Category_Tree';
         if ($block instanceof $type) {
             $block->getChild('store_switcher')->setTemplate('unl/store/switcher/enhanced.phtml');
+            return;
         }
+        
+        $type = 'Mage_Adminhtml_Block_Dashboard';
+        if ($block instanceof $type) {
+            $block->getChild('store_switcher')->setTemplate('unl/store/switcher.phtml');
+            return;
+        }
+        
+        $reportSwitchers = array(
+            'Mage_Adminhtml_Block_Report_Product_Downloads',
+            'Mage_Adminhtml_Block_Report_Product_Lowstock',
+            'Mage_Adminhtml_Block_Report_Product_Ordered_Grid',
+            'Mage_Adminhtml_Block_Report_Product_Sold_Grid',
+            'Mage_Adminhtml_Block_Report_Product_Viewed_Grid',
+            'Mage_Adminhtml_Block_Report_Customer_Accounts_Grid',
+            'Mage_Adminhtml_Block_Report_Customer_Totals_Grid',
+            'Mage_Adminhtml_Block_Report_Customer_Orders_Grid'
+        );
+        foreach ($reportSwitchers as $type) {
+            if ($block instanceof $type) {
+                $block->getChild('store_switcher')->setTemplate('unl/report/store/switcher.phtml');
+                return;
+            }
+        }
+        
+        $reportSwitchers = array(
+            'Mage_Adminhtml_Block_Report_Sales_Sales',
+            'Mage_Adminhtml_Block_Report_Sales_Coupons'
+        );
+        foreach ($reportSwitchers as $type) {
+            if ($block instanceof $type) {
+                $block->getChild('store.switcher')->setTemplate('unl/report/store/switcher/enhanced.phtml');
+                return;
+            }
+        }
+        
         
         $type = 'Mage_Adminhtml_Block_Report_Sales_Tax_Grid';
         if ($block instanceof $type) {
             $block->setStoreSwitcherVisibility(false);
+            return;
         }
     }
-    
+        
     // These occur before the correctAdminBlocks (_beforeToHtml) calls
     public function beforeCoreBlockToHtml($observer)
     {
@@ -48,12 +85,14 @@ class Unl_Core_Model_Observer
                 'content'   => $block->getLayout()->createBlock('unl_core/adminhtml_permissions_user_edit_tab_scope')->toHtml(),
                 'after'     => 'roles_section',
             ));
+            return;
         }
         
         $type = 'Mage_Adminhtml_Block_Catalog_Product_Grid';
         if ($block instanceof $type) {
             $request = Mage::app()->getRequest();
             $request->setParam('_unlcore_std_product_grid', true);
+            return;
         }
         
         $type = 'Mage_Page_Block_Switch';
@@ -64,6 +103,7 @@ class Unl_Core_Model_Observer
                 usort($groups, array($this, '_compareStores'));
                 $block->setData('groups', $groups);
             }
+            return;
         }
     }
     

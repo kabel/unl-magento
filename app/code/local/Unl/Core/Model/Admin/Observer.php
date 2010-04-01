@@ -29,19 +29,54 @@ class Unl_Core_Model_Admin_Observer
         }
     }
     
-    public function setStoreParamFromUser($observer)
+    public function controllerActionPredispatch($observer)
     {
+        $storeIdActions = array(
+            'adminhtml_catalog_category_edit',
+            'adminhtml_catalog_product_categories',
+            'adminhtml_dashboard_index',
+            'adminhtml_dashboard_productsViewed',
+            'adminhtml_dashboard_customersNeweset',
+            'adminhtml_dashboard_customersMost',
+            'adminhtml_dashboard_ajaxBlock',
+            'adminhtml_dashboard_tunnel',
+            'adminhtml_report_customer_accounts',
+            'adminhtml_report_customer_totals',
+            'adminhtml_report_customer_orders',
+            'adminhtml_report_product_ordered',
+            'adminhtml_report_product_sold',
+            'adminhtml_report_product_viewed',
+            'adminhtml_report_product_lowstock',
+            'adminhtml_report_product_downloads',
+            'unl_core_sales_picklist_index'
+        );
+        $storeIdsActions = array(
+            'adminhtml_report_sales_sales',
+            'adminhtml_report_sales_coupons'
+        );
+        
+        $controller = $observer->getEvent()->getControllerAction();
+        if (in_array($controller->getFullActionName(), $storeIdActions)) {
+            $this->_setStoreParamFromUser('store');
+            return;
+        } elseif (in_array($controller->getFullActionName(), $storeIdsActions)) {
+            $this->_setStoreParamFromUser('store_ids');
+            return;
+        }
+    }
+    
+    protected function _setStoreParamFromUser($param) {
         $user  = Mage::getSingleton('admin/session')->getUser();
         $request = Mage::app()->getRequest();
         
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
-            if ($store = $request->getParam('store')) {
+            if ($store = $request->getParam($param)) {
                 if (!in_array($store, $scope)) {
-                    $request->setParam('store', current($scope));
+                    $request->setParam($param, current($scope));
                 }
             } else {
-                $request->setParam('store', current($scope));
+                $request->setParam($param, current($scope));
             }
         }
     }

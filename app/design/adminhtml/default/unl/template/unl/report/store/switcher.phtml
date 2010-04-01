@@ -1,17 +1,17 @@
-<?php 
+<?php
 $_user = Mage::getSingleton('admin/session')->getUser();
 $_scope = array();
 if ($_user->getScope()) {
     $_scope = explode(',', $_user->getScope());
 }
 ?>
-<?php if ($_websites = $this->getWebsites()): ?>
-<p class="switcher"><label for="store_switcher"><?php echo $this->__('Show List for') ?>:</label>
-<select name="store_switcher" id="store_switcher" class="left-col-block" onchange="return switchStore(this);">
-<?php if (empty($_scope) && $this->hasDefaultOption()): ?>
-    <option value=""><?php echo $this->getDefaultStoreName() ?></option>
-<?php endif; ?>
-    <?php foreach ($_websites as $_website): ?>
+<?php if ($this->isShow()): ?>
+<p class="switcher"><label for="store_switcher"><?php echo $this->__('Show Report for') ?>:</label>
+<select name="store_switcher" id="store_switcher" onchange="return switchStore(this);">
+     <?php if (empty($_scope)): ?>
+    <option value=""><?php echo $this->__('All Websites') ?></option>
+    <?php endif; ?>
+    <?php foreach ($this->getWebsiteCollection() as $_website): ?>
         <?php $showWebsite=false; ?>
         <?php foreach ($this->getGroupCollection($_website) as $_group): ?>
             <?php $showGroup=false; ?>
@@ -27,7 +27,7 @@ if ($_user->getScope()) {
                     <?php $showGroup = true; ?>
                     <optgroup label="&nbsp;&nbsp;&nbsp;<?php echo $_group->getName() ?>">
                 <?php endif; ?>
-                <option value="<?php echo $_store->getId() ?>"<?php if($this->getStoreId() == $_store->getId()): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $_store->getName() ?></option>
+                <option value="<?php echo $_store->getId() ?>"<?php if($this->getStoreId() == $_store->getId()): ?> selected<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $_store->getName() ?></option>
             <?php endforeach; ?>
             <?php if ($showGroup): ?>
                 </optgroup>
@@ -38,22 +38,11 @@ if ($_user->getScope()) {
 </p>
 <script type="text/javascript">
     function switchStore(obj){
-        var storeParam = obj.value ? 'store/'+obj.value + '/' : '';
+        var storeParam = obj.value ? 'store/' + obj.value + '/' : '';
         if(obj.switchParams){
             storeParam+= obj.switchParams;
         }
-    <?php if($this->getUseConfirm()): ?>
-        if(confirm("<?php echo $this->__('Please confirm site switching. All data that hasn\'t been saved will be lost.') ?>")){
-            setLocation('<?php echo $this->getSwitchUrl() ?>'+storeParam);
-            return true;
-        }
-        else {
-            obj.value = '<?php echo $this->getStoreId() ?>';
-        }
-        return false;
-    <?php else: ?>
         setLocation('<?php echo $this->getSwitchUrl() ?>'+storeParam);
-    <?php endif; ?>
     }
 </script>
 <?php endif; ?>

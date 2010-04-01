@@ -27,6 +27,9 @@
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
                     <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
+                    <report_product_downloads_grid>Unl_Core_Block_Adminhtml_Report_Product_Downloads_Grid</report_product_downloads_grid>
+                    <report_product_lowstock_grid>Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid</report_product_lowstock_grid>
+                    <report_review_product_grid>Unl_Core_Block_Adminhtml_Report_Review_Product_Grid</report_review_product_grid>
                     <report_sales_sales_grid>Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid</report_sales_sales_grid>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
                 </rewrite>
@@ -108,6 +111,9 @@
                 <!-- Nebraska Tax and Store Owned Products -->
                 <rewrite>
                     <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
+                    <product_ordered_collection>Unl_Core_Model_Reports_Mysql4_Product_Ordered_Collection</product_ordered_collection>
+                    <product_sold_collection>Unl_Core_Model_Reports_Mysql4_Product_Sold_Collection</product_sold_collection>
+                    <product_viewed_collection>Unl_Core_Model_Reports_Mysql4_Product_Viewed_Collection</product_viewed_collection>
                     <tax_collection>Unl_Core_Model_Reports_Mysql4_Tax_Collection</tax_collection>
                 </rewrite>
             </reports_mysql4>
@@ -230,6 +236,7 @@
                     </save_store>
                 </observers>
             </admin_user_save_before>
+            
             <adminhtml_block_html_before>
                 <observers>
                     <correct_admin_blocks>
@@ -239,6 +246,7 @@
                     </correct_admin_blocks>
                 </observers>
             </adminhtml_block_html_before>
+            
             <adminhtml_catalog_category_tree_can_add_root_category>
                 <observers>
                     <add_root_acl>
@@ -248,6 +256,7 @@
                     </add_root_acl>
                 </observers>
             </adminhtml_catalog_category_tree_can_add_root_category>
+            
             <cms_wysiwyg_config_prepare>
                 <observers>
                     <unl_prep_wysiwyg>
@@ -257,15 +266,17 @@
                     </unl_prep_wysiwyg>
                 </observers>
             </cms_wysiwyg_config_prepare>
-            <controller_action_predispatch_adminhtml_catalog_category_edit>
+            
+            <controller_action_predispatch>
 		        <observers>
-		            <category_auth>
+		            <unl_core_store_id>
 		                <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>setStoreParamFromUser</method>
-		            </category_auth>
+                        <method>controllerActionPredispatch</method>
+		            </unl_core_store_id>
 		        </observers>
-		    </controller_action_predispatch_adminhtml_catalog_category_edit>
+		    </controller_action_predispatch>
+		    
 		    <controller_action_predispatch_adminhtml_catalog_product_edit>
                 <observers>
                     <product_auth>
@@ -275,15 +286,7 @@
                     </product_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_edit>
-            <controller_action_predispatch_adminhtml_catalog_product_categories>
-                <observers>
-                    <category_auth>
-                        <type>singleton</type>
-                        <class>unl_core/admin_observer</class>
-                        <method>setStoreParamFromUser</method>
-                    </category_auth>
-                </observers>
-            </controller_action_predispatch_adminhtml_catalog_product_categories>
+            
             <eav_collection_abstract_load_before>
                 <observers>
                     <unlcore_before_eav_collection_load>
