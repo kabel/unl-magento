@@ -1495,11 +1495,11 @@ XMLRequest;
 				}
 		
 				//if insurance requested
-				if(!empty($pkg['insurance_code']))  {
+				if(!empty($pkg['insurance_type']))  {
 					$xmlRequest .= '
 	              <InsuredValue>
 	              	   <Type>
-	              	   	  <TypeCode>'.$pkg['insurance_type'].'</TypeCode>
+	              	   	  <Code>'.$pkg['insurance_type'].'</Code>
 	              	   </Type>
 	                   <CurrencyCode>'.$pkg['insurance_currencycode'].'</CurrencyCode>
 	                   <MonetaryValue>'.$pkg['insurance_value'].'</MonetaryValue>
