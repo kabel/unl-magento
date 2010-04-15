@@ -51,13 +51,13 @@
             <?php echo $this->getChildHtml('content') ?>
             <?php echo $this->getChildHtml('before_body_end') ?>
             <div class="clear"></div>
-            <?php virtual('/wdn/templates_3.0/includes/noscript.html'); ?>
+            <?php Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/noscript.html'); ?>
         </div>
         <div id="footer">
             <div id="footer_floater"></div>
             <div id="wdn_copyright"><!-- TemplateBeginEditable name="footercontent" -->
                 &copy; 2010 University of Nebraska&ndash;Lincoln | Lincoln, NE 68588
-                <?php virtual('/wdn/templates_3.0/includes/wdn.html'); ?>
+                <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/wdn.html'); ?>
                 | <a href="http://validator.unl.edu/check/referer">W3C</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS</a> <a href="http://www.unl.edu/" title="UNL Home" id="wdn_unl_wordmark"><img src="/wdn/templates_3.0/css/footer/images/wordmark.png" alt="UNL's wordmark" /></a> </div>
         </div>
     </div>
