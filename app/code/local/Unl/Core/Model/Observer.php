@@ -208,6 +208,20 @@ class Unl_Core_Model_Observer
         return $this;
     }
     
+    public function isCustomerAllowed($observer)
+    {
+        $_cat = $observer->getEvent()->getCategory();
+        if (!Mage::helper('unl_core')->isCustomerAllowed($_cat, false)) {
+            if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+                $message = 'You are not authorized to access this part of the catalog';
+            } else {
+                $message = 'You must be logged in and authorized to access this part of the catalog.';
+            }
+            Mage::getSingleton('core/session')->addNotice($message);
+            Mage::throwException($message);
+        }
+    }
+    
     public function isPaymentMethodActive($observer)
     {
         $method = $observer->getEvent()->getMethodInstance();

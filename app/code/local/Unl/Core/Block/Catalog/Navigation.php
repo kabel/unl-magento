@@ -5,9 +5,10 @@ class Unl_Core_Block_Catalog_Navigation extends Mage_Catalog_Block_Navigation
     public function drawItem($category, $level=0, $last=false)
     {
         $html = '';
-        if (!$category->getIsActive()) {
+        if (!$category->getIsActive() || !Mage::helper('unl_core')->isCustomerAllowed($category)) {
             return $html;
         }
+        
         if (Mage::helper('catalog/category_flat')->isEnabled()) {
             $children = $category->getChildrenNodes();
             $childrenCount = count($children);
