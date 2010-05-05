@@ -9,5 +9,15 @@
             <active>true</active>
             <codePool>local</codePool>
         </Unl_Cas>
+        
+        <AW_Deliverydate>
+            <active>true</active>
+            <codePool>local</codePool>
+        </AW_Deliverydate>
+        
+        <Webshopapps_Shippingoverride>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Webshopapps_Shippingoverride>
     </modules>
 </config>

@@ -1,0 +1,67 @@
+<script type="text/javascript">
+//<![CDATA[
+if(!window.toogleVisibilityOnObjects) {
+    var toogleVisibilityOnObjects = function(source, objects) {
+        if($(source) && $(source).checked) {
+            objects.each(function(item){
+                $(item).show();
+                $$('#' + item + ' .input-text').each(function(item) {
+                    item.removeClassName('validation-passed');
+                });
+            });
+
+
+        } else {
+            objects.each(function(item){
+                $(item).hide();
+                $$('#' + item + ' .input-text').each(function(sitem) {
+                    sitem.addClassName('validation-passed');
+                });
+
+                 $$('#' + item + ' .giftmessage-area').each(function(sitem) {
+                    sitem.value = '';
+                 });
+
+                 $$('#' + item + ' dl .input-text').each(function(sitem) {
+                     sitem.value = '';
+                 });
+            });
+
+        }
+
+    }
+}
+//]]>
+</script>
+<div class="delivery-date">
+    <h3><?php echo $this->__('Would you like this order to ship later?'); ?></h3>
+    <p class="control">
+        <input type="checkbox" id="toggle-delivery-date" value="1" onclick="toogleVisibilityOnObjects(this, ['delivery-date-container']);"<?php if(Mage::getSingleton('customer/session')->getDeliveryNotice() || Mage::getSingleton('customer/session')->getDeliveryDate()): ?> checked="checked"<?php endif; ?> class="checkbox" /><label for="toggle-delivery-date"><?php echo $this->__('Check this checkbox if you want to add a shipping date/comments.') ?></label>
+    </p>
+</div>
+<div id="delivery-date-container" class="delivery-date-form">
+    <dl>
+    	<dt class="input-box">
+    		<strong><?php echo $this->__("Delivery date");?></strong>
+    	</dt>
+    	<dd><div><?php echo $this->getCalendarHtml()?></div>
+    	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_TIME_NOTICE_ENABLED)): ?>
+    		<i><?php echo $this->__("Please note that orders after %s will be delivered the next day", $this->getFormattedTime())?></i>
+    	<?php endif; ?>
+    	</dd>
+    	
+    	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_NOTICE_ENABLED)): ?>
+    	<dt class="input-box">
+    		<strong><?php echo $this->__("Delivery Notice");?></strong>
+    	</dt>
+    	<dd><textarea name="aw_deliverydate_notice" cols="64" rows="10" class="input-text"><?php echo Mage::getSingleton('customer/session')->getDeliveryNotice()?></textarea></dd>
+    	<?php endif; ?>
+    
+    </dl>
+    <?php echo $this->getChildHtml('deliverydate_html_calendar'); ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    toogleVisibilityOnObjects('toggle-delivery-date', ['delivery-date-container']);
+//]]>
+</script>

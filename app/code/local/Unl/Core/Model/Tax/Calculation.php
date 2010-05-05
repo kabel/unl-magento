@@ -2,6 +2,27 @@
 
 class Unl_Core_Model_Tax_Calculation extends Mage_Tax_Model_Calculation
 {
+    /**
+     * Get cache key value for specific tax rate request
+     *
+     * @param   $request
+     * @return  string
+     */
+    protected function _getRequestCacheKey($request)
+    {
+        $store = $request->getStore();
+        if ($store instanceof Mage_Core_Model_Store) {
+            $key = $store->getId() . '|'; 
+        } elseif ($store) {
+            $key = $store . '|';
+        } else {
+            $key = '';
+        }
+        $key.= $request->getProductClassId() . '|' . $request->getCustomerClassId() . '|'
+            . $request->getCountryId() . '|'. $request->getRegionId() . '|' . $request->getPostcode();
+        return $key;
+    }
+    
     public function getRateRequest($shippingAddress = null, $billingAddress = null, $customerTaxClass = null, $store = null)
     {
         $address = new Varien_Object();

@@ -112,6 +112,14 @@
                 <?php echo $this->getChildHtml('crosssell') ?>
             </div>
             <div class="col-2">
+                <div class="totals top">
+                    <?php echo $this->getChildHtml('totals'); ?>
+                    <?php if(!$this->hasError()): ?>
+                    <ul class="checkout-types">
+                        <?php echo $this->getChildHtml('methods') ?>
+                    </ul>
+                    <?php endif; ?>
+                </div>
                 <?php echo $this->getChildHtml('coupon') ?>
                 <?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
                 <div class="totals">

@@ -994,8 +994,8 @@ f/********** Product Prices > */
 
 /* Shopping Cart Collateral boxes */
 .cart .cart-collaterals { padding:25px 0 0; }
-.cart .cart-collaterals .col2-set .col-1 { width:220px; }
-.cart .cart-collaterals .col2-set .col-2 { width:700px; background:#e5e5e5; }
+.cart .cart-collaterals .col2-set .col-1 { width:275px; }
+.cart .cart-collaterals .col2-set .col-2 { width:645px; background:#e5e5e5; }
 
 .cart .crosssell { border:1px solid #ddd; background:#f7f7f7; padding:10px; }
 .cart .crosssell h2 { font-size:12px; font-weight:bold; }
@@ -1037,6 +1037,7 @@ f/********** Product Prices > */
 
 /* Shopping Cart Totals */
 .cart .totals { background:#fff url(../images/bkg_cart-totals.gif) 0 0 no-repeat; padding:12px 0; }
+.cart .totals.top { background:#fff; padding-top:0; }
 .cart .totals table { float:right; width:400px; margin:0 0 8px; }
 .cart .totals td { padding:0 0 0 15px; }
 .cart .totals tr.last td {}
@@ -1087,6 +1088,8 @@ f/********** Product Prices > */
 .tool-tip .btn-close { margin:-9px -14px 0; text-align:right; }
 .tool-tip .btn-close a { display:block; margin:0 0 0 auto; width:12px; height:12px; background:url(../images/btn_window_close.gif) 100% 0 no-repeat; text-align:left; text-indent:-999em; overflow:hidden; }
 .tool-tip .tool-tip-content { padding:5px; }
+
+.delivery-date p.control { color:#8e8d8b; }
 
 /* Gift Messages */
 .gift-messages h3 { font-size:12px; font-weight:bold; color:#e87403; }
@@ -1193,8 +1196,8 @@ f/********** Product Prices > */
 #opc-login h4 { font-size:1em; font-weight:bold; margin:0; color:#2f2f2f; }
 
 #opc-shipping_method .buttons-set { border-top:0; }
-.opc .gift-messages-form { margin:0 -30px; background:#f4f4f4; border:1px solid #ddd; border-width:1px 0; padding:22px 24px 22px 30px; }
-.opc .gift-messages-form .inner-box { padding:5px; height:260px; overflow:auto; }
+.opc .gift-messages-form, .opc .delivery-date-form { margin:0 -30px; background:#f4f4f4; border:1px solid #ddd; border-width:1px 0; padding:22px 24px 22px 30px; }
+.opc .gift-messages-form .inner-box, .opc .delivery-date-form .inner-box { padding:5px; height:260px; overflow:auto; }
 
 #opc-review .step { padding:0; }
 #opc-review .product-name { font-weight:bold; }
@@ -1224,7 +1227,7 @@ f/********** Product Prices > */
 
 .multiple-checkout .col2-set,
 .multiple-checkout .col3-set { background:#fbfbfb; border:1px solid #ddd; margin:0 0 25px; padding:20px; }
-.multiple-checkout .col2-set h2.legend { margin:-20px -20px 15px; padding:3px 10px; background:#777; border-bottom:1px solid #777; position:relative; color:#fff; }
+#maincontent .multiple-checkout .col2-set h2.legend { margin:-20px -20px 15px; padding:3px 10px; background:#cc0000; border-bottom:1px solid #cc0000; position:relative; color:#fff; }
 .multiple-checkout .col2-set h3.legend { margin:0 0 10px; }
 .multiple-checkout .col2-set .divider { margin:0 -20px; padding:25px 0; position:relative; }
 .multiple-checkout .box { margin:0 0 15px; }
@@ -1467,3 +1470,4 @@ f/********** Product Prices > */
 /* ======================================================================================= */
 
 .mceContentBody { float: none !important; width: 940px; margin: auto; background: none; }
+.calendar table { border-collapse: separate; }

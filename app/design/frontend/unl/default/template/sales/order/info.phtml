@@ -81,6 +81,20 @@
                 <?php else: ?>
                     <p><?php echo $this->helper('sales')->__('No shipping information available'); ?></p>
                 <?php endif; ?>
+                
+                <?php if ($_order->getAwDeliverydateDate()): ?>
+                <br/>
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong> 
+                &nbsp;
+                <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
+                <?php endif; ?>         
+                
+                <?php if ($_order->getAwDeliverydateNotice()): ?>
+                <br/>
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong><br/>
+                &nbsp;
+                <?php echo $_order->getAwDeliverydateNotice();?>
+                <?php endif; ?>
             </div>
         </div>
     </div>

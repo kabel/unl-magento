@@ -67,6 +67,11 @@
                                     <tr>
                                         <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
                                             {{var order.getShippingAddress().format('html')}}
+                                            {{depend order.getAwDeliverydateDate()}}
+                                            <br />
+                                            <strong>Delivery Date</strong>: {{var order.getAwDeliverydateDate()}}<br />
+                                            <strong>Delivery Notice</strong>: {{htmlescape var=$order.getAwDeliverydateNotice()}}
+                                            {{/depend}}
                                             &nbsp;
                                         </td>
                                         <td>&nbsp;</td>
