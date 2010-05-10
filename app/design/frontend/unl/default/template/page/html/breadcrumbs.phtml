@@ -29,13 +29,21 @@
     <div id="breadcrumbs">
         <ul>
             <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
+            <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+            <li class="selected">
+                <a href="<?php echo $this->getBaseUrl(); ?>">Marketplace</a>
+            </li>
+            <?php else: ?>
             <li>
-                <a href="<?php echo (Mage::app()->getStore()->getCode() == 'default') ? '#' : (Mage::getBaseUrl() . '?___store=default') ?>">Marketplace</a>
-                <?php echo $this->getChildHtml('store_switcher') ?>
+                <a href="<?php echo Mage::getBaseUrl() . '?___store=default'; ?>">Marketplace</a>
+                <div class="storednav">
+                    <?php echo $this->getChildHtml('store_switcher') ?>
+                </div>
             </li>
             <li class="selected">
                 <a href="<?php echo $this->getBaseUrl(); ?>">Shop <?php echo $this->__(Mage::getStoreConfig('design/header/storearticle')) ?> <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?></a>
             </li>
+            <?php endif;?>
             <?php if($crumbs && is_array($crumbs)): ?>
             <?php foreach($crumbs as $_crumbName=>$_crumbInfo): ?>
                 <?php if ($_crumbName === 'home') { continue; } ?>
@@ -55,7 +63,11 @@
     </div>
     <div id="wdn_navigation_wrapper">
         <div id="navigation">
+        <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+            <?php echo $this->getChildHtml('store_switcher') ?>
+        <?php else: ?>
             <?php echo $this->getChildHtml('topMenu') ?>
+        <?php endif; ?>
         </div>
     </div>
 </div>

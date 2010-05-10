@@ -32,11 +32,11 @@
  */
 ?>
 <?php if(count($this->getGroups())>1): ?>
-<div class="storednav">
-    <ul>
-        <?php foreach ($this->getGroups() as $_group): ?>
-            <li><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->htmlEscape($_group->getName()) ?></a></li>
-        <?php endforeach; ?>
-    </ul>
-</div>
+<ul>
+    <?php foreach ($this->getGroups() as $_group): ?>
+    <?php if (!in_array('default', $_group->getStoreCodes())): ?>
+        <li><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->htmlEscape($_group->getName()) ?></a></li>
+    <?php endif; ?>
+    <?php endforeach; ?>
+</ul>
 <?php endif; ?>

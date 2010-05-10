@@ -1231,7 +1231,7 @@ XMLAuth;
         		'width' => $pkg->getWidth(),
         		'length' => $pkg->getLength(),
 				'reference_code' => 'TN',  //2 chars, optional - default 'TN' (Transaction Reference Number) - Order ID
-				'reference_value' => substr($orderid.' pkg'.$pkg->getPackageNumber(), 0, 35), //35 chars, optional - order_id
+				'reference_value' => substr($orderid, 0, 35), //35 chars, optional - order_id
         	);
         	//reference codes can only be used in US domestic shipments
         	if($shipaddress->getCountryId() != 'US' || $store->getConfig('shipping/origin/country_id') != 'US')  {
@@ -2078,12 +2078,15 @@ XMLVal;
 	            //add the tracking number
 				$track = Mage::getModel('sales/order_shipment_track')
 					->setCarrierCode('ups')
+					->setTitle('UPS')
 					->setNumber($respackage['tracking_number'])
 					->setShipment($shipment);
 				$shipment->addTrack($track);
 				
 				//save the shipment
 				$shipment->register();
+				$shipment->setEmailSent(true);
+				$shipment->getOrder()->setCustomerNoteNotify(true);
 				$transactionSave = Mage::getModel('core/resource_transaction')
 		            ->addObject($shipment)
 		            ->addObject($shipment->getOrder())
