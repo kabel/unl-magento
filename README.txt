@@ -1,3 +1,6 @@
+== NOTICE ==
+Because the files in the app/code/local/AW and app/code/local/Webshopapps are purchased extentions to the magento project, they are NOT distributable. For this reason, anonymous access to the codebase has been blocked.
+
 == INSTALLATION ==
 
 The 1.4 branch of magento requires a little fine tuning for configuration purposes.
@@ -14,6 +17,8 @@ For reference the two SVN projects are hosted at the following locations:
 cd /path/to/magento
 ln -s /path/to/unl-magento/app/code/community/Zenprint app/etc/code/community/
 ln -s /path/to/unl-magento/app/code/local/Unl app/code/local/Unl
+ln -s /path/to/unl-magento/app/code/local/AW app/code/local/AW
+ln -s /path/to/unl-magento/app/code/local/Webshopapps app/code/local/Webshopapps
 ln -s /path/to/unl-magento/app/design/frontend/unl app/design/frontend/unl
 ln -s /path/to/unl-magento/app/design/adminhtml/default/unl/ app/design/adminhtml/default/unl
 ln -s /path/to/unl-magento/app/etc/modules/Unl_All.xml app/etc/modules/
