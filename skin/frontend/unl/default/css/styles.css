@@ -1470,4 +1470,5 @@ f/********** Product Prices > */
 /* ======================================================================================= */
 
 .mceContentBody { float: none !important; width: 940px; margin: auto; background: none; }
+.calendar { line-height: 18px; }
 .calendar table { border-collapse: separate; }
