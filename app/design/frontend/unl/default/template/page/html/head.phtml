@@ -39,7 +39,7 @@
     
     $Id: php.fixed.dwt.php 536 2009-07-23 15:47:30Z bbieber2 $
 -->
-<title><?php echo $this->getTitle() ?></title>
+<title><?php echo substr($this->getTitle(), 0, 3) == 'UNL' ? $this->getTitle() : ('UNL | Marketplace | ' . $this->getTitle()) ?></title>
 <link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
 <script type="text/javascript">
 //<![CDATA[

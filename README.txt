@@ -83,7 +83,6 @@ General > Design (left tab)
         Current Package Name: unl
     HTML Head:
         Default Title: UNL | Marketplace
-        Title Prefix: UNL | Marketplace |
         Default Keywords: E-commerce
     Footer:
         Copyright: &copy; 2010 University of Nebraska&ndash;Lincoln | Lincoln, NE 68588 | 402-472-7211 | <a href="http://www.unl.edu/ucomm/aboutunl/" title="Click here to know more about UNL">About UNL</a> | <a href="http://www1.unl.edu/comments/" title="Click here to direct your comments and questions">comments?</a>
