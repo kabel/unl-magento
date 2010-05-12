@@ -2,22 +2,15 @@
 <layout version="0.1.0">
 	<checkout_onepage_index>
 		 <reference name="head">
-		 	 <action method="addJs"><script>varien/product.js</script></action>
-            <action method="addItem"><type>js_css</type><name>calendar/calendar-win2k-1.css</name><params/><!--<if/><condition>can_load_calendar_js</condition>--></action>
-            <action method="addItem"><type>js</type><name>calendar/calendar.js</name><!--<params/><if/><condition>can_load_calendar_js</condition>--></action>
-            <action method="addItem"><type>js</type><name>calendar/calendar-setup.js</name><!--<params/><if/><condition>can_load_calendar_js</condition>--></action>
+            <action method="addItem"><type>skin_js</type><name>js/jquery-ui.js</name></action>
         </reference>
         <reference name="checkout.onepage.shipping_method.available">
-            <block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml">
-               <block type="core/html_calendar" name="deliverydate_html_calendar" as="deliverydate_html_calendar" template="page/js/calendar.phtml"/>
-            </block>
+            <block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml" />
         </reference>
 	</checkout_onepage_index>
 	<checkout_onepage_shippingmethod>
 		<reference name="root">
-        	<block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml">
-        	   <block type="core/html_calendar" name="deliverydate_html_calendar" as="deliverydate_html_calendar" template="page/js/calendar.phtml"/>
-        	</block>
+        	<block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml" />
 		</reference>
     </checkout_onepage_shippingmethod>
 </layout>	 

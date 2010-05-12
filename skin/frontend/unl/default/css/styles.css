@@ -1090,6 +1090,7 @@ f/********** Product Prices > */
 .tool-tip .tool-tip-content { padding:5px; }
 
 .delivery-date p.control { color:#8e8d8b; }
+.ui-datepicker-trigger { margin-left:4px; vertical-align:middle; }
 
 /* Gift Messages */
 .gift-messages h3 { font-size:12px; font-weight:bold; color:#e87403; }
