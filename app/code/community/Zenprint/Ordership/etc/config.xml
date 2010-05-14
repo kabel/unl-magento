@@ -78,6 +78,7 @@
         		</entities>
         		<rewrite>
         			<shipment_package>Zenprint_Ordership_Model_Mysql4_Shipment_Package</shipment_package>
+        			<shipment_package_collection>Zenprint_Ordership_Model_Mysql4_Shipment_Package_Collection</shipment_package_collection>
         		</rewrite>
         	</shipping_mysql4>
         </models>

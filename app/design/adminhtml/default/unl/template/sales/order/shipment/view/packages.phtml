@@ -1,0 +1,31 @@
+<?php /*@var $this Unl_Core_Block_Adminhtml_Sales_Order_Shipment_View_Packages */ ?>
+<h4>Packages</h4>
+<div class="field-row grid" id="shipment_packages">
+<table cellspacing="0" class="data">
+    <col width="100" />
+    <col />
+    <col />
+    <thead>
+        <tr class="headings">
+            <th><?php echo Mage::helper('sales')->__('Carrier') ?></th>
+            <th><?php echo Mage::helper('sales')->__('Number') ?></th>
+            <th class="last"><?php echo Mage::helper('sales')->__('Action') ?></th>
+        </tr>
+    </thead>
+<?php if($_packages = $this->getPackages()): ?>
+    <tbody>
+    <?php $i=0;foreach ($_packages as $_pkg):$i++ ?>
+        <tr class="<?php echo ($i%2==0)?'even':'odd' ?>">
+            <td><?php echo $this->getCarrierTitle($_pkg->getCarrier()) ?></td>
+            <td><?php echo $_pkg->getTrackingNumber() ?></td>
+            <td class="last">
+                <?php echo Mage::helper('sales')->__('Label') ?>:
+                <a href="<?php echo $this->getUrl('ordership/index/label/id/' . $_pkg->getId()) ?>"><?php echo Mage::helper('sales')->__('View') ?></a>
+                <a href="<?php echo $this->getUrl('ordership/index/labelpdf/id/' . $_pkg->getId())?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+<?php endif; ?>
+</table>
+</div>

@@ -5,6 +5,11 @@
 	        <action method="unsetChild"><name>store.switcher</name></action>
 	    </reference>
 	</adminhtml_report_sales_tax>
+	<adminhtml_sales_order_shipment_view>
+	   <reference name="form">
+	       <block type="unl_core/adminhtml_sales_order_shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml"></block>
+	   </reference>
+	</adminhtml_sales_order_shipment_view>
 	<unl_core_report_sales_bursar_cc>
 	   <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_cc" template="report/grid/container.phtml" name="sales.report.grid.container">

@@ -121,9 +121,11 @@
                 </rewrite>
             </reports_mysql4>
             <sales>
-                <!-- Adds the total product amount applied to the tax rate -->
                 <rewrite>
+                    <!-- Adds the total product amount applied to the tax rate -->
                     <order>Unl_Core_Model_Sales_Order</order>
+                    <!-- Adds an event to dispatch before a product is added to a quote -->
+                    <quote>Unl_Core_Model_Sales_Quote</quote>
                 </rewrite>
             </sales>
             <sales_mysql4>
