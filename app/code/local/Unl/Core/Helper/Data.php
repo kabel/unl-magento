@@ -7,7 +7,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return file_get_contents('http://' . Mage::helper('core/http')->getHttpHost() . $path);
     }
     
-    public function isCustomerAllowed($category, $reload = true)
+    public function isCustomerAllowedCategory($category, $reload = true)
     {
         $_cat = $category;
         if (!($category instanceof Mage_Catalog_Model_Category)) {
@@ -17,6 +17,23 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
         
         if ($acl = $_cat->getGroupAcl()) {
+            $session = Mage::getSingleton('customer/session');
+            if (!empty($acl) && !$session->isLoggedIn()) {
+                return false;
+            }
+            
+            $customer = $session->getCustomer();
+            if (!in_array($customer->getGroupId(), $acl)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    public function isCustomerAllowedProduct($product)
+    {
+        if ($acl = $product->getProductGroupAcl()) {
             $session = Mage::getSingleton('customer/session');
             if (!empty($acl) && !$session->isLoggedIn()) {
                 return false;

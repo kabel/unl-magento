@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.9</version>
+            <version>0.1.10</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -184,10 +184,19 @@
                     <catalog_acl>
                         <type>singleton</type>
                         <class>unl_core/observer</class>
-                        <method>isCustomerAllowed</method>
+                        <method>isCustomerAllowedCategory</method>
                     </catalog_acl>
                 </observers>
             </catalog_controller_category_init_after>
+            <catalog_controller_product_init_after>
+                <observers>
+                    <catalog_acl>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>isCustomerAllowedProduct</method>
+                    </catalog_acl>
+                </observers>
+            </catalog_controller_product_init_after>
             <core_block_abstract_to_html_before>
                 <observers>
                     <unlcore_before_block_to_html>
@@ -226,6 +235,20 @@
             </sales_order_save_after>
         </events>
     </global>
+    
+    <frontend>
+        <events>
+            <sales_quote_product_add_before>
+                <observers>
+                    <catalog_acl>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>onAddProductToQuote</method>
+                    </catalog_acl>
+                </observers>
+            </sales_quote_product_add_before>
+        </events>
+    </frontend>
     
     <admin>
         <routers>
