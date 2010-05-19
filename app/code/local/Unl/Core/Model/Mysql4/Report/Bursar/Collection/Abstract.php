@@ -95,6 +95,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'base_discount_amount'      => 'SUM(oi.base_discount_amount * e.base_to_global_rate)',
                 'base_grand_total_amount'   => 'SUM((oi.base_row_total + oi.base_tax_amount - oi.base_discount_amount) * e.base_to_global_rate)',
                 'base_invoiced_amount'      => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - oi.base_discount_invoiced) * e.base_to_global_rate)',
+                'base_payout_amount'        => 'SUM((oi.base_row_total - ((oi.base_row_invoiced + oi.base_tax_invoiced - oi.base_discount_invoiced) * (s.unl_rate / 100))) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM(oi.base_amount_refunded * e.base_to_global_rate)',
                 'base_canceled_amount'      => 'SUM(oi.base_price * oi.qty_canceled * e.base_to_global_rate)'
             );
@@ -110,6 +111,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'base_discount_amount'      => new Zend_Db_Expr('0'),
                 'base_grand_total_amount'   => 'SUM((e.base_shipping_amount + IFNULL(e.base_shipping_tax_amount, 0)) * e.base_to_global_rate)',
                 'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced + e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
+                'base_payout_amount'        => 'SUM(e.base_shipping_amount * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM((IFNULL(e.base_subtotal_refunded, 0) - IFNULL(e.base_discount_refunded, 0) + IFNULL(e.base_tax_refunded, 0) + IFNULL(e.base_shipping_refunded, 0)) * e.base_to_global_rate)',
                 'base_canceled_amount'      => 'SUM(IFNULL(e.base_shipping_canceled, 0))'
             );

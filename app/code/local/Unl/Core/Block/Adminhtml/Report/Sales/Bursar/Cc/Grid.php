@@ -110,6 +110,14 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Cc_Grid extends Unl_Core_Bloc
             'total'         => 'sum',
             'sortable'      => false
         ));
+        
+        $this->addColumn('base_payout_amount', array(
+            'header'        => Mage::helper('sales')->__('Payout'),
+            'type'          => 'currency',
+            'currency_code' => $currency_code,
+            'index'         => 'base_payout_amount',
+            'sortable'      => false
+        ));
 
         $this->addColumn('base_refunded_amount', array(
             'header'        => Mage::helper('sales')->__('Refunded'),

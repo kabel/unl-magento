@@ -70,6 +70,24 @@ class Unl_Core_Model_Observer
             $block->setStoreSwitcherVisibility(false);
             return;
         }
+        
+        $type = 'Mage_Adminhtml_Block_System_Store_Edit_Form';
+        if ($block instanceof $type) {
+            /* @var $form Varien_Data_Form */
+            $form = $block->getForm();
+            if ($fs = $form->getElement('store_fieldset')) {
+                $storeModel = Mage::registry('store_data');
+                $fs->addField('store_unl_rate', 'text', array(
+                    'name'      => 'store[unl_rate]',
+                    'label'     => Mage::helper('core')->__('Marketplace Fee'),
+                    'value'     => $storeModel->getUnlRate(),
+                    'required'  => false,
+                    'disabled'  => $storeModel->isReadOnly(),
+                    'class'     => 'validate-percents'
+                ));
+            }
+            return;
+        }
     }
         
     // These occur before the correctAdminBlocks (_beforeToHtml) calls
