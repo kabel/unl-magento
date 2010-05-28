@@ -358,7 +358,7 @@ tr.tax-details-first td { border-top:1px solid #d2d8db; }
     height:35px;
     padding-left: 8px;
     position:relative;
-    margin-bottom: 1.1em;
+    margin: 11px 0 1.1em;
 }
 .subnav .subnav_wrapper { 
     background:transparent url(../images/breadcrumbBarSprite3.png) no-repeat scroll 100% -72px;

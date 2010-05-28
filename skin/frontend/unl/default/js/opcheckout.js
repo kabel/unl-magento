@@ -91,7 +91,7 @@ Checkout.prototype = {
     gotoSection: function(section)
     {
         if (_gaq) {
-        	_gaq.push(['_trackPageview', '/checkout/' + section + '/']);
+        	_gaq.push(['_trackPageview', '/checkout/onepage/' + section + '/']);
         }
         
     	section = $('opc-'+section);
