@@ -90,7 +90,7 @@ Checkout.prototype = {
 
     gotoSection: function(section)
     {
-        if (_gaq) {
+        if (typeof _gaq != "undefined") {
         	_gaq.push(['_trackPageview', '/checkout/onepage/' + section + '/']);
         }
         

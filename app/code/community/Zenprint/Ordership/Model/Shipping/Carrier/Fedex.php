@@ -194,7 +194,7 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
         $request['RequestedShipment'] = array(
             'DropoffType' => $this->getUnderscoreCodeFromCode($r->getDropoffType()),
             'ShipTimestamp' => date('c'),
-            'PackagingType' => $r->getPackaging()
+            'PackagingType' => $this->getUnderscoreCodeFromCode($r->getPackaging())
         );
         
         if($this->getConfigData('third_party') == 1)  {
@@ -245,11 +245,11 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
         
         try {
             $response = $client->getRates($request);
+            
+            if ($response->HighestSeverity == 'FAILURE') {
+                $response = null;
+            }
         } catch (SoapFault $fault) {
-            $response = null;
-        }
-        
-        if ($response->HighesetSeverity == 'FAILURE') {
             $response = null;
         }
         
@@ -610,7 +610,7 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
         //get the path to the WSDL
         $wsdlpath = dirname(__FILE__).'/wsdl/TrackService_v4.wsdl';
     
-        if($store->getConfig('carriers/fedex/test_mode'))  {
+        if($this->getConfigData('test_mode'))  {
             $wsdlpath = dirname(__FILE__).'/wsdl/testTrackService_v4.wsdl';
         }
         
@@ -833,7 +833,7 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
 		$request['RequestedShipment'] = array('ShipTimestamp' => date('c'),
 			'DropoffType' => $this->getUnderscoreCodeFromCode($store->getConfig('carriers/fedex/dropoff')), // valid values REGULAR_PICKUP, REQUEST_COURIER, DROP_BOX, BUSINESS_SERVICE_CENTER and STATION
 			'ServiceType' => $servicetype,
-			'PackagingType' => $this->getUnderscoreCodeFromCode($store->getConfig('carriers/fedex/packaging')), // valid values FEDEX_BOK, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
+			'PackagingType' => $package->getContainerCode(), // valid values FEDEX_BOK, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
 			'Shipper' => array('Contact' => array('CompanyName' => $order->getStore()->getWebsite()->getName(),
 					'PhoneNumber' => $store->getConfig('shipping/origin/phone')),
 				'Address' => array(
@@ -860,6 +860,7 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
 			),
 			'RateRequestTypes' => array('ACCOUNT'), // valid values ACCOUNT and LIST
 			'PackageCount' => 1,
+			'PackageDetail' => 'INDIVIDUAL_PACKAGES',
 			'RequestedPackageLineItems' => array('0' => array(
 			    'Weight' => array('Value' => sprintf("%01.1f", round($package->getWeight(), 1)), 'Units' => substr($package->getWeightUnitCode(), 0, 2)), // valid values LB or KG
 				'CustomerReferences' => array('0' => array('CustomerReferenceType' => 'CUSTOMER_REFERENCE', 'Value' => $orderid)), // valid values CUSTOMER_REFERENCE, INVOICE_NUMBER, P_O_NUMBER and SHIPMENT_INTEGRITY
@@ -869,7 +870,7 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
 		
     	//dimensions
     	if($package->getDimensionUnitCode())  {
-    		$request['RequestedShipment']['RequestedPackageLineItems']['Dimensions'] = array('Length' => $package->getLength(), 'Width' => $package->getWidth(), 'Height' => $package->getHeight(),
+    		$request['RequestedShipment']['RequestedPackageLineItems'][0]['Dimensions'] = array('Length' => $package->getLength(), 'Width' => $package->getWidth(), 'Height' => $package->getHeight(),
 					'Units' => $package->getDimensionUnitCode()); // valid values IN or CM
     	}
     	
