@@ -41,7 +41,7 @@
         <dd>
             <ol>
             <?php foreach ($_categories as $_category): ?>
-                <?php if($_category->getIsActive() && Mage::helper('unl_core')->isCustomerAllowed($_category)): ?>
+                <?php if($_category->getIsActive() && Mage::helper('unl_core')->isCustomerAllowedCategory($_category)): ?>
                 <li>
                     <a href="<?php echo $this->getCategoryUrl($_category) ?>"<?php if ($this->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $this->htmlEscape($_category->getName()) ?></a> (<?php echo $_category->getProductCount() ?>)
                 </li>
