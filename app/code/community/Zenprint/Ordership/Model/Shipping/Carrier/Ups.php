@@ -2078,7 +2078,7 @@ XMLVal;
 	            //add the tracking number
 				$track = Mage::getModel('sales/order_shipment_track')
 					->setCarrierCode('ups')
-					->setTitle('UPS')
+					->setTitle($this->getConfigData('title'))
 					->setNumber($respackage['tracking_number'])
 					->setShipment($shipment);
 				$shipment->addTrack($track);
