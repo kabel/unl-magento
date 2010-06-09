@@ -66,6 +66,8 @@
             <div class="col right">
                 <?php echo $this->getChildHtml('right') ?>
             </div>
+            
+            <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/noscript.html'); ?>
         </div>
         <?php echo $this->getChildHtml('footer') ?>
     </div>
