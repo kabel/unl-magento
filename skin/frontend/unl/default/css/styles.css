@@ -312,17 +312,27 @@ tr.tax-details-first td { border-top:1px solid #d2d8db; }
 #maincontent .std dl,
 #maincontent .std p,
 #maincontent .std address,
-#maincontent .std blockquote { margin:0 0 1.1em; padding:0; }
-#maincontent .std ul { list-style:disc outside; padding-left:25px; }
-#maincontent .std ol { list-style:decimal outside; padding-left:25px; }
+#maincontent .std blockquote,
+#maincontent.mceContentBody ul,
+#maincontent.mceContentBody ol,
+#maincontent.mceContentBody dl,
+#maincontent.mceContentBody p,
+#maincontent.mceContentBody address,
+#maincontent.mceContentBody blockquote { margin:0 0 1.1em; padding:0; }
+#maincontent .std ul, #maincontent.mceContentBody ul { list-style:disc outside; padding-left:25px; }
+#maincontent .std ol, #maincontent.mceContentBody ol { list-style:decimal outside; padding-left:25px; }
 #maincontent .std ul ul,
 #maincontent .std ol ol,
 #maincontent .std ul ol,
-#maincontent .std ol ul { margin:.5em 0; }
-#maincontent .std dt { font-weight:bold; }
-#maincontent .std dd { padding-left:25px; }
-#maincontent .std blockquote { font-style:italic; padding:0 0 0 1.5em; }
-#maincontent .std address { font-style:normal; }
+#maincontent .std ol ul,
+#maincontent.mceContentBody ul ul,
+#maincontent.mceContentBody ol ol,
+#maincontent.mceContentBody ul ol,
+#maincontent.mceContentBody ol ul { margin:.5em 0; }
+#maincontent .std dt, #maincontent.mceContentBody dt { font-weight:bold; }
+#maincontent .std dd, #maincontent.mceContentBody dd { padding-left:25px; }
+#maincontent .std blockquote, #maincontent.mceContentBody blockquote { font-style:italic; padding:0 0 0 1.5em; }
+#maincontent .std address, #maincontent.mceContentBody address { font-style:normal; }
 
 /* Misc */
 .links li { display:inline; }
