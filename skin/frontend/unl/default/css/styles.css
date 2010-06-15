@@ -230,7 +230,7 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 #maincontent .sec_main.energetic { border-left-color: #FF6521}
 
 /* Pager */
-.pager { color:#fff; font-size:11px; background:#557BB7 url("/wdn/templates_3.0/css/images/bottom_shadow_medium.png") repeat-x scroll center bottom; padding:4px 8px; text-align:center; -moz-border-radius:5px 5px 0 0; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; }
+.pager { color:#fff; font-size:11px; background:#557BB7 url("/wdn/templates_3.0/css/images/bottom_shadow_medium.png") repeat-x scroll center bottom; padding:4px 8px; text-align:center; border-radius:5px 5px 0 0; -moz-border-radius:5px 5px 0 0; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; }
 #maincontent .pager .amount { float:left; margin:0; }
 .pager .limiter { float:right; }
 .pager .limiter label { vertical-align:middle; }
@@ -442,10 +442,13 @@ tr.tax-details-first td { border-top:1px solid #d2d8db; }
     position: absolute;
     top: 32px;
     z-index: 50;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 5px 5px #777;
     -webkit-border-bottom-left-radius:5px;
     -webkit-border-bottom-right-radius:5px;
-    -moz-border-radius-bottomleft:5px;
-    -moz-border-radius-bottomright:5px;
+    -webkit-box-shadow: 0 5px 5px #777;
+    -moz-border-radius: 0 0 5px 5px;
+    -moz-box-shadow: 0 5px 5px #777;
 }
 /* ======================================================================================= */
 
