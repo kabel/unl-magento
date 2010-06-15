@@ -253,7 +253,7 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 .toolbar .pager { padding:3px 8px; }
 .toolbar .sorter {}
 .toolbar-bottom {}
-.toolbar-bottom .pager { -moz-border-radius: 0 0 5px 5px; }
+.toolbar-bottom .pager { border-radius:0 0 5px 5px; -moz-border-radius: 0 0 5px 5px; -webkit-border-radius:0; -webkit-border-bottom-left-radius:5px; -webkit-border-bottom-right-radius:5px; }
 .toolbar-bottom .sorter { display:none; }
 
 /* Data Table */
