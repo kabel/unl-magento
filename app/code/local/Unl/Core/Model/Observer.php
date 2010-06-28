@@ -44,7 +44,8 @@ class Unl_Core_Model_Observer
             'Mage_Adminhtml_Block_Report_Product_Viewed_Grid',
             'Mage_Adminhtml_Block_Report_Customer_Accounts_Grid',
             'Mage_Adminhtml_Block_Report_Customer_Totals_Grid',
-            'Mage_Adminhtml_Block_Report_Customer_Orders_Grid'
+            'Mage_Adminhtml_Block_Report_Customer_Orders_Grid',
+            'Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid'
         );
         foreach ($reportSwitchers as $type) {
             if ($block instanceof $type) {

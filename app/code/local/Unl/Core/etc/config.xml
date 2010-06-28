@@ -364,6 +364,14 @@
                             </bursar>
                         </children>
                     </salesroot>
+                    <products>
+                        <children>
+                            <orderdetails translate="title" module="reports">
+                                <title>Order Details</title>
+                                <action>unl/report_product/orderdetails</action>
+                            </orderdetails>
+                        </children>
+                    </products>
                 </children>
             </report>
             <sales>
@@ -401,6 +409,13 @@
                                         </bursar>
                                     </children>
                                 </salesroot>
+                                <products>
+                                    <children>
+                                        <orderdetails translate="title">
+                                            <title>Order Details</title>
+                                        </orderdetails>
+                                    </children>
+                                </products>
                             </children>
                         </report>
                         <sales>
