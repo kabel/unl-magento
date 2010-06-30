@@ -370,6 +370,10 @@
                                 <title>Order Details</title>
                                 <action>unl/report_product/orderdetails</action>
                             </orderdetails>
+                            <customized translate="title" module="reports">
+                                <title>Customized</title>
+                                <action>unl/report_product/customized</action>
+                            </customized>
                         </children>
                     </products>
                 </children>
@@ -414,6 +418,9 @@
                                         <orderdetails translate="title">
                                             <title>Order Details</title>
                                         </orderdetails>
+                                        <customized translate="title">
+                                            <title>Customized</title>
+                                        </customized>
                                     </children>
                                 </products>
                             </children>

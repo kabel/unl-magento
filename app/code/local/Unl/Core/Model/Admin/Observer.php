@@ -49,7 +49,8 @@ class Unl_Core_Model_Admin_Observer
             'adminhtml_report_product_lowstock',
             'adminhtml_report_product_downloads',
             'unl_core_sales_picklist_index',
-            'unl_core_report_product_orderdetails'
+            'unl_core_report_product_orderdetails',
+            'unl_core_report_product_customized'
         );
         $storeIdsActions = array(
             'adminhtml_report_sales_sales',
