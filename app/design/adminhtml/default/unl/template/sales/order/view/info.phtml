@@ -104,6 +104,7 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 <td>
                     <div id="external_id" class="giftmessage-single-item">
                         <strong class="value"><?php echo $this->htmlEscape($_order->getExternalId()) ?></strong>
+                        <?php if ($this->getNoUseOrderLink()): ?>
                         <div class="action-link-holder">
                             <a class="action-link" href="#" onclick="return toggleExternalId()">
                                 <span class="default-text">
@@ -124,7 +125,9 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                                 </div>
                             </form>
                         </div>
+                        <?php endif; ?>
                     </div>
+                    <?php if ($this->getNoUseOrderLink()): ?>
                     <script type="text/javascript">
                     function toggleExternalId() {
                         var container = $('external_id');
@@ -167,6 +170,7 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                         return false;
                     }
                     </script>
+                    <?php endif; ?>
                 </td>
             </tr>
             </table>

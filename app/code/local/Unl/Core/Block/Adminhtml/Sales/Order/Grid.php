@@ -2,6 +2,41 @@
 
 class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sales_Order_Grid
 {
+    protected function _prepareCollection()
+    {
+        /* @var $collection Mage_Sales_Model_Mysql4_Order_Collection */
+        $collection = Mage::getResourceModel('sales/order_collection')
+            ->addAttributeToSelect('*')
+            ->joinAttribute('billing_firstname', 'order_address/firstname', 'billing_address_id', null, 'left')
+            ->joinAttribute('billing_lastname', 'order_address/lastname', 'billing_address_id', null, 'left')
+            ->joinAttribute('shipping_firstname', 'order_address/firstname', 'shipping_address_id', null, 'left')
+            ->joinAttribute('shipping_lastname', 'order_address/lastname', 'shipping_address_id', null, 'left')
+            ->addExpressionAttributeToSelect('billing_name',
+                'CONCAT({{billing_firstname}}, " ", {{billing_lastname}})',
+                array('billing_firstname', 'billing_lastname'))
+            ->addExpressionAttributeToSelect('shipping_name',
+                'CONCAT({{shipping_firstname}},  IFNULL(CONCAT(\' \', {{shipping_lastname}}), \'\'))',
+                array('shipping_firstname', 'shipping_lastname'));
+        
+        $user  = Mage::getSingleton('admin/session')->getUser();
+        if (!is_null($user->getScope())) {
+            $scope = explode(',', $user->getScope());
+            $order_items = Mage::getModel('sales/order_item')->getCollection();
+            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+            $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
+                ->columns(array('order_id'))
+                ->where('source_store_view IN (?)', $scope)
+                ->group('order_id');
+                
+            $collection->getSelect()
+                ->joinInner(array('scope' => $select), 'e.entity_id = scope.order_id', array());
+        }
+        
+        $this->setCollection($collection);
+        
+        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+    }
+    
     protected function _prepareColumns()
     {
         $this->addColumn('real_order_id', array(
@@ -18,7 +53,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'index'  => 'external_id'
         ));
 
-        if (!Mage::app()->isSingleStoreMode()) {
+        /*if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('store_id', array(
                 'header'    => Mage::helper('sales')->__('Purchased from (store)'),
                 'index'     => 'store_id',
@@ -26,7 +61,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
                 'store_view'=> true,
                 'display_deleted' => true,
             ));
-        }
+        }*/
 
         $this->addColumn('created_at', array(
             'header' => Mage::helper('sales')->__('Purchased On'),

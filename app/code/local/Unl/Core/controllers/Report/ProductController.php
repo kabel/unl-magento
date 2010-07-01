@@ -78,18 +78,18 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
         switch ($act) {
             case 'orderdetails':
             case 'customized':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/' . $act);
+                return Mage::getSingleton('admin/session')->isAllowed('report/products/' . $act);
                 break;
             case 'exportOrderdetailsCsv':
             case 'exportOrderdetailsExcel':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/orderdetails');
+                return Mage::getSingleton('admin/session')->isAllowed('report/products/orderdetails');
                 break;
             case 'exportCustomizedCsv':
             case 'exportCustomizedExcel':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/customized');
+                return Mage::getSingleton('admin/session')->isAllowed('report/products/customized');
                 break;
             default:
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot');
+                return Mage::getSingleton('admin/session')->isAllowed('report/products');
                 break;
         }
     }

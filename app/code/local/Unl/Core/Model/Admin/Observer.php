@@ -93,14 +93,51 @@ class Unl_Core_Model_Admin_Observer
             if ($productId && $product = Mage::getModel('catalog/product')->load($productId)) {
                 $source = $product->getSourceStoreView();
                 if ($source && !in_array($source, $scope)) {
-                    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('Access to requested product denied'));
-                    $request->setParam('forwarded', true)
-                        ->setRouteName('adminhtml')
-                        ->setControllerName('catalog_product')
-                        ->setActionName('index')
+                    $request->initForward()
+                        ->setActionName('denied')
                         ->setDispatched(false);
                 }
             }
+        }
+    }
+    
+    public function onAdminSalesOrderViewPreDispatch($observer)
+    {
+        $request = Mage::app()->getRequest();
+        $user = Mage::getSingleton('admin/session')->getUser();
+        
+        if (!is_null($user->getScope()) && $request->getParam('order_id')) {
+            $scope = explode(',', $user->getScope());
+            $order_items = Mage::getModel('sales/order_item')->getCollection();
+            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+            $order_items->getSelect()
+                ->where('source_store_view IN (?)', $scope)
+                ->where('order_id = ?', $request->getParam('order_id'));
+                
+            if (!count($order_items)) {
+                $request->initForward()
+                    ->setActionName('denied')
+                    ->setDispatched(false);
+            }
+        }
+    }
+    
+    public function onRssOrderNewCollectionSelect($observer)
+    {
+        $collection = $observer->getEvent()->getCollection();
+        $user = Mage::getSingleton('admin/session')->getUser();
+        
+        if (!is_null($user->getScope())) {
+            $scope = explode(',', $user->getScope());
+            $order_items = Mage::getModel('sales/order_item')->getCollection();
+            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+            $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
+                ->columns(array('order_id'))
+                ->where('source_store_view IN (?)', $scope)
+                ->group('order_id');
+                
+            $collection->getSelect()
+                ->joinInner(array('scope' => $select), 'e.entity_id = scope.order_id', array());
         }
     }
 }

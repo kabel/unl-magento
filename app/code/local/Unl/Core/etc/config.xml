@@ -330,6 +330,16 @@
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_edit>
             
+            <controller_action_predispatch_adminhtml_sales_order_view>
+                <observers>
+	                <order_auth>
+	                    <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onAdminSalesOrderViewPreDispatch</method>
+	                </order_auth>
+                </observers>
+            </controller_action_predispatch_adminhtml_sales_order_view>
+            
             <eav_collection_abstract_load_before>
                 <observers>
                     <unlcore_before_eav_collection_load>
@@ -339,6 +349,16 @@
                     </unlcore_before_eav_collection_load>
                 </observers>
             </eav_collection_abstract_load_before>
+            
+            <rss_order_new_collection_select>
+                <observers>
+                    <filter_scope>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onRssOrderNewCollectionSelect</method>
+                    </filter_scope>
+                </observers>
+            </rss_order_new_collection_select>
         </events>
         
         <menu>
