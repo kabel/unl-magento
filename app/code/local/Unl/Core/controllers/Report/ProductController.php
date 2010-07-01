@@ -71,4 +71,26 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
+    
+    protected function _isAllowed()
+    {
+        $act = $this->getRequest()->getActionName();
+        switch ($act) {
+            case 'orderdetails':
+            case 'customized':
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/' . $act);
+                break;
+            case 'exportOrderdetailsCsv':
+            case 'exportOrderdetailsExcel':
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/orderdetails');
+                break;
+            case 'exportCustomizedCsv':
+            case 'exportCustomizedExcel':
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/customized');
+                break;
+            default:
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot');
+                break;
+        }
+    }
 }

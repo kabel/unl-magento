@@ -185,11 +185,24 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
     
     protected function _isAllowed()
     {
-        switch ($this->getRequest()->getActionName()) {
+        $act = $this->getRequest()->getActionName();
+        switch ($act) {
             case 'cc':
             case 'co':
             case 'nocap':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar');
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/' . $act);
+                break;
+            case 'exportCcCsv':
+            case 'exportCcExcel':
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/cc');
+                break;
+            case 'exportCoCsv':
+            case 'exportCoExcel':
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/co');
+                break;
+            case 'exportNocapCsv':
+            case 'exportNocapExcel':
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/nocap');
                 break;
             default:
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot');

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.11</version>
+            <version>0.1.12</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -32,6 +32,7 @@
                     <report_review_product_grid>Unl_Core_Block_Adminhtml_Report_Review_Product_Grid</report_review_product_grid>
                     <report_sales_sales_grid>Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid</report_sales_sales_grid>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
+                    <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
                 </rewrite>
             </adminhtml>
             <bundle>
