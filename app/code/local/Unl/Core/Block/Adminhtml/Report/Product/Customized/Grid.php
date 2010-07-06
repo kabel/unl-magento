@@ -158,7 +158,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             );
             
             foreach ($_item->getProductOptionByCode('options') as $option) {
-                $data[] = $this->_cleanCsvValue($option['label'] . ':' . $option['print_value']);
+                $data[] = $this->_cleanCsvValue($option['label']);
+                $data[] = $this->_cleanCsvValue($option['print_value']);
             }
             
             $csv .= implode(',', $data) . "\n";
@@ -206,7 +207,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             );
             
             foreach ($_item->getProductOptionByCode('options') as $option) {
-                $row[] = $option['label'] . ':' . $option['print_value'];
+                $row[] = $option['label'];
+                $row[] = $option['print_value'];
             }
             
             $data[] = $row;
