@@ -60,7 +60,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
         /* @var $collection Unl_Core_Model_Mysql4_Report_Product_Customized_Collection */
         
         if ($this->getFilter('sku')) {
-            $collection->addFieldToFilter('sku', array('eq' => $this->getFilter('sku')));
+            $collection->addFieldToFilter('sku', array('like' => $this->getFilter('sku') . '%'));
         }
         
         
