@@ -116,6 +116,12 @@
                     <translate>Unl_Core_Model_Core_Translate</translate>
                 </rewrite>
             </core>
+            <dataflow>
+                <!-- Fix Double HTML Escaping -->
+                <rewrite>
+                    <convert_parser_xml_excel>Unl_Core_Model_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
+                </rewrite>
+            </dataflow>
             <reports_mysql4>
                 <!-- Nebraska Tax and Store Owned Products -->
                 <rewrite>
