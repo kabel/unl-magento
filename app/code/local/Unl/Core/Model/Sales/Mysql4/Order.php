@@ -54,7 +54,7 @@ class Unl_Core_Model_Sales_Mysql4_Order extends Mage_Sales_Model_Mysql4_Order
                 'base_grand_total_amount'   => 'SUM((oi.base_row_total + oi.base_tax_amount - oi.base_discount_amount) * e.base_to_global_rate)',
                 'base_invoiced_amount'      => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - oi.base_discount_invoiced) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM(oi.base_amount_refunded * e.base_to_global_rate)',
-                'base_canceled_amount'      => 'SUM(oi.base_price * oi.qty_canceled * e.base_to_global_rate)'
+                'base_canceled_amount'      => 'SUM((oi.base_price + (oi.base_tax_amount / oi.qty_ordered)) * oi.qty_canceled * e.base_to_global_rate)'
             );
 
             $select = $writeAdapter->select()
@@ -115,7 +115,7 @@ class Unl_Core_Model_Sales_Mysql4_Order extends Mage_Sales_Model_Mysql4_Order
                 'period'                    => 'period',
                 'store_id'                  => new Zend_Db_Expr('0'),
                 'order_status'              => 'order_status',
-                'orders_count'              => 'SUM(orders_count)',
+                'orders_count'              => new Zend_Db_Expr('0'),
                 'total_qty_ordered'         => 'SUM(total_qty_ordered)',
                 'base_profit_amount'        => 'SUM(base_profit_amount)',
                 'base_subtotal_amount'      => 'SUM(base_subtotal_amount)',
