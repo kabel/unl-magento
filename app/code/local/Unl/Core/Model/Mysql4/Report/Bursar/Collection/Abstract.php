@@ -56,7 +56,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             'base_invoiced_amount'      => 'SUM(e.base_total_paid * e.base_to_global_rate)',
             'base_refunded_amount'      => 'SUM(e.base_total_refunded * e.base_to_global_rate)',
             'base_refunded_tax_amount'  => 'SUM(e.base_tax_refunded * e.base_to_global_rate)',
-            'base_canceled_amount'      => 'SUM(IFNULL(e.base_total_canceled, 0) * e.base_to_global_rate)',
+            'base_canceled_amount'      => 'SUM((IFNULL(e.base_subtotal_canceled, 0) - IFNULL(e.base_discount_canceled, 0) + IFNULL(e.base_tax_canceled, 0) ) * e.base_to_global_rate)',
             'base_canceled_tax_amount'  => 'SUM(IFNULL(e.base_tax_canceled, 0) * e.base_to_global_rate)'
         );
         
@@ -117,8 +117,8 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced + e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
                 'base_payout_amount'        => 'SUM(IFNULL(e.base_shipping_invoiced, 0) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM((IFNULL(e.base_subtotal_refunded, 0) - IFNULL(e.base_discount_refunded, 0) + IFNULL(e.base_tax_refunded, 0) + IFNULL(e.base_shipping_refunded, 0)) * e.base_to_global_rate)',
-                'base_refunded_tax_amount'  => 'SUM(IFNULL(e.base_tax_refunded, 0))',
-                'base_canceled_amount'      => 'SUM(IFNULL(e.base_shipping_canceled, 0))',
+                'base_refunded_tax_amount'  => 'SUM(IFNULL(e.base_tax_refunded, 0) * e.base_to_global_rate)',
+                'base_canceled_amount'      => "SUM((IFNULL(e.base_shipping_canceled, 0) + IF(e.status = 'canceled', e.base_shipping_tax_amount, 0)) * e.base_to_global_rate)",
                 'base_canceled_tax_amount'  => "SUM(IF(e.status = 'canceled', e.base_shipping_tax_amount, 0) * e.base_to_global_rate)"
             );
         }
