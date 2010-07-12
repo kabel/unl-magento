@@ -119,12 +119,30 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Nocap_Grid extends Unl_Core_B
             'index'         => 'base_payout_amount',
             'sortable'      => false
         ));
+        
+        $this->addColumn('base_refunded_tax_amount', array(
+            'header'        => Mage::helper('sales')->__('Refunded Tax'),
+            'type'          => 'currency',
+            'currency_code' => $currency_code,
+            'index'         => 'base_refunded_tax_amount',
+            'total'         => 'sum',
+            'sortable'      => false
+        ));
 
         $this->addColumn('base_refunded_amount', array(
             'header'        => Mage::helper('sales')->__('Refunded'),
             'type'          => 'currency',
             'currency_code' => $currency_code,
             'index'         => 'base_refunded_amount',
+            'total'         => 'sum',
+            'sortable'      => false
+        ));
+        
+        $this->addColumn('base_canceled_tax_amount', array(
+            'header'        => Mage::helper('sales')->__('Canceled Tax'),
+            'type'          => 'currency',
+            'currency_code' => $currency_code,
+            'index'         => 'base_canceled_tax_amount',
             'total'         => 'sum',
             'sortable'      => false
         ));

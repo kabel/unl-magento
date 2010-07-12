@@ -55,7 +55,9 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             'base_grand_total_amount'   => 'SUM(e.base_grand_total * e.base_to_global_rate)',
             'base_invoiced_amount'      => 'SUM(e.base_total_paid * e.base_to_global_rate)',
             'base_refunded_amount'      => 'SUM(e.base_total_refunded * e.base_to_global_rate)',
-            'base_canceled_amount'      => 'SUM(IFNULL(e.subtotal_canceled, 0) * e.base_to_global_rate)'
+            'base_refunded_tax_amount'  => 'SUM(e.base_tax_refunded * e.base_to_global_rate)',
+            'base_canceled_amount'      => 'SUM(IFNULL(e.base_total_canceled, 0) * e.base_to_global_rate)',
+            'base_canceled_tax_amount'  => 'SUM(IFNULL(e.base_tax_canceled, 0) * e.base_to_global_rate)'
         );
         
         if ($isSubtotal) {
@@ -97,12 +99,14 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'base_invoiced_amount'      => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - oi.base_discount_invoiced) * e.base_to_global_rate)',
                 'base_payout_amount'        => 'SUM(((oi.base_row_invoiced - oi.base_discount_invoiced) * (1 - (s.unl_rate / 100))) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM(oi.base_amount_refunded * e.base_to_global_rate)',
-                'base_canceled_amount'      => 'SUM(oi.base_price * oi.qty_canceled * e.base_to_global_rate)'
+                'base_refunded_tax_amount'  => new Zend_Db_Expr('0'),
+                'base_canceled_amount'      => 'SUM(oi.base_price * oi.qty_canceled * e.base_to_global_rate)',
+                'base_canceled_tax_amount'  => 'SUM(oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled * e.base_to_global_rate)'
             );
         } else {
             $columns += array(
                 'merchant'                  => new Zend_Db_Expr("'CENTRALIZED ACCOUNT'"),
-                'orders_count'              => 'COUNT(DISTINCT(e.entity_id))',
+                'orders_count'              => new Zend_Db_Expr('0'),
                 'total_qty_ordered'         => new Zend_Db_Expr('0'),
                 'base_profit_amount'        => new Zend_Db_Expr('0'),
                 'base_subtotal_amount'      => new Zend_Db_Expr('0'),
@@ -113,7 +117,9 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced + e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
                 'base_payout_amount'        => 'SUM(IFNULL(e.base_shipping_invoiced, 0) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM((IFNULL(e.base_subtotal_refunded, 0) - IFNULL(e.base_discount_refunded, 0) + IFNULL(e.base_tax_refunded, 0) + IFNULL(e.base_shipping_refunded, 0)) * e.base_to_global_rate)',
-                'base_canceled_amount'      => 'SUM(IFNULL(e.base_shipping_canceled, 0))'
+                'base_refunded_tax_amount'  => 'SUM(IFNULL(e.base_tax_refunded, 0))',
+                'base_canceled_amount'      => 'SUM(IFNULL(e.base_shipping_canceled, 0))',
+                'base_canceled_tax_amount'  => "SUM(IF(e.status = 'canceled', e.base_shipping_tax_amount, 0) * e.base_to_global_rate)"
             );
         }
         
