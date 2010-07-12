@@ -80,7 +80,7 @@ class Unl_Core_Model_Sales_Mysql4_Order extends Mage_Sales_Model_Mysql4_Order
                 'period'                    => 'DATE(e.created_at)',
                 'store_id'                  => new Zend_Db_Expr('NULL'),
                 'order_status'              => 'e.status',
-                'orders_count'              => 'COUNT(DISTINCT(e.entity_id))',
+                'orders_count'              => new Zend_Db_Expr('0'),
                 'total_qty_ordered'         => new Zend_Db_Expr('0'),
                 'base_profit_amount'        => new Zend_Db_Expr('0'),
                 'base_subtotal_amount'      => new Zend_Db_Expr('0'),
@@ -90,7 +90,7 @@ class Unl_Core_Model_Sales_Mysql4_Order extends Mage_Sales_Model_Mysql4_Order
                 'base_grand_total_amount'   => 'SUM((e.base_shipping_amount + IFNULL(e.base_shipping_tax_amount, 0)) * e.base_to_global_rate)',
                 'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced + e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
                 'base_refunded_amount'      => 'SUM((IFNULL(e.base_subtotal_refunded, 0) - IFNULL(e.base_discount_refunded, 0) + IFNULL(e.base_tax_refunded, 0) + IFNULL(e.base_shipping_refunded, 0)) * e.base_to_global_rate)',
-                'base_canceled_amount'      => 'SUM(IFNULL(e.base_shipping_canceled, 0))'
+                'base_canceled_amount'      => "SUM(IFNULL(e.base_shipping_canceled, 0) + IF(e.status = 'canceled',e.base_shipping_tax_amount,0))"
             );
 
             $select = $writeAdapter->select()
@@ -115,7 +115,7 @@ class Unl_Core_Model_Sales_Mysql4_Order extends Mage_Sales_Model_Mysql4_Order
                 'period'                    => 'period',
                 'store_id'                  => new Zend_Db_Expr('0'),
                 'order_status'              => 'order_status',
-                'orders_count'              => new Zend_Db_Expr('0'),
+                'orders_count'              => 'SUM(orders_count)',
                 'total_qty_ordered'         => 'SUM(total_qty_ordered)',
                 'base_profit_amount'        => 'SUM(base_profit_amount)',
                 'base_subtotal_amount'      => 'SUM(base_subtotal_amount)',
