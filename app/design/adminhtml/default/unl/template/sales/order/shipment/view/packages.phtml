@@ -19,9 +19,16 @@
             <td><?php echo $this->getCarrierTitle($_pkg->getCarrier()) ?></td>
             <td><?php echo $_pkg->getTrackingNumber() ?></td>
             <td class="last">
-                <?php echo Mage::helper('sales')->__('Label') ?>:
-                <a href="<?php echo $this->getUrl('ordership/index/label/id/' . $_pkg->getId()) ?>"><?php echo Mage::helper('sales')->__('View') ?></a>
-                <a href="<?php echo $this->getUrl('ordership/index/labelpdf/id/' . $_pkg->getId())?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                <p><?php echo Mage::helper('sales')->__('Label') ?>:
+                    <a href="<?php echo $this->getUrl('ordership/index/label/id/' . $_pkg->getId()) ?>"><?php echo Mage::helper('sales')->__('View') ?></a>
+                    <a href="<?php echo $this->getUrl('ordership/index/labelpdf/id/' . $_pkg->getId())?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                </p>
+            <?php if ($_pkg->getInsDoc()): ?>
+                <p><a href="<?php echo $this->getUrl('ordership/index/highvalue/id/' . $_pkg->getId())?>"><?php echo Mage::helper('sales')->__('High Value Report') ?></a></p>
+            <?php endif; ?>
+            <?php if ($_pkg->getIntlDoc()): ?>
+                <p><a href="<?php echo $this->getUrl('ordership/index/customs/id/' . $_pkg->getId())?>"><?php echo Mage::helper('sales')->__('Customs Forms') ?></a></p>
+            <?php endif; ?>
             </td>
         </tr>
     <?php endforeach; ?>

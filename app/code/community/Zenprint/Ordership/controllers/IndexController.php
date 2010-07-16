@@ -31,6 +31,43 @@ class Zenprint_Ordership_IndexController extends Mage_Adminhtml_Controller_Actio
 		
 	}
 	
+	public function highvalueAction() {
+	   $pkgid = $this->getRequest()->getParam('id');
+        if(empty($pkgid))  {
+            echo "Invalid package id";
+            exit();
+        }
+        
+        $pkg = Mage::getModel('shipping/shipment_package')->load($pkgid);
+        $img = $pkg->getInsDoc();
+        
+        if (empty($img)) {
+            echo "Invalid package id";
+            exit();
+        }
+        
+        echo base64_decode($img);
+	}
+	
+    public function customsAction() {
+       $pkgid = $this->getRequest()->getParam('id');
+        if(empty($pkgid))  {
+            echo "Invalid package id";
+            exit();
+        }
+        
+        $pkg = Mage::getModel('shipping/shipment_package')->load($pkgid);
+        $img = $pkg->getIntlDoc();
+        
+        if (empty($img)) {
+            echo "Invalid package id";
+            exit();
+        }
+        
+        header('Content-type: application/pdf');
+        echo base64_decode($img);
+    }
+	
 	/**
 	 * Shows the shipping label image for the specified package. 
 	 */

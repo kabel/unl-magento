@@ -1249,7 +1249,11 @@ XMLAuth;
         		$p['insurance_type'] = $pkg->getInsuranceCode();  //2 char, '01' (EVS Declared Value), or '02' (DVS Shipper Declared Value), UPS default is '01'
         		$p['insurance_currencycode'] = $pkg->getInsuranceCurrencyCode();  //3 letter currency abbreviation (USD)
         		$p['insurance_value'] = $pkg->getInsuranceValue();  //limited to 99999999.99 with up to 2 digits after   
-        	}
+        	} else if ($pkg->getInvoiceTotal() >= 1000) {  //force declared value on packages 
+                $p['insurance_type'] = '01';
+                $p['insurance_currencycode'] = 'USD';
+                $p['insurance_value'] = sprintf('%01.2f', $pkg->getInvoiceTotal());
+            }
         	//if release without signature requested
         	if($pkg->getReleaseWithoutSignature())  {
         		$p['release_without_signature'] = 1;  //if non-null driver may release package without a signature, only valid in US & Puerto Rico
@@ -1789,6 +1793,14 @@ XMLRequest;
 			$shipmentid = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentIdentificationNumber/");
 			$result->setShipmentIdentificationNumber($shipmentid);
 			
+		    //high value report
+            $ins_doc = $result->getValueForXpath('//ShipmentAcceptResponse/ShipmentResults/ControlLogReceipt/GraphicImage');
+            $result->setInsDoc($ins_doc);
+            
+            //internation forms
+            $intl_doc = $result->getXpath('//ShipmentAcceptResponse/ShipmentResults/Form/Image/GraphicImage');;
+		    $result->setIntlDoc($intl_doc);
+			
 			//get all packages
 			$xmlpackages = $result->getXpath("//ShipmentAcceptResponse/ShipmentResults/PackageResults");
 			$packages = array();
@@ -1818,7 +1830,7 @@ XMLRequest;
                 			$html_image = $package->LabelImage->HTMLImage;  //Base64 encoded GIF
                 		}
                 	}
-                	
+                    
                 	//add data to packages array
                 	$pkg = array(
                 		'package_number' => $i,
@@ -1828,6 +1840,8 @@ XMLRequest;
                 		'label_image_format' => $label_image_format,
                 		'label_image' => $label_image,
                 		'html_image' => $html_image,
+                	    'ins_doc' => $ins_doc,
+                	    'intl_doc' => $intl_doc
                 	);	
                 	$packages[] = $pkg;
                 	$i++;
@@ -2112,6 +2126,8 @@ XMLVal;
 		    		->setLabelImage($respackage['label_image'])
 		    		->setHtmlLabelImage($respackage['html_image'])
 		    		->setDateShipped(date('Y-m-d H:i:s'))
+		    		->setInsDoc($ship_accept_response->getInsDoc())
+		    		->setIntlDoc($ship_accept_response->getIntlDoc())
 		    		->save();
 		    	
 		    	$retval[] = $pkg;
