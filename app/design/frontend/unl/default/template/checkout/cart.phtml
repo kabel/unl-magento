@@ -118,6 +118,8 @@
                     <ul class="checkout-types">
                         <?php echo $this->getChildHtml('methods') ?>
                     </ul>
+                    <?php else: ?>
+                    <div class="clear"></div>
                     <?php endif; ?>
                 </div>
                 <?php echo $this->getChildHtml('coupon') ?>
@@ -128,6 +130,8 @@
                     <ul class="checkout-types">
                         <?php echo $this->getChildHtml('methods') ?>
                     </ul>
+                    <?php else: ?>
+                    <div class="clear"></div>
                     <?php endif; ?>
                 </div>
             </div>

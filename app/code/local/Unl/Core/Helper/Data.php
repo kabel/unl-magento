@@ -47,4 +47,62 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         
         return true;
     }
+    
+    /**
+     * 
+     * Check if the product limits the Qty that can ever be purchased
+     * 
+     * @param Mage_Sales_Model_Quote_Item $item
+     */
+    public function checkCustomerAllowedProductQty($item)
+    {
+        $productId = $item->getProduct()->getId();
+        $product = Mage::getModel('catalog/product')->load($productId);
+        if ($limit = $product->getLimitSaleQty()) {
+            try {
+                /* @var $session Mage_Customer_Model_Session */
+                $session = Mage::getSingleton('customer/session');
+                if (!$session->isLoggedIn()) {
+                    Mage::throwException($this->__('You must be logged in to checkout with this item'));
+                }
+                
+                $rowQty = $item->getQty();
+                if ($item->getParentItem()) {
+                    $rowQty *= $item->getParentItem()->getQty();
+                }
+                
+                if (!is_numeric($limit)) {
+                    $limit = Mage::app()->getLocale()->getNumber($limit);
+                }
+                $stockItem = $item->getProduct()->getStockItem();
+                if (!$stockItem->getIsQtyDecimal()) {
+                    $limit = intval($limit);
+                }
+                
+                
+                /* @var $orderItems Mage_Sales_Model_Mysql4_Order_Item_Collection */
+                $orderItems = Mage::getModel('sales/order_item')->getCollection();
+                $orderItems->addFieldToFilter('product_id', $product->getId())
+                    ->join('order', 'order.entity_id=main_table.order_id AND order.customer_id=' . $session->getCustomer()->getId(), array());
+                
+                $soldQty = 0;
+                foreach ($orderItems as $orderItem) {
+                    $soldQty += $orderItem->getQtyOrdered() - $orderItem->getQtyCanceled();
+                }
+                
+                if (($rowQty + $soldQty) > $limit) {
+                    Mage::throwException($this->__('You may only purchase %s of this product. You have previously purchased %s.', $limit, $soldQty));
+                }
+            } catch (Mage_Core_Exception $e) {
+                $item->setMessage($e->getMessage())
+                    ->setHasError(true);
+                if ($item->getParentItem()) {
+                    $item->getParentItem()->setMessage($e->getMessage());
+                }
+                
+                $item->getQuote()->setHasError(true)
+                    ->addMessage($this->__('Some of the products cannot be ordered in the requested quantity'), 'qty');
+            }
+        }
+    }
 }

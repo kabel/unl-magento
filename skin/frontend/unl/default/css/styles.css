@@ -1051,8 +1051,8 @@ f/********** Product Prices > */
 .cart .shipping .form-list select { width:270px; }
 
 /* Shopping Cart Totals */
-.cart .totals { background:#fff url(../images/bkg_cart-totals.gif) 0 0 no-repeat; padding:12px 0; }
-.cart .totals.top { background:#fff; padding-top:0; }
+.cart .totals { background:#fff url(../images/bkg_cart-totals.gif) 0 0 no-repeat; padding:12px 0; min-height:83px; }
+.cart .totals.top { background:#fff; padding-top:0; min-height:0; }
 .cart .totals table { float:right; width:400px; margin:0 0 8px; }
 .cart .totals td { padding:0 0 0 15px; }
 .cart .totals tr.last td {}

@@ -23,7 +23,7 @@ class Unl_Core_Model_Sales_Quote extends Mage_Sales_Model_Quote
             Mage::throwException(Mage::helper('sales')->__('Invalid request for adding product to quote'));
         }
         
-        Mage::dispatchEvent('sales_quote_product_add_before', array('product' => $product));
+        Mage::dispatchEvent('sales_quote_product_add_before', array('product' => $product, 'request' => $request));
 
         $cartCandidates = $product->getTypeInstance(true)
             ->prepareForCart($request, $product);

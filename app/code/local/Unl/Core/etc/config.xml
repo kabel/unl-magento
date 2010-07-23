@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.12</version>
+            <version>0.1.13</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -259,6 +259,15 @@
                     </catalog_acl>
                 </observers>
             </sales_quote_product_add_before>
+            <sales_quote_item_qty_set_after>
+                <observers>
+                    <product_limit>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>onAfterSetSalesQuoteItemQty</method>
+                    </product_limit>
+                </observers>
+            </sales_quote_item_qty_set_after>
         </events>
     </frontend>
     

@@ -271,6 +271,13 @@ class Unl_Core_Model_Observer
         }
     }
     
+    public function onAfterSetSalesQuoteItemQty($observer)
+    {
+        $_item = $observer->getEvent()->getItem();
+        $helper = Mage::helper('unl_core');
+        $helper->checkCustomerAllowedProductQty($_item);
+    }
+    
     public function isPaymentMethodActive($observer)
     {
         $method = $observer->getEvent()->getMethodInstance();
