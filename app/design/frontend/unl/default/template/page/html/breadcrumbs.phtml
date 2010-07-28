@@ -35,7 +35,7 @@
             </li>
             <?php else: ?>
             <li>
-                <a href="<?php echo Mage::getBaseUrl() . '?___store=default'; ?>">Marketplace</a>
+                <a href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'default/'; ?>">Marketplace</a>
                 <div class="storednav">
                     <?php echo $this->getChildHtml('store_switcher') ?>
                 </div>
