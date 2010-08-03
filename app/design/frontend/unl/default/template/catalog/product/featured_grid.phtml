@@ -1,0 +1,31 @@
+<?php if (($_products = $this->getProductCollection()) && count($_products->getItems())): ?>
+<?php 
+    $_allFeaured = $_products->getItems();
+    shuffle($_allFeaured);
+    $_helper = $this->helper('catalog/output'); 
+?>
+<div class="featured-grid">
+    <h2 class="sec_header"><?php echo $this->__('Featured Products') ?></h2>
+    <?php for ($i = 0; $i < 4 && $i < count($_allFeaured); $i++) : ?>
+    <?php 
+    $_product = current($_allFeaured);
+    next($_allFeaured); 
+    ?>
+    <div class="col<?php if ($i == 0) { echo ' left'; } elseif ($i == 3) { echo ' right'; } ?>">
+        <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($this->getImageLabel($_product, 'small_image')) ?>" class="product-image">
+            <img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(210); ?>" class="frame" width="210" height="210" alt="<?php echo $this->htmlEscape($this->getImageLabel($_product, 'small_image')) ?>" /></a>
+        <div class="product-shop">
+            <h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName())?></a></h3>
+            <?php echo $this->getPriceHtml($_product, true) ?>
+            <?php if($_product->isSaleable()): ?>
+                <p><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+            <?php else: ?>
+                <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+            <?php endif; ?>
+            <p class="learn-more"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->__('Learn More') ?></a></p>
+        </div>
+    </div>
+    <?php endfor; ?>
+    <div class="clear"></div>
+</div>
+<?php endif; ?>
