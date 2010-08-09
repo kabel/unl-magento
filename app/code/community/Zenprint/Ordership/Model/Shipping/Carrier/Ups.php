@@ -121,6 +121,16 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
         }
 
         $r->setOrigCountry(Mage::getModel('directory/country')->load($origCountry)->getIso2Code());
+        
+        if ($request->getOrigRegionCode()) {
+            $origRegionCode = $request->getOrigRegionCode();
+        } else {
+            $origRegionCode = Mage::getStoreConfig('shipping/origin/region_id', $this->getStore());
+            if (is_numeric($origRegionCode)) {
+                $origRegionCode = Mage::getModel('directory/region')->load($origRegionCode)->getCode();
+            }
+        }
+        $r->setOrigRegionCode($origRegionCode);
 
         if ($request->getOrigPostcode()) {
             $r->setOrigPostal($request->getOrigPostcode());
@@ -148,10 +158,12 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
 
         $r->setDestCountry(Mage::getModel('directory/country')->load($destCountry)->getIso2Code());
 
+        $r->setDestRegionCode($request->getDestRegionCode());
+        
         if ($request->getDestPostcode()) {
             $r->setDestPostal($request->getDestPostcode());
         } else {
-
+            
         }
 
         $weight = $this->getTotalNumOfBoxes($request->getPackageWeight());
@@ -743,14 +755,19 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
             '14_origCountry' => $r->getOrigCountry(),
             '15_origPostal'  => $r->getOrigPostal(),
             'origCity'       => $r->getOrigCity(),
-            '19_destPostal'  => $r->getDestPostal(),
+            'origRegionCode' => $r->getOrigRegionCode(),
+            '19_destPostal'  => 'US' == $r->getDestCountry() ? substr($r->getDestPostal(), 0, 5) : $r->getDestPostal(),
             '22_destCountry' => $r->getDestCountry(),
+            'destRegionCode' => $r->getDestRegionCode(),
             '23_weight'      => $r->getWeight(),
             '47_rate_chart'  => $r->getPickup(),
             '48_container'   => $r->getContainer(),
             '49_residential' => $r->getDestType(),
         );
         $params['10_action'] = $params['10_action']=='4'? 'Shop' : 'Rate';
+        $serviceCode = $r->getProduct() ? $r->getProduct() : '';
+        $serviceDescription = $serviceCode ? $this->getShipmentByCode($serviceCode) : '';
+        
 $xmlRequest .= <<< XMLRequest
 <?xml version="1.0"?>
 <RatingServiceSelectionRequest xml:lang="en-US">
@@ -762,22 +779,29 @@ $xmlRequest .= <<< XMLRequest
     <RequestAction>Rate</RequestAction>
     <RequestOption>{$params['10_action']}</RequestOption>
   </Request>
-  <Service>
-      <Code></Code>
-      <Description></Description>
-  </Service>
   <PickupType>
           <Code>{$params['47_rate_chart']['code']}</Code>
           <Description>{$params['47_rate_chart']['label']}</Description>
   </PickupType>
 
   <Shipment>
+    <Service>
+        <Code>{$serviceCode}</Code>
+        <Description>{$serviceDescription}</Description>
+    </Service>
+    <Shipper>
+XMLRequest;
 
-      <Shipper>
+        if ($this->getConfigFlag('negotiated_active') && ($shipper = $this->getConfigData('shipper_number')) ) {
+            $xmlRequest .= "<ShipperNumber>{$shipper}</ShipperNumber>";
+        }
+
+$xmlRequest .= <<< XMLRequest
       <Address>
           <City>{$params['origCity']}</City>
           <PostalCode>{$params['15_origPostal']}</PostalCode>
           <CountryCode>{$params['14_origCountry']}</CountryCode>
+          <StateProvinceCode>{$params['origRegionCode']}</StateProvinceCode>
       </Address>
     </Shipper>
 
@@ -785,10 +809,10 @@ $xmlRequest .= <<< XMLRequest
       <Address>
           <PostalCode>{$params['19_destPostal']}</PostalCode>
           <CountryCode>{$params['22_destCountry']}</CountryCode>
-          <ResidentialAddress>{$params['49_residential']}</ResidentialAddress>
+          <StateProvinceCode>{$params['destRegionCode']}</StateProvinceCode>
 XMLRequest;
 
-          $xmlRequest .= ($params['49_residential']==='01' ? "<ResidentialAddressIndicator>{$params['49_residential']}</ResidentialAddressIndicator>" : '');
+          $xmlRequest .= ($params['49_residential']==='01' ? '<ResidentialAddressIndicator/>' : '');
 
 $xmlRequest .= <<< XMLRequest
       </Address>
@@ -799,6 +823,7 @@ $xmlRequest .= <<< XMLRequest
       <Address>
           <PostalCode>{$params['15_origPostal']}</PostalCode>
           <CountryCode>{$params['14_origCountry']}</CountryCode>
+          <StateProvinceCode>{$params['origRegionCode']}</StateProvinceCode>
       </Address>
     </ShipFrom>
 
@@ -809,10 +834,17 @@ $xmlRequest .= <<< XMLRequest
         <Weight>{$params['23_weight']}</Weight>
       </PackageWeight>
     </Package>
+XMLRequest;
+        if ($this->getConfigFlag('negotiated_active')) {
+            $xmlRequest .= "<RateInformation><NegotiatedRatesIndicator/></RateInformation>";
+        }
 
+$xmlRequest .= <<< XMLRequest
   </Shipment>
 </RatingServiceSelectionRequest>
 XMLRequest;
+
+//        $debugData = array('request' => $xmlRequest);
         try {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -821,17 +853,16 @@ XMLRequest;
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            //FIXME: Without the next 2 options, SSL calls will fail in some OSes where default CA file does not
-            //	exist in /etc/ssl/certs/ca-certificates.crt (Curl default). This is a security risk
-            //	since the SSL cert will not be verified
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
             $xmlResponse = curl_exec ($ch);
+//            $debugData['result'] = $xmlResponse;
             curl_close($ch);
         } catch (Exception $e) {
+//            $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
             $xmlResponse = '';
         }
 
+//        $this->_debug($debugData);
         return $this->_parseXmlResponse($xmlResponse);
     }
 
@@ -847,12 +878,26 @@ XMLRequest;
             if($success===1){
                 $arr = $xml->getXpath("//RatingServiceSelectionResponse/RatedShipment");
                 $allowedMethods = explode(",", $this->getConfigData('allowed_methods'));
+                
+                // Negotiated rates
+                $negotiatedArr = $xml->getXpath("//RatingServiceSelectionResponse/RatedShipment/NegotiatedRates");
+                $negotiatedActive = $this->getConfigFlag('negotiated_active')
+                    && $this->getConfigData('shipper_number')
+                    && !empty($negotiatedArr);
+                
                 foreach ($arr as $shipElement){
                     $code = (string)$shipElement->Service->Code;
                     #$shipment = $this->getShipmentByCode($code);
                     if (in_array($code, $allowedMethods)) {
-                        $costArr[$code] = $shipElement->TotalCharges->MonetaryValue;
-                        $priceArr[$code] = $this->getMethodPrice(floatval($shipElement->TotalCharges->MonetaryValue),$code);
+                        
+                        if ($negotiatedActive) {
+                            $cost = $shipElement->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue;
+                        } else {
+                            $cost = $shipElement->TotalCharges->MonetaryValue;
+                        }
+                        
+                        $costArr[$code] = $cost;
+                        $priceArr[$code] = $this->getMethodPrice(floatval($cost),$code);
                     }
                 }
             } else {
@@ -977,11 +1022,7 @@ XMLAuth;
             	curl_setopt($ch, CURLOPT_POST, 1);
             	curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
             	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            	//FIXME: Without the next 2 options, SSL calls will fail in some OSes where default CA file does not
-	            //	exist in /etc/ssl/certs/ca-certificates.crt (Curl default). This is a security risk
-	            //	since the SSL cert will not be verified
-            	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
             	$xmlResponse = curl_exec ($ch);
 //            	curl_close ($ch);
 //            }catch (Exception $e) {
@@ -1304,7 +1345,7 @@ XMLAuth;
 			'shipto_state' => $shipaddress->getRegionCode(),  //2-5 chars, required for US, Mexico, and Canada (for Ireland use 5 digit county abbreviation)
 			'shipto_postalcode' => $shipaddress->getPostcode(),  //9 chars , required for US, Canada, Puerto Rico, may include - with 9 digits
 			'shipto_country' => $shipaddress->getCountryId(),  //2 digit ISO code
-			'negotiated_rate' => false,  //TODO: add to code to determine this
+			'negotiated_rate' => $this->getConfigFlag('negotiated_active'),
 		
 			'service_code' => $servicecode,  //UPS shipment service code
 			'service_description' => $this->getCode('method', $ship[1]),  //UPS shipment service description, optional
@@ -1569,11 +1610,8 @@ XMLRequest;
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		//FIXME: Without the next 2 options, SSL calls will fail in some OSes where default CA file does not
-		//	exist in /etc/ssl/certs/ca-certificates.crt (Curl default). This is a security risk
-		//	since the SSL cert will not be verified
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->getConfigFlag('mode_xml'));
 		$xmlResponse = curl_exec ($ch);
 		
 		//check for error
@@ -1629,7 +1667,7 @@ XMLRequest;
 			$result->setTotalShippingCharges($total);
 			
 			//get negotiated rate total
-			$negtotal = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentCharges/NegotitatedRates/NetSummaryCharges/GrandTotal/MonetaryValue/");
+			$negtotal = $result->getValueForXpath("//ShipmentConfirmResponse/NegotitatedRates/NetSummaryCharges/GrandTotal/MonetaryValue/");
 			$result->setNegotiatedTotalShippingCharges($negtotal);
 			
 			//get billing weight
@@ -1719,11 +1757,7 @@ XMLRequest;
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		//FIXME: Without the next 2 options, SSL calls will fail in some OSes where default CA file does not
-		//	exist in /etc/ssl/certs/ca-certificates.crt (Curl default). This is a security risk
-		//	since the SSL cert will not be verified
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->getConfigFlag('mode_xml'));
 		$xmlResponse = curl_exec ($ch);
 		
 		//check for error
@@ -1778,7 +1812,7 @@ XMLRequest;
 			$result->setTotalShippingCharges($total);
 			
 			//get negotiated rate total
-			$negtotal = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentCharges/NegotitatedRates/NetSummaryCharges/GrandTotal/MonetaryValue/");
+			$negtotal = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/NegotitatedRates/NetSummaryCharges/GrandTotal/MonetaryValue/");
 			$result->setNegotiatedTotalShippingCharges($negtotal);
 			
 			//get billing weight
