@@ -60,6 +60,13 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
                 $this->_loginPostRedirect();
                 return;
             } else {
+                $pfData = new Varien_Object();
+                Mage::helper('unl_cas')->loadPfData($pfData);
+                
+                if (!empty($pfData['email'])) {
+                    $this->_createCustomerFromPfData($pfData);
+                    return;
+                }
                 $this->_redirect('*/*/create', array('_secure' => true));
                 return;
             }
@@ -104,20 +111,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
      */
     public function createAction()
     {
-        if ($this->_getSession()->isLoggedIn()) {
-            $this->_redirect('customer/account');
-            return;
-        }
-        
-        $auth = Mage::helper('unl_cas')->getAuth();
-        if (!$auth->isLoggedIn()) {
-            $this->_redirect('*/*/cas', array('_secure' => true));
-            return;
-        }
-        
-        if ($customer = $this->_checkUidExists($auth->getUser())) {
-            $this->_getSession()->setCustomerAsLoggedIn($customer);
-            $this->_loginPostRedirect();
+        if (!$this->_checkSessionAndAuth()) {
             return;
         }
 
@@ -138,25 +132,54 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             return false;
         }
     }
+    
+    protected function _createCustomerFromPfData($data)
+    {
+        /* @var $customer Mage_Customer_Model_Customer */
+        $customer = Mage::getModel('customer/customer')->setId(null);
+        
+        $customer->addData($data);
+        $uid = Mage::helper('unl_cas')->getAuth()->getUser();
+        $customer->setData('unl_cas_uid', $uid);
+        Mage::helper('unl_cas')->assignGroupId($customer, $uid);
+        $customer->setPassword($customer->generatePassword());
+        
+        try {
+            $this->_completeCustomer($customer);
+        } catch (Exception $e) {
+            $this->_getSession()->addException($e, $this->__('Can\'t save customer'));
+            $this->_redirectError(Mage::getUrl('customer/account/index', array('_secure'=>true)));
+        }
+    }
+    
+    protected function _checkSessionAndAuth()
+    {
+        if ($this->_getSession()->isLoggedIn()) {
+            $this->_redirect('customer/account');
+            return false;
+        }
+        
+        $auth = Mage::helper('unl_cas')->getAuth();
+        if (!$auth->isLoggedIn()) {
+            $this->_redirect('*/*/cas', array('_secure' => true));
+            return false;
+        }
+        
+        if ($customer = $this->_checkUidExists($auth->getUser())) {
+            $this->_getSession()->setCustomerAsLoggedIn($customer);
+            $this->_loginPostRedirect();
+            return false;
+        }
+        
+        return true;
+    }
 
     /**
      * Create customer account action
      */
     public function createPostAction()
     {
-        if ($this->_getSession()->isLoggedIn()) {
-            $this->_redirect('customer/account/');
-            return;
-        }
-        
-        if (!Mage::helper('unl_cas')->getAuth()->isLoggedIn()) {
-            $this->_redirect('*/*/cas', array('_secure' => true));
-            return;
-        }
-        
-        if ($customer = $this->_checkUidExists(Mage::helper('unl_cas')->getAuth()->getUser())) {
-            $this->_getSession()->setCustomerAsLoggedIn($customer);
-            $this->_loginPostRedirect();
+        if (!$this->_checkSessionAndAuth()) {
             return;
         }
         
@@ -207,22 +230,8 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
                 $validationResult = count($errors) == 0;
 
                 if (true === $validationResult) {
-                    $customer->save();
-
-                    if ($customer->isConfirmationRequired()) {
-                        $customer->sendNewAccountEmail('confirmation', $this->_getSession()->getBeforeAuthUrl());
-                        $this->_getSession()->addSuccess($this->__('Account confirmation is required. Please, check your e-mail for confirmation link. To resend confirmation email please <a href="%s">click here</a>.',
-                            Mage::helper('customer')->getEmailConfirmationUrl($customer->getEmail())
-                        ));
-                        $this->_redirectSuccess(Mage::getUrl('customer/account/index', array('_secure'=>true)));
-                        return;
-                    }
-                    else {
-                        $this->_getSession()->setCustomerAsLoggedIn($customer);
-                        $url = $this->_welcomeCustomer($customer);
-                        $this->_redirectSuccess($url);
-                        return;
-                    }
+                    $this->_completeCustomer($customer);
+                    return;
                 } else {
                     $this->_getSession()->setCustomerFormData($this->getRequest()->getPost());
                     if (is_array($errors)) {
@@ -249,6 +258,28 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
          */
         $this->_getSession()->setEscapeMessages(true);
         $this->_redirectError(Mage::getUrl('*/*/create', array('_secure'=>true)));
+    }
+    
+    /**
+     * Saves the customer to the database and redirects
+     * 
+     * @param Mage_Customer_Model_Customer $customer
+     */
+    protected function _completeCustomer($customer)
+    {
+        $customer->save();
+
+        if ($customer->isConfirmationRequired()) {
+            $customer->sendNewAccountEmail('confirmation', $this->_getSession()->getBeforeAuthUrl());
+            $this->_getSession()->addSuccess($this->__('Account confirmation is required. Please, check your e-mail for confirmation link. To resend confirmation email please <a href="%s">click here</a>.',
+                Mage::helper('customer')->getEmailConfirmationUrl($customer->getEmail())
+            ));
+            $this->_redirectSuccess(Mage::getUrl('customer/account/index', array('_secure'=>true)));
+        } else {
+            $this->_getSession()->setCustomerAsLoggedIn($customer);
+            $url = $this->_welcomeCustomer($customer);
+            $this->_redirectSuccess($url);
+        }
     }
 
     /**

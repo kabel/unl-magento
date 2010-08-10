@@ -33,6 +33,34 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     }
     
     /**
+     * Add peoplefinder data to Varian Object
+     *
+     * @param $data Varien_Object
+     */
+    public function loadPfData($data)
+    {
+        $user = $this->getAuth()->getUser();
+        $pf = new UNL_Peoplefinder();
+        if ($r = $pf->getUID($user)) {
+            if (empty($data['email']) && !empty($r->mail)) {
+                if (isset($r->unlEmailAlias)) {
+                    $data['email'] = $r->unlEmailAlias . '@unl.edu';
+                } else {
+                    $data['email'] = $r->mail;
+                }
+            }
+            
+            if (empty($data['firstname'])) {
+                $data['firstname'] = $r->givenName;
+            }
+            
+            if (empty($data['lastname'])) {
+                $data['lastname'] = $r->sn;
+            }
+        }
+    }
+    
+    /**
      * Assigns a group id based on peoplefinder results
      *
      * @param Mage_Customer_Model_Customer $customer

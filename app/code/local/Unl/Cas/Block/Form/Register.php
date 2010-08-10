@@ -28,38 +28,10 @@ class Unl_Cas_Block_Form_Register extends Mage_Directory_Block_Data
         $data = $this->getData('form_data');
         if (is_null($data)) {
             $data = new Varien_Object(Mage::getSingleton('customer/session')->getCustomerFormData(true));
-            $this->_loadPfData($data);
+            Mage::helper('unl_cas')->loadPfData($data);
             $this->setData('form_data', $data);
         }
         return $data;
-    }
-    
-    /**
-     * Add peoplefinder data to Varian Object
-     *
-     * @param $data Varien_Object
-     */
-    protected function _loadPfData($data)
-    {
-        $user = Mage::helper('unl_cas')->getAuth()->getUser();
-        $pf = new UNL_Peoplefinder();
-        if ($r = $pf->getUID($user)) {
-            if (empty($data['email']) && !empty($r->mail)) {
-                if (isset($r->unlEmailAlias)) {
-                    $data['email'] = $r->unlEmailAlias . '@unl.edu';
-                } else {
-                    $data['email'] = $r->mail;
-                }
-            }
-            
-            if (empty($data['firstname'])) {
-                $data['firstname'] = $r->givenName;
-            }
-            
-            if (empty($data['lastname'])) {
-                $data['lastname'] = $r->sn;
-            }
-        }
     }
 
     /**
