@@ -133,12 +133,16 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         }
     }
     
+    /**
+     * 
+     * @param Varien_Object $data
+     */
     protected function _createCustomerFromPfData($data)
     {
         /* @var $customer Mage_Customer_Model_Customer */
         $customer = Mage::getModel('customer/customer')->setId(null);
         
-        $customer->addData($data);
+        $customer->addData($data->toArray());
         $uid = Mage::helper('unl_cas')->getAuth()->getUser();
         $customer->setData('unl_cas_uid', $uid);
         Mage::helper('unl_cas')->assignGroupId($customer, $uid);
