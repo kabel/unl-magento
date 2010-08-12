@@ -37,28 +37,10 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
 
         return $this;
     }
-    
-    protected function _showLastExecutionTime($flagCode, $refreshCode)
-    {
-        $flag = Mage::getModel('reports/flag')->setReportFlagCode($flagCode)->loadSelf();
-        $updatedAt = ($flag->hasData())
-            ? Mage::app()->getLocale()->storeDate(
-                0, new Zend_Date($flag->getLastUpdate(), Varien_Date::DATETIME_INTERNAL_FORMAT), true
-            )
-            : 'undefined';
-
-        $refreshStatsLink = $this->getUrl('adminhtml/report_sales/refreshstatistics');
-        $directRefreshLink = $this->getUrl('adminhtml/report_sales/refreshRecent', array('code' => $refreshCode));
-
-        Mage::getSingleton('adminhtml/session')->addNotice(Mage::helper('adminhtml')->__('Last updated: %s. To refresh last day\'s <a href="%s">statistics</a>, click <a href="%s">here</a>', $updatedAt, $refreshStatsLink, $directRefreshLink));
-        return $this;
-    }
 
     public function ccAction()
     {
         $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Credit Card'));
-
-        $this->_showLastExecutionTime(Mage_Reports_Model_Flag::REPORT_ORDER_FLAG_CODE, 'sales');
         
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
@@ -100,8 +82,6 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
     public function coAction()
     {
         $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Cost Object'));
-
-        $this->_showLastExecutionTime(Mage_Reports_Model_Flag::REPORT_ORDER_FLAG_CODE, 'sales');
         
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
@@ -143,8 +123,6 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
     public function nocapAction()
     {
         $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Non-Captured'));
-
-        $this->_showLastExecutionTime(Mage_Reports_Model_Flag::REPORT_ORDER_FLAG_CODE, 'sales');
         
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')

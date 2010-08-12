@@ -13,7 +13,7 @@
 	<unl_core_report_sales_bursar_cc>
 	   <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_cc" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                <block type="sales/adminhtml_report_filter_form_order" name="grid.filter.form">
                     <action method="addReportTypeOption" translate="value">
                         <key>created_at_order</key>
                         <value>Created At Order</value>
@@ -29,7 +29,7 @@
 	<unl_core_report_sales_bursar_co>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_co" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                <block type="sales/adminhtml_report_filter_form_order" name="grid.filter.form">
                     <action method="addReportTypeOption" translate="value">
                         <key>created_at_order</key>
                         <value>Created At Order</value>
@@ -45,7 +45,7 @@
     <unl_core_report_sales_bursar_nocap>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_nocap" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                <block type="sales/adminhtml_report_filter_form_order" name="grid.filter.form">
                     <action method="addReportTypeOption" translate="value">
                         <key>created_at_order</key>
                         <value>Created At Order</value>

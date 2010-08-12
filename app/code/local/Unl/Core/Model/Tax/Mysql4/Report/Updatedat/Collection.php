@@ -63,7 +63,7 @@ class Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection extends Mage_Tax_Mod
 
         $select = $this->getSelect()
             ->from(array('e' => $mainTable), $columns)
-            ->joinInner(array('tax'=> $this->getTable('sales/order_tax')), 'e.entity_id = tax.order_id', array())
+            ->joinInner(array('tax'=> $this->getTable('tax/sales_order_tax')), 'e.entity_id = tax.order_id', array())
             ->joinLeft(array('pf' => 'unl_tax_places'), "CASE WHEN tax.code LIKE '%-CityFips-%' THEN RIGHT(tax.code, 5) = pf.fips_place_number ELSE NULL END", array('city' => 'name'))
             ->joinLeft(array('cf' => 'unl_tax_counties'), "CASE WHEN tax.code LIKE '%-CountyFips-%' THEN RIGHT(tax.code, 3) = cf.county_id ELSE NULL END", array('county' => 'name'));
 

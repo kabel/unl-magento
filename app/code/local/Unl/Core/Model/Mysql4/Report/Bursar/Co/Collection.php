@@ -7,7 +7,10 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Co_Collection extends Unl_Core_Model_M
     protected function _getNonTotalColumns($fromItems = true)
     {
         $columns = parent::_getNonTotalColumns($fromItems);
-        $columns += array('po_number' => 'pmno.value');
+        $columns += array(
+            'po_number' => 'p.po_number',
+            'order_num' => 'o.increment_id'
+        );
         
         return $columns;
     }
@@ -19,30 +22,26 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Co_Collection extends Unl_Core_Model_M
         }
 
         $mainTable = $this->getResource()->getMainTable();
-
-        if (!is_null($this->_from) || !is_null($this->_to)) {
-            $where = (!is_null($this->_from)) ? "so.{$this->getRecordType()} >= '{$this->_from}'" : '';
-            if (!is_null($this->_to)) {
-                $where .= (!empty($where)) ? " AND so.{$this->getRecordType()} <= '{$this->_to}'" : "so.{$this->getRecordType()} <= '{$this->_to}'";
-            }
-
-            $subQuery = clone $this->getSelect();
-            $subQuery->from(array('so' => $mainTable), array("DISTINCT DATE(so.{$this->getRecordType()})"))
-                ->where($where);
-        }
-
-        $select = $this->getSelect();
-        $paymentModel = Mage::getResourceSingleton('sales/order_payment');
-        $methodAttr = $paymentModel->getAttribute('method');
-        $poNumberAttr = $paymentModel->getAttribute('po_number');
         
+        $select = $this->getSelect();
+
         if ($this->isTotals() || $this->isSubTotals()) {
-            $select->from(array('e' => $mainTable), $this->_getTotalColumns($this->isSubTotals()))
-                ->join(array('p' => $paymentModel->getEntityTable()), 'p.entity_type_id = ' . $paymentModel->getEntityType()->getId() . ' AND p.parent_id = e.entity_id', array())
-                ->join(array('pm' => $methodAttr->getBackendTable()), 'p.entity_id = pm.entity_id AND pm.attribute_id = ' . $methodAttr->getId() . ' AND ' . $this->_getConditionSql('pm.value', array('in' => $this->_paymentMethodCodes)), array())
-                ->where('e.state NOT IN (?)', array(
+            $selectOrderItem = $this->getConnection()->select()
+                ->from($this->getTable('sales/order_item'), array(
+                    'order_id'           => 'order_id',
+                    'total_qty_ordered'  => 'SUM(qty_ordered - IFNULL(qty_canceled, 0))',
+                    'total_qty_invoiced' => 'SUM(qty_invoiced)',
+                ))
+                ->group('order_id');
+            
+            $select->from(array('o' => $mainTable), $this->_getTotalColumns($this->isSubTotals()))
+                ->join(array('oi' => $selectOrderItem), 'oi.order_id = o.entity_id', array())
+                ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
+                ->where('p.method IN (?)', $this->_paymentMethodCodes)
+                ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
+                    Mage_Sales_Model_Order::STATE_CANCELED
                 ));
                 
             $this->_applyOrderStatusFilter();
@@ -51,40 +50,49 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Co_Collection extends Unl_Core_Model_M
                 $select->group($this->_periodFormat);
             }
             
-            if (!is_null($this->_from) || !is_null($this->_to)) {
-                $select->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
+            if ($this->_to !== null) {
+                $select->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+            }
+    
+            if ($this->_from !== null) {
+                $select->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
             }
         } else {
             $sql1 = clone $this->getSelect();
-            $sql1->from(array('e' => $mainTable), $this->_getNonTotalColumns(true))
-                ->join(array('oi' => $this->getTable('sales/order_item')), 'oi.order_id = e.entity_id AND oi.parent_item_id IS NULL', array())
-                ->join(array('p' => $paymentModel->getEntityTable()), 'p.entity_type_id = ' . $paymentModel->getEntityType()->getId() . ' AND p.parent_id = e.entity_id', array())
-                ->join(array('pm' => $methodAttr->getBackendTable()), 'p.entity_id = pm.entity_id AND pm.attribute_id = ' . $methodAttr->getId() . ' AND ' . $this->_getConditionSql('pm.value', array('in' => $this->_paymentMethodCodes)), array())
-                ->join(array('pmno' => $poNumberAttr->getBackendTable()), 'p.entity_id = pmno.entity_id AND pmno.attribute_id = ' . $poNumberAttr->getId(), array())
+            $sql1->from(array('o' => $mainTable), $this->_getNonTotalColumns(true))
+                ->join(array('oi' => $this->getTable('sales/order_item')), 'oi.order_id = o.entity_id AND oi.parent_item_id IS NULL', array())
+                ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
                 ->joinLeft(array('s' => $this->getTable('core/store')), 'oi.source_store_view = s.store_id', array())
                 ->joinLeft(array('sg' => $this->getTable('core/store_group')), 's.group_id = sg.group_id', array())
-                ->where('e.state NOT IN (?)', array(
+                ->where('p.method IN (?)', $this->_paymentMethodCodes)
+                ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
+                    Mage_Sales_Model_Order::STATE_CANCELED
                 ))
-                ->group(array($this->_periodFormat, 'sg.group_id', 'pmno.value'));
+                ->group(array($this->_periodFormat, 'sg.group_id', 'o.entity_id'));
             $this->_applyOrderStatusFilter($sql1);
             
             $sql2 = clone $this->getSelect();
-            $sql2->from(array('e' => $mainTable), $this->_getNonTotalColumns(false))
-                ->join(array('p' => $paymentModel->getEntityTable()), 'p.entity_type_id = ' . $paymentModel->getEntityType()->getId() . ' AND p.parent_id = e.entity_id', array())
-                ->join(array('pm' => $methodAttr->getBackendTable()), 'p.entity_id = pm.entity_id AND pm.attribute_id = ' . $methodAttr->getId() . ' AND ' . $this->_getConditionSql('pm.value', array('in' => $this->_paymentMethodCodes)), array())
-                ->join(array('pmno' => $poNumberAttr->getBackendTable()), 'p.entity_id = pmno.entity_id AND pmno.attribute_id = ' . $poNumberAttr->getId(), array())
-                ->where('e.state NOT IN (?)', array(
+            $sql2->from(array('o' => $mainTable), $this->_getNonTotalColumns(false))
+                ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
+                ->where('p.method IN (?)', $this->_paymentMethodCodes)
+                ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
+                    Mage_Sales_Model_Order::STATE_CANCELED
                 ))
-                ->group(array($this->_periodFormat, 'pmno.value'));
+                ->group(array($this->_periodFormat, 'o.entity_id'));
             $this->_applyOrderStatusFilter($sql2);
             
-            if (!is_null($this->_from) || !is_null($this->_to)) {
-                $sql1->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
-                $sql2->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
+            if ($this->_to !== null) {
+                $sql1->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+                $sql2->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+            }
+    
+            if ($this->_from !== null) {
+                $sql1->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
+                $sql2->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
             }
             
             $select->union(array('(' . $sql1 . ')', '(' . $sql2 . ')'));

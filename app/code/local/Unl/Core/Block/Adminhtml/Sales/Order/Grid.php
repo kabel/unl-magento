@@ -4,19 +4,13 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
 {
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Sales_Model_Mysql4_Order_Collection */
-        $collection = Mage::getResourceModel('sales/order_collection')
-            ->addAttributeToSelect('*')
-            ->joinAttribute('billing_firstname', 'order_address/firstname', 'billing_address_id', null, 'left')
-            ->joinAttribute('billing_lastname', 'order_address/lastname', 'billing_address_id', null, 'left')
-            ->joinAttribute('shipping_firstname', 'order_address/firstname', 'shipping_address_id', null, 'left')
-            ->joinAttribute('shipping_lastname', 'order_address/lastname', 'shipping_address_id', null, 'left')
-            ->addExpressionAttributeToSelect('billing_name',
-                'CONCAT({{billing_firstname}}, " ", {{billing_lastname}})',
-                array('billing_firstname', 'billing_lastname'))
-            ->addExpressionAttributeToSelect('shipping_name',
-                'CONCAT({{shipping_firstname}},  IFNULL(CONCAT(\' \', {{shipping_lastname}}), \'\'))',
-                array('shipping_firstname', 'shipping_lastname'));
+        /* @var $collection Mage_Sales_Model_Mysql4_Order_Grid_Collection */
+        $collection = Mage::getResourceModel($this->_getCollectionClass());
+        $collection->getSelect()
+            ->join(array('o' => $collection->getTable('sales/order')),
+                'main_table.entity_id = o.entity_id',
+                array('external_id')
+            );
         
         $user  = Mage::getSingleton('admin/session')->getUser();
         if (!is_null($user->getScope())) {
@@ -29,8 +23,10 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
                 ->group('order_id');
                 
             $collection->getSelect()
-                ->joinInner(array('scope' => $select), 'e.entity_id = scope.order_id', array());
+                ->joinInner(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
         }
+        
+        //MAYBE: Add payment method to grid
         
         $this->setCollection($collection);
         
@@ -67,32 +63,14 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'header' => Mage::helper('sales')->__('Purchased On'),
             'index' => 'created_at',
             'type' => 'datetime',
-            'width' => '100px',
+            'width' => '150px',
         ));
 
-        /*$this->addColumn('billing_firstname', array(
-            'header' => Mage::helper('sales')->__('Bill to First name'),
-            'index' => 'billing_firstname',
-        ));
-
-        $this->addColumn('billing_lastname', array(
-            'header' => Mage::helper('sales')->__('Bill to Last name'),
-            'index' => 'billing_lastname',
-        ));*/
         $this->addColumn('billing_name', array(
             'header' => Mage::helper('sales')->__('Bill to Name'),
             'index' => 'billing_name',
         ));
 
-        /*$this->addColumn('shipping_firstname', array(
-            'header' => Mage::helper('sales')->__('Ship to First name'),
-            'index' => 'shipping_firstname',
-        ));
-
-        $this->addColumn('shipping_lastname', array(
-            'header' => Mage::helper('sales')->__('Ship to Last name'),
-            'index' => 'shipping_lastname',
-        ));*/
         $this->addColumn('shipping_name', array(
             'header' => Mage::helper('sales')->__('Ship to Name'),
             'index' => 'shipping_name',
@@ -105,12 +83,14 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'currency' => 'base_currency_code',
         ));
 
+        /* THIS IS POINTLESS BECAUSE WE ONLY SUPPORT USD 
         $this->addColumn('grand_total', array(
             'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
             'index' => 'grand_total',
             'type'  => 'currency',
             'currency' => 'order_currency_code',
         ));
+        */
 
         $this->addColumn('status', array(
             'header' => Mage::helper('sales')->__('Status'),
@@ -141,7 +121,18 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             ));
         }
         $this->addRssList('rss/order/new', Mage::helper('sales')->__('New Order RSS'));
+        
+        $this->addExportType('*/*/exportCsv', Mage::helper('sales')->__('CSV'));
+        $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
+    }
+    
+    protected function _getPaymentMethods()
+    {
+        $config = Mage::getModel('payment/config');
+        $methods = $config->getAllMethods();
+        
+        1+1;
     }
 }

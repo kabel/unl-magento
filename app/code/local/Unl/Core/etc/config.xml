@@ -23,10 +23,9 @@
                 <rewrite>
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
-                    <dashboard_tab_products_ordered>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Ordered</dashboard_tab_products_ordered>
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
-                    <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
+                    <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <report_product_downloads_grid>Unl_Core_Block_Adminhtml_Report_Product_Downloads_Grid</report_product_downloads_grid>
                     <report_product_lowstock_grid>Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid</report_product_lowstock_grid>
                     <report_review_product_grid>Unl_Core_Block_Adminhtml_Report_Review_Product_Grid</report_review_product_grid>
@@ -123,13 +122,12 @@
                 </rewrite>
             </dataflow>
             <reports_mysql4>
-                <!-- Nebraska Tax and Store Owned Products -->
                 <rewrite>
+                    <!-- Dashboard Report Fixes for Store Owned Products -->
                     <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
-                    <product_ordered_collection>Unl_Core_Model_Reports_Mysql4_Product_Ordered_Collection</product_ordered_collection>
+                    <!-- Store Owned Product Filters -->
                     <product_sold_collection>Unl_Core_Model_Reports_Mysql4_Product_Sold_Collection</product_sold_collection>
                     <product_viewed_collection>Unl_Core_Model_Reports_Mysql4_Product_Viewed_Collection</product_viewed_collection>
-                    <tax_collection>Unl_Core_Model_Reports_Mysql4_Tax_Collection</tax_collection>
                 </rewrite>
             </reports_mysql4>
             <sales>
@@ -142,12 +140,15 @@
             </sales>
             <sales_mysql4>
                 <rewrite>
-                    <order>Unl_Core_Model_Sales_Mysql4_Order</order>
+                    <!-- Fix Aggregate Methods And Live Reports -->
+                    <report_bestsellers>Unl_Core_Model_Sales_Mysql4_Report_Bestsellers</report_bestsellers>
+                    <report_order>Unl_Core_Model_Sales_Mysql4_Report_Order</report_order>
                     <report_order_updatedat_collection>Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection</report_order_updatedat_collection>
                 </rewrite>
             </sales_mysql4>
             <tax>
                 <rewrite>
+                    <!-- Fixes to Attach Sale Amount to tax report and Zip+4 -->
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
                     <sales_total_quote_tax>Unl_Core_Model_Tax_Sales_Total_Quote_Tax</sales_total_quote_tax>
                 </rewrite>
@@ -507,6 +508,15 @@
             </design>
         </admin>
     </stores>
+    <websites>
+        <admin>
+            <web>
+                <default>
+                    <no_route>backoffice/index/noRoute</no_route>
+                </default>
+            </web>
+        </admin>
+    </websites>
     
     <default>
         <design>
@@ -521,6 +531,7 @@
                 <order_status>pending</order_status>
                 <title>Internal Cash/Check</title>
                 <allowspecific>0</allowspecific>
+                <group>offline</group>
             </cash>
         </payment>
         <carriers>

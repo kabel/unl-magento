@@ -25,8 +25,10 @@ class Unl_Core_Model_Bundle_Product_Type extends Mage_Bundle_Model_Product_Type
         if ($product->getSkipCheckRequiredOption()) {
             $_appendAllSelections = true;
         }
+        
+        $options = array_filter($buyRequest->getBundleOption(), 'intval');
 
-        if ($options = $buyRequest->getBundleOption()) {
+        if ($options) {
             $qtys = $buyRequest->getBundleOptionQty();
             foreach ($options as $_optionId => $_selections) {
                 if (empty($_selections)) {

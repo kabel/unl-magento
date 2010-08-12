@@ -46,27 +46,33 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
     protected function _getTotalColumns($isSubtotal = false)
     {
         $this->_selectedColumns = array(
-            'total_qty_ordered'         => 'SUM(e.total_qty_ordered)',
-            'base_profit_amount'        => 'SUM(IFNULL(e.base_subtotal_invoiced, 0) * e.base_to_global_rate) + SUM(IFNULL(e.base_discount_refunded, 0) * e.base_to_global_rate) - SUM(IFNULL(e.base_subtotal_refunded, 0) * e.base_to_global_rate) - SUM(IFNULL(e.base_discount_invoiced, 0) * e.base_to_global_rate) - SUM(IFNULL(e.base_total_invoiced_cost, 0) * e.base_to_global_rate)',
-            'base_subtotal_amount'      => 'SUM(e.base_subtotal * e.base_to_global_rate)',
-            'base_tax_amount'           => 'SUM(e.base_tax_amount * e.base_to_global_rate)',
-            'base_shipping_amount'      => 'SUM(e.base_shipping_amount * e.base_to_global_rate)',
-            'base_discount_amount'      => 'SUM(e.base_discount_amount * e.base_to_global_rate)',
-            'base_grand_total_amount'   => 'SUM(e.base_grand_total * e.base_to_global_rate)',
-            'base_invoiced_amount'      => 'SUM(e.base_total_paid * e.base_to_global_rate)',
-            'base_refunded_amount'      => 'SUM(e.base_total_refunded * e.base_to_global_rate)',
-            'base_refunded_tax_amount'  => 'SUM(e.base_tax_refunded * e.base_to_global_rate)',
-            'base_canceled_amount'      => 'SUM((IFNULL(e.base_subtotal_canceled, 0) - IFNULL(e.base_discount_canceled, 0) + IFNULL(e.base_tax_canceled, 0) + e.base_shipping_canceled) * e.base_to_global_rate)',
-            'base_canceled_tax_amount'  => 'SUM(IFNULL(e.base_tax_canceled, 0) * e.base_to_global_rate)'
+            'orders_count'                   => 'COUNT(o.entity_id)',
+            'total_qty_ordered'              => 'SUM(oi.total_qty_ordered)',
+            'total_qty_invoiced'             => 'SUM(oi.total_qty_invoiced)',
+            'total_income_amount'            => 'SUM((o.base_grand_total - IFNULL(o.base_total_canceled, 0)) * o.base_to_global_rate)',
+            'total_revenue_amount'           => 'SUM((o.base_total_paid - IFNULL(o.base_total_refunded, 0)) * o.base_to_global_rate)',
+            'total_profit_amount'            => 'SUM((o.base_total_paid - IFNULL(o.base_total_refunded, 0) - IFNULL(o.base_tax_invoiced, 0) - IFNULL(o.base_shipping_invoiced, 0) - IFNULL(o.base_total_invoiced_cost, 0)) * o.base_to_global_rate)',
+            'total_invoiced_amount'          => 'SUM(o.base_total_invoiced * o.base_to_global_rate)',
+            'total_canceled_amount'          => 'SUM(IFNULL(o.base_total_canceled, 0) * o.base_to_global_rate)',
+            'total_paid_amount'              => 'SUM(o.base_total_paid * o.base_to_global_rate)',
+            'total_refunded_amount'          => 'SUM(o.base_total_refunded * o.base_to_global_rate)',
+            'total_tax_amount'               => 'SUM((o.base_tax_amount - IFNULL(o.base_tax_canceled, 0)) * o.base_to_global_rate)',
+            'total_tax_amount_actual'        => 'SUM((o.base_tax_invoiced - IFNULL(o.base_tax_refunded, 0)) * o.base_to_global_rate)',
+            'total_shipping_amount'          => 'SUM((o.base_shipping_amount - IFNULL(o.base_shipping_canceled, 0)) * o.base_to_global_rate)',
+            'total_shipping_amount_actual'   => 'SUM((o.base_shipping_invoiced - IFNULL(o.base_shipping_refunded, 0)) * o.base_to_global_rate)',
+            'total_discount_amount'          => 'SUM((ABS(o.base_discount_amount) - IFNULL(o.base_discount_canceled, 0)) * o.base_to_global_rate)',
+            'total_discount_amount_actual'   => 'SUM((o.base_discount_invoiced - IFNULL(o.base_discount_refunded, 0)) * o.base_to_global_rate)',
+            'total_refunded_tax_amount'      => 'SUM(IFNULL(o.base_tax_refunded, 0) * o.base_to_global_rate)',
+            'total_canceled_tax_amount'      => 'SUM(IFNULL(o.base_tax_canceled, 0) * o.base_to_global_rate)'
         );
         
         if ($isSubtotal) {
             if ('month' == $this->_period) {
-                $this->_periodFormat = "DATE_FORMAT(e.{$this->getRecordType()}, '%Y-%m')";
+                $this->_periodFormat = "DATE_FORMAT(o.{$this->getRecordType()}, '%Y-%m')";
             } elseif ('year' == $this->_period) {
-                $this->_periodFormat = "EXTRACT(YEAR FROM e.{$this->getRecordType()})";
+                $this->_periodFormat = "EXTRACT(YEAR FROM o.{$this->getRecordType()})";
             } else {
-                $this->_periodFormat = "DATE(e.{$this->getRecordType()})";
+                $this->_periodFormat = "DATE(o.{$this->getRecordType()})";
             }
             $this->_selectedColumns += array('period' => $this->_periodFormat);
         }
@@ -77,49 +83,57 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
     protected function _getNonTotalColumns($fromItems = true)
     {
         if ('month' == $this->_period) {
-            $this->_periodFormat = "DATE_FORMAT(e.{$this->getRecordType()}, '%Y-%m')";
+            $this->_periodFormat = "DATE_FORMAT(o.{$this->getRecordType()}, '%Y-%m')";
         } elseif ('year' == $this->_period) {
-            $this->_periodFormat = "EXTRACT(YEAR FROM e.{$this->getRecordType()})";
+            $this->_periodFormat = "EXTRACT(YEAR FROM o.{$this->getRecordType()})";
         } else {
-            $this->_periodFormat = "DATE(e.{$this->getRecordType()})";
+            $this->_periodFormat = "DATE(o.{$this->getRecordType()})";
         }
         $columns = array('period' => $this->_periodFormat);
         
         if ($fromItems) {
             $columns += array(
-                'merchant'                  => 'sg.name',
-                'orders_count'              => 'COUNT(DISTINCT(e.entity_id))',
-                'total_qty_ordered'         => 'SUM(oi.qty_ordered)',
-                'base_profit_amount'        => 'SUM((oi.base_row_invoiced - oi.base_amount_refunded - (oi.base_cost * oi.qty_invoiced)) * e.base_to_global_rate)',
-                'base_subtotal_amount'      => 'SUM(oi.base_row_total * e.base_to_global_rate)',
-                'base_tax_amount'           => 'SUM(oi.base_tax_amount * e.base_to_global_rate)',
-                'base_shipping_amount'      => new Zend_Db_Expr('0'),
-                'base_discount_amount'      => 'SUM(oi.base_discount_amount * e.base_to_global_rate)',
-                'base_grand_total_amount'   => 'SUM((oi.base_row_total + oi.base_tax_amount - oi.base_discount_amount) * e.base_to_global_rate)',
-                'base_invoiced_amount'      => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - oi.base_discount_invoiced) * e.base_to_global_rate)',
-                'base_payout_amount'        => 'SUM(((oi.base_row_invoiced - oi.base_discount_invoiced) * (1 - (s.unl_rate / 100))) * e.base_to_global_rate)',
-                'base_refunded_amount'      => 'SUM(oi.base_amount_refunded * e.base_to_global_rate)',
-                'base_refunded_tax_amount'  => new Zend_Db_Expr('0'),
-                'base_canceled_amount'      => 'SUM((oi.base_price + (oi.base_tax_amount / oi.qty_ordered)) * oi.qty_canceled * e.base_to_global_rate)',
-                'base_canceled_tax_amount'  => 'SUM(oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled * e.base_to_global_rate)'
+                'merchant'                       => 'sg.name',
+                'orders_count'                   => 'COUNT(DISTINCT(o.entity_id))',
+                'total_qty_ordered'              => 'SUM(oi.qty_ordered - IFNULL(oi.qty_canceled, 0))',
+                'total_qty_invoiced'             => 'SUM(oi.qty_invoiced)',
+                'total_income_amount'            => 'SUM((oi.base_row_total + oi.base_tax_amount - ABS(oi.base_discount_amount) - ((oi.base_row_total + oi.base_tax_amount - oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
+                'total_revenue_amount'           => 'SUM((oi.base_row_invoiced + IF(oi.base_row_invoiced, oi.base_tax_amount / oi.qty_ordered * qty_invoiced, 0) - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
+                'total_profit_amount'            => 'SUM((oi.base_row_invoiced - ABS(oi.base_discount_invoiced) - oi.base_amount_refunded - (IFNULL(oi.base_cost, 0) * oi.qty_invoiced)) * o.base_to_global_rate)',
+                'total_invoiced_amount'          => 'SUM((oi.base_row_invoiced + IF(oi.base_row_invoiced, oi.base_tax_amount / oi.qty_ordered * qty_invoiced, 0) - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
+                'total_canceled_amount'          => 'SUM((oi.base_price + ((oi.base_tax_amount - ABS(oi.base_discount_amount)) / oi.qty_ordered)) * oi.qty_canceled * o.base_to_global_rate)',
+                'total_paid_amount'              => 'SUM((oi.base_row_invoiced + IF(oi.base_row_invoiced, oi.base_tax_amount / oi.qty_ordered * qty_invoiced, 0) - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
+                'total_refunded_amount'          => new Zend_Db_Expr('0'),
+                'total_tax_amount'               => 'SUM((oi.base_tax_amount - (oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
+                'total_tax_amount_actual'        => 'SUM((IF(oi.base_row_invoiced, oi.base_tax_amount / oi.qty_ordered * qty_invoiced, 0) - IFNULL(IF(oi.base_row_invoiced, oi.base_tax_amount, 0) / oi.qty_invoiced * oi.qty_refunded, 0)) * o.base_to_global_rate)',
+                'total_shipping_amount'          => new Zend_Db_Expr('0'),
+                'total_shipping_amount_actual'   => new Zend_Db_Expr('0'),
+                'total_discount_amount'          => 'SUM((ABS(oi.base_discount_amount) - (ABS(oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
+                'total_discount_amount_actual'   => 'SUM((ABS(oi.base_discount_invoiced) - (ABS(oi.base_discount_invoiced) / oi.qty_invoiced * oi.qty_refunded)) * o.base_to_global_rate)',
+                'total_refunded_tax_amount'      => new Zend_Db_Expr('0'),
+                'total_canceled_tax_amount'      => 'SUM(oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled * o.base_to_global_rate)'
             );
         } else {
             $columns += array(
-                'merchant'                  => new Zend_Db_Expr("'CENTRALIZED ACCOUNT'"),
-                'orders_count'              => new Zend_Db_Expr('0'),
-                'total_qty_ordered'         => new Zend_Db_Expr('0'),
-                'base_profit_amount'        => new Zend_Db_Expr('0'),
-                'base_subtotal_amount'      => new Zend_Db_Expr('0'),
-                'base_tax_amount'           => 'SUM(IFNULL(e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
-                'base_shipping_amount'      => 'SUM(e.base_shipping_amount * e.base_to_global_rate)',
-                'base_discount_amount'      => new Zend_Db_Expr('0'),
-                'base_grand_total_amount'   => 'SUM((e.base_shipping_amount + IFNULL(e.base_shipping_tax_amount, 0)) * e.base_to_global_rate)',
-                'base_invoiced_amount'      => 'SUM(IFNULL(e.base_shipping_invoiced + e.base_shipping_tax_amount, 0) * e.base_to_global_rate)',
-                'base_payout_amount'        => 'SUM(IFNULL(e.base_shipping_invoiced, 0) * e.base_to_global_rate)',
-                'base_refunded_amount'      => 'SUM((IFNULL(e.base_subtotal_refunded, 0) - IFNULL(e.base_discount_refunded, 0) + IFNULL(e.base_tax_refunded, 0) + IFNULL(e.base_shipping_refunded, 0)) * e.base_to_global_rate)',
-                'base_refunded_tax_amount'  => 'SUM(IFNULL(e.base_tax_refunded, 0) * e.base_to_global_rate)',
-                'base_canceled_amount'      => "SUM((IFNULL(e.base_shipping_canceled, 0) + IF(e.status = 'canceled', e.base_shipping_tax_amount, 0)) * e.base_to_global_rate)",
-                'base_canceled_tax_amount'  => "SUM(IF(e.status = 'canceled', e.base_shipping_tax_amount, 0) * e.base_to_global_rate)"
+                'merchant'                       => new Zend_Db_Expr("'CENTRALIZED ACCOUNT'"),
+                'orders_count'                   => new Zend_Db_Expr('0'),
+                'total_qty_ordered'              => new Zend_Db_Expr('0'),
+                'total_qty_invoiced'             => new Zend_Db_Expr('0'),
+                'total_income_amount'            => 'SUM((o.base_shipping_amount - o.base_shipping_canceled) * o.base_to_global_rate)',
+                'total_revenue_amount'           => 'SUM((IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) - IFNULL(o.base_shipping_refunded, 0) - IFNULL(o.base_subtotal_refunded, 0)) * o.base_to_global_rate)',
+                'total_profit_amount'            => new Zend_Db_Expr('0'),
+                'total_invoiced_amount'          => 'SUM(IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) * o.base_to_global_rate)',
+                'total_canceled_amount'          => 'SUM(IFNULL(o.base_shipping_canceled + o.base_shipping_tax_amount , 0) * o.base_to_global_rate)',
+                'total_paid_amount'              => 'SUM(IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) * o.base_to_global_rate)',
+                'total_refunded_amount'          => 'SUM(o.base_total_refunded * o.base_to_global_rate)',
+                'total_tax_amount'               => 'SUM((o.base_shipping_tax_amount - IF(o.base_shipping_canceled, o.base_shipping_tax_amount, 0)) * o.base_to_global_rate)',
+                'total_tax_amount_actual'        => 'SUM((IF(o.base_shipping_invoiced, o.base_shipping_tax_amount, 0) - IF(o.base_shipping_refunded, o.base_shipping_tax_amount, 0)) * o.base_to_global_rate)',
+                'total_shipping_amount'          => 'SUM((o.base_shipping_amount - IFNULL(o.base_shipping_canceled, 0)) * o.base_to_global_rate)',
+                'total_shipping_amount_actual'   => 'SUM((o.base_shipping_invoiced - IFNULL(o.base_shipping_refunded, 0)) * o.base_to_global_rate)',
+                'total_discount_amount'          => new Zend_Db_Expr('0'),
+                'total_discount_amount_actual'   => new Zend_Db_Expr('0'),
+                'total_refunded_tax_amount'      => 'SUM(IFNULL(o.base_tax_refunded, 0) * o.base_to_global_rate)',
+                'total_canceled_tax_amount'      => "SUM(IF(o.base_shipping_canceled, o.base_shipping_tax_amount, 0) * o.base_to_global_rate)"
             );
         }
         
@@ -139,28 +153,25 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
 
         $mainTable = $this->getResource()->getMainTable();
 
-        if (!is_null($this->_from) || !is_null($this->_to)) {
-            $where = (!is_null($this->_from)) ? "so.{$this->getRecordType()} >= '{$this->_from}'" : '';
-            if (!is_null($this->_to)) {
-                $where .= (!empty($where)) ? " AND so.{$this->getRecordType()} <= '{$this->_to}'" : "so.{$this->getRecordType()} <= '{$this->_to}'";
-            }
-
-            $subQuery = clone $this->getSelect();
-            $subQuery->from(array('so' => $mainTable), array("DISTINCT DATE(so.{$this->getRecordType()})"))
-                ->where($where);
-        }
-
         $select = $this->getSelect();
-        $paymentModel = Mage::getResourceSingleton('sales/order_payment');
-        $methodAttr = $paymentModel->getAttribute('method');
         
         if ($this->isTotals() || $this->isSubTotals()) {
-            $select->from(array('e' => $mainTable), $this->_getTotalColumns($this->isSubTotals()))
-                ->join(array('p' => $paymentModel->getEntityTable()), 'p.entity_type_id = ' . $paymentModel->getEntityType()->getId() . ' AND p.parent_id = e.entity_id', array())
-                ->join(array('pm' => $methodAttr->getBackendTable()), 'p.entity_id = pm.entity_id AND pm.attribute_id = ' . $methodAttr->getId() . ' AND ' . $this->_getConditionSql('pm.value', array('in' => $this->_paymentMethodCodes)), array())
-                ->where('e.state NOT IN (?)', array(
+            $selectOrderItem = $this->getConnection()->select()
+                ->from($this->getTable('sales/order_item'), array(
+                    'order_id'           => 'order_id',
+                    'total_qty_ordered'  => 'SUM(qty_ordered - IFNULL(qty_canceled, 0))',
+                    'total_qty_invoiced' => 'SUM(qty_invoiced)',
+                ))
+                ->group('order_id');
+            
+            $select->from(array('o' => $mainTable), $this->_getTotalColumns($this->isSubTotals()))
+                ->join(array('oi' => $selectOrderItem), 'oi.order_id = o.entity_id', array())
+                ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
+                ->where('p.method IN (?)', $this->_paymentMethodCodes)
+                ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
+                    Mage_Sales_Model_Order::STATE_CANCELED
                 ));
                 
             $this->_applyOrderStatusFilter();
@@ -169,38 +180,49 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 $select->group($this->_periodFormat);
             }
             
-            if (!is_null($this->_from) || !is_null($this->_to)) {
-                $select->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
+            if ($this->_to !== null) {
+                $select->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+            }
+    
+            if ($this->_from !== null) {
+                $select->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
             }
         } else {
             $sql1 = clone $this->getSelect();
-            $sql1->from(array('e' => $mainTable), $this->_getNonTotalColumns(true))
-                ->join(array('oi' => $this->getTable('sales/order_item')), 'oi.order_id = e.entity_id AND oi.parent_item_id IS NULL', array())
-                ->join(array('p' => $paymentModel->getEntityTable()), 'p.entity_type_id = ' . $paymentModel->getEntityType()->getId() . ' AND p.parent_id = e.entity_id', array())
-                ->join(array('pm' => $methodAttr->getBackendTable()), 'p.entity_id = pm.entity_id AND pm.attribute_id = ' . $methodAttr->getId() . ' AND ' . $this->_getConditionSql('pm.value', array('in' => $this->_paymentMethodCodes)), array())
+            $sql1->from(array('o' => $mainTable), $this->_getNonTotalColumns(true))
+                ->join(array('oi' => $this->getTable('sales/order_item')), 'oi.order_id = o.entity_id AND oi.parent_item_id IS NULL', array())
+                ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
                 ->joinLeft(array('s' => $this->getTable('core/store')), 'oi.source_store_view = s.store_id', array())
                 ->joinLeft(array('sg' => $this->getTable('core/store_group')), 's.group_id = sg.group_id', array())
-                ->where('e.state NOT IN (?)', array(
+                ->where('p.method IN (?)', $this->_paymentMethodCodes)
+                ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
+                    Mage_Sales_Model_Order::STATE_CANCELED
                 ))
                 ->group(array($this->_periodFormat, 'sg.group_id'));
             $this->_applyOrderStatusFilter($sql1);
             
             $sql2 = clone $this->getSelect();
-            $sql2->from(array('e' => $mainTable), $this->_getNonTotalColumns(false))
-                ->join(array('p' => $paymentModel->getEntityTable()), 'p.entity_type_id = ' . $paymentModel->getEntityType()->getId() . ' AND p.parent_id = e.entity_id', array())
-                ->join(array('pm' => $methodAttr->getBackendTable()), 'p.entity_id = pm.entity_id AND pm.attribute_id = ' . $methodAttr->getId() . ' AND ' . $this->_getConditionSql('pm.value', array('in' => $this->_paymentMethodCodes)), array())
-                ->where('e.state NOT IN (?)', array(
+            $sql2->from(array('o' => $mainTable), $this->_getNonTotalColumns(false))
+                ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
+                ->where('p.method IN (?)', $this->_paymentMethodCodes)
+                ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
+                    Mage_Sales_Model_Order::STATE_CANCELED
                 ))
                 ->group($this->_periodFormat);
             $this->_applyOrderStatusFilter($sql2);
             
-            if (!is_null($this->_from) || !is_null($this->_to)) {
-                $sql1->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
-                $sql2->where("DATE(e.{$this->getRecordType()}) IN(?)", new Zend_Db_Expr($subQuery));
+            if ($this->_to !== null) {
+                $sql1->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+                $sql2->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+            }
+    
+            if ($this->_from !== null) {
+                $sql1->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
+                $sql2->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
             }
             
             $select->union(array('(' . $sql1 . ')', '(' . $sql2 . ')'));

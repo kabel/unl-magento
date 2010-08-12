@@ -8,23 +8,19 @@ class Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most extends Mage_Adminht
         /* @var $collection Mage_Reports_Model_Mysql4_Order_Collection */
         $collection
             ->groupByCustomer()
+            ->addOrdersCount()
             ->joinCustomerName();
 
         $storeFilter = 0;
         if ($this->getParam('store')) {
-            $collection->filterSourceStore(array($this->getParam('store')))
-                ->addOrdersCount(1);
+            $collection->filterScope(array($this->getParam('store')));
             $storeFilter = 1;
         } else if ($this->getParam('website')){
             $storeIds = Mage::app()->getWebsite($this->getParam('website'))->getStoreIds();
-            $collection->addAttributeToFilter('store_id', array('in' => $storeIds))
-                ->addOrdersCount();
+            $collection->addAttributeToFilter('store_id', array('in' => $storeIds));
         } else if ($this->getParam('group')){
             $storeIds = Mage::app()->getGroup($this->getParam('group'))->getStoreIds();
-            $collection->filterSourceStore($storeIds)
-                ->addOrdersCount(1);
-        } else {
-            $collection->addOrdersCount();
+            $collection->filterScope($storeIds);
         }
 
         $collection->addSumAvgTotals($storeFilter)

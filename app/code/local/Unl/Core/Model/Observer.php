@@ -39,7 +39,6 @@ class Unl_Core_Model_Observer
         $reportSwitchers = array(
             'Mage_Adminhtml_Block_Report_Product_Downloads',
             'Mage_Adminhtml_Block_Report_Product_Lowstock',
-            'Mage_Adminhtml_Block_Report_Product_Ordered_Grid',
             'Mage_Adminhtml_Block_Report_Product_Sold_Grid',
             'Mage_Adminhtml_Block_Report_Product_Viewed_Grid',
             'Mage_Adminhtml_Block_Report_Customer_Accounts_Grid',
@@ -56,6 +55,7 @@ class Unl_Core_Model_Observer
         }
         
         $reportSwitchers = array(
+            'Mage_Adminhtml_Block_Report_Sales_Bestsellers',
             'Mage_Adminhtml_Block_Report_Sales_Sales',
             'Mage_Adminhtml_Block_Report_Sales_Coupons'
         );
