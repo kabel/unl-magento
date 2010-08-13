@@ -1392,13 +1392,6 @@ f/********** Product Prices > */
 
 /* Order View */
 .order-info dt { display:none; }
-.order-info ul { margin-bottom:15px; border-bottom:1px solid #666; background:#f2f2f2 url(../images/bkg_tabs.gif) 0 100% repeat-x; }
-.order-info li{ float:left; border-right:1px solid #a4a4a4; border-left:1px solid #fff; font-size:1.1em; line-height:1em; }
-.order-info li.first { border-left:0; }
-.order-info li.last { border-right:0; }
-.order-info li a { display:block; padding:6px 15px; color:#444; }
-.order-info li a:hover { background-color:#ddd; text-decoration:none; color:#444; }
-.order-info li.current { background-color:#666; font-weight:bold; padding:6px 15px; color:#fff; }
 
 .order-date { margin:10px 0; }
 
