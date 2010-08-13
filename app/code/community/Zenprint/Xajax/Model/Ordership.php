@@ -392,9 +392,9 @@ class Zenprint_Xajax_Model_Ordership extends Zenprint_Xajax_Model_Handler
 		$this->_xresponse->assign('number_of_items', 'value', $i-1);  //update number of items
 		
 		//set the containers for the carrier
-		$containers = $this->getContainers($order->getStore(), strtolower($ship[0]));
-		$this->_xresponse->assign('package_container_1', 'innerHTML', $containers);
-		$this->_xresponse->assign('package_container_2', 'innerHTML', $containers);
+		$containers = $this->getContainers($order->getStore(), strtolower($ship[0]), false);
+		$this->_xresponse->assign('package_containers', 'value', json_encode($containers));
+		$this->_xresponse->script('buildContainers(1);buildContainers(2);');
 		
 		//set the dimension units
 		$this->_xresponse->assign('weight_header', 'innerHTML', Mage::helper('ordership')->__('Weight ').'('.$carrier->getWeightUnits().')');

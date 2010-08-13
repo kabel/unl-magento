@@ -573,63 +573,63 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
             	),
             	//UPS Letter
             	'01' => array(
-            		'height' => 12.5 * 2.54,
+            		'height' => 0,
             		'width' => 9.5 * 2.54,
-            		'length' => 0,	
+            		'length' => 12.5 * 2.54,	
             	),
             	//Tube
             	'03' => array(
-            		'height' => 6 * 2.54,
+            		'height' => 38 * 2.54,
             		'width' => 6 * 2.54,
-            		'length' => 38 * 2.54,	
+            		'length' => 6 * 2.54,	
             	),
             	//PAK
             	'04' => array(
-            		'height' => 16 * 2.54,
+            		'height' => 0,
             		'width' => 12.75 * 2.54,
-            		'length' => 0,	
+            		'length' => 16 * 2.54,	
             	),
             	//UPS Express Box (defining same as small)
             	'21' => array(
-            		'height' => 13 * 2.54,
+            		'height' => 2 * 2.54,
             		'width' => 11 * 2.54,
-            		'length' => 2 * 2.54,	
+            		'length' => 13 * 2.54,	
             	),
             	//UPS Small Express Box
             	'2a' => array(
-            		'height' => 13 * 2.54,
+            		'height' => 2 * 2.54,
             		'width' => 11 * 2.54,
-            		'length' => 2 * 2.54,	
+            		'length' => 13 * 2.54,	
             	),
             	//UPS Medium Express Box
             	'2b' => array(
-            		'height' => 15 * 2.54,
+            		'height' => 3 * 2.54,
             		'width' => 11 * 2.54,
-            		'length' => 3 * 2.54,	
+            		'length' => 15 * 2.54,	
             	),
             	//UPS Large Express Box
             	'2c' => array(
-            		'height' => 18 * 2.54,
+            		'height' => 3 * 2.54,
             		'width' => 13 * 2.54,
-            		'length' => 3 * 2.54,	
+            		'length' => 18 * 2.54,	
             	),
             	//UPS 25KG Box
             	'24' => array(
-            		'height' => 19.38 * 2.54,
+            		'height' => 14 * 2.54,
             		'width' => 17.38 * 2.54,
-            		'length' => 14 * 2.54,	
+            		'length' => 19.38 * 2.54,	
             	),
             	//UPS 10KG Box
             	'25' => array(
-            		'height' => 16.5 * 2.54,
+            		'height' => 10.75 * 2.54,
             		'width' => 13.25 * 2.54,
-            		'length' => 10.75 * 2.54,	
+            		'length' => 16.5 * 2.54,	
             	),
             	//Pallet
             	'30' => array(
-            		'height' => 200,
+            		'height' => 120,
             		'width' => 160,
-            		'length' => 120,	
+            		'length' => 200,	
             	),
             ),
             
@@ -643,9 +643,9 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
             	),
             	//UPS Letter
             	'01' => array(
-            		'height' => 12.5,
+            		'height' => 0,
             		'width' => 9.5,
-            		'length' => 0,	
+            		'length' => 12.5,	
             	),
             	//Tube
             	'03' => array(
@@ -655,51 +655,51 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
             	),
             	//PAK
             	'04' => array(
-            		'height' => 16,
+            		'height' => 0,
             		'width' => 12.75,
-            		'length' => 0,	
+            		'length' => 16,	
             	),
             	//UPS Express Box (defining same as small)
             	'21' => array(
-            		'height' => 13,
+            		'height' => 2,
             		'width' => 11,
-            		'length' => 2,	
+            		'length' => 13,	
             	),
             	//UPS Small Express Box
             	'2a' => array(
-            		'height' => 13,
+            		'height' => 2,
             		'width' => 11,
-            		'length' => 2,	
+            		'length' => 13,	
             	),
             	//UPS Medium Express Box
             	'2b' => array(
-            		'height' => 15,
+            		'height' => 3,
             		'width' => 11,
-            		'length' => 3,	
+            		'length' => 15,	
             	),
             	//UPS Large Express Box
             	'2c' => array(
-            		'height' => 18,
+            		'height' => 3,
             		'width' => 13,
-            		'length' => 3,	
+            		'length' => 18,	
             	),
             	//UPS 25KG Box
             	'24' => array(
-            		'height' => 19.38,
+            		'height' => 14,
             		'width' => 17.38,
-            		'length' => 14,	
+            		'length' => 19.38,	
             	),
             	//UPS 10KG Box
             	'25' => array(
-            		'height' => 16.5,
+            		'height' => 10.75,
             		'width' => 13.25,
-            		'length' => 10.75,	
+            		'length' => 16.5,	
             	),
             	//Pallet
             	'30' => array(
-            		'height' => 78.74,
+            		'height' => 47.24,
             		'width' => 62.99,
-            		'length' => 47.24,	
+            		'length' => 78.74,	
             	),
             ),
 

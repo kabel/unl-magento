@@ -43,8 +43,6 @@ class Zenprint_Ordership_Block_Adminhtml_Ordership extends Mage_Adminhtml_Block_
                                       xajax.callback.global.beforeResponseProcessing = function() {\$('loading-mask').style.display='none';}
                                       </script>";
 
-		//FIXME: This is defaulting to the UPS containers...need to integrate Fedex as well
-        $this->setChild('shipContainers', $this->getLayout()->createBlock('adminhtml/ordership_containers'));
 
         //determine if there was an orderid passed
         $orderid = $this->getRequest()->getParam('order_id');
