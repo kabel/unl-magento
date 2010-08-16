@@ -7,6 +7,14 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return file_get_contents('http://' . Mage::helper('core/http')->getHttpHost() . $path);
     }
     
+    public function getProductSourceStoreFilterOptions()
+    {
+        $options = Mage::getSingleton('unl_core/store_source_switcher')->getOptionArray();
+
+        array_unshift($options, array('label'=>$this->__('Any Store'), 'value'=>''));
+        return $options;
+    }
+    
     public function isCustomerAllowedCategory($category, $reload = true)
     {
         $_cat = $category;
