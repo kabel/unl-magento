@@ -5,6 +5,12 @@
             <action method="addLink" translate="label title" module="contacts" ifconfig="contacts/contacts/enabled"><label>Contact Us</label><url>contacts</url><title>Contact Us</title><prepare>true</prepare></action>
         </reference>
     </default>
+    
+    <STORE_dairystore>
+        <reference name="contact_link">
+            <action method="addLink" module="contacts"><label>http://dairystore.unl.edu/</label><url>http://dairystore.unl.edu/</url><title>Dairy Store Website</title></action>
+        </reference>
+    </STORE_dairystore>
 
     <contacts_index_index translate="label">
         <label>Contact Us Form</label>
