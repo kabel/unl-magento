@@ -5,7 +5,6 @@
 body.fixed #maincontent { overflow: visible; }
 #footer .contact .links                  { list-style: none; padding: 0; }
 #footer #wdn_copyright ul.links { padding: 0; margin: 0 0 1.1em; }
-#footer #wdn_copyright ul.links li { padding-left: 10px; }
 
 /* Tools */
 .hidden       { display:block !important; border:0 !important; margin:0 !important; padding:0 !important; font-size:0 !important; line-height:0 !important; width:0 !important; height:0 !important; overflow:hidden !important; }
@@ -346,9 +345,6 @@ tr.summary-details-excluded { font-style:italic; }
 #maincontent .std address, #maincontent.mceContentBody address { font-style:normal; }
 
 /* Misc */
-.links li { display:inline; }
-.links li.first { padding-left:0 !important; }
-.links li.last { background:none !important; padding-right:0 !important; }
 
 .link-cart { font-weight:bold; color:#d62502; }
 .link-wishlist { color:#444; }
