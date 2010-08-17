@@ -147,7 +147,11 @@ class Unl_Core_Model_Convert_Adapter_Product
             }
             if (!empty($usingAttributeIds)) {
                 $product->getTypeInstance()->setUsedProductAttributeIds($usingAttributeIds);
-                $product->setConfigurableAttributesData($product->getTypeInstance()->getConfigurableAttributesAsArray());
+                $attributes_array = $product->getTypeInstance()->getConfigurableAttributesAsArray();
+                foreach ($attributes_array as $key => $attribute_value) {
+                    $attributes_array[$key]['label'] = $attribute_value['frontend_label'];
+                }
+                $product->setConfigurableAttributesData($attributes_array);
                 $product->setCanSaveConfigurableAttributes(true);
                 $product->setCanSaveCustomOptions(true);
             }
