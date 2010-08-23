@@ -228,6 +228,15 @@
                     </unlcore_is_payment_active>
                 </observers>
             </payment_method_is_active>
+            <sales_convert_quote_item_to_order_item>
+                <observers>
+                    <multiship_fix>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onSalesConvertQuoteItemToOrderItem</method>
+                    </multiship_fix>
+                </observers>
+            </sales_convert_quote_item_to_order_item>
             <sales_quote_item_set_product>
                 <observers>
                     <source_store_set>
