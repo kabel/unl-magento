@@ -11,6 +11,12 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
      */
     protected function _calculateShippingTax(Mage_Sales_Model_Quote_Address $address, $taxRateRequest)
     {
+        $itemTaxAmount = 0;
+        foreach ($address->getAllItems() as $item) {
+            if ($item->getTaxAmount()) {
+                $itemTaxAmount += $item->getTaxAmount();
+            }
+        }
         $taxRateRequest->setProductClassId($this->_config->getShippingTaxClass($this->_store));
         $rate               = $this->_calculator->getRate($taxRateRequest);
         $inclTax            = $address->getIsShippingInclTax();
@@ -38,8 +44,13 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 break;
         }
         
-        $tax     = $this->_calculator->calcTaxAmount($calc, $rate, $inclTax, false);
-        $baseTax = $this->_calculator->calcTaxAmount($baseCalc, $rate, $inclTax, false);
+        if ($itemTaxAmount > 0) {
+            $tax     = $this->_calculator->calcTaxAmount($calc, $rate, $inclTax, false);
+            $baseTax = $this->_calculator->calcTaxAmount($baseCalc, $rate, $inclTax, false);
+        } else {
+            $tax     = 0;
+            $baseTax = 0;
+        }
         
         if ($this->_config->getAlgorithm($this->_store) == Mage_Tax_Model_Calculation::CALC_TOTAL_BASE) {
             $tax        = $this->_deltaRound($tax, $rate, $inclTax);
