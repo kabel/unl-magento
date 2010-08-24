@@ -42,20 +42,20 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         $user = $this->getAuth()->getUser();
         $pf = new UNL_Peoplefinder();
         if ($r = $pf->getUID($user)) {
-            if (empty($data['email']) && !empty($r->mail)) {
+            if (empty($data['email']) && isset($r->mail) && $r->mail->valid()) {
                 if (isset($r->unlEmailAlias)) {
                     $data['email'] = $r->unlEmailAlias . '@unl.edu';
                 } else {
-                    $data['email'] = $r->mail;
+                    $data['email'] = $r->mail->current();
                 }
             }
             
             if (empty($data['firstname'])) {
-                $data['firstname'] = $r->givenName;
+                $data['firstname'] = $r->givenName->current();
             }
             
             if (empty($data['lastname'])) {
-                $data['lastname'] = $r->sn;
+                $data['lastname'] = $r->sn->current();
             }
         }
     }
