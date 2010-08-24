@@ -134,6 +134,10 @@
                 <rewrite>
                     <!-- Adds the total product amount applied to the tax rate -->
                     <order>Unl_Core_Model_Sales_Order</order>
+                    <!-- Change size of order PDFs to US Letter -->
+                    <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
+                    <order_pdf_invoice>Unl_Core_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
+                    <order_pdf_shipment>Unl_Core_Model_Sales_Order_Pdf_Shipment</order_pdf_shipment>
                     <!-- Adds an event to dispatch before a product is added to a quote -->
                     <quote>Unl_Core_Model_Sales_Quote</quote>
                 </rewrite>
