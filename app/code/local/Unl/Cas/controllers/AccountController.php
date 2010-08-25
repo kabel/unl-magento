@@ -114,15 +114,34 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         $customer->addData($data->toArray());
         $uid = Mage::helper('unl_cas')->getAuth()->getUser();
         $customer->setData('unl_cas_uid', $uid);
-        Mage::helper('unl_cas')->assignGroupId($customer, $uid);
         $customer->setPassword($customer->generatePassword());
         
         try {
             $this->_completeCustomer($customer);
+        } catch (Mage_Core_Exception $e) {
+            if ($e->getCode() == Mage_Customer_Model_Customer::EXCEPTION_EMAIL_EXISTS) {
+                try {
+                    $customer->loadByEmail($data['email']);
+                    $customer->setData('unl_cas_uid', $uid)
+                        ->save();
+                        
+                    $this->_getSession()->setCustomerAsLoggedIn($customer);
+                    $this->_loginPostRedirect();
+                } catch (Exception $e) {
+                    $this->_failException($e);
+                }
+            } else {
+                $this->_failException($e);
+            }
         } catch (Exception $e) {
-            $this->_getSession()->addException($e, $this->__('Can\'t save customer'));
-            $this->_redirectError(Mage::getUrl('customer/account/index', array('_secure'=>true)));
+            $this->_failException($e);
         }
+    }
+    
+    protected function _failException($e)
+    {
+        $this->_getSession()->addException($e, $this->__('Can\'t save customer'));
+        $this->_redirectError(Mage::getUrl('*/*/create', array('_secure'=>true)));
     }
     
     protected function _checkSessionAndAuth()
@@ -162,6 +181,8 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             if (!$customer = Mage::registry('current_customer')) {
                 $customer = Mage::getModel('customer/customer')->setId(null);
             }
+            
+            $customer->setPassword($customer->generatePassword());
 
             foreach (Mage::getConfig()->getFieldset('customer_account') as $code=>$node) {
                 if ($node->is('create') && ($value = $this->getRequest()->getParam($code)) !== null) {
@@ -175,11 +196,6 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
 
             $uid = Mage::helper('unl_cas')->getAuth()->getUser();
             $customer->setData('unl_cas_uid', $uid);
-            
-            /**
-             * Initialize customer group id
-             */
-            Mage::helper('unl_cas')->assignGroupId($customer, $uid);
 
             if ($this->getRequest()->getPost('create_address')) {
                 $address = Mage::getModel('customer/address')
@@ -269,6 +285,11 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
 
         $customer->sendNewAccountEmail($isJustConfirmed ? 'confirmed' : 'registered');
 
+        return $this->_getSuccessUrl();
+    }
+    
+    protected function _getSuccessUrl()
+    {
         $successUrl = Mage::getUrl('customer/account/index', array('_secure'=>true));
         if ($this->_getSession()->getBeforeAuthUrl()) {
             $successUrl = $this->_getSession()->getBeforeAuthUrl(true);

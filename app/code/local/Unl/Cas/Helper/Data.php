@@ -2,6 +2,8 @@
 
 class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    protected $_cache = array();
+    
     /**
      * Check customer is logged in
      *
@@ -32,6 +34,50 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->_getUrl('unlcas/account/createpost');
     }
     
+    public function cache($key, $value)
+    {
+        $this->_cache[$key] = $value;
+    }
+    
+    public function fetchPfUID($uid)
+    {
+        if ($this->_cache[$uid] !== null) {
+            return $this->_cache[$uid];
+        }
+        
+        $pf = new UNL_Peoplefinder();
+        if ($r = $pf->getUID($uid)) {
+            $this->cache($uid, $r);
+        }
+        
+        return $r;
+    }
+    
+    public function isValidPf($uid)
+    {
+        return ($this->fetchPfUID($uid) !== null);
+    }
+    
+    public function isFacultyStaff($uid)
+    {
+        if ($r = $this->fetchPfUID($uid)) {
+            $affiliation = $r->eduPersonPrimaryAffiliation;
+            return (strpos($affiliation, 'staff') !== false || strpos($affiliation, 'faculty') !== false);
+        }
+        
+        return false;
+    }
+    
+    public function isStudent($uid)
+    {
+        if ($r = $this->fetchPfUID($uid)) {
+            $affiliation = $r->eduPersonPrimaryAffiliation;
+            return (strpos($affiliation, 'student') !== false);
+        }
+        
+        return false;
+    }
+    
     /**
      * Add peoplefinder data to Varian Object
      *
@@ -40,22 +86,22 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     public function loadPfData($data)
     {
         $user = $this->getAuth()->getUser();
-        $pf = new UNL_Peoplefinder();
-        if ($r = $pf->getUID($user)) {
+        if ($r = $this->fetchPfUID($user)) {
+            
             if (empty($data['email']) && isset($r->mail) && $r->mail->valid()) {
                 if (isset($r->unlEmailAlias)) {
                     $data['email'] = $r->unlEmailAlias . '@unl.edu';
                 } else {
-                    $data['email'] = $r->mail->current();
+                    $data['email'] = (string)$r->mail;
                 }
             }
             
             if (empty($data['firstname'])) {
-                $data['firstname'] = $r->givenName->current();
+                $data['firstname'] = (string)$r->givenName;
             }
             
             if (empty($data['lastname'])) {
-                $data['lastname'] = $r->sn->current();
+                $data['lastname'] = (string)$r->sn;
             }
         }
     }
@@ -68,17 +114,15 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function assignGroupId($customer, $uid)
     {
-        $pf = new UNL_Peoplefinder();
-        if ($r = $pf->getUID($uid)) {
-            $affiliation = $r->eduPersonPrimaryAffiliation;
+        if ($this->isValidPf($uid)) {
             $studentModel = Mage::getModel('customer/group')->load('UNL Student', 'customer_group_code');
             $facStaffModel = Mage::getModel('customer/group')->load('UNL Faculty/Staff', 'customer_group_code');
             
-            if (strpos($affiliation, 'student') !== false) {
+            if ($this->isStudent($uid)) {
                if ($customer->getGroupId() != $studentModel->getId()) {
                    $customer->setData('group_id', $studentModel->getId());
                } 
-            } elseif (strpos($affiliation, 'staff') !== false || strpos($affiliation, 'faculty') !== false) {
+            } elseif ($this->isFacultyStaff($uid)) {
                 if ($customer->getGroupId() != $facStaffModel->getId()) {
                    $customer->setData('group_id', $facStaffModel->getId());
                }
