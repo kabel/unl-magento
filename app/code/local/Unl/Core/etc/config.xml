@@ -32,7 +32,10 @@
                     <report_review_product_grid>Unl_Core_Block_Adminhtml_Report_Review_Product_Grid</report_review_product_grid>
                     <report_sales_sales_grid>Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid</report_sales_sales_grid>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
+                    <sales_creditmemo_grid>Unl_Core_Block_Adminhtml_Sales_Creditmemo_Grid</sales_creditmemo_grid>
+                    <sales_invoice_grid>Unl_Core_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
                     <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
+                    <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
                 </rewrite>
             </adminhtml>
             <bundle>
@@ -365,15 +368,45 @@
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_edit>
             
-            <controller_action_predispatch_adminhtml_sales_order_view>
+            <controller_action_predispatch_adminhtml_sales_creditmemo_view>
                 <observers>
 	                <order_auth>
 	                    <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>onAdminSalesOrderViewPreDispatch</method>
+                        <method>onAdminSalesCreditmemoViewPreDispatch</method>
 	                </order_auth>
                 </observers>
+            </controller_action_predispatch_adminhtml_sales_creditmemo_view>
+                        
+            <controller_action_predispatch_adminhtml_sales_invoice_view>
+                <observers>
+                    <order_auth>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onAdminSalesInvoiceViewPreDispatch</method>
+                    </order_auth>
+                </observers>
+            </controller_action_predispatch_adminhtml_sales_invoice_view>
+            
+            <controller_action_predispatch_adminhtml_sales_order_view>
+                <observers>
+                    <order_auth>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onAdminSalesOrderViewPreDispatch</method>
+                    </order_auth>
+                </observers>
             </controller_action_predispatch_adminhtml_sales_order_view>
+            
+            <controller_action_predispatch_adminhtml_sales_shipment_view>
+                <observers>
+                    <order_auth>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onAdminSalesShipmentViewPreDispatch</method>
+                    </order_auth>
+                </observers>
+            </controller_action_predispatch_adminhtml_sales_shipment_view>
             
             <eav_collection_abstract_load_before>
                 <observers>

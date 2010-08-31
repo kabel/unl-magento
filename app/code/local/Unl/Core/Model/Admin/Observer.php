@@ -101,18 +101,69 @@ class Unl_Core_Model_Admin_Observer
         }
     }
     
+    public function onAdminSalesCreditmemoViewPreDispatch($observer)
+    {
+        $this->_onAdminSalesEntityViewPreDispatch($observer, 'creditmemo');
+    }
+    
+    public function onAdminSalesInvoiceViewPreDispatch($observer)
+    {
+        $this->_onAdminSalesEntityViewPreDispatch($observer, 'invoice');
+    }
+    
     public function onAdminSalesOrderViewPreDispatch($observer)
+    {
+        $this->_onAdminSalesEntityViewPreDispatch($observer, 'order');
+    }
+    
+    public function onAdminSalesShipmentViewPreDispatch($observer)
+    {
+        $this->_onAdminSalesEntityViewPreDispatch($observer, 'shipment');
+    }
+    
+    protected function _onAdminSalesEntityViewPreDispatch($observer, $type)
     {
         $request = Mage::app()->getRequest();
         $user = Mage::getSingleton('admin/session')->getUser();
+        /* @var $action Mage_Adminhtml_Controller_Action */
+        $action = $observer->getControllerAction();
         
-        if (!is_null($user->getScope()) && $request->getParam('order_id')) {
+        $param = $type . '_id';
+        $model = null;
+        switch ($type) {
+            case 'creditmemo':
+                $model = Mage::getModel('sales/order_creditmemo')->load($request->getParam($param));
+                break;
+            case 'invoice':
+                $model = Mage::getModel('sales/order_invoice')->load($request->getParam($param));
+                break;
+            case 'order':
+                $orderId = $request->getParam('order_id');
+                break;
+            case 'shipment':
+                $model = Mage::getModel('sales/order_shipment')->load($request->getParam($param));
+                break;
+        }
+        if ($model !== null) {
+            if (!$model->getId()) {
+                $session = Mage::getSingleton('adminhtml/session');
+                $session->addError($action->__('The %s no longer exists', $type));
+                $session->setIsUrlNotice($action->getFlag('', Mage_Adminhtml_Controller_Action::FLAG_IS_URLS_CHECKED));
+                $action->getResponse()->setRedirect($action->getUrl('*/*/'));
+                $action->setFlag('', Mage_Adminhtml_Controller_Action::FLAG_NO_DISPATCH, true);
+                return;
+            } else {
+                $orderId = $model->getOrderId();
+            }
+        }
+        
+        if (!is_null($user->getScope()) && $request->getParam($param)) {
             $scope = explode(',', $user->getScope());
             $order_items = Mage::getModel('sales/order_item')->getCollection();
             /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
             $order_items->getSelect()
                 ->where('source_store_view IN (?)', $scope)
-                ->where('order_id = ?', $request->getParam('order_id'));
+                ->where('order_id = ?', $orderId);
                 
             if (!count($order_items)) {
                 $request->initForward()
