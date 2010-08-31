@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <STORE_dairystore>
+	    <reference name="contact_link">
+	        <action method="addLink" module="contacts"><label>http://dairystore.unl.edu/</label><url>http://dairystore.unl.edu/</url><title>Dairy Store Website</title></action>
+	    </reference>
+	</STORE_dairystore>
+	
+	<STORE_computershop>
+	   <reference name="footer_links">
+	       <action method="addLink"><label>Return Policy</label><url></url><title>Return Policy</title><prepare>true</prepare><url_params><_direct>cs-return-policy</_direct></url_params></action>
+	   </reference>
+	</STORE_computershop>
+</layout>

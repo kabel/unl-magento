@@ -292,6 +292,14 @@
                 </observers>
             </sales_quote_item_qty_set_after>
         </events>
+        
+        <layout>
+            <updates>
+                <unlcore module="Unl_Core">
+                    <file>unl.xml</file>
+                </unlcore>
+            </updates>
+        </layout>
     </frontend>
     
     <admin>
