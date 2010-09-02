@@ -575,9 +575,9 @@ tr.summary-details-excluded { font-style:italic; }
 .block-poll .votes { float:right; margin-left:10px; }
 
 /* Block: Tags */
+#maincontent div.zenbox.block-tags .block-content ul { padding: 0; }
+#maincontent div.zenbox.block-tags .block-content ul li { border: none; margin:0; display:inline; }
 .block-tags .block-content ul { font-size:13px; }
-.block-tags .block-content li { display:inline; padding-right:4px; }
-.block-tags .block-content li a { color:#444; }
 .block-tags .actions { text-align:right; }
 .block-tags .actions a { float:none; }
 
@@ -984,9 +984,8 @@ f/********** Product Prices > */
 /*.product-name a { color:#444; }*/
 
 /* Product Tags */
-.tags-list { display:block; font-size:13px; border:1px solid #ddd; background:#f6f6f6; padding:10px; }
+#maincontent .tags-list { display:block; font-size:13px; border:1px solid #ddd; background:#f6f6f6; padding:10px; }
 .tags-list li { display:inline !important; margin:0 4px 0 0; }
-.tags-list li a { color:#1b2d3b; }
 
 /* Advanced Search */
 .advanced-search .form-list label { width:160px; padding-right:10px; }
