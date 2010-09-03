@@ -24,7 +24,7 @@
 
         <div class="product-shop">
             <div class="product-name">
-                <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                <h1 title="<?php echo $_helper->productAttribute($_product, $_product->getSku(), 'sku') ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
             </div>
 
             <?php if ($this->canEmailToFriend()): ?>
