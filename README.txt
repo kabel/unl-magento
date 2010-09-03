@@ -33,6 +33,7 @@ ln -s /path/to/unl-magento/lib/SimpleCAS.php lib/SimpleCAS.php
 ln -s /path/to/unl-magento/lib/UNL lib/UNL
 ln -s /path/to/unl-magento/lib/Xajax lib/
 ln -s /path/to/unl-magento/skin/frontend/unl skin/frontend/unl
+ln -s /path/to/unl-magento/skin/adminhtml/default/unl skin/adminhtml/default/unl
 
 For the "online" install to run, you must
     chmod a+w app/etc
