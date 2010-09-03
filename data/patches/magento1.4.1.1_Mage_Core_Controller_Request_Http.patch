@@ -1,0 +1,13 @@
+Index: app/code/core/Mage/Core/Controller/Request/Http.php
+===================================================================
+--- app/code/core/Mage/Core/Controller/Request/Http.php	(revision 75180)
++++ app/code/core/Mage/Core/Controller/Request/Http.php	(working copy)
+@@ -159,7 +159,7 @@
+ 
+                 if (!$this->isDirectAccessFrontendName($storeCode)) {
+                     $stores = Mage::app()->getStores(true, true);
+-                    if ($storeCode!=='' && isset($stores[$storeCode])) {
++                    if ($storeCode!=='' && isset($stores[$storeCode]) && $stores[$storeCode]->getIsActive()) {
+                         Mage::app()->setCurrentStore($storeCode);
+                         $pathInfo = '/'.(isset($pathParts[1]) ? $pathParts[1] : '');
+                     }
