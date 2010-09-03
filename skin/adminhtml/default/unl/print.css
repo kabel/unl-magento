@@ -4,6 +4,8 @@ body  { background:#fff !important; font-size:9pt !important; padding:0 !importa
 a     { color:#2976c9 !important; }
 th,td { color:#333 !important;  border-color:#ccc !important; }
 
+.entry-edit .entry-edit-head h4 { color: #333 !important; }
+
 .middle { padding:0; }
 
 .header,
@@ -13,6 +15,7 @@ th,td { color:#333 !important;  border-color:#ccc !important; }
 #sales_order_grid_massaction,
 .content-header-floating,
 .content-header .form-buttons,
-.footer { display:none !important; }
+.footer, .side-col { display:none !important; }
 
+div.main-col { margin: 0; }
 .hor-scroll { width:auto; overflow:visible; }
