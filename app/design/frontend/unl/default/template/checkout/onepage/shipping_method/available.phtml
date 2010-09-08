@@ -27,7 +27,7 @@
                         <?php if ($_rate->getCode() == 'pickup_store'): ?>
                         <div class="pickup-address">
                             <label><?php echo $this->__('Pickup Location:') ?></label><br />
-                            <?php echo nl2br($_rate->getMethodDescription()) ?>
+                            <?php echo nl2br($this->escapeHtml($_rate->getMethodDescription())) ?>
                         </div>
                         <?php endif; ?>
                    <?php endif ?>
