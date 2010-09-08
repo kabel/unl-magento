@@ -626,6 +626,7 @@
                 <model>unl_core/shipping_carrier_pickup</model>
                 <name>Store Pickup</name>
                 <title>Pickup</title>
+                <showmethod>1</showmethod>
                 <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
             </pickup>
         </carriers>
