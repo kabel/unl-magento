@@ -2,6 +2,13 @@
 
 class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_Pdf_Abstract
 {
+    const DEFAULT_OFFSET_PRODUCTS = 35;
+    const DEFAULT_OFFSET_SKU      = 255;
+    const DEFAULT_OFFSET_PRICE    = 380;
+    const DEFAULT_OFFSET_QTY      = 430;
+    const DEFAULT_OFFSET_TAX      = 480;
+    const DEFAULT_OFFSET_SUBTOTAL = 535;
+    
     public function getPdf($invoices = array())
     {
         $this->_beforeGetPdf();
@@ -9,8 +16,6 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
 
         $pdf = new Zend_Pdf();
         $this->_setPdf($pdf);
-        $style = new Zend_Pdf_Style();
-        $this->_setFontBold($style, 10);
 
         foreach ($invoices as $invoice) {
             if ($invoice->getStoreId()) {
@@ -33,26 +38,26 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(1));
             $this->_setFontRegular($page);
-            $page->drawText(Mage::helper('sales')->__('Invoice # ') . $invoice->getIncrementId(), 35, 730, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Invoice # ') . $invoice->getIncrementId(), self::DEFAULT_PAGE_LEFT, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
 
             /* Add table */
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
 
-            $page->drawRectangle(25, $this->y, 570, $this->y -15);
-            $this->y -=10;
+            $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
+            $this->y -= self::DEFAULT_LINE_HEIGHT;
 
             /* Add table head */
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
-            $page->drawText(Mage::helper('sales')->__('Products'), 35, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('SKU'), 255, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Price'), 380, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Qty'), 430, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Tax'), 480, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Subtotal'), 535, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Product'), self::DEFAULT_OFFSET_PRODUCTS, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('SKU'), self::DEFAULT_OFFSET_SKU, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Price'), self::DEFAULT_OFFSET_PRICE, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Qty'), self::DEFAULT_OFFSET_QTY, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Tax'), self::DEFAULT_OFFSET_TAX, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Subtotal'), self::DEFAULT_OFFSET_SUBTOTAL, $this->y, 'UTF-8');
 
-            $this->y -=15;
+            $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 
@@ -62,7 +67,7 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
                     continue;
                 }
 
-                if ($this->y < 15) {
+                if ($this->y < self::DEFAULT_LINE_SHIFT) {
                     $page = $this->newPage(array('table_header' => true));
                 }
 
@@ -94,26 +99,26 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
         /* Add new table head */
         $page = $this->_getPdf()->newPage(Zend_Pdf_Page::SIZE_LETTER);
         $this->_getPdf()->pages[] = $page;
-        $this->y = 750;
+        $this->y = self::DEFAULT_PAGE_TOP_NEW;
 
         if (!empty($settings['table_header'])) {
             $this->_setFontRegular($page);
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
-            $page->drawRectangle(25, $this->y, 570, $this->y-15);
-            $this->y -=10;
+            $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
+            $this->y -= self::DEFAULT_LINE_HEIGHT;
 
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
-            $page->drawText(Mage::helper('sales')->__('Product'), 35, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('SKU'), 255, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Price'), 380, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Qty'), 430, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Tax'), 480, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Subtotal'), 535, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Product'), self::DEFAULT_OFFSET_PRODUCTS, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('SKU'), self::DEFAULT_OFFSET_SKU, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Price'), self::DEFAULT_OFFSET_PRICE, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Qty'), self::DEFAULT_OFFSET_QTY, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Tax'), self::DEFAULT_OFFSET_TAX, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Subtotal'), self::DEFAULT_OFFSET_SUBTOTAL, $this->y, 'UTF-8');
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
-            $this->y -=20;
+            $this->y -= 2 * self::DEFAULT_LINE_HEIGHT;
         }
 
         return $page;

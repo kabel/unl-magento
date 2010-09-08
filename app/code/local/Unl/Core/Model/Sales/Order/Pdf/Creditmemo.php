@@ -2,6 +2,19 @@
 
 class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Order_Pdf_Abstract
 {
+    const DEFAULT_OFFSET_PRODUCT  = 35;
+    const DEFAULT_OFFSET_SKU      = 255;
+    const DEFAULT_OFFSET_TOTAL_EX = 355;
+    const DEFAULT_OFFSET_DISCOUNT = 405;
+    const DEFAULT_OFFSET_QTY      = 455;
+    const DEFAULT_OFFSET_TAX      = 475;
+    const DEFAULT_OFFSET_SUBTOTAL = 575;
+    
+    const DEFAULT_WIDTH_TOTAL_EX  = 50;
+    const DEFAULT_WIDTH_DISCOUNT  = 50;
+    const DEFAULT_WIDTH_QTY       = 30;
+    const DEFAULT_WIDTH_TAX       = 45;
+    
     public function getPdf($creditmemos = array())
     {
         $this->_beforeGetPdf();
@@ -9,8 +22,6 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
 
         $pdf = new Zend_Pdf();
         $this->_setPdf($pdf);
-        $style = new Zend_Pdf_Style();
-        $this->_setFontBold($style, 10);
 
         foreach ($creditmemos as $creditmemo) {
             if ($creditmemo->getStoreId()) {
@@ -32,17 +43,17 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(1));
             $this->_setFontRegular($page);
-            $page->drawText(Mage::helper('sales')->__('Credit Memo # ') . $creditmemo->getIncrementId(), 35, 730, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Credit Memo # ') . $creditmemo->getIncrementId(), self::DEFAULT_PAGE_LEFT, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
 
             /* Add table head */
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
-            $page->drawRectangle(25, $this->y, 570, $this->y-15);
-            $this->y -=10;
+            $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
+            $this->y -= self::DEFAULT_LINE_HEIGHT;
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
             $this->_drawHeader($page);
-            $this->y -=15;
+            $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 
@@ -52,7 +63,7 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
                     continue;
                 }
 
-                if ($this->y<20) {
+                if ($this->y < self::DEFAULT_LINE_SHIFT) {
                     $page = $this->newPage(array('table_header' => true));
                 }
 
@@ -77,30 +88,24 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
         $font = $page->getFont();
         $size = $page->getFontSize();
 
-        $page->drawText(Mage::helper('sales')->__('Products'), $x = 35, $this->y, 'UTF-8');
-        $x += 220;
+        $page->drawText(Mage::helper('sales')->__('Products'), self::DEFAULT_OFFSET_PRODUCT, $this->y, 'UTF-8');
 
-        $page->drawText(Mage::helper('sales')->__('SKU'), $x, $this->y, 'UTF-8');
-        $x += 100;
+        $page->drawText(Mage::helper('sales')->__('SKU'), self::DEFAULT_OFFSET_SKU, $this->y, 'UTF-8');
 
         $text = Mage::helper('sales')->__('Total (ex)');
-        $page->drawText($text, $this->getAlignRight($text, $x, 50, $font, $size), $this->y, 'UTF-8');
-        $x += 50;
+        $page->drawText($text, $this->getAlignRight($text, self::DEFAULT_OFFSET_TOTAL_EX, self::DEFAULT_WIDTH_TOTAL_EX, $font, $size), $this->y, 'UTF-8');
 
         $text = Mage::helper('sales')->__('Discount');
-        $page->drawText($text, $this->getAlignRight($text, $x, 50, $font, $size), $this->y, 'UTF-8');
-        $x += 50;
+        $page->drawText($text, $this->getAlignRight($text, self::DEFAULT_OFFSET_DISCOUNT, self::DEFAULT_WIDTH_DISCOUNT, $font, $size), $this->y, 'UTF-8');
 
         $text = Mage::helper('sales')->__('Qty');
-        $page->drawText($text, $this->getAlignCenter($text, $x, 30, $font, $size), $this->y, 'UTF-8');
-        $x += 30;
+        $page->drawText($text, $this->getAlignCenter($text, self::DEFAULT_OFFSET_QTY, self::DEFAULT_WIDTH_QTY, $font, $size), $this->y, 'UTF-8');
 
         $text = Mage::helper('sales')->__('Tax');
-        $page->drawText($text, $this->getAlignRight($text, $x, 45, $font, $size, 10), $this->y, 'UTF-8');
-        $x += 45;
+        $page->drawText($text, $this->getAlignRight($text, self::DEFAULT_OFFSET_TAX, self::DEFAULT_WIDTH_TAX, $font, $size), $this->y, 'UTF-8');
 
         $text = Mage::helper('sales')->__('Total (inc)');
-        $page->drawText($text, $this->getAlignRight($text, $x, 570 - $x, $font, $size), $this->y, 'UTF-8');
+        $page->drawText($text, self::DEFAULT_OFFSET_SUBTOTAL - $this->widthForStringUsingFontSize($text, $font, $size), $this->y, 'UTF-8');
     }
 
     /**
@@ -118,12 +123,12 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
-            $page->drawRectangle(25, $this->y, 570, $this->y-15);
-            $this->y -=10;
+            $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
+            $this->y -= self::DEFAULT_LINE_HEIGHT;
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
             $this->_drawHeader($page);
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
-            $this->y -=20;
+            $this->y -= 2 * self::DEFAULT_LINE_HEIGHT;
         }
 
         return $page;
