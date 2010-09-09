@@ -155,6 +155,7 @@
                     <order_pdf_items_shipment_default>Unl_Core_Model_Sales_Order_Pdf_Items_Shipment_Default</order_pdf_items_shipment_default>
                     <order_pdf_invoice>Unl_Core_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
                     <order_pdf_shipment>Unl_Core_Model_Sales_Order_Pdf_Shipment</order_pdf_shipment>
+                    <service_order>Unl_Core_Model_Sales_Service_Order</service_order>
                     <!-- Adds an event to dispatch before a product is added to a quote -->
                     <quote>Unl_Core_Model_Sales_Quote</quote>
                 </rewrite>
