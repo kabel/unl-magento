@@ -4,9 +4,9 @@
     <div class="block-title">
         <?php $_itemCount = $this->helper('wishlist')->getItemCount(); ?>
         <?php if ($_itemCount == 1): ?>
-        <p>There is <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>" title="<?php echo $this->__('Go to Wishlist') ?>">1 item</a> in your wishlist.</p>
+        <p>There is <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>" title="<?php echo $this->__('Go to Wishlist') ?>"><strong>1 item</strong></a> in your wishlist.</p>
         <?php else: ?>
-        <p>There are <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>" title="<?php echo $this->__('Go to Wishlist') ?>"><?php echo $_itemCount ?> items</a> in your wishlist.</p>
+        <p>There are <a href="<?php echo $this->helper('wishlist')->getListUrl() ?>" title="<?php echo $this->__('Go to Wishlist') ?>"><strong><?php echo $_itemCount ?> items</strong></a> in your wishlist.</p>
         <?php endif; ?>
     </div>
     <div class="block-content">
