@@ -97,7 +97,8 @@
                     <th class="no-link"><span class="no-br"><?php echo $this->__('Product Name') ?></span></th>
                     <th class="no-link"><span class="no-br"><?php echo $this->__('Qty Ordered') ?></span></th>
                     <th class="no-link"><span class="no-br"><?php echo $this->__('Order #') ?></span></th>
-                    <th class="no-link"><span class="no-br"><?php echo $this->__('Customer') ?></span></th>
+                    <th class="no-link"><span class="no-br"><?php echo $this->__('Customer First Name') ?></span></th>
+                    <th class="no-link"><span class="no-br"><?php echo $this->__('Customer Last Name') ?></span></th>
                     <th class="no-link last"><span class="no-br"><?php echo $this->__('Options') ?></span></th>
                     </tr>
                 <?php endif; ?>
@@ -110,9 +111,11 @@
             <?php 
             $_order = $_item->getOrder();
             if ($_order->getCustomerIsGuest()) {
-                $customerName = $_order->getBillingAddress()->getName();
+                $customerFirstname = $_order->getBillingAddress()->getFirstname();
+                $customerLastname  = $_order->getBillingAddress()->getLastname();
             } else {
-                $customerName = $_order->getCustomerName();
+                $customerFirstname = $_order->getCustomerFirstname();
+                $customerLastname  = $_order->getCustomerLastname();
             }
             ?>
             <td><?php echo $this->formatDate($_order->getCreatedAtDate(), 'medium'); ?></td>
@@ -120,7 +123,8 @@
             <td><?php echo $_item->getName() ?></td>
             <td class="a-right"><?php echo $_item->getQtyOrdered() ?></td>
             <td><a href="<?php echo $this->getUrl('adminhtml/sales_order/view', array('order_id' => $_order->getId())); ?>"><?php echo $_order->getIncrementId() ?></a></td>
-            <td><?php echo $this->escapeHtml($customerName); ?></td>
+            <td><?php echo $this->escapeHtml($customerFirstname); ?></td>
+            <td><?php echo $this->escapeHtml($customerLastname); ?></td>
             <td class="last">
                 <table cellspacing="0">
                     <thead>

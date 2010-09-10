@@ -67,7 +67,7 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
         );
         
         $this->getSelect()
-            ->joinInner(array('_table_billing_address' => $this->getTable('sales/order_address')), "order.entity_id = _table_billing_address.parent_id AND _table_billing_address.address_type = 'billing'", array('customer' => new Zend_Db_Expr('CONCAT(_table_billing_address.firstname, " ", _table_billing_address.lastname)')));
+            ->joinInner(array('_table_billing_address' => $this->getTable('sales/order_address')), "order.entity_id = _table_billing_address.parent_id AND _table_billing_address.address_type = 'billing'", array('customer_firstname' => '_table_billing_address.firstname', 'customer_lastname' => '_table_billing_address.lastname'));
 
         $sku = Mage::registry('filter_sku');
         if ($sku) {

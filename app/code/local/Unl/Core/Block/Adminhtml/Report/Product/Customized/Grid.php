@@ -135,7 +135,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             '"' . $this->__('Product Name') . '"',
             '"' . $this->__('Qty Ordered') . '"',
             '"' . $this->__('Order #') . '"',
-            '"' . $this->__('Customer') . '"',
+            '"' . $this->__('Customer First Name') . '"',
+            '"' . $this->__('Customer Last Name') . '"',
             '"' . $this->__('Options') . '"'
         );
         $csv .= implode(',', $data) . "\n";
@@ -143,9 +144,11 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
         foreach ($this->getCollection() as $_item) {
             $_order = $_item->getOrder();
             if ($_order->getCustomerIsGuest()) {
-                $customerName = $_order->getBillingAddress()->getName();
+                $customerFirstname = $_order->getBillingAddress()->getFirstname();
+                $customerLastname  = $_order->getBillingAddress()->getLastname();
             } else {
-                $customerName = $_order->getCustomerName();
+                $customerFirstname = $_order->getCustomerFirstname();
+                $customerLastname  = $_order->getCustomerLastname();
             }
             
             $data = array(
@@ -154,7 +157,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
                 $this->_cleanCsvValue($_item->getName()),
                 $this->_cleanCsvValue($_item->getQtyOrdered()),
                 $this->_cleanCsvValue($_order->getIncrementId()),
-                $this->_cleanCsvValue($customerName),
+                $this->_cleanCsvValue($customerFirstname),
+                $this->_cleanCsvValue($customerLastname),
             );
             
             foreach ($_item->getProductOptionByCode('options') as $option) {
@@ -184,7 +188,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             $this->__('Product Name'),
             $this->__('Qty Ordered'),
             $this->__('Order #'),
-            $this->__('Customer'),
+            $this->__('Customer First Name'),
+            $this->__('Customer Last Name'),
             $this->__('Options')
         );
         $data[] = $row;
@@ -192,10 +197,13 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
         foreach ($this->getCollection() as $_item) {
             $_order = $_item->getOrder();
             if ($_order->getCustomerIsGuest()) {
-                $customerName = $_order->getBillingAddress()->getName();
+                $customerFirstname = $_order->getBillingAddress()->getFirstname();
+                $customerLastname  = $_order->getBillingAddress()->getLastname();
             } else {
-                $customerName = $_order->getCustomerName();
+                $customerFirstname = $_order->getCustomerFirstname();
+                $customerLastname  = $_order->getCustomerLastname();
             }
+            
             
             $row = array(
                 $this->formatDate($_order->getCreatedAtDate()),
@@ -203,7 +211,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
                 $_item->getName(),
                 $_item->getQtyOrdered(),
                 $_order->getIncrementId(),
-                $customerName
+                $customerFirstname,
+                $customerLastname
             );
             
             foreach ($_item->getProductOptionByCode('options') as $option) {

@@ -34,7 +34,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
      */
     protected function _prepareCollection()
     {
-        $this->setFilter('report_period', 'day');
+//        $this->setFilter('report_period', 'day');
         parent::_prepareCollection();
         
         if ($this->getFilter('sku')) {
@@ -71,9 +71,14 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'type'      =>'number'
         ));
         
-        $this->addColumn('customer', array(
-            'header'    =>Mage::helper('reports')->__('Customer'),
-            'index'     =>'customer'
+        $this->addColumn('customer_firstname', array(
+            'header'    =>Mage::helper('reports')->__('Customer First Name'),
+            'index'     =>'customer_firstname'
+        ));
+        
+        $this->addColumn('customer_lastname', array(
+            'header'    =>Mage::helper('reports')->__('Customer Last Name'),
+            'index'     =>'customer_lastname'
         ));
         
         $this->addColumn('ordernum', array(
