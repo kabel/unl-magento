@@ -23,6 +23,7 @@
 
 <br />
 
+<?php if($_order->getGiftMessageId() && $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_order->getGiftMessageId())): ?>
 <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #bebcb7; background:#f8f7f5;">
     <thead>
         <tr>
@@ -31,7 +32,6 @@
     </thead>
 
     <tbody>
-        <?php if($_order->getGiftMessageId() && $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_order->getGiftMessageId())): ?>
         <tr>
             <td colspan="4" align="left" style="padding:3px 9px">
             <strong><?php echo $this->__('From:'); ?></strong> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?>
@@ -39,6 +39,6 @@
             <br /><strong><?php echo $this->__('Message:'); ?></strong><br /> <?php echo $this->htmlEscape($_giftMessage->getMessage()) ?>
             </td>
         </tr>
-        <?php endif; ?>
     </tbody>
 </table>
+<?php endif; ?>
