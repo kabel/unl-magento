@@ -135,9 +135,9 @@ class Unl_Core_Model_Admin_Observer
         
         if ($id) {
             $model->load($id);
-            if ($scope = $user->getScope() && $perm = $model->getPermissions()) {
-                $perm = explode(',', $perm);
-                $scope = explode(',', $scope);
+            if ($user->getScope() && $model->getPermissions()) {
+                $perm = explode(',', $model->getPermissions());
+                $scope = explode(',', $user->getScope());
                 $allow = false;
                 foreach ($scope as $store_id) {
                     $allow = in_array($store_id, $perm);
