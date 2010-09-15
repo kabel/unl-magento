@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.13</version>
+            <version>0.1.14</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -22,6 +22,7 @@
             <adminhtml>
                 <rewrite>
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
+                    <cms_page_grid>Unl_Core_Block_Adminhtml_Cms_Page_Grid</cms_page_grid>
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
@@ -353,6 +354,16 @@
                 </observers>
             </admin_user_save_before>
             
+            <cms_page_save_before>
+                <observers>
+                    <save_store>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>beforeCmsPageSave</method>
+                    </save_store>
+                </observers>
+            </cms_page_save_before>
+            
             <adminhtml_block_html_before>
                 <observers>
                     <correct_admin_blocks>
@@ -402,6 +413,16 @@
                     </product_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_edit>
+            
+            <controller_action_predispatch_adminhtml_cms_page_edit>
+                <observers>
+                    <product_auth>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onAdminCmsPageEditPreDispatch</method>
+                    </product_auth>
+                </observers>
+            </controller_action_predispatch_adminhtml_cms_page_edit>
             
             <controller_action_predispatch_adminhtml_sales_creditmemo_view>
                 <observers>

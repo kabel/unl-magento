@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
 <layout>
+    <adminhtml_cms_page_edit>
+        <reference name="cms_page_edit_tabs">
+            <block type="unl_core/adminhtml_cms_page_edit_tab_permissions" name="cms_page_edit_tab_permissions" />
+            <action method="addTab"><name>permissions_section</name><block>cms_page_edit_tab_permissions</block></action>
+        </reference>
+    </adminhtml_cms_page_edit>
+
 	<adminhtml_report_sales_tax>
 	    <reference name="sales.report.grid.container">
 	        <action method="unsetChild"><name>store.switcher</name></action>

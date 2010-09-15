@@ -19,6 +19,30 @@ class Unl_Core_Model_Admin_Observer
         }
     }
     
+    public function beforeCmsPageSave($observer)
+    {
+        /* @var $page Mage_Cms_Model_Page */
+        $page = $observer->getEvent()->getObject();
+        
+        $scope = $page->getPermissions();
+        
+        if (Mage::getSingleton('admin/session')->isAllowed('cms/page/permissions')) {
+            if ($page->getAll() || empty($scope)) {
+                $page->setData('permissions', null);
+            } else {
+                if (is_array($scope)) {
+                    $scope = implode(',', $scope);
+                }
+                $page->setData('permissions', $scope);
+            }
+        } else {
+            $user = Mage::getSingleton('admin/session')->getUser();
+            if (!$page->getId() && $user->getScope()) {
+                $page->setData('permissions', $user->getScope());
+            }
+        }
+    }
+    
     public function isAllowedAddRootCategory($observer)
     {
         $options = $observer->getEvent()->getOptions();
@@ -93,6 +117,36 @@ class Unl_Core_Model_Admin_Observer
             if ($productId && $product = Mage::getModel('catalog/product')->load($productId)) {
                 $source = $product->getSourceStoreView();
                 if ($source && !in_array($source, $scope)) {
+                    $request->initForward()
+                        ->setActionName('denied')
+                        ->setDispatched(false);
+                }
+            }
+        }
+    }
+    
+    public function onAdminCmsPageEditPreDispatch($observer)
+    {
+        $request = Mage::app()->getRequest();
+        $user = Mage::getSingleton('admin/session')->getUser();
+        
+        $id = $request->getParam('page_id');
+        $model = Mage::getModel('cms/page');
+        
+        if ($id) {
+            $model->load($id);
+            if ($scope = $user->getScope() && $perm = $model->getPermissions()) {
+                $perm = explode(',', $perm);
+                $scope = explode(',', $scope);
+                $allow = false;
+                foreach ($scope as $store_id) {
+                    $allow = in_array($store_id, $perm);
+                    if ($allow) {
+                        break;
+                    }
+                }
+                
+                if (!$allow) {
                     $request->initForward()
                         ->setActionName('denied')
                         ->setDispatched(false);
