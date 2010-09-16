@@ -14,7 +14,7 @@
     <?php
         $_src = $this->helper('catalog/image')->init($_product, 'image');
         $_img = '<img id="image" src="'.$_src.'" alt="'.$this->htmlEscape($this->getImageLabel()).'" title="'.$this->htmlEscape($this->getImageLabel()).'" />';
-        $_img .= '<a id="image_colorbox" class="no-display" href="'.$_src. '"></a>';
+        $_img .= '<a id="image_colorbox" rel="colorbox" class="no-display" href="'.$_src. '" title="' . $this->htmlEscape($this->getImageLabel()) . '"></a>';
         echo $_helper->productAttribute($_product, $_img, 'image');
     ?>
 </p>
@@ -32,9 +32,9 @@
         product_zoom = new Product.Zoom('image', 'track', 'handle', 'zoom_in', 'zoom_out', 'track_hint');
         Event.stopObserving($('image'), 'dblclick', null);
         Event.observe($('image'), 'dblclick', function() {
-            WDN.jQuery("#image_colorbox").colorbox({open: true});
+            WDN.jQuery("#image_colorbox").colorbox({open: true, maxWidth:980});
         });
-        WDN.jQuery("a[rel='colorbox']").colorbox();
+        WDN.jQuery("a[rel='colorbox']").colorbox({maxWidth:980});
     });
 //]]>
 </script>
