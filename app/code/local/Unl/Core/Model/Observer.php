@@ -267,7 +267,13 @@ class Unl_Core_Model_Observer
         $_prod = $observer->getEvent()->getProduct();
         $helper = Mage::helper('unl_core');
         if (!$helper->isCustomerAllowedProduct($_prod)) {
-            Mage::throwException($helper->__('You are not authorized to purchase the selected product'));
+            if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+                $message = $helper->__('You are not authorized to purchase this product');
+            } else {
+                $message = $helper->__('You must be logged in and authorized to purchase this product');
+                Mage::app()->getResponse()->setRedirect(Mage::getUrl('customer/account/login'));
+            }
+            Mage::throwException($message);
         }
     }
     
