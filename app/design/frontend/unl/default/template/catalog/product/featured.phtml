@@ -10,7 +10,7 @@
     <a class="product-image" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>">
         <img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(174, 174); ?>" width="174" height="174" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
     <div class="product-shop">
-        <h2 class="sec_header"><?php echo $_helper->productAttribute($_product, $this->htmlEscape($_product->getName()), 'name') ?></h2>
+        <h2 class="sec_header"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h2>
         
         <div class="right-box">
             <?php echo $this->getPriceHtml($_product, true) ?>
