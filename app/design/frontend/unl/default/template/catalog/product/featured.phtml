@@ -14,7 +14,7 @@
         
         <div class="right-box">
             <?php echo $this->getPriceHtml($_product, true) ?>
-            <p><button class="button" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><?php echo $this->__('Add to Cart') ?></span></button></p>
+            <p><button class="button" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
             <p class="add-to">
                 Add to: 
                 <?php if ($this->helper('wishlist')->isAllow()) : ?>

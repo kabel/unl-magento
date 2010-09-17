@@ -645,9 +645,9 @@ tr.summary-details-excluded { font-style:italic; }
 
 /* Featured Product ====================================================================== */
 .featured {}
-.featured .product-image { display: block; float: left; padding: 10px; border: 1px solid #ddd; background-color: #fff; }
-.featured .product-shop { float: left; padding-left: 20px; width: 470px; }
-.featured .product-shop .right-box { float:right; text-align: right; padding: 0 0 10px 10px; }
+.featured .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
+.featured .product-shop { float: left; padding-left: 20px; width: 490px; }
+.featured .product-shop .right-box { float:right; text-align: right; margin: 0 0 10px 10px; }
 
 .featured2 {}
 #maincontent div.featured2 ul { padding:0; }
