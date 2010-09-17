@@ -124,6 +124,11 @@
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
                 </rewrite>
             </catalog>
+            <catalog_resource_eav_mysql4>
+                <rewrite>
+                    <category_tree>Unl_Core_Model_Catalog_Resource_Eav_Mysql4_Category_Tree</category_tree>
+                </rewrite>
+            </catalog_resource_eav_mysql4>
             <core>
                 <!-- Allow locale templates in Design -->
                 <rewrite>
