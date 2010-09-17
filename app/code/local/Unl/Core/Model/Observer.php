@@ -266,14 +266,30 @@ class Unl_Core_Model_Observer
     {
         $_prod = $observer->getEvent()->getProduct();
         $helper = Mage::helper('unl_core');
+        $checkout = Mage::getSingleton('checkout/session');
         if (!$helper->isCustomerAllowedProduct($_prod)) {
             if (Mage::getSingleton('customer/session')->isLoggedIn()) {
                 $message = $helper->__('You are not authorized to purchase this product');
             } else {
                 $message = $helper->__('You must be logged in and authorized to purchase this product');
-                Mage::app()->getResponse()->setRedirect(Mage::getUrl('customer/account/login'));
+                Mage::getSingleton('core/session')->addNotice($message);
+                $checkout->setConsume(true);
+                $checkout->setRedirectUrl(Mage::getUrl('customer/account/login'));
             }
+            
             Mage::throwException($message);
+        }
+    }
+    
+    public function consumeCheckoutMessages($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        $type = 'Mage_Core_Block_Messages';
+        if ($block instanceof $type) {
+            $checkout = Mage::getSingleton('checkout/session');
+            if ($checkout->getConsume(true)) {
+                $checkout->getMessages(true);
+            }
         }
     }
     

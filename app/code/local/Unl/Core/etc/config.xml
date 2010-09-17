@@ -238,6 +238,15 @@
                     </catalog_acl>
                 </observers>
             </catalog_controller_product_init_after>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <unlcore_before_block_to_html>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>consumeCheckoutMessages</method>
+                    </unlcore_before_block_to_html>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
             <core_block_abstract_to_html_before>
                 <observers>
                     <unlcore_before_block_to_html>
