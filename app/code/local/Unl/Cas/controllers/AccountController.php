@@ -182,8 +182,6 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
                 $customer = Mage::getModel('customer/customer')->setId(null);
             }
             
-            $customer->setPassword($customer->generatePassword());
-
             foreach (Mage::getConfig()->getFieldset('customer_account') as $code=>$node) {
                 if ($node->is('create') && ($value = $this->getRequest()->getParam($code)) !== null) {
                     $customer->setData($code, $value);
@@ -219,6 +217,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
                 $validationResult = count($errors) == 0;
 
                 if (true === $validationResult) {
+                    $customer->setPassword($customer->generatePassword());
                     $this->_completeCustomer($customer);
                     return;
                 } else {
