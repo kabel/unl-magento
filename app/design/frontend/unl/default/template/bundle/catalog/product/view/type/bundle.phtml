@@ -1,0 +1,18 @@
+<?php $_product = $this->getProduct() ?>
+
+<?php if($_product->isSaleable()): ?>
+<script type="text/javascript">
+//<![CDATA[
+    var bundle = new Product.Bundle(<?php echo $this->getJsonConfig() ?>);
+//]]>
+</script>
+    <p class="availability in-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('In stock') ?></span></p>
+<?php elseif ($_product->getNoSale()): ?>
+    <p class="availability no-sale"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Not Available Online') ?></span></p>
+<?php else: ?>
+    <p class="availability out-of-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('Out of stock') ?></span></p>
+<?php endif; ?>
+<div class="price-box-bundle">
+    <?php echo $this->getPriceHtml($_product) ?>
+</div>
+<?php echo $this->getChildHtml('bundle_prices') ?>

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.14</version>
+            <version>0.1.15</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -238,6 +238,15 @@
                     </catalog_acl>
                 </observers>
             </catalog_controller_product_init_after>
+            <catalog_product_is_salable_after>
+                <observers>
+                    <no_sale_check>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>checkNoSale</method>
+                    </no_sale_check>
+                </observers>
+            </catalog_product_is_salable_after>
             <core_block_abstract_prepare_layout_before>
                 <observers>
                     <unlcore_before_block_to_html>

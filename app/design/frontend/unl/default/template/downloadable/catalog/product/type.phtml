@@ -1,0 +1,19 @@
+<?php
+/**
+ * Downloadable product type
+ *
+ * @see Mage_Downloadable_Block_Catalog_Product_View_Type
+ */
+?>
+<?php $_product = $this->getProduct() ?>
+
+<?php if($_product->isSaleable()): ?>
+    <p class="availability in-stock"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('In Stock') ?></span></p>
+<?php elseif ($_product->getNoSale()): ?>
+    <p class="availability no-sale"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Not Available Online') ?></span></p>
+<?php else: ?>
+    <p class="availability out-of-stock"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Out of Stock') ?></span></p>
+<?php endif; ?>
+<?php echo $this->getChildHtml('product_type_data_extra') ?>
+<?php echo $this->getPriceHtml($_product) ?>
+<?php echo $this->getChildHtml('samples') ?>

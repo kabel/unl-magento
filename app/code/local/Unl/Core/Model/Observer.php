@@ -160,6 +160,21 @@ class Unl_Core_Model_Observer
     }
     
     /**
+     * Event driven salable status setter
+     * 
+     * @param $observer
+     */
+    public function checkNoSale($observer)
+    {
+        $product = $observer->getEvent()->getProduct();
+        $result  = $observer->getEvent()->getSalable();
+        
+        if ($product->getNoSale() !== null) {
+            $result->setIsSalable($result->getIsSalable() && !$product->getNoSale());
+        }
+    }
+    
+    /**
      * Save order tax information
      *
      * @param Varien_Event_Observer $observer
