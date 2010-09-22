@@ -12,14 +12,17 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
     {
         if (is_null($this->_options)) {
             $options = array();
-            $_websiteCollection = $this->getWebsiteCollection();
+            $scope   = $this->_getAdminUserScope();
             
-            foreach ($_websiteCollection as $_website) {
+            foreach ($this->getWebsiteCollection() as $_website) {
                 $showWebsite = false;
                 foreach ($this->getGroupCollection($_website) as $_group) {
                     $showGroup = false;
                     $optGroup = array();
                     foreach ($this->getStoreCollection($_group) as $_store) {
+                        if (!empty($scope) && !in_array($_store->getId(), $scope)) {
+                            break;
+                        }
                         if ($showWebsite == false) {
                             $showWebsite = true;
                             $options[] = array('label' => $_website->getName(), 'value' => array());
@@ -47,6 +50,17 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
         }
         
         return $options;
+    }
+    
+    protected function _getAdminUserScope()
+    {
+        $scope = array();
+        $user = Mage::getSingleton('admin/session')->getUser();
+        if ($user->getScope()) {
+            $scope = explode(',', $user->getScope());
+        }
+        
+        return $scope;
     }
     
     public function getOptionText($value)
@@ -77,24 +91,6 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
     public function toOptionArray()
     {
         return $this->getAllOptions(false);
-    }
-    
-    public function toFormOptionArray()
-    {
-        $options = array();
-        foreach ($this->getAllOptions() as $opt) {
-            if (is_array($opt['value'])) {
-                $subOpt = array();
-                foreach ($opt['value'] as $item) {
-                    $subOpt[$item['value']] = $item['label'];
-                }
-                $options[] = $subOpt;
-            } else {
-                $options[$opt['value']] = $opt['label'];
-            }
-        }
-        
-        return $options;
     }
     
     public function getWebsiteCollection()
