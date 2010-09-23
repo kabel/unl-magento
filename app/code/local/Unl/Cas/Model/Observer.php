@@ -4,15 +4,13 @@ class Unl_Cas_Model_Observer
 {
     public function customerLogin($observer)
     {
-        //$loggedIn = Mage::getSingleton('customer/session')->isLoggedIn();
         $customer = $observer->getEvent()->getCustomer();
         /* @var $customer Mage_Customer_Model_Customer */
         
         if ($uid = $customer->getData('unl_cas_uid')) {
             Mage::helper('unl_cas')->assignGroupId($customer, $uid);
-            if ($customer->dataHasChangedFor('group_id')) {
-                $customer->save();
-            }
+        } else {
+            Mage::helper('unl_cas')->revokeSpecialCustomerGroup($customer);
         }
     }
     
@@ -24,4 +22,6 @@ class Unl_Cas_Model_Observer
             Mage::helper('unl_cas')->getAuth()->logout(Mage::getUrl());
         }
     }
+    
+    //TODO: Add a listener to 'sales_quote_payment_import_data_before' event to change customer class to UNL Cost Object Authorized
 }

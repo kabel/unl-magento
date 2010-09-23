@@ -4,6 +4,14 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 {
     protected $_cache = array();
     
+    protected $_specialCustomerGroups = array(
+        'UNL Student',
+        'UNL Student - Fee Paying',
+        'UNL Faculty/Staff',
+        'UNL Cost Object Authorized'
+    );
+    protected $_specialGroupsCollection;
+    
     /**
      * Check customer is logged in
      *
@@ -115,27 +123,66 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     public function assignGroupId($customer, $uid)
     {
         if ($this->isValidPf($uid)) {
-            $studentModel = Mage::getModel('customer/group')->load('UNL Student', 'customer_group_code');
-            $facStaffModel = Mage::getModel('customer/group')->load('UNL Faculty/Staff', 'customer_group_code');
-            
+            $specialGroups = $this->_getSpecialCustomerGroupsCollection();
             if ($this->isStudent($uid)) {
-               if ($customer->getGroupId() != $studentModel->getId()) {
-                   $customer->setData('group_id', $studentModel->getId());
-               } 
+                //TODO: Add logic for checking/assigning Fee Paying status
+                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Student'));
             } elseif ($this->isFacultyStaff($uid)) {
-                if ($customer->getGroupId() != $facStaffModel->getId()) {
-                   $customer->setData('group_id', $facStaffModel->getId());
-               }
+                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'));
             } else {
-                $storeId = $customer->getStoreId() ? $customer->getStoreId() : Mage::app()->getStore()->getId();
-                $customer->setData('group_id', Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $storeId));
+                $this->revokeSpecialCustomerGroup($customer);
             }
         } else {
-            $groupId = $customer->getGroupId();
-            if ($groupId == $studentModel->getId() || $groupId == $facStaffModel->getId()) {
+            $this->revokeSpecialCustomerGroup($customer);
+        }
+    }
+    
+    /**
+     * Reverts a customer's group classification back to the default
+     * if it is a special group
+     * 
+     * @param Mage_Customer_Model_Customer $customer
+     */
+    public function revokeSpecialCustomerGroup($customer)
+    {
+        foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
+            if ($customer->getGroupId() == $group->getId()) {
                 $storeId = $customer->getStoreId() ? $customer->getStoreId() : Mage::app()->getStore()->getId();
-                $customer->setData('group_id', Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $storeId));
+                $customer->setGroupId(Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $storeId));
+                $customer->save();
+                break;
             }
         }
+    }
+    
+    /**
+     * Sets the customer's group id and saves, if needed
+     * 
+     * @param Mage_Customer_Model_Customer $customer
+     * @param Mage_Customer_Model_Group $group
+     */
+    protected function _assignCustomerGroup($customer, $group)
+    {
+        if ($customer->getGroupId() != $group->getId()) {
+            $customer->setGroupId($group->getId());
+            $customer->save();
+        }
+    }
+    
+    /**
+     * Retieves a collection of the special customer groups
+     * 
+     * @return Mage_Customer_Model_Entity_Group_Collection
+     */
+    protected function _getSpecialCustomerGroupsCollection()
+    {
+        if (null === $this->_specialGroupsCollection) {
+            /* @var $collection Mage_Customer_Model_Entity_Group_Collection */
+            $collection = Mage::getModel('customer/group')->getCollection();
+            $collection->addFieldToFilter('customer_group_code', array('in' => $this->_specialCustomerGroups));
+            $this->_specialGroupsCollection = $collection;
+        }
+        
+        return $this->_specialGroupsCollection;
     }
 }

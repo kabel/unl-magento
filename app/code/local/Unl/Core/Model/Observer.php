@@ -327,6 +327,7 @@ class Unl_Core_Model_Observer
                 $result->isAvailable = false;
                 return;
             } else {
+                //TODO: Add More logic here to allow 'UNL Cost Object Authorized' customer group
                 $customer = $customerSession->getCustomer();
                 $facStaffModel = Mage::getModel('customer/group')->load('UNL Faculty/Staff', 'customer_group_code');
                 if ($customer->getGroupId() !== $facStaffModel->getId()) {
