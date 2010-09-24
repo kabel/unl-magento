@@ -5,6 +5,10 @@
             <p>
                 <?php echo $this->htmlEscape($this->getCustomer()->getName()) ?><br />
                 <?php echo $this->htmlEscape($this->getCustomer()->getEmail()) ?><br />
+                <?php if (Mage::helper('unl_cas')->isAllowedAffiliationSwitch($this->getCustomer())): ?>
+                <?php $_affiliations = Mage::helper('unl_cas')->getAffiliations(); ?>
+                <?php echo $this->__('Current Shopping Affiliation') ?>: <strong><?php echo (Mage::helper('unl_cas')->getCustomerAffiliation($this->getCustomer())) ? array_search(Mage::helper('unl_cas')->getCustomerAffiliation($this->getCustomer()), $_affiliations) : ''?></strong><br />
+                <?php endif; ?>
                 <a href="<?php echo $this->getChangePasswordUrl() ?>"><?php echo $this->__('Change Password') ?></a>
             </p>
         </div>

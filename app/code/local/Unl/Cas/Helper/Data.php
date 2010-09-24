@@ -12,6 +12,11 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     );
     protected $_specialGroupsCollection;
     
+    protected $_affiliations = array(
+        'UNL Student' => 1,
+        'UNL Faculty/Staff' => 2
+    );
+    
     /**
      * Check customer is logged in
      *
@@ -86,6 +91,59 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
     
+    public function isAllowedAffiliationSwitch($customer, $reload = false)
+    {
+        if ($reload) {
+            $_customer = Mage::getModel('customer/customer')->load($customer->getId());
+        } else {
+            $_customer = $customer;
+        }
+        
+        if ($uid = $_customer->getUnlCasUid()) {
+            if ($r = $this->fetchPfUID($uid)) {
+                $affiliations = 0;
+                foreach ($r->eduPersonAffiliation as $aff) {
+                    if (strpos($aff, 'student') !== false) {
+                        $affiliations |= 1;
+                    } elseif (strpos($aff, 'staff') !== false || strpos($aff, 'faculty') !== false) {
+                        $affiliations |= 2;
+                    }
+                }
+                
+                if (($affiliations & 3) == 3) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    public function getAffiliations()
+    {
+        return $this->_affiliations;
+    }
+    
+    public function getCustomerAffiliation($customer)
+    {
+        foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
+            if ($customer->getGroupId() == $group->getId()) {
+                switch ($group->getCustomerGroupCode()) {
+                    case 'UNL Student':
+                    case 'UNL Student - Fee Paying':
+                        return $this->_affiliations['UNL Student'];
+                        break;
+                    case 'UNL Faculty/Staff':
+                    case 'UNL Cost Object Authorized':
+                        return $this->_affiliations['UNL Faculty/Staff'];
+                        break;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
     /**
      * Add peoplefinder data to Varian Object
      *
@@ -136,6 +194,25 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             $this->revokeSpecialCustomerGroup($customer);
         }
     }
+
+    public function switchAffiliation($customer)
+    {
+        if (!$this->isAllowedAffiliationSwitch($customer, true) || !Mage::app()->getRequest()->getPost('affiliation_switch')) {
+            return;
+        }
+        
+        $specialGroups = $this->_getSpecialCustomerGroupsCollection();
+        //should not trigger save becuase this should only be called on _beforeSave
+        switch (Mage::app()->getRequest()->getPost('affiliation_switch')) {
+            case $this->_affiliations['UNL Student']:
+                //TODO: Add logic for checking/assigning Fee Paying status
+                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Student'), false);
+                break;
+            case $this->_affiliations['UNL Faculty/Staff']:
+                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'), false);
+                break;
+        }
+    }
     
     /**
      * Reverts a customer's group classification back to the default
@@ -156,16 +233,53 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     }
     
     /**
+     * Assigns the customer group to the special group for Cost Object orders
+     * 
+     * @param Mage_Customer_Model_Customer $customer
+     */
+    public function authorizeCostObject($customer)
+    {
+        $coGroup = $this->_getSpecialCustomerGroupsCollection()->getItemByColumnValue('customer_group_code', 'UNL Cost Object Authorized');
+        $this->_assignCustomerGroup($customer, $coGroup);
+    }
+    
+    public function revokeCostObjectAuth($customer)
+    {
+        $specialGroups = $this->_getSpecialCustomerGroupsCollection();
+        if ($customer->getGroupId() == $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Cost Object Authorized')->getId()) {
+            $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'));
+        }
+    }
+    
+    public function isCustomerCostObjectAuthorized($customer)
+    {
+        foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
+            if ($customer->getGroupId() == $group->getId()) {
+                switch ($group->getCustomerGroupCode()) {
+                    case 'UNL Faculty/Staff':
+                    case 'UNL Cost Object Authorized':
+                        return true;
+                        break;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Sets the customer's group id and saves, if needed
      * 
      * @param Mage_Customer_Model_Customer $customer
      * @param Mage_Customer_Model_Group $group
      */
-    protected function _assignCustomerGroup($customer, $group)
+    protected function _assignCustomerGroup($customer, $group, $triggerSave = true)
     {
         if ($customer->getGroupId() != $group->getId()) {
             $customer->setGroupId($group->getId());
-            $customer->save();
+            if ($triggerSave) {
+                $customer->save();
+            }
         }
     }
     

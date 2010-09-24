@@ -314,27 +314,4 @@ class Unl_Core_Model_Observer
         $helper = Mage::helper('unl_core');
         $helper->checkCustomerAllowedProductQty($_item);
     }
-    
-    public function isPaymentMethodActive($observer)
-    {
-        $method = $observer->getEvent()->getMethodInstance();
-        $result = $observer->getEvent()->getResult();
-        
-        if ($method instanceof Mage_Payment_Model_Method_Purchaseorder) {
-            /* @var $customerSession Mage_Customer_Model_Session */
-            $customerSession = Mage::getSingleton('customer/session');
-            if (!$customerSession->isLoggedIn()) {
-                $result->isAvailable = false;
-                return;
-            } else {
-                //TODO: Add More logic here to allow 'UNL Cost Object Authorized' customer group
-                $customer = $customerSession->getCustomer();
-                $facStaffModel = Mage::getModel('customer/group')->load('UNL Faculty/Staff', 'customer_group_code');
-                if ($customer->getGroupId() !== $facStaffModel->getId()) {
-                    $result->isAvailable = false;
-                    return;
-                }
-            }
-        }
-    }
 }

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Cas>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
             <depends>
                 <Mage_Customer />
             </depends>
@@ -46,6 +46,17 @@
                 </connection>
             </unl_cas_read>
         </resources>
+        <events>
+            <payment_method_is_active>
+                <observers>
+                    <unlcas_is_payment_active>
+                        <type>singleton</type>
+                        <class>unl_cas/observer</class>
+                        <method>isPaymentMethodActive</method>
+                    </unlcas_is_payment_active>
+                </observers>
+            </payment_method_is_active>
+        </events>
     </global>
         
     <frontend>
@@ -62,6 +73,15 @@
             </unl_cas>
         </routers>
         <events>
+            <checkout_submit_all_after>
+                <observers>
+                    <revoke_cost_object_auth>
+                        <type>singleton</type>
+                        <class>unl_cas/observer</class>
+                        <method>onCheckoutSubmitAfterAll</method>
+                    </revoke_cost_object_auth>
+                </observers>
+            </checkout_submit_all_after>
             <customer_login>
                 <observers>
                     <customer_login_observer>
@@ -80,6 +100,24 @@
                     </customer_login_observer>
                 </observers>
             </customer_logout>
+            <customer_save_before>
+                <observers>
+                    <affiliation_switch>
+                        <type>singleton</type>
+                        <class>unl_cas/observer</class>
+                        <method>onCustomerSave</method>
+                    </affiliation_switch>
+                </observers>
+            </customer_save_before>
+            <sales_quote_payment_import_data_before>
+                <observers>
+                    <cost_object_group_fix>
+                        <type>singleton</type>
+                        <class>unl_cas/observer</class>
+                        <method>onPaymentMethodImport</method>
+                    </cost_object_group_fix>
+                </observers>
+            </sales_quote_payment_import_data_before>
         </events>
         <layout>
             <updates>
