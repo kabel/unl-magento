@@ -921,7 +921,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
     
     protected function _processSecondary($addr2, &$possib)
     {
-        $addr2 = str_replace(array('#', '.'), '', $addr2);
+        $addr2 = str_replace(array('#', '.', ','), '', $addr2);
         $addr2 = str_replace(array("\n", "\r", "\t"), ' ', $addr2);
         $pieces = explode(' ', $addr2);
         
@@ -1003,7 +1003,33 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
         }
     }
     
-    protected function _runOnMatch($address, $matches, $strict = false, $zipInstead = false)
+    protected function _getHighestRate($address, $fromZip = true)
+    {
+        $this->_reset();
+        $selct = $this->getSelect()->where('record_type = ?', 'A')
+            ->where('NOW() BETWEEN begin_date AND end_date')
+            ->where('fips_place_number != ?', '')
+            ->limit(1);
+        
+        if ($fromZip) {
+            $selct->where('zip_code = ?', $address->getPostcode());
+        } else {
+            $select->where('city_name = ?', $address->getCity());
+        }
+        
+        $count = count($this);
+        if ($count) {
+            $item = $this->getFirstItem();
+            
+            return $item['zip_code'] . '-' . $item['plus_4'];
+        } elseif ($fromZip) {
+            return $this->_getHighestRate($address, false);
+        }
+        
+        return '';
+    }
+    
+    protected function _runOnMatch($address, $matches, $secondaryOffset, $strict = false, $zipInstead = false)
     {
         $this->_reset();
         $addr = $address->getStreet();
@@ -1032,7 +1058,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
         $count = count($this);
         if ($count) {
             if ($count > 1) {
-                $item = $this->_runFilters($this->getItems(), isset($addr[1]) ? $addr[1] : '', $possib, $search);
+                $item = $this->_runFilters($this->getItems(), isset($addr[$secondaryOffset]) ? $addr[$secondaryOffset] : '', $possib, $search);
             } else {
                 $item = current($this->getItems());
             }
@@ -1040,9 +1066,9 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             return $item['zip_code'] . '-' . $item['plus_4'];
         } else {
             if (!$strict) {
-                return $this->_runOnMatch($address, $matches, true, $zipInstead);
+                return $this->_runOnMatch($address, $matches, $secondaryOffset, true, $zipInstead);
             } elseif (!$zipInstead) {
-                return $this->_runOnMatch($address, $matches, false, true);
+                return $this->_runOnMatch($address, $matches, $secondaryOffset, false, true);
             }
         }
         
@@ -1054,15 +1080,35 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
         $zip = '';
         $addr = $address->getStreet();
         
-        $addr[0] = str_replace(array('#', '.'), '', $addr[0]);
-        $addr[0] = str_replace(array("\n", "\r", "\t"), ' ', $addr[0]);
-        if (preg_match('/(\d+)\s([ns][ew]?\s|[ew]\s)?([^\W_][a-z\d\-\/\s]*)/i', $addr[0], $matches)) {
-            $zip = $this->_runOnMatch($address, $matches);
+        for ($i = 0; $i < count($addr); $i++) {
+            if ($i == 1) {
+                $secondaryOffset = 0;
+            } else {
+                $secondaryOffset = 1;
+            }
+            
+            $addr[$i] = str_replace(array('#', '.', ','), '', $addr[$i]);
+            $addr[$i] = str_replace(array("\n", "\r", "\t"), ' ', $addr[$i]);
+            if (preg_match('/(\d+)\s([ns][ew]?\s|[ew]\s)?([^\W_][a-z\d\-\/\s]*)/i', $addr[$i], $matches)) {
+                $zip = $this->_runOnMatch($address, $matches, $secondaryOffset);
+            }
+            
+            if ($zip) {
+                break;
+            }
         }
         
-        //FIXME: There should be some logic here that tries again to find a plus4 using only $address->getPostcode()
-        //       Simply group by fips_place_number and filter by zip_code and fips_place_number <> '' limit 1
+        // If we can't zip plus4 using the street address, grab it from the first available FIPS (zip first, then city)
+        if (!$zip) {
+            $zip = $this->_getHighestRate($address);
+        }
         
+        // This is BAD, but if we don't have a valid plus4 by now just default to Lincoln, NE (WICK)
+        // It should never happen given a valid zip OR NE city
+        if (!$zip) {
+            $zip = '68508-1651';
+        }
+                
         return $zip;
     }
 }
