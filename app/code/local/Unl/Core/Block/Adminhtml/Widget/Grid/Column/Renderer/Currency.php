@@ -8,7 +8,7 @@ class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency extends Mage
      * @param Varien_Object $row
      * @return string
      */
-    public function renderExport($row)
+    public function renderExport(Varien_Object $row)
     {
         if ($data = $row->getData($this->getColumn()->getIndex())) {
             $currency_code = $this->_getCurrencyCode($row);
