@@ -19,7 +19,10 @@ class Unl_Cas_Model_Observer
         $customer = $observer->getEvent()->getCustomer();
         
         if ($uid = $customer->getData('unl_cas_uid')) {
-            Mage::helper('unl_cas')->getAuth()->logout(Mage::getUrl());
+            $auth = Mage::helper('unl_cas')->getAuth();
+            if ($auth->isLoggedIn()) {
+                $auth->logout(Mage::getUrl());
+            }
         }
     }
     

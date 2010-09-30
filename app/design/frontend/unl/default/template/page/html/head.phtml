@@ -15,7 +15,9 @@
 -->
 <title><?php echo substr($this->getTitle(), 0, 3) == 'UNL' ? $this->getTitle() : ('UNL | Marketplace | ' . $this->getTitle()) ?></title>
 <link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
+<?php if (Mage::helper('unl_cas')->getAuth()->isLoggedIn()): ?>
 <link rel="logout" href="<?php echo $this->getUrl('customer/account/logout') ?>" />
+<?php endif; ?>
 <script type="text/javascript">
 //<![CDATA[
     var BLANK_URL = '<?php echo $this->helper('core/js')->getJsUrl('blank.html') ?>';
