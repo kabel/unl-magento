@@ -62,6 +62,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         $this->addColumn('created_at', array(
             'header' => Mage::helper('sales')->__('Purchased On'),
             'index' => 'created_at',
+            'filter_index' => 'main_table.created_at',
             'type' => 'datetime',
             'width' => '150px',
         ));
