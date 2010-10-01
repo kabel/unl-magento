@@ -58,7 +58,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
                 ))
                 ->group('order_id');
                 
-            $this->getSelect()->join(array('oi' => $selectOrderItem), 'oi.order_id = e.entity_id AND oi.parent_item_id IS NULL', array());
+            $this->getSelect()->join(array('oi' => $selectOrderItem), 'oi.order_id = e.entity_id', array());
         }
 
         return $this;
