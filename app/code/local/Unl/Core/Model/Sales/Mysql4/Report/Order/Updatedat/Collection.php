@@ -96,7 +96,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
                 'total_canceled_amount'          => 'SUM((oi.base_price + ((oi.base_tax_amount - ABS(oi.base_discount_amount)) / oi.qty_ordered)) * oi.qty_canceled * o.base_to_global_rate)',
                 'total_paid_amount'              => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
                 'total_refunded_amount'          => new Zend_Db_Expr('0'),
-                'total_tax_amount'               => 'SUM((oi.base_tax_amount - (oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled))) * o.base_to_global_rate)',
+                'total_tax_amount'               => 'SUM((oi.base_tax_amount - (oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
                 'total_tax_amount_actual'        => 'SUM((oi.base_tax_invoiced - (oi.base_tax_invoiced / oi.qty_invoiced * oi.qty_refunded)) * o.base_to_global_rate)',
                 'total_shipping_amount'          => new Zend_Db_Expr('0'),
                 'total_shipping_amount_actual'   => new Zend_Db_Expr('0'),
