@@ -54,7 +54,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     
     public function fetchPfUID($uid)
     {
-        if ($this->_cache[$uid] !== null) {
+        if (isset($this->_cache[$uid])) {
             return $this->_cache[$uid];
         }
         
