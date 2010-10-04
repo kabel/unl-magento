@@ -5,7 +5,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     public function fetchServerFile($path)
     {
         $host = Mage::helper('core/http')->getHttpHost();
-        if (!$host) {
+        if (!$host || !preg_match('/unl\.edu$/', $host)) {
             $host = 'www.unl.edu';
         }
         return file_get_contents('http://' . $host . $path);
