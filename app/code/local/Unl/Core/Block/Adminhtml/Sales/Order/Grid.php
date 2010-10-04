@@ -7,7 +7,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         /* @var $collection Mage_Sales_Model_Mysql4_Order_Grid_Collection */
         $collection = Mage::getResourceModel($this->_getCollectionClass());
         $collection->getSelect()
-            ->join(array('o' => $collection->getTable('sales/order')),
+            ->joinLeft(array('o' => $collection->getTable('sales/order')),
                 'main_table.entity_id = o.entity_id',
                 array('external_id')
             );
@@ -40,6 +40,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'width' => '80px',
             'type'  => 'text',
             'index' => 'increment_id',
+            'filter_index' => 'main_table.increment_id',
         ));
         
         $this->addColumn('external_id', array(
@@ -70,16 +71,19 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         $this->addColumn('billing_name', array(
             'header' => Mage::helper('sales')->__('Bill to Name'),
             'index' => 'billing_name',
+            'filter_index' => 'main_table.billing_name',
         ));
 
         $this->addColumn('shipping_name', array(
             'header' => Mage::helper('sales')->__('Ship to Name'),
             'index' => 'shipping_name',
+            'filter_index' => 'main_table.shipping_name',
         ));
 
         $this->addColumn('base_grand_total', array(
             'header' => Mage::helper('sales')->__('G.T. (Base)'),
             'index' => 'base_grand_total',
+            'filter_index' => 'main_table.base_grand_total',
             'type'  => 'currency',
             'currency' => 'base_currency_code',
         ));
@@ -96,6 +100,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         $this->addColumn('status', array(
             'header' => Mage::helper('sales')->__('Status'),
             'index' => 'status',
+            'filter_index' => 'main_table.status',
             'type'  => 'options',
             'width' => '70px',
             'options' => Mage::getSingleton('sales/order_config')->getStatuses(),
