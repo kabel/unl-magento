@@ -238,7 +238,9 @@ class Unl_Core_Model_Observer
 
             $backupDb->createBackup($backup);
         }
-        catch (Exception  $e) { }
+        catch (Exception  $e) {
+            Mage::logException($e);
+        }
         
         return $this;
     }

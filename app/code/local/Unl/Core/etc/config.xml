@@ -119,9 +119,12 @@
                 </rewrite>
             </bundle>
             <catalog>
-                <!-- Allow product import of configs/upsells/related -->
+                
                 <rewrite>
+                    <!-- Allow product import of configs/upsells/related -->
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
+                    <!-- Fix problem with products that are in the root category -->
+                    <url>Unl_Core_Model_Catalog_Url</url>
                 </rewrite>
             </catalog>
             <catalog_resource_eav_mysql4>
