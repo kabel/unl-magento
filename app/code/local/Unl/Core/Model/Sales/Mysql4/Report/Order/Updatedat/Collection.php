@@ -89,19 +89,19 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
             $this->_selectedColumns = array(
                 'total_qty_ordered'              => 'SUM(oi.qty_ordered - IFNULL(oi.qty_canceled, 0))',
                 'total_qty_invoiced'             => 'SUM(oi.qty_invoiced)',
-                'total_income_amount'            => 'SUM((oi.base_row_total + oi.base_tax_amount - ABS(oi.base_discount_amount) - ((oi.base_row_total + oi.base_tax_amount - oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
-                'total_revenue_amount'           => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
-                'total_profit_amount'            => 'SUM((oi.base_row_invoiced - ABS(oi.base_discount_invoiced) - oi.base_amount_refunded - (IFNULL(oi.base_cost, 0) * oi.qty_invoiced)) * o.base_to_global_rate)',
-                'total_invoiced_amount'          => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
-                'total_canceled_amount'          => 'SUM((oi.base_price + ((oi.base_tax_amount - ABS(oi.base_discount_amount)) / oi.qty_ordered)) * oi.qty_canceled * o.base_to_global_rate)',
-                'total_paid_amount'              => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * o.base_to_global_rate)',
+                'total_income_amount'            => 'SUM((oi.base_row_total + oi.base_tax_amount - ABS(oi.base_discount_amount) - ((oi.base_row_total + oi.base_tax_amount - oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * e.base_to_global_rate)',
+                'total_revenue_amount'           => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * e.base_to_global_rate)',
+                'total_profit_amount'            => 'SUM((oi.base_row_invoiced - ABS(oi.base_discount_invoiced) - oi.base_amount_refunded - (IFNULL(oi.base_cost, 0) * oi.qty_invoiced)) * e.base_to_global_rate)',
+                'total_invoiced_amount'          => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * e.base_to_global_rate)',
+                'total_canceled_amount'          => 'SUM((oi.base_price + ((oi.base_tax_amount - ABS(oi.base_discount_amount)) / oi.qty_ordered)) * oi.qty_canceled * e.base_to_global_rate)',
+                'total_paid_amount'              => 'SUM((oi.base_row_invoiced + oi.base_tax_invoiced - ABS(oi.base_discount_invoiced)) * e.base_to_global_rate)',
                 'total_refunded_amount'          => new Zend_Db_Expr('0'),
-                'total_tax_amount'               => 'SUM((oi.base_tax_amount - (oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
-                'total_tax_amount_actual'        => 'SUM((oi.base_tax_invoiced - (oi.base_tax_invoiced / oi.qty_invoiced * oi.qty_refunded)) * o.base_to_global_rate)',
+                'total_tax_amount'               => 'SUM((oi.base_tax_amount - (oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled)) * e.base_to_global_rate)',
+                'total_tax_amount_actual'        => 'SUM((oi.base_tax_invoiced - (oi.base_tax_invoiced / oi.qty_invoiced * oi.qty_refunded)) * e.base_to_global_rate)',
                 'total_shipping_amount'          => new Zend_Db_Expr('0'),
                 'total_shipping_amount_actual'   => new Zend_Db_Expr('0'),
-                'total_discount_amount'          => 'SUM((ABS(oi.base_discount_amount) - (ABS(oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
-                'total_discount_amount_actual'   => 'SUM((ABS(oi.base_discount_invoiced) - (ABS(oi.base_discount_invoiced) / oi.qty_invoiced * oi.qty_refunded)) * o.base_to_global_rate)'
+                'total_discount_amount'          => 'SUM((ABS(oi.base_discount_amount) - (ABS(oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * e.base_to_global_rate)',
+                'total_discount_amount_actual'   => 'SUM((ABS(oi.base_discount_invoiced) - (ABS(oi.base_discount_invoiced) / oi.qty_invoiced * oi.qty_refunded)) * e.base_to_global_rate)'
             );
         }
         
