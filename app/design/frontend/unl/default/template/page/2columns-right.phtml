@@ -30,8 +30,10 @@
                     <div class="subnav_wrapper">
                         <?php echo $this->getChildHtml('topLinks') ?>
                         <div class="search_wrapper">
+                        <?php if (Mage::app()->getStore()->getCode() != 'default'): ?>
                             <?php echo $this->getChildHtml('topSearchLinks') ?>
                             <?php echo $this->getChildHtml('topSearch') ?>
+                        <?php endif; ?>
                         </div>
                     </div>
                 </div>
