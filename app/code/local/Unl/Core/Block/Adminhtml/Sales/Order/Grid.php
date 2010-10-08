@@ -7,7 +7,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         /* @var $collection Mage_Sales_Model_Mysql4_Order_Grid_Collection */
         $collection = Mage::getResourceModel($this->_getCollectionClass());
         $collection->getSelect()
-            ->joinLeft(array('o' => $collection->getTable('sales/order')),
+            ->join(array('o' => $collection->getTable('sales/order')),
                 'main_table.entity_id = o.entity_id',
                 array('external_id')
             );
