@@ -5,15 +5,15 @@ Because the files in the app/code/local/AW and app/code/local/Webshopapps are pu
 == INSTALLATION ==
 
 The 1.4 branch of magento requires a little fine tuning for configuration purposes.
-A patch ( data/magento1.4.patch ) has been included to run in the magento project space to accoplish this.
+There is a folder of patches (data/patches) that should be applied to the magento root to ensure proper functionality.
 
     cd /path/to/magento
-    patch -p0 < /path/to/unl-magento/data/magento1.4.patch
+    patch -p0 < /path/to/unl-magento/data/patches/*.patch
 
 The UNL extensions for magento are handled through a repository of directories and files that need to be symlinked in the magento directory structure.
 For reference the two SVN projects are hosted at the following locations:
 [magento] : http://svn.magentocommerce.com/source/branches/1.4
-[unl-magento] : http://its-gforge.unl.edu/svn/unl-magento/trunk
+[unl-magento] : http://gforge.unl.edu/svn/unl-magento/trunk
 
 cd /path/to/magento
 ln -s /path/to/unl-magento/app/code/community/Zenprint app/etc/code/community/
@@ -224,6 +224,6 @@ ORDER BY zip_code, plus_4, fips_county_code DESC
 
 == HELP ==
 
-For help on general design and configuration refer to the documentation provided by Varien at http://www.magentocommerce.com/
+For help on general design and configuration refer to the documentation provided at http://www.magentocommerce.com/
 
 A listing of the events that handlers can be written for is in file data/dispatcheventlist.xls. It may not be up to date with the current version of Magento.
