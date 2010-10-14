@@ -214,6 +214,7 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 .title-buttons .link-print,
 .title-buttons .links { float:right; margin:6px 10px 0 0; }
 .title-buttons .links .link-print { float:none; margin:0; }
+.title-buttons .links .link-rss { float:none; margin:0; text-indent:0; }
 
 .subtitle { clear:both; padding:12px 0 0; font-size:16px; font-weight:bold; margin:0 0 6px; }
 
