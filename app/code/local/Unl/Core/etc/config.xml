@@ -307,6 +307,7 @@
                     <font_size>10</font_size>
                 </shipping>
                 <tax>
+                    <title>Tax (may include shipping)</title>
                     <sort_order>400</sort_order>
                     <font_size>10</font_size>
                 </tax>

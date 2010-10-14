@@ -1,0 +1,55 @@
+<?php
+    $_order  = $this->getOrder();
+    $_source = $this->getSource();
+    $_fullInfo = $_source->getFullTaxInfo();
+    global $taxIter; $taxIter++;
+?>
+<?php  ?>
+
+<?php if ($this->displayFullSummary()): ?>
+<?php $isTop = 1; ?>
+    <?php if ($_fullInfo) foreach ($_fullInfo as $info): ?>
+        <?php if (isset($info['hidden']) && $info['hidden']) continue; ?>
+        <?php
+            $percent    = $info['percent'];
+            $amount     = $info['amount'];
+            $rates      = $info['rates'];
+            $isFirst    = 1;
+        ?>
+        <?php foreach ($rates as $rate): ?>
+        <tr class="summary-details-<?php echo $taxIter; ?> summary-details<?php if ($isTop): echo ' summary-details-first'; endif; ?>"<?php if (!$this->getIsPlaneMode()):?> style="display:none;"<?php endif;?>>
+            <td <?php echo $this->getLabelProperties()?>>
+                <?php echo $rate['title']; ?>
+                <?php if ($rate['percent']): ?>
+                    (<?php echo $rate['percent']; ?>%)
+                <?php endif; ?>
+                <br />
+            </td>
+            <?php if ($isFirst): ?>
+                <td <?php echo $this->getValueProperties()?> rowspan="<?php echo count($rates); ?>">
+                    <?php echo $_order->formatPrice($amount); ?>
+                </td>
+            <?php endif; ?>
+        </tr>
+        <?php $isFirst = 0; ?>
+        <?php $isTop = 0; ?>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+<?php endif;?>
+
+<?php if ($this->displayFullSummary() && $_fullInfo && !$this->getIsPlaneMode()): ?>
+<tr class="summary-total" onclick="expandDetails(this, '.summary-details-<?php echo $taxIter;?>')">
+<?php elseif ($this->displayFullSummary() && $_fullInfo && $this->getIsPlaneMode()): ?>
+<tr class="show-details">
+<?php else: ?>
+<tr>
+<?php endif; ?>
+    <td <?php echo $this->getLabelProperties()?>>
+        <?php if ($this->displayFullSummary()): ?>
+            <div class="summary-collapse"><?php echo $this->__('Tax') . $this->__(' (may include shipping)'); ?></div>
+        <?php else: ?>
+            <?php echo $this->__('Tax') . $this->__(' (may include shipping)'); ?>
+        <?php endif;?>
+    </td>
+    <td <?php echo $this->getValueProperties()?>><?php echo $_order->formatPrice($_source->getTaxAmount()) ?></td>
+</tr>
