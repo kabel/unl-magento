@@ -144,7 +144,7 @@ class Zenprint_Ordership_IndexController extends Mage_Adminhtml_Controller_Actio
 						
 			//get the image into a PdfImage object
 			$pdfimg = Zend_Pdf_Image::imageWithPath($pngimagepath);  //jpg, png, tiff images supported
-			$pdfpage->drawImage($pdfimg, $pdfpage->getWidth(), $pdfpage->getHeight(), 0, 0);
+			$pdfpage->drawImage($pdfimg, 0, 0, $pdfpage->getWidth(), $pdfpage->getHeight());
 			
 			$pdf->pages[] = $pdfpage;
 			
