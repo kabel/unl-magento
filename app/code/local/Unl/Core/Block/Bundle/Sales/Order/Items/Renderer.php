@@ -17,6 +17,8 @@ class Unl_Core_Block_Bundle_Sales_Order_Items_Renderer extends Mage_Bundle_Block
             $_items = $item->getShipment()->getAllItems();
         } else if ($item instanceof Mage_Sales_Model_Order_Creditmemo_Item) {
             $_items = $item->getCreditmemo()->getAllItems();
+        } else if ($item instanceof Mage_Sales_Model_Order_Item) {
+            $_itemsArray = array_merge(array($item), $item->getChildrenItems());
         }
 
         if ($_items) {
