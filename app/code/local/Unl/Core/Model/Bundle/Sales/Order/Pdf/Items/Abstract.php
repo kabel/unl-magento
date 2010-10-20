@@ -22,19 +22,50 @@ abstract class Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Abstract extends Unl_
 
         if ($_items) {
             foreach ($_items as $_item) {
-                $parentItem = $_item->getOrderItem()->getParentItem();
-                if ($parentItem) {
-                    $_itemsArray[$parentItem->getId()][$_item->getOrderItemId()] = $_item;
-                } else {
-                    $_itemsArray[$_item->getOrderItem()->getId()][$_item->getOrderItemId()] = $_item;
+                $offsetItem = $_item->getOrderItem()->getParentItem();
+                if (!$offsetItem) {
+                    $offsetItem = $_item->getOrderItem();
                 }
+                
+                if ($offsetItem->getId() != $item->getOrderItem()->getId()) {
+                    continue;
+                }
+                    
+                $_itemsArray[$_item->getOrderItemId()] = $_item;
             }
         }
 
-        if (isset($_itemsArray[$item->getOrderItem()->getId()])) {
-            return $_itemsArray[$item->getOrderItem()->getId()];
+        if (!empty($_itemsArray)) {
+            uasort($_itemsArray, array($this, '_sortChilds'));
+            return $_itemsArray;
         } else {
             return null;
+        }
+    }
+    
+    /**
+     * A custom sort callback used to ensure bundle selections for the
+     * same option_id are together in the result array
+     * 
+     * @param Varien_Object $a
+     * @param Varien_Object $b
+     */
+    protected function _sortChilds($a, $b)
+    {
+        $aAttributes = $this->getSelectionAttributes($a);
+        $bAttributes = $this->getSelectionAttributes($b);
+        
+        if (!$aAttributes) {
+            return (!$bAttributes) ? 0 : -1;
+        } else {
+            if (!$bAttributes) {
+                return 1;
+            }
+            
+            if ($aAttributes['option_id'] == $bAttributes['option_id']) {
+                return 0;
+            }
+            return ($aAttributes['option_id'] < $bAttributes['option_id']) ? -1 : 1;
         }
     }
 
