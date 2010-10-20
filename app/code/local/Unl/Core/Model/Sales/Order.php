@@ -6,9 +6,7 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
     {
         $storeIds = array();
         
-        $tempItems = $this->_items;
-        $items = $this->getItemsCollection(false, true);
-        $this->_items = $tempItems;
+        $items = $this->getAllVisibleItems();
         foreach ($items as $item) {
             if ($store = $item->getSourceStoreView()) {
                 if (!in_array($store, $storeIds)) {
