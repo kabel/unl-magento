@@ -18,6 +18,8 @@ abstract class Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Abstract extends Unl_
             $_items = $item->getShipment()->getAllItems();
         } else if ($item instanceof Mage_Sales_Model_Order_Creditmemo_Item) {
             $_items = $item->getCreditmemo()->getAllItems();
+        } else if ($item instanceof Mage_Sales_Model_Order_Item) {
+            $_itemsArray = array_merge(array($item), $item->getChildrenItems());
         }
 
         if ($_items) {

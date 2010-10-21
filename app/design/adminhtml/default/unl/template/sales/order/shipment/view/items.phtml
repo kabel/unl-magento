@@ -13,15 +13,14 @@
         <?php $_i=0;foreach ($_items as $_item): if ($_item->getOrderItem()->getIsVirtual() || $_item->getOrderItem()->getParentItem()): continue; endif; $_i++ ?>
             <tbody class="<?php echo $_i%2?'odd':'even' ?>">
                 <?php echo $this->getItemHtml($_item) ?>
-                <?php $_orderItem = Mage::getModel('sales/order_item'); ?>
-                <?php $_orderItem->load($_item->getOrderItemId()); ?>
+                <?php $_orderItem = $_item->getOrderItem(); ?>
                 <?php if($this->helper('giftmessage/message')->getIsMessagesAvailable('order_item', $_orderItem) && $_orderItem->getGiftMessageId()): ?>
                 <tr class="border" id="order-item-gift-message-<?php echo $_orderItem->getId() ?>">
                     <?php $_giftMessage=$this->helper('giftmessage/message')->getGiftMessageForEntity($_orderItem); ?>
                     <td class="gift-message-row">
                         <dl class="gift-message">
-                            <dt><strong><?php echo $this->__('From') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getRecipient()) ?></dt>
-                            <dt><strong><?php echo $this->__('To') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?></dt>
+                            <dt><strong><?php echo $this->__('From') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?></dt>
+                            <dt><strong><?php echo $this->__('To') ?></strong> <?php echo $this->htmlEscape($_giftMessage->getRecipient()) ?></dt>
                             <dd><?php echo $this->helper('giftmessage/message')->getEscapedGiftMessage($_orderItem) ?></dd>
                         </dl>
                     </td>

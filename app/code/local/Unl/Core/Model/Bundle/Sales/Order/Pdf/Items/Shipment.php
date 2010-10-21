@@ -11,6 +11,10 @@ class Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Shipment extends Unl_Core_Mode
     const DEFAULT_TRIM_PRODUCT    = 60;
     const DEFAULT_TRIM_OPTION     = 50;
     const DEFAULT_TRIM_SKU        = 25;
+    const DEFAULT_TRIM_MESSAGE    = 80;
+    
+    const FONT_SIZE_GIFTMESSAGE   = 8;
+    const LINE_HEIGHT_GIFTMESSAGE = 10;
     
     /**
      * Draw item line
@@ -25,7 +29,7 @@ class Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Shipment extends Unl_Core_Mode
         $this->_setFontRegular();
 
         $shipItems = $this->getChilds($item);
-        $items = array_merge(array($item->getOrderItem()), $item->getOrderItem()->getChildrenItems());
+        $items = $this->getChilds($item->getOrderItem());
 
         $_prevOptionId = '';
         $drawItems = array();
@@ -148,6 +152,37 @@ class Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Shipment extends Unl_Core_Mode
                     );
                 }
             }
+        }
+        
+        // gift message
+        $helper = Mage::helper('giftmessage/message'); 
+        if ($helper->getIsMessagesAvailable('order_item', $item->getOrderItem()) && $item->getOrderItem()->getGiftMessageId()) {
+            $giftMessage = $helper->getGiftMessageForEntity($item->getOrderItem());
+            $lines = array();
+            $lines[][] = array(
+                'text'  => Mage::helper('core/string')->str_split($helper->__('Gift Message'), self::DEFAULT_TRIM_PRODUCT, true, true),
+                'font'  => 'italic',
+                'feed'  => self::DEFAULT_OFFSET_PRODUCT
+            );
+            
+            $text = array_merge(Mage::helper('core/string')->str_split($helper->__('From: ') . $giftMessage->getSender(), self::DEFAULT_TRIM_MESSAGE, true, true), 
+                Mage::helper('core/string')->str_split($helper->__('To: ') . $giftMessage->getRecipient(), self::DEFAULT_TRIM_MESSAGE, true, true));
+            foreach (explode("\n", $giftMessage->getMessage()) as $line) {
+                foreach (Mage::helper('core/string')->str_split(strip_tags($line), self::DEFAULT_TRIM_MESSAGE, true, true) as $value) {
+                    $text[] = $value;
+                }
+            }
+            $lines[][] = array(
+                'text'  => $text,
+                'font_size' => self::FONT_SIZE_GIFTMESSAGE,
+                'height' => self::LINE_HEIGHT_GIFTMESSAGE,
+                'feed'  => self::DEFAULT_OFFSET_PRODUCT + self::DEFAULT_OFFSET_PAD
+            );
+            
+            $drawItems[] = array(
+                'lines'  => $lines,
+                'height' => self::DEFAULT_LINE_HEIGHT
+            );
         }
 
         $page = $pdf->drawLineBlocks($page, $drawItems, array('table_header' => true));
