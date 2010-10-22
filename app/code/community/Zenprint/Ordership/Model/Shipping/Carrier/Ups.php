@@ -45,6 +45,14 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
     protected $_xmlAccessRequest = null;
 
     protected $_defaultCgiGatewayUrl = 'http://www.ups.com:80/using/services/rave/qcostcgi.cgi';
+    
+    // see UPS Developer Guide for infomartion about error codes
+    protected $_retryErrors = array(
+        120203, 
+        120213
+    );
+    
+    protected $_errorCodes = array();
 
     /**
      * Retrieves the dimension units for this carrier and store
@@ -77,6 +85,25 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
         $this->_updateFreeMethodQuote($request);
 
         return $this->getResult();
+    }
+    
+    public function addErrorRetry($code)
+    {
+        $this->_errorCodes[] = $code;
+    }
+    
+    public function isErrorRetried($code) 
+    {
+        return in_array($code, $this->_errorCodes);
+    }
+    
+    public function isRequestRetryAble($code)
+    {
+        if (in_array($code, $this->_retryErrors)) {
+            return true;
+        }
+        
+        return false;
     }
 
     public function setRequest(Mage_Shipping_Model_Rate_Request $request)
@@ -1337,9 +1364,9 @@ XMLAuth;
 		 
 			'shipto_name' => substr($shipaddress->getName(), 0, 35),  //35 chars
 			'shipto_attention' => substr($shipaddress->getName(), 0, 35),  //35 chars, required for international and next day AM 
-			'shipto_phone' => $shipaddress->getTelephone(),  //15 chars, digits only, required for international, optional
+			'shipto_phone' => (!$this->isErrorRetried(120213)) ? $shipaddress->getTelephone() : '',  //15 chars, digits only, required for international, optional
 			'shipto_addr1' => $shipaddress->getStreet(1),  //35 chars
-			'shipto_addr2' => $shipaddress->getStreet(2),  //35 chars
+			'shipto_addr2' => (!$this->isErrorRetried(120203)) ? $shipaddress->getStreet(2) : '',  //35 chars
 			'shipto_addr3' => $shipaddress->getStreet(3),  //35 chars
 			'shipto_city' => $shipaddress->getCity(),  //30 chars
 			'shipto_state' => $shipaddress->getRegionCode(),  //2-5 chars, required for US, Mexico, and Canada (for Ireland use 5 digit county abbreviation)

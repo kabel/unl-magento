@@ -52,7 +52,7 @@ class Zenprint_Ordership_Model_Shipment_Confirmation extends Varien_Object
 		
 		if($throwexception)  {
 			if(!empty($errcode))  {
-				throw Mage::exception('Mage_Shipping', Mage::helper('ordership')->__('Shipment Confirmation Request Failed:  ('.$errcode.') '.$errmsg));
+				throw Mage::exception('Mage_Shipping', Mage::helper('ordership')->__('Shipment Confirmation Request Failed:  ('.$errcode.') '.$errmsg), (string)$errcode);
 			}
 			else  {
 				throw Mage::exception('Mage_Shipping', Mage::helper('ordership')->__('Shipment Confirmation Request Failed:  '.$errmsg));

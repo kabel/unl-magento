@@ -205,14 +205,28 @@ class Zenprint_Xajax_Model_Ordership extends Zenprint_Xajax_Model_Handler
 		$request = Mage::getModel('shipping/shipment_request')
 			->setOrderId($orderid)
 			->setPackages($objpackages);
-
-		try {
-			$results = $carrier->createShipment($request);
-		}
-		catch (Exception $e)  {
-			$this->_xresponse->assign('messages', 'innerHTML', $this->createMessage($e->getMessage()));
-			return $this->_xresponse;
-		}
+        
+        $numRetrys = 0;
+		do {
+		    $retryOk = false;
+    		try {
+    		    $results = $carrier->createShipment($request);
+    		}
+    		catch (Mage_Shipping_Exception $e) {
+    		    if ($e->getCode() && $carrier->isRequestRetryAble($e->getCode()) && !$carrier->isErrorRetried($e->getCode())) {
+    		        $retryOk = true;
+    		        $numRetrys++;
+    		        $carrier->addErrorRetry($e->getCode());
+    		    } else {
+    		        $this->_xresponse->assign('messages', 'innerHTML', $this->createMessage($e->getMessage()));
+                    return $this->_xresponse;
+    		    }
+    		}
+    		catch (Exception $e)  {
+    			$this->_xresponse->assign('messages', 'innerHTML', $this->createMessage($e->getMessage()));
+    			return $this->_xresponse;
+    		}
+        } while ($retryOk && $numRetrys < 10);
 				
 		//make sure results aren't empty
 		if(empty($results))  {

@@ -29,6 +29,8 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
     protected $_result = null;
 
     protected $_gatewayUrl = 'https://gateway.fedex.com/web-services';
+    
+    protected $_errorCodes = array();
 
 	/**
      * Retrieves the dimension units for this carrier and store
@@ -46,6 +48,21 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
      */
     public function getWeightUnits()  {
     	return Mage::getStoreConfig('carriers/fedex/unit_of_measure', $this->getStore());
+    }
+    
+    public function addErrorRetry($code)
+    {
+        $this->_errorCodes[] = $code;
+    }
+    
+    public function isErrorRetried($code) 
+    {
+        return in_array($code, $this->_errorCodes);
+    }
+    
+    public function isRequestRetryAble($code)
+    {
+        return false;
     }
     
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
@@ -1012,17 +1029,22 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Fedex
 	    }
 	    //if there was an error
 	    else  {
-	        $msg = ''; 
+	        $msg = '';
+	        $code = null;
 		if(is_array($response->Notifications))  {
 		        foreach ($response->Notifications as $notification)  {
+		            if ($notification->Severity == 'FAILURE' || $notification->Severity == 'ERROR') {
+		                $code = $notification->Code;
+		            }
 		        	$msg .= $notification->Severity.': '.$notification->Message.$newline;
 			}
 		}
 		else  {
 			$msg .= $response->Notifications->Severity.': '.$response->Notifications->Message.$newline;
+			$code = $response->Notifications->Code;
 		}
 	        
-	        throw Mage::exception('Mage_Shipping', $msg);
+	        throw Mage::exception('Mage_Shipping', $msg, $code);
 	    }
     }
     

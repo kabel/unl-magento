@@ -32,6 +32,11 @@ interface Zenprint_Ordership_Model_Shipping_Carrier_Xmlship_Interface  {
     
 	public function getCode($type, $code='');
 	
+	public function addErrorRetry($code);
+	
+	public function isErrorRetried($code);
+	
+	public function isRequestRetryAble($code);
 }
 
 ?>
