@@ -39,6 +39,18 @@
                 <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
                     (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                 <?php endif; ?>
+                
+                <?php if ($_order->getAwDeliverydateDate()): ?>
+                <br/>
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>:
+                <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
+                <?php endif; ?>         
+                
+                <?php if ($_order->getAwDeliverydateNotice()): ?>
+                <br/>
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong>:
+                <?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?>
+                <?php endif; ?>
             </div>
             <div><?php echo $this->getChildHtml('shipment_tracking') ?></div>
             <div><?php echo $this->getChildHtml('shipment_packages') ?></div>

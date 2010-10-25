@@ -1,4 +1,5 @@
 <?php /*@var $this Unl_Core_Block_Adminhtml_Sales_Order_Shipment_View_Packages */ ?>
+<?php if($_packages = $this->getPackages()->getItems()): ?>
 <h4>Packages</h4>
 <div class="field-row grid" id="shipment_packages">
 <table cellspacing="0" class="data">
@@ -12,7 +13,6 @@
             <th class="last"><?php echo Mage::helper('sales')->__('Action') ?></th>
         </tr>
     </thead>
-<?php if($_packages = $this->getPackages()): ?>
     <tbody>
     <?php $i=0;foreach ($_packages as $_pkg):$i++ ?>
         <tr class="<?php echo ($i%2==0)?'even':'odd' ?>">
@@ -33,6 +33,6 @@
         </tr>
     <?php endforeach; ?>
     </tbody>
-<?php endif; ?>
 </table>
 </div>
+<?php endif; ?>
