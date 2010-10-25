@@ -248,53 +248,22 @@ class Unl_Core_Model_Observer
     public function isCustomerAllowedCategory($observer)
     {
         $_cat = $observer->getEvent()->getCategory();
+        $action = $observer->getEvent()->getControllerAction();
+        $result = $observer->getEvent()->getResult();
         $helper = Mage::helper('unl_core');
-        if (!$helper->isCustomerAllowedCategory($_cat, false)) {
-            if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-                $message = $helper->__('You are not authorized to access this part of the catalog');
-            } else {
-                $message = $helper->__('You must be logged in and authorized to access this part of the catalog');
-                Mage::app()->getResponse()->setRedirect(Mage::getUrl('customer/account/login'));
-            }
-            
-            Mage::getSingleton('core/session')->addNotice($message);
-            Mage::throwException($message);
+        if (!$helper->isCustomerAllowedCategory($_cat, true, false, $action)) {
+            $result->setPreventDefault(true);
         }
     }
     
     public function isCustomerAllowedProduct($observer)
     {
         $_prod = $observer->getEvent()->getProduct();
+        $action = $observer->getEvent()->getControllerAction();
+        $result = $observer->getEvent()->getResult();
         $helper = Mage::helper('unl_core');
-        if (!$helper->isCustomerAllowedProduct($_prod)) {
-            if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-                $message = $helper->__('You are not authorized to purchase this product');
-            } else {
-                $message = $helper->__('You must be logged in and authorized to purchase this product');
-                Mage::app()->getResponse()->setRedirect(Mage::getUrl('customer/account/login'));
-            }
-            
-            Mage::getSingleton('core/session')->addNotice($message);
-            Mage::throwException($message);
-        }
-    }
-    
-    public function onAddProductToQuote($observer)
-    {
-        $_prod = $observer->getEvent()->getProduct();
-        $helper = Mage::helper('unl_core');
-        $checkout = Mage::getSingleton('checkout/session');
-        if (!$helper->isCustomerAllowedProduct($_prod)) {
-            if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-                $message = $helper->__('You are not authorized to purchase this product');
-            } else {
-                $message = $helper->__('You must be logged in and authorized to purchase this product');
-                Mage::getSingleton('core/session')->addNotice($message);
-                $checkout->setConsume(true);
-                $checkout->setRedirectUrl(Mage::getUrl('customer/account/login'));
-            }
-            
-            Mage::throwException($message);
+        if (!$helper->isCustomerAllowedProduct($_prod, $action)) {
+            $result->setPreventDefault(true);
         }
     }
     
@@ -314,6 +283,7 @@ class Unl_Core_Model_Observer
     {
         $_item = $observer->getEvent()->getItem();
         $helper = Mage::helper('unl_core');
+        $helper->checkCustomerAllowedProduct($_item);
         $helper->checkCustomerAllowedProductQty($_item);
     }
 }

@@ -171,8 +171,6 @@
                     <order_pdf_invoice>Unl_Core_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
                     <order_pdf_shipment>Unl_Core_Model_Sales_Order_Pdf_Shipment</order_pdf_shipment>
                     <service_order>Unl_Core_Model_Sales_Service_Order</service_order>
-                    <!-- Adds an event to dispatch before a product is added to a quote -->
-                    <quote>Unl_Core_Model_Sales_Quote</quote>
                 </rewrite>
             </sales>
             <sales_mysql4>
@@ -326,15 +324,6 @@
     
     <frontend>
         <events>
-            <sales_quote_product_add_before>
-                <observers>
-                    <catalog_acl>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
-                        <method>onAddProductToQuote</method>
-                    </catalog_acl>
-                </observers>
-            </sales_quote_product_add_before>
             <sales_quote_item_qty_set_after>
                 <observers>
                     <product_limit>

@@ -1,0 +1,44 @@
+Index: app/code/core/Mage/Catalog/controllers/CategoryController.php
+===================================================================
+--- app/code/core/Mage/Catalog/controllers/CategoryController.php	(revision 75180)
++++ app/code/core/Mage/Catalog/controllers/CategoryController.php	(working copy)
+@@ -56,11 +56,16 @@
+         Mage::getSingleton('catalog/session')->setLastVisitedCategoryId($category->getId());
+         Mage::register('current_category', $category);
+         try {
+-            Mage::dispatchEvent('catalog_controller_category_init_after', array('category'=>$category, 'controller_action'=>$this));
++            $result = new Varien_Object(array('preventDefault' => false));
++            Mage::dispatchEvent('catalog_controller_category_init_after', array('category'=>$category, 'controller_action'=>$this, 'result' => $result));
+         } catch (Mage_Core_Exception $e) {
+             Mage::logException($e);
+             return false;
+         }
++        
++        if ($result->getPreventDefault()) {
++            return false;
++        }
+         return $category;
+     }
+ 
+Index: app/code/core/Mage/Catalog/controllers/ProductController.php
+===================================================================
+--- app/code/core/Mage/Catalog/controllers/ProductController.php	(revision 75180)
++++ app/code/core/Mage/Catalog/controllers/ProductController.php	(working copy)
+@@ -78,12 +78,16 @@
+ 
+         try {
+             Mage::dispatchEvent('catalog_controller_product_init', array('product'=>$product));
+-            Mage::dispatchEvent('catalog_controller_product_init_after', array('product'=>$product, 'controller_action' => $this));
++            $result = new Varien_Object(array('preventDefault' => false));
++            Mage::dispatchEvent('catalog_controller_product_init_after', array('product'=>$product, 'controller_action' => $this, 'result' => $result));
+         } catch (Mage_Core_Exception $e) {
+             Mage::logException($e);
+             return false;
+         }
+ 
++        if ($result->getPreventDefault()) {
++            return false;
++        }
+         return $product;
+     }
+ 
