@@ -103,7 +103,14 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 }
                 
                 if (($rowQty + $soldQty) > $limit) {
-                    Mage::throwException($this->__('You may only purchase %s of this product. You have previously purchased %s.', $limit, $soldQty));
+                    $text = $this->__('You may only order %s of this product.', $limit);
+                    if ($rowQty) {
+                        $text .= ' ' . $this->__('You have %s in your cart.', $rowQty);
+                    }
+                    if ($soldQty) {
+                        $text .= ' ' . $this->__('You have previously ordered %s.', $soldQty);
+                    }
+                    Mage::throwException($text);
                 }
             } catch (Mage_Core_Exception $e) {
                 $item->setMessage($e->getMessage())
