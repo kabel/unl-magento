@@ -187,6 +187,7 @@
                 <rewrite>
                     <!-- Fixes to Attach Sale Amount to tax report and Zip+4 -->
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
+                    <config>Unl_core_Model_Tax_Config</config>
                     <sales_total_quote_tax>Unl_Core_Model_Tax_Sales_Total_Quote_Tax</sales_total_quote_tax>
                 </rewrite>
             </tax>
@@ -196,7 +197,7 @@
                     <calculation>Unl_Core_Model_Tax_Mysql4_Calculation</calculation>
                     <report_collection>Unl_Core_Model_Tax_Mysql4_Report_Collection</report_collection>
                     <report_updatedat_collection>Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection</report_updatedat_collection>
-                    <tax>Unl_Core_Model_Tax_Mysql4_Tax</tax>
+                    <report_tax>Unl_Core_Model_Tax_Mysql4_Report_Tax</report_tax>
                 </rewrite>
             </tax_mysql4>
         </models>
@@ -707,5 +708,10 @@
                 <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
             </pickup>
         </carriers>
+        <tax>
+            <classes>
+                <exempt_shipping_tax_class></exempt_shipping_tax_class>
+            </classes>
+        </tax>
     </default>
 </config>

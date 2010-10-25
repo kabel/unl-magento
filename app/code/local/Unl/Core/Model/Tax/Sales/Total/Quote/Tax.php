@@ -17,7 +17,11 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 $itemTaxAmount += $item->getTaxAmount();
             }
         }
-        $taxRateRequest->setProductClassId($this->_config->getShippingTaxClass($this->_store));
+        if ($itemTaxAmount) {
+            $taxRateRequest->setProductClassId($this->_config->getShippingTaxClass($this->_store));
+        } else {
+            $taxRateRequest->setProductClassId($this->_config->getExemptShippingTaxClass($this->_store));
+        }
         $rate               = $this->_calculator->getRate($taxRateRequest);
         $inclTax            = $address->getIsShippingInclTax();
         $shipping           = $address->getShippingTaxable();
@@ -44,13 +48,8 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 break;
         }
         
-        if ($itemTaxAmount > 0) {
-            $tax     = $this->_calculator->calcTaxAmount($calc, $rate, $inclTax, false);
-            $baseTax = $this->_calculator->calcTaxAmount($baseCalc, $rate, $inclTax, false);
-        } else {
-            $tax     = 0;
-            $baseTax = 0;
-        }
+        $tax     = $this->_calculator->calcTaxAmount($calc, $rate, $inclTax, false);
+        $baseTax = $this->_calculator->calcTaxAmount($baseCalc, $rate, $inclTax, false);
         
         if ($this->_config->getAlgorithm($this->_store) == Mage_Tax_Model_Calculation::CALC_TOTAL_BASE) {
             $tax        = $this->_deltaRound($tax, $rate, $inclTax);
@@ -363,6 +362,11 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
             
             $previouslyAppliedTaxes[$row['id']]['sale_amount'] += $saleAmount;
             $previouslyAppliedTaxes[$row['id']]['base_sale_amount'] += $baseSaleAmount;
+            
+            // Remove taxes that are for on $0 for 0%
+            if ($previouslyAppliedTaxes[$row['id']]['base_amount'] <= 0 && $previouslyAppliedTaxes[$row['id']]['base_sale_amount'] <= 0) {
+                unset($previouslyAppliedTaxes[$row['id']]);
+            }
         }
         $address->setAppliedTaxes($previouslyAppliedTaxes);
     }
