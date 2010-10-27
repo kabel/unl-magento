@@ -37,6 +37,7 @@
                     <sales_invoice_grid>Unl_Core_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
                     <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
+                    <widget_grid_column_filter_store>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Filter_Store</widget_grid_column_filter_store>
                     <widget_grid_column_renderer_currency>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency</widget_grid_column_renderer_currency>
                     <widget_grid_column_renderer_price>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Price</widget_grid_column_renderer_price>
                 </rewrite>

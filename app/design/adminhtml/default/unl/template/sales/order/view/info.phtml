@@ -164,7 +164,7 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                     <td class="label"><label><?php echo Mage::helper('sales')->__('Customer Name') ?></label></td>
                     <td>
                     <?php if ($_customerUrl=$this->getCustomerViewUrl()) : ?>
-                        <a href="<?php echo $_customerUrl ?>" target="_blank"><strong><?php echo $this->htmlEscape($_order->getCustomerName()) ?></strong></a>
+                        <a href="<?php echo $_customerUrl ?>" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;"><strong><?php echo $this->htmlEscape($_order->getCustomerName()) ?></strong></a>
                     <?php else: ?>
                         <strong><?php echo $this->htmlEscape($_order->getCustomerName()) ?></strong>
                     <?php endif; ?>

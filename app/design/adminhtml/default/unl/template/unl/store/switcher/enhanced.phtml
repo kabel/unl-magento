@@ -23,7 +23,7 @@ $_websiteCollection = $this->getWebsiteCollection()
                 <?php endif; ?>
                 <?php if ($showWebsite == false): ?>
                     <?php $showWebsite = true; ?>
-                    <optgroup label="<?php echo $_website->getName() ?>"></optgroup>
+                    <option disabled="disabled" value=""><?php echo $_website->getName() ?></option>
                 <?php endif; ?>
                 <?php if ($showGroup == false): ?>
                     <?php $showGroup = true; ?>
