@@ -188,6 +188,7 @@
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
                     <config>Unl_core_Model_Tax_Config</config>
                     <sales_total_quote_tax>Unl_Core_Model_Tax_Sales_Total_Quote_Tax</sales_total_quote_tax>
+                    <sales_total_quote_subtotal>Unl_Core_Model_Tax_Sales_Total_Quote_Subtotal</sales_total_quote_subtotal>
                 </rewrite>
             </tax>
             <tax_mysql4>
