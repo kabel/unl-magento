@@ -78,6 +78,14 @@
                       <option value="not_capture"><?php echo Mage::helper('sales')->__('Not Capture') ?></option>
                   </select>
               </p>
+            <?php elseif ($this->getInvoice()->canForcePay()): ?>
+              <p>
+                  <label for="invoice_do_capture" class="normal"><?php echo Mage::helper('sales')->__('Status') ?></label>
+                  <select id="invoice_do_capture" name="invoice[capture_case]">
+                      <option value="offline"><?php echo Mage::helper('sales')->__('Mark Paid') ?></option>
+                      <option value="not_capture"><?php echo Mage::helper('sales')->__('Mark Pending') ?></option>
+                  </select>
+              </p>
             <?php elseif ($this->isGatewayUsed()):?>
                 <input type="hidden" name="invoice[capture_case]" value="offline"/>
                 <p><?php echo Mage::helper('sales')->__('Invoice will be created without communication with payment gateway.') ?></p>

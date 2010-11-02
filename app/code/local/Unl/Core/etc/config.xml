@@ -36,6 +36,7 @@
                     <sales_creditmemo_grid>Unl_Core_Block_Adminhtml_Sales_Creditmemo_Grid</sales_creditmemo_grid>
                     <sales_invoice_grid>Unl_Core_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
                     <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
+                    <sales_order_invoice_view>Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View</sales_order_invoice_view>
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
                     <widget_grid_column_filter_store>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Filter_Store</widget_grid_column_filter_store>
                     <widget_grid_column_renderer_currency>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency</widget_grid_column_renderer_currency>
@@ -151,6 +152,11 @@
                     <convert_parser_xml_excel>Unl_Core_Model_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
                 </rewrite>
             </dataflow>
+            <payment>
+                <rewrite>
+                    <method_checkmo>Unl_Core_Model_Payment_Method_Checkmo</method_checkmo>
+                </rewrite>
+            </payment>
             <reports_mysql4>
                 <rewrite>
                     <!-- Dashboard Report Fixes for Store Owned Products -->
@@ -164,6 +170,7 @@
                 <rewrite>
                     <!-- Adds the total product amount applied to the tax rate -->
                     <order>Unl_Core_Model_Sales_Order</order>
+                    <order_invoice>Unl_Core_Model_Sales_Order_Invoice</order_invoice>
                     <!-- Change size of order PDFs to US Letter -->
                     <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
                     <order_pdf_items_creditmemo_default>Unl_Core_Model_Sales_Order_Pdf_Items_Creditmemo_Default</order_pdf_items_creditmemo_default>
