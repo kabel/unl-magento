@@ -31,7 +31,7 @@ class Zenprint_Ordership_Block_Adminhtml_Ordership extends Mage_Adminhtml_Block_
     protected function _prepareLayout()
     {
     	$orderajax = Mage::getModel('xajax/ordership');
-		$orderajax->setRequestURI(Mage::getBaseUrl().'xjx/ordership/');
+		$orderajax->setRequestURI($this->getUrl('xjx/ordership/'));
 		$this->_ajaxjs = $orderajax->getJavascript();
 		$this->_ajaxjs .= "<script type='text/javascript'>
                                    xajax.callback.global.onRequest = function() {
