@@ -244,8 +244,8 @@ class Zenprint_Xajax_Model_Ordership extends Zenprint_Xajax_Model_Handler
 			$this->_xresponse->assign('package_tracking_'.$i, 'innerHTML', $res->getTrackingNumber());
 					
 			//set the image for the label
-			$this->_xresponse->assign('package_label_'.$i, 'innerHTML', '<a target="shipping_label" rel="lightbox" title="Shipping Label For Package '.$i.'" href="'.Mage::getUrl('ordership/index/label', array('id' => $res->getPackageId())).'">shipping label</a>');
-			$this->_xresponse->assign('package_print_'.$i, 'innerHTML', '<a target="shipping_label_print" href="'.Mage::getUrl('ordership/index/labelpdf', array('id' => $res->getPackageId())).'">print</a>');
+			$this->_xresponse->assign('package_label_'.$i, 'innerHTML', '<a target="shipping_label" rel="lightbox" title="Shipping Label For Package '.$i.'" href="'.Mage::getModel('adminhtml/url')->getUrl('ordership/index/label', array('id' => $res->getPackageId())).'">shipping label</a>');
+			$this->_xresponse->assign('package_print_'.$i, 'innerHTML', '<a target="shipping_label_print" href="'.Mage::getModel('adminhtml/url')->getUrl('ordership/index/labelpdf', array('id' => $res->getPackageId())).'">print</a>');
 			
 			//set the package id
 			$packageids .= '|'.$res->getPackageId();
