@@ -234,7 +234,7 @@
 	}
 	
 	function printAllLabels()  {
-		printwindow = window.open('<?php echo Mage::getBaseUrl() ?>ordership/index/labelpdf/id/' + $('package_ids').value, 'shipping_label_print');
+		printwindow = window.open('<?php echo Mage::getUrl('ordership/index/labelpdf') ?>/id/' + $('package_ids').value, 'shipping_label_print');
 		setTimeout("printwindow.print()", 4500);
 		return true;
 	}
