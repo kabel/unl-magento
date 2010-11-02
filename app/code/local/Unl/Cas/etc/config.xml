@@ -61,7 +61,7 @@
         
     <frontend>
         <secure_url>
-            <customer>/unlcas/</customer>
+            <cas_customer>/unlcas/</cas_customer>
         </secure_url>
         <routers>
             <unl_cas>
