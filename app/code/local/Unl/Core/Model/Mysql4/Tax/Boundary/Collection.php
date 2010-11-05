@@ -1006,13 +1006,13 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
     protected function _getHighestRate($address, $fromZip = true)
     {
         $this->_reset();
-        $selct = $this->getSelect()->where('record_type = ?', 'A')
+        $select = $this->getSelect()->where('record_type = ?', 'A')
             ->where('NOW() BETWEEN begin_date AND end_date')
             ->where('fips_place_number != ?', '')
             ->limit(1);
         
         if ($fromZip) {
-            $selct->where('zip_code = ?', $address->getPostcode());
+            $select->where('zip_code = ?', $address->getPostcode());
         } else {
             $select->where('city_name = ?', $address->getCity());
         }
