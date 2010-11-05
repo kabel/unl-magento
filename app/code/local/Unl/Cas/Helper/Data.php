@@ -59,7 +59,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         }
         
         $pf = new UNL_Peoplefinder();
-        if ($r = $pf->getUID($uid)) {
+        if ($r = @$pf->getUID($uid)) {
             $this->cache($uid, $r);
         }
         

@@ -11,6 +11,7 @@ class Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer extends Mage_Bu
     {
         $_itemsArray = array();
 
+        $_items = null;
         if ($item instanceof Mage_Sales_Model_Order_Invoice_Item) {
             $_items = $item->getInvoice()->getAllItems();
         } else if ($item instanceof Mage_Sales_Model_Order_Shipment_Item) {
