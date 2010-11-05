@@ -12,11 +12,14 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     
     public function fetchServerFile($path)
     {
-        $host = Mage::helper('core/http')->getHttpHost();
-        if (!$host || !preg_match('/unl\.edu$/', $host)) {
-            $host = 'www.unl.edu';
+        $path = '/' . ltrim($path, '/');
+        $root = Mage::app()->getRequest()->getServer('DOCUMENT_ROOT');
+        
+        if (is_file($root . $path)) {
+            return file_get_contents($root . $path);
         }
-        return file_get_contents('http://' . $host . $path);
+        
+        return false;
     }
     
     public function getProductSourceStoreFilterOptions()
