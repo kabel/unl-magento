@@ -12,6 +12,7 @@ abstract class Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Abstract extends Unl_
     {
         $_itemsArray = array();
 
+        $_items = null;
         if ($item instanceof Mage_Sales_Model_Order_Invoice_Item) {
             $_items = $item->getInvoice()->getAllItems();
         } else if ($item instanceof Mage_Sales_Model_Order_Shipment_Item) {
