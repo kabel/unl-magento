@@ -17,7 +17,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
 
         $this->_checkDates($from, $to);
         $this->_getWriteAdapter()->beginTransaction();
-        
+
         try {
             if ($from !== null || $to !== null) {
                 $subSelect = $this->_getTableDateRangeSelect(
@@ -51,7 +51,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
                 'total_discount_amount'          => 'SUM((ABS(oi.base_discount_amount) - (ABS(oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)) * o.base_to_global_rate)',
                 'total_discount_amount_actual'   => 'SUM((ABS(oi.base_discount_invoiced) - (ABS(oi.base_discount_invoiced) / oi.qty_invoiced * oi.qty_refunded)) * o.base_to_global_rate)'
             );
-            
+
             $select = $this->_getWriteAdapter()->select();
 
             $select->from(array('o' => $this->getTable('sales/order')), $columns)
@@ -73,7 +73,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
             ));
 
             $this->_getWriteAdapter()->query($select->insertFromSelect($this->getMainTable(), array_keys($columns)));
-            
+
             //Centralized Account
             $columns = array(
                 'period'                         => "DATE(CONVERT_TZ(o.created_at, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "'))",
@@ -82,8 +82,8 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
                 'orders_count'                   => new Zend_Db_Expr('0'),
                 'total_qty_ordered'              => new Zend_Db_Expr('0'),
                 'total_qty_invoiced'             => new Zend_Db_Expr('0'),
-                'total_income_amount'            => 'SUM((o.base_shipping_amount - o.base_shipping_canceled) * o.base_to_global_rate)',
-                'total_revenue_amount'           => 'SUM((IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) - IFNULL(o.base_shipping_refunded, 0) - IFNULL(o.base_subtotal_refunded, 0)) * o.base_to_global_rate)',
+                'total_income_amount'            => 'SUM((o.base_shipping_amount + o.base_shipping_tax_amount - IFNULL(o.base_shipping_canceled + o.base_shipping_tax_amount, 0)) * o.base_to_global_rate)',
+                'total_revenue_amount'           => 'SUM((IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) - IFNULL(o.base_shipping_refunded, 0) - IFNULL(o.base_subtotal_refunded + o.base_tax_refunded - o.base_discount_refunded, 0)) * o.base_to_global_rate)',
                 'total_profit_amount'            => new Zend_Db_Expr('0'),
                 'total_invoiced_amount'          => 'SUM(IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) * o.base_to_global_rate)',
                 'total_canceled_amount'          => 'SUM(IFNULL(o.base_shipping_canceled + o.base_shipping_tax_amount , 0) * o.base_to_global_rate)',
@@ -123,7 +123,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
             $columns['period']         = 'period';
             $columns['store_id']       = new Zend_Db_Expr('0');
             $columns['order_status']   = 'order_status';
-            
+
             $select->reset();
             $select->from($this->getMainTable(), $columns)
                 ->where("store_id <> 0 OR store_id IS NULL");

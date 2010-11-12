@@ -7,7 +7,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
     protected $_selectedColumns = array();
     protected $_recordType;
     protected $_paymentMethodCodes = array();
-    
+
     /**
      * Initialize custom resource model
      *
@@ -20,7 +20,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
         $this->_resource = Mage::getResourceModel('sales/report')->init('sales/order', 'entity_id');
         $this->setConnection($this->getResource()->getReadConnection());
     }
-    
+
     /**
      * Apply order status filter
      *
@@ -35,14 +35,14 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
         if (!is_array($orderStatus)) {
             $orderStatus = array($orderStatus);
         }
-        
+
         if (null === $select) {
             $select = $this->getSelect();
         }
         $select->where('status IN(?)', $orderStatus);
         return $this;
     }
-    
+
     protected function _getTotalColumns($isSubtotal = false)
     {
         $this->_selectedColumns = array(
@@ -65,7 +65,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             'total_refunded_tax_amount'      => 'SUM(IFNULL(o.base_tax_refunded, 0) * o.base_to_global_rate)',
             'total_canceled_tax_amount'      => 'SUM(IFNULL(o.base_tax_canceled, 0) * o.base_to_global_rate)'
         );
-        
+
         if ($isSubtotal) {
             if ('month' == $this->_period) {
                 $this->_periodFormat = "DATE_FORMAT(o.{$this->getRecordType()}, '%Y-%m')";
@@ -76,10 +76,10 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             }
             $this->_selectedColumns += array('period' => $this->_periodFormat);
         }
-        
+
         return $this->_selectedColumns;
     }
-    
+
     protected function _getNonTotalColumns($fromItems = true)
     {
         if ('month' == $this->_period) {
@@ -90,7 +90,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             $this->_periodFormat = "DATE(o.{$this->getRecordType()})";
         }
         $columns = array('period' => $this->_periodFormat);
-        
+
         if ($fromItems) {
             $columns += array(
                 'merchant'                       => 'sg.name',
@@ -119,8 +119,8 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'orders_count'                   => new Zend_Db_Expr('0'),
                 'total_qty_ordered'              => new Zend_Db_Expr('0'),
                 'total_qty_invoiced'             => new Zend_Db_Expr('0'),
-                'total_income_amount'            => 'SUM((o.base_shipping_amount - o.base_shipping_canceled) * o.base_to_global_rate)',
-                'total_revenue_amount'           => 'SUM((IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) - IFNULL(o.base_shipping_refunded, 0) - IFNULL(o.base_subtotal_refunded, 0)) * o.base_to_global_rate)',
+                'total_income_amount'            => 'SUM((o.base_shipping_amount + o.base_shipping_tax_amount - IFNULL(o.base_shipping_canceled + o.base_shipping_tax_amount, 0)) * o.base_to_global_rate)',
+                'total_revenue_amount'           => 'SUM((IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) - IFNULL(o.base_shipping_refunded, 0) - IFNULL(o.base_subtotal_refunded + o.base_tax_refunded - o.base_discount_refunded, 0)) * o.base_to_global_rate)',
                 'total_profit_amount'            => new Zend_Db_Expr('0'),
                 'total_invoiced_amount'          => 'SUM(IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) * o.base_to_global_rate)',
                 'total_canceled_amount'          => 'SUM(IFNULL(o.base_shipping_canceled + o.base_shipping_tax_amount , 0) * o.base_to_global_rate)',
@@ -136,10 +136,10 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'total_canceled_tax_amount'      => "SUM(IF(o.base_shipping_canceled, o.base_shipping_tax_amount, 0) * o.base_to_global_rate)"
             );
         }
-        
+
         return $columns;
     }
-    
+
     /**
      * Add selected data
      *
@@ -154,7 +154,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
         $mainTable = $this->getResource()->getMainTable();
 
         $select = $this->getSelect();
-        
+
         if ($this->isTotals() || $this->isSubTotals()) {
             $selectOrderItem = $this->getConnection()->select()
                 ->from($this->getTable('sales/order_item'), array(
@@ -163,7 +163,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                     'total_qty_invoiced' => 'SUM(qty_invoiced)',
                 ))
                 ->group('order_id');
-            
+
             $select->from(array('o' => $mainTable), $this->_getTotalColumns($this->isSubTotals()))
                 ->join(array('oi' => $selectOrderItem), 'oi.order_id = o.entity_id', array())
                 ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
@@ -173,17 +173,17 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                     Mage_Sales_Model_Order::STATE_NEW,
                     Mage_Sales_Model_Order::STATE_CANCELED
                 ));
-                
+
             $this->_applyOrderStatusFilter();
-            
+
             if ($this->isSubTotals()) {
                 $select->group($this->_periodFormat);
             }
-            
+
             if ($this->_to !== null) {
                 $select->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
             }
-    
+
             if ($this->_from !== null) {
                 $select->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
             }
@@ -202,7 +202,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 ))
                 ->group(array($this->_periodFormat, 'sg.group_id'));
             $this->_applyOrderStatusFilter($sql1);
-            
+
             $sql2 = clone $this->getSelect();
             $sql2->from(array('o' => $mainTable), $this->_getNonTotalColumns(false))
                 ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array())
@@ -214,17 +214,17 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 ))
                 ->group($this->_periodFormat);
             $this->_applyOrderStatusFilter($sql2);
-            
+
             if ($this->_to !== null) {
                 $sql1->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
                 $sql2->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
             }
-    
+
             if ($this->_from !== null) {
                 $sql1->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
                 $sql2->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
             }
-            
+
             $select->union(array('(' . $sql1 . ')', '(' . $sql2 . ')'));
         }
 
@@ -248,20 +248,20 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
         $this->setApplyFilters(false);
         return parent::load($printQuery, $logQuery);
     }
-    
+
     public function setRecordType($type = 'created_at')
     {
         $this->_recordType = $type;
-        
+
         return $this;
     }
-    
+
     public function getRecordType()
     {
         if (null === $this->_recordType) {
             $this->setRecordType();
         }
-        
+
         return $this->_recordType;
     }
 }
