@@ -20,7 +20,7 @@
         <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
             <h1>Marketplace</h1>
         <?php else: ?>
-            <h1>Shop <?php echo $this->__(Mage::getStoreConfig('design/header/storearticle')) ?> <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()); ?></h1>
+            <h1><?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()); ?></h1>
         <?php endif; ?>        </div>
         <div id="pagetitle"> </div>
         <div id="maincontent">
@@ -45,7 +45,7 @@
                 <?php echo $this->getChildHtml('global_messages') ?>
                 <?php echo $this->getChildHtml('content') ?>
             </div>
-            
+
             <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/noscript.html'); ?>
         </div>
         <?php echo $this->getChildHtml('footer') ?>
