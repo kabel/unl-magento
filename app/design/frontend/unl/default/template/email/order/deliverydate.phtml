@@ -1,6 +1,10 @@
 <?php $_order = $this->getOrder() ?>
 <?php if ($_order->getAwDeliverydateDate()): ?>
     <br /><br />
-    <strong><?php echo $this->__('Delivery Date'); ?></strong>: <?php echo $_order->getAwDeliverydateDate(); ?><br />
+    <strong><?php echo $this->__('Delivery Date'); ?></strong>: <?php echo $this->formatDate($_order->getAwDeliverydateDate()); ?><br />
     <strong><?php echo $this->__('Delivery Notice'); ?></strong>: <?php echo Mage::helper('core')->htmlEscape($_order->getAwDeliverydateNotice()); ?>
+    <br />
+    <p><em>Please note:</em>
+    some store managers will mark your order as &quot;Shipped&quot; as a normal part of order processing (to generate a tracking number/packing slip/shipping label).
+    Rest assured that your request for delayed shipment above, has been noted and the manager will make every attempt to hold your package(s) until that date.</p>
 <?php endif; ?>

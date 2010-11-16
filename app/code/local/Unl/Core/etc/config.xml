@@ -143,6 +143,7 @@
             <core>
                 <!-- Allow locale templates in Design -->
                 <rewrite>
+                    <email_template>Unl_Core_Model_Core_Email_Template</email_template>
                     <translate>Unl_Core_Model_Core_Translate</translate>
                 </rewrite>
             </core>

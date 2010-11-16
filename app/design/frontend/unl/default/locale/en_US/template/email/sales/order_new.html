@@ -27,7 +27,9 @@
                                 <p style="margin:1.1em 0"><strong>Hello {{htmlescape var=$order.getCustomerName()}}</strong>:</p>
                                 <p style="margin:1.1em 0">
                                     Thank you for your order from the UNL Marketplace.
+                                    {{depend order.getIsNotVirtual()}}
                                     Once your package ships we will send an email with a link to track your order.
+                                    {{/depend}}
                                     You can check the status of your order by <a href="{{store url='customer/account/'}}" style="color:#ba0000;">logging into your account</a>.
                                     If you have any questions about your order please contact us at <a href="mailto:storefront@unl.edu" style="color:#ba0000;">storefront@unl.edu</a> or call us at <span class="nobr">(402) 472-9964</span> Monday - Friday, 9am - 5pm CST.</p>
                               <p style="margin:1.1em 0">Your order confirmation is below. Thank you again for your business.</p>

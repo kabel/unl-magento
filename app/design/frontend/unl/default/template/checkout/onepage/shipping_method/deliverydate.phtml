@@ -34,14 +34,14 @@ if(!window.toggleVisibilityOnObjects) {
 <div id="delivery-date-container" class="delivery-date-form">
     <dl>
     	<dt class="input-box">
-    		<strong><?php echo $this->__("Delivery date");?></strong>
+    		<strong><?php echo $this->__("Delivery Date");?></strong>
     	</dt>
     	<dd><div><?php echo $this->getCalendarHtml()?></div>
     	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_TIME_NOTICE_ENABLED)): ?>
     		<em><?php echo $this->__("Please note that orders after %s will be delivered the next day", $this->getFormattedTime())?></em>
     	<?php endif; ?>
     	</dd>
-    	
+
     	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_NOTICE_ENABLED)): ?>
     	<dt class="input-box">
     		<strong><?php echo $this->__("Delivery Notice");?></strong>
