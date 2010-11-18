@@ -2,7 +2,7 @@
 
 class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Abstract extends Mage_Adminhtml_Block_Report_Grid_Abstract
 {
-    protected $_groupedColumn = array('period');
+    protected $_columnGroupBy = 'period';
 
     public function __construct()
     {
