@@ -125,7 +125,7 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
                 'total_invoiced_amount'          => 'SUM(IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) * o.base_to_global_rate)',
                 'total_canceled_amount'          => 'SUM(IFNULL(o.base_shipping_canceled + o.base_shipping_tax_amount , 0) * o.base_to_global_rate)',
                 'total_paid_amount'              => 'SUM(IFNULL(o.base_shipping_invoiced + o.base_shipping_tax_amount, 0) * o.base_to_global_rate)',
-                'total_refunded_amount'          => 'SUM(o.base_total_refunded * o.base_to_global_rate)',
+                'total_refunded_amount'          => 'SUM(IFNULL(o.base_total_refunded, 0) * o.base_to_global_rate)',
                 'total_tax_amount'               => 'SUM((o.base_shipping_tax_amount - IF(o.base_shipping_canceled, o.base_shipping_tax_amount, 0)) * o.base_to_global_rate)',
                 'total_tax_amount_actual'        => 'SUM((IF(o.base_shipping_invoiced, o.base_shipping_tax_amount, 0) - IF(o.base_shipping_refunded, o.base_shipping_tax_amount, 0)) * o.base_to_global_rate)',
                 'total_shipping_amount'          => 'SUM((o.base_shipping_amount - IFNULL(o.base_shipping_canceled, 0)) * o.base_to_global_rate)',
