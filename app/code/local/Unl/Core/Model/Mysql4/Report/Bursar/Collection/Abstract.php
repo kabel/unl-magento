@@ -181,11 +181,11 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             }
 
             if ($this->_to !== null) {
-                $select->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+                $select->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) <= DATE(?)", $this->_to);
             }
 
             if ($this->_from !== null) {
-                $select->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
+                $select->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) >= DATE(?)", $this->_from);
             }
         } else {
             $sql1 = clone $this->getSelect();
