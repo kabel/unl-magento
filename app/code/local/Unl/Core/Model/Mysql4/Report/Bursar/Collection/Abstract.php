@@ -68,11 +68,11 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
 
         if ($isSubtotal) {
             if ('month' == $this->_period) {
-                $this->_periodFormat = "DATE_FORMAT(o.{$this->getRecordType()}, '%Y-%m')";
+                $this->_periodFormat = "DATE_FORMAT(DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')), '%Y-%m')";
             } elseif ('year' == $this->_period) {
-                $this->_periodFormat = "EXTRACT(YEAR FROM o.{$this->getRecordType()})";
+                $this->_periodFormat = "EXTRACT(YEAR FROM DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')))";
             } else {
-                $this->_periodFormat = "DATE(o.{$this->getRecordType()})";
+                $this->_periodFormat = "DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "'))";
             }
             $this->_selectedColumns += array('period' => $this->_periodFormat);
         }
@@ -83,11 +83,11 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
     protected function _getNonTotalColumns($fromItems = true)
     {
         if ('month' == $this->_period) {
-            $this->_periodFormat = "DATE_FORMAT(o.{$this->getRecordType()}, '%Y-%m')";
+            $this->_periodFormat = "DATE_FORMAT(DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')), '%Y-%m')";
         } elseif ('year' == $this->_period) {
-            $this->_periodFormat = "EXTRACT(YEAR FROM o.{$this->getRecordType()})";
+            $this->_periodFormat = "EXTRACT(YEAR FROM DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')))";
         } else {
-            $this->_periodFormat = "DATE(o.{$this->getRecordType()})";
+            $this->_periodFormat = "DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "'))";
         }
         $columns = array('period' => $this->_periodFormat);
 
@@ -216,13 +216,13 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
             $this->_applyOrderStatusFilter($sql2);
 
             if ($this->_to !== null) {
-                $sql1->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
-                $sql2->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+                $sql1->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) <= DATE(?)", $this->_to);
+                $sql2->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) <= DATE(?)", $this->_to);
             }
 
             if ($this->_from !== null) {
-                $sql1->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
-                $sql2->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
+                $sql1->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) >= DATE(?)", $this->_from);
+                $sql2->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) >= DATE(?)", $this->_from);
             }
 
             $select->union(array('(' . $sql1 . ')', '(' . $sql2 . ')'));
@@ -263,5 +263,15 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
         }
 
         return $this->_recordType;
+    }
+
+    /**
+     * Retrieve store timezone offset from UTC in the form acceptable by SQL's CONVERT_TZ()
+     *
+     * @return string
+     */
+    protected function _getStoreTimezoneUtcOffset($store = null)
+    {
+        return Mage::app()->getLocale()->storeDate($store)->toString(Zend_Date::GMT_DIFF_SEP);
     }
 }

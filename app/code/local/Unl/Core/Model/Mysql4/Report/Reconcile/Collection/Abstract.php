@@ -21,7 +21,7 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
     );
     protected $_recordType;
     protected $_paymentMethodCodes = array();
-    
+
     /**
      * Initialize custom resource model
      *
@@ -34,7 +34,7 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
         $this->_resource = Mage::getResourceModel('sales/report')->init('sales/order', 'entity_id');
         $this->setConnection($this->getResource()->getReadConnection());
     }
-    
+
     /**
      * Apply stores filter
      *
@@ -64,7 +64,7 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
 
         return $this;
     }
-    
+
     /**
      * Apply order status filter
      *
@@ -82,7 +82,7 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
         $this->getSelect()->where('status IN(?)', $orderStatus);
         return $this;
     }
-    
+
     /**
      * Retrieve array of columns to select
      *
@@ -92,17 +92,17 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
     {
         if (!$this->isTotals()) {
             if ('month' == $this->_period) {
-                $this->_periodFormat = "DATE_FORMAT(o.{$this->getRecordType()}, '%Y-%m')";
+                $this->_periodFormat = "DATE_FORMAT(DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')), '%Y-%m')";
             } elseif ('year' == $this->_period) {
-                $this->_periodFormat = "EXTRACT(YEAR FROM o.{$this->getRecordType()})";
+                $this->_periodFormat = "EXTRACT(YEAR FROM DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')))";
             } else {
-                $this->_periodFormat = "DATE(o.{$this->getRecordType()})";
+                $this->_periodFormat = "DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "'))";
             }
             $this->_selectedColumns += array('period' => $this->_periodFormat, 'increment_id' => 'o.increment_id',);
         }
         return $this->_selectedColumns;
     }
-    
+
     /**
      * Add selected data
      *
@@ -113,7 +113,7 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
         if ($this->_inited) {
             return $this;
         }
-        
+
         $columns =  $this->_getSelectedColumns();
 
         $mainTable = $this->getResource()->getMainTable();
@@ -128,18 +128,18 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
                 Mage_Sales_Model_Order::STATE_NEW,
                 Mage_Sales_Model_Order::STATE_CANCELED
             ));
-                
+
         $this->_applyStoresFilter();
         $this->_applyOrderStatusFilter();
-            
+
         if ($this->_to !== null) {
-            $select->where("DATE(o.{$this->getRecordType()}) <= DATE(?)", $this->_to);
+            $select->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) <= DATE(?)", $this->_to);
         }
 
         if ($this->_from !== null) {
-            $select->where("DATE(o.{$this->getRecordType()}) >= DATE(?)", $this->_from);
+            $select->where("DATE(CONVERT_TZ(o.{$this->getRecordType()}, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "')) >= DATE(?)", $this->_from);
         }
-        
+
         if (!$this->isTotals()) {
             $select->group(array($this->_periodFormat, 'order_id'));
         }
@@ -164,20 +164,30 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Abstract extends Mage_Sa
         $this->setApplyFilters(false);
         return parent::load($printQuery, $logQuery);
     }
-    
+
     public function setRecordType($type = 'created_at')
     {
         $this->_recordType = $type;
-        
+
         return $this;
     }
-    
+
     public function getRecordType()
     {
         if (null === $this->_recordType) {
             $this->setRecordType();
         }
-        
+
         return $this->_recordType;
+    }
+
+    /**
+     * Retrieve store timezone offset from UTC in the form acceptable by SQL's CONVERT_TZ()
+     *
+     * @return string
+     */
+    protected function _getStoreTimezoneUtcOffset($store = null)
+    {
+        return Mage::app()->getLocale()->storeDate($store)->toString(Zend_Date::GMT_DIFF_SEP);
     }
 }
