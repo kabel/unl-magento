@@ -663,6 +663,12 @@ tr.summary-details-excluded { font-style:italic; }
 /* Dairy Store Overrides */
 #maincontent .dairystore div.featured2 { border:none; background:none; }
 #maincontent .dairystore .featured2 .sec_main { border-color: #79BDE8; background-color: #CC0000; color: #FFF; }
+
+.featured-global {}
+#maincontent .featured-global .product-name { font-size:16px; margin-bottom:8px;}
+.featured-global .product-image { display: block; float: right; border: 1px solid #ddd; background-color: #fff; }
+.featured-global .product-shop { float: left; width: 300px; }
+.featured-global .product-shop .price-box { float:right; margin-left: 15px; }
 /* ======================================================================================= */
 
 /* Product View ========================================================================== */
@@ -1004,6 +1010,18 @@ f/********** Product Prices > */
 .cms-home .main { padding:8px; }
 .cms-home .subtitle {}
 .cms-index-index .subtitle {}
+
+#store-directory { height:390px; overflow:hidden; position:relative; }
+.zenbox_store div {
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:5px;
+    margin-bottom: 15px;
+    line-height:1.3em;
+    background-color:#fff; 
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;  
+}
 
 /* Sitemap */
 .page-sitemap .links { text-align:right; margin:0 8px -22px 0; }
