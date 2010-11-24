@@ -153,6 +153,11 @@
                     <convert_parser_xml_excel>Unl_Core_Model_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
                 </rewrite>
             </dataflow>
+            <newsletter>
+                <rewrite>
+                    <template>Unl_Core_Model_Newsletter_Template</template>
+                </rewrite>
+            </newsletter>
             <payment>
                 <rewrite>
                     <method_checkmo>Unl_Core_Model_Payment_Method_Checkmo</method_checkmo>
