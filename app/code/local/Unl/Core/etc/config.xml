@@ -10,6 +10,7 @@
                 <Mage_Catalog />
                 <Mage_Cms />
                 <Mage_Core />
+                <Mage_Customer />
                 <Mage_Reports />
                 <Mage_Sales />
                 <Mage_Tax />
@@ -147,6 +148,11 @@
                     <translate>Unl_Core_Model_Core_Translate</translate>
                 </rewrite>
             </core>
+            <customer>
+                <rewrite>
+                    <address_config>Unl_Core_Model_Customer_Address_Config</address_config>
+                </rewrite>
+            </customer>
             <dataflow>
                 <!-- Fix Double HTML Escaping -->
                 <rewrite>
@@ -335,6 +341,16 @@
                 <grand_total><font_size>11</font_size></grand_total>
             </totals>
         </pdf>
+        
+        <customer>
+            <address>
+                <formats>
+                    <oneline>
+                        <htmlEscape></htmlEscape>
+                    </oneline>
+                </formats>
+            </address>
+        </customer>
     </global>
     
     <frontend>
