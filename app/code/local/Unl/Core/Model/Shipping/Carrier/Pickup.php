@@ -1,7 +1,7 @@
 <?php
 
 class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier_Pickup
-{    
+{
     /**
      *
      * @param Mage_Shipping_Model_Rate_Request $data
@@ -12,9 +12,9 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         if (!$this->getConfigFlag('active')) {
             return false;
         }
-        
+
         $result = Mage::getModel('shipping/rate_result');
-        
+
         $sourceStore = $this->_getSingleStoreFromItems($request->getAllItems());
         if (!$sourceStore) {
             $error = Mage::getModel('shipping/rate_result_error');
@@ -24,31 +24,43 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
             $result->append($error);
             return $result;
         }
-        
+
         // Don't show it if the store has no address to display
-        $pickup = Mage::getStoreConfig('carriers/'.$this->_code.'/pickupaddress', $sourceStore);
+        $this->setStore($sourceStore);
+        $pickup = $this->getConfigData('pickupaddress');
         if (empty($pickup)) {
             return false;
         }
-        
-        $method = Mage::getModel('shipping/rate_result_method');
 
-        $method->setCarrier('pickup');
-        $method->setCarrierTitle($this->getConfigData('title'));
+        $methods = $this->_getPickupLocations();
+        foreach ($methods as $i => $description) {
+            $method = Mage::getModel('shipping/rate_result_method');
 
-        $method->setMethod('store');
-        $method->setMethodTitle($this->getConfigData('name'));
-        
-        $method->setPrice('0.00');
-        $method->setCost('0.00');
-        
-        $method->setMethodDescription($pickup);
+            $method->setCarrier('pickup');
+            $method->setCarrierTitle($this->getConfigData('title'));
 
-        $result->append($method);
+            $method->setMethod('store' . $i);
+            $method->setMethodTitle($this->getConfigData('name'));
+
+            $method->setPrice('0.00');
+            $method->setCost('0.00');
+
+            $method->setMethodDescription($description);
+
+            $result->append($method);
+        }
+
+
 
         return $result;
     }
-    
+
+    protected function _getPickupLocations()
+    {
+        $locations = explode("\n\n", $this->getConfigData('pickupaddress'));
+        return $locations;
+    }
+
     /**
      * Get allowed shipping methods
      *
@@ -56,28 +68,66 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
      */
     public function getAllowedMethods()
     {
-        return array('pickup'=>$this->getConfigData('name'));
+        $locations = $this->_getPickupLocations();
+        $methods = array();
+        foreach ($locations as $i => $method) {
+            $methods['store' . $i] = $this->getConfigData('name');
+        }
+        return $methods;
     }
-    
+
     public function isAvailable($items)
     {
         if (!$this->getConfigFlag('active')) {
             return false;
         }
-        
+
         $sourceStore = $this->_getSingleStoreFromItems($items);
         if (!$sourceStore) {
             return false;
         }
-        
-        $pickup = Mage::getStoreConfig('carriers/'.$this->_code.'/pickupaddress', $sourceStore);
+
+        $this->setStore($sourceStore);
+        $pickup = $this->getConfigData('pickupaddress');
         if (empty($pickup)) {
             return false;
         }
-        
+
         return true;
     }
-    
+
+    /**
+     * Sets up the provided address to be the admin configured pickup address
+     * used for accurate tax calculation
+     *
+     * @param Unl_Core_Model_Sales_Quote_Address $address
+     */
+    public function updateAddress($address)
+    {
+        $this->setStore($this->_getSingleStoreFromItems($address->getAllItems()));
+
+        // clear any values that link this address to anything else
+        $address->setSameAsBilling(0)
+            ->unsCustomerAddressId()
+            ->setSaveInAddressBook(false);
+
+        $data = array(
+            'company' => $this->getConfigData('company'),
+            'street' => array(
+                $this->getConfigData('address1'),
+                $this->getConfigData('address2')
+            ),
+            'city' => $this->getConfigData('city'),
+            'region' => $this->getConfigData('region_id'),
+            'postcode' => $this->getConfigData('postcode'),
+            'country_id' => $this->getConfigData('country_id'),
+            'telephone' => $this->getConfigData('phone')
+        );
+
+        $address->addData($data);
+        $address->implodeStreetAddress();
+    }
+
     protected function _getSingleStoreFromItems($items)
     {
         $sourceStore = null;
@@ -92,7 +142,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
                 break;
             }
         }
-        
+
         for ($i; $i < $c; $i++) {
             if ($items[$i]->getProduct()->isVirtual() || $items[$i]->getParentItem()) {
                 continue;
@@ -101,7 +151,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
                 return false;
             }
         }
-        
+
         return $sourceStore;
     }
 }

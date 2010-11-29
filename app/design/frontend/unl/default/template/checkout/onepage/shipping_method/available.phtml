@@ -24,7 +24,7 @@
                             (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                         <?php endif; ?>
                         </label>
-                        <?php if ($_rate->getCode() == 'pickup_store'): ?>
+                        <?php if (strpos($_rate->getCode(), 'pickup_store') === 0): ?>
                         <div class="pickup-address">
                             <label><?php echo $this->__('Pickup Location:') ?></label><br />
                             <?php echo nl2br($this->escapeHtml($_rate->getMethodDescription())) ?>

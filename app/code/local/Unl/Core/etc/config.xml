@@ -190,6 +190,8 @@
                     <order_pdf_items_shipment_default>Unl_Core_Model_Sales_Order_Pdf_Items_Shipment_Default</order_pdf_items_shipment_default>
                     <order_pdf_invoice>Unl_Core_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
                     <order_pdf_shipment>Unl_Core_Model_Sales_Order_Pdf_Shipment</order_pdf_shipment>
+                    
+                    <quote_address>Unl_Core_Model_Sales_Quote_Address</quote_address>
                     <service_order>Unl_Core_Model_Sales_Service_Order</service_order>
                 </rewrite>
             </sales>
@@ -303,6 +305,15 @@
                     </multiship_fix>
                 </observers>
             </sales_convert_quote_item_to_order_item>
+            <sales_quote_address_set_shipping_method_after>
+                <observers>
+                    <pickup_fix>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onShippingMethodSet</method>
+                    </pickup_fix>
+                </observers>
+            </sales_quote_address_set_shipping_method_after>
             <sales_quote_item_set_product>
                 <observers>
                     <source_store_set>
