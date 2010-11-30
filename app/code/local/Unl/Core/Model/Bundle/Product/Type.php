@@ -2,7 +2,32 @@
 
 class Unl_Core_Model_Bundle_Product_Type extends Mage_Bundle_Model_Product_Type
 {
-/**
+    /**
+     * Return product weight based on weight_type attribute
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return decimal
+     */
+    public function getWeight($product = null)
+    {
+        if ($this->getProduct($product)->getData('weight_type')) {
+            return $this->getProduct($product)->getData('weight');
+        } else {
+            $weight = 0;
+
+            if ($this->getProduct($product)->hasCustomOptions()) {
+                $customOption = $this->getProduct($product)->getCustomOption('bundle_selection_ids');
+                $selectionIds = unserialize($customOption->getValue());
+                $selections = $this->getSelectionsByIds($selectionIds, $product);
+                foreach ($selections->getItems() as $selection) {
+                    $weight += $selection->getWeight() * $this->getProduct($product)->getCustomOption('selection_qty_' . $selection->getSelectionId())->getValue();
+                }
+            }
+            return $weight;
+        }
+    }
+
+    /**
      * Initialize product(s) for add to cart process
      *
      * @param   Varien_Object $buyRequest
@@ -25,7 +50,7 @@ class Unl_Core_Model_Bundle_Product_Type extends Mage_Bundle_Model_Product_Type
         if ($product->getSkipCheckRequiredOption()) {
             $_appendAllSelections = true;
         }
-        
+
         $options = array_filter($buyRequest->getBundleOption(), 'intval');
 
         if ($options) {
@@ -134,7 +159,7 @@ class Unl_Core_Model_Bundle_Product_Type extends Mage_Bundle_Model_Product_Type
                     } else {
                         $qty = $qtys[$selection->getOptionId()] > 0 ? $qtys[$selection->getOptionId()] : 1;
                     }
-                    
+
                 } else {
                     $qty = $selection->getSelectionQty() ? $selection->getSelectionQty() : 1;
                 }
