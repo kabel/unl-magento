@@ -182,6 +182,7 @@
                 <rewrite>
                     <!-- Adds the total product amount applied to the tax rate -->
                     <order>Unl_Core_Model_Sales_Order</order>
+                    <order_creditmemo_total_shipping>Unl_Core_Model_Sales_Order_Creditmemo_Total_Shipping</order_creditmemo_total_shipping>
                     <order_invoice>Unl_Core_Model_Sales_Order_Invoice</order_invoice>
                     <!-- Change size of order PDFs to US Letter -->
                     <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
