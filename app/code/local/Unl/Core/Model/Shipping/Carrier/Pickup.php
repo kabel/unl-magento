@@ -17,10 +17,15 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
 
         $sourceStore = $this->_getSingleStoreFromItems($request->getAllItems());
         if (!$sourceStore) {
+            if (is_null($sourceStore)) {
+                $message = $this->getConfigData('specificerrmsg');
+            } else {
+                $message = Mage::helper('shipping')->__('All items must be from the same store to use this method');
+            }
             $error = Mage::getModel('shipping/rate_result_error');
             $error->setCarrier('pickup');
             $error->setCarrierTitle($this->getConfigData('title'));
-            $error->setErrorMessage(Mage::helper('shipping')->__('All items must be from the same store to use this method'));
+            $error->setErrorMessage($message);
             $result->append($error);
             return $result;
         }
@@ -138,7 +143,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
             if ($items[$i-1]->getProduct()->isVirtual() || $items[$i-1]->getParentItem()) {
                 continue;
             } else {
-                $sourceStore = $items[$i-1]->getSourceStoreView();
+                $sourceStore = ($items[$i-1] instanceof Mage_Sales_Model_Quote_Address_Item) ? $items[$i-1]->getQuoteItem()->getSourceStoreView() : $items[$i-1]->getSourceStoreView();
                 break;
             }
         }
