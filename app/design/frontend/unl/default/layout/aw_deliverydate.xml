@@ -13,4 +13,9 @@
         	<block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml" />
 		</reference>
     </checkout_onepage_shippingmethod>
+    <checkout_multishipping_shipping>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/jquery-ui.js</name></action>
+        </reference>
+    </checkout_multishipping_shipping>
 </layout>	 

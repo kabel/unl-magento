@@ -81,31 +81,24 @@
                 <?php endforeach ?>
                 </tbody>
             </table>
-            <script type="text/javascript">decorateTable('shopping-cart-table')</script>
+            <script type="text/javascript">decorateTable('shopping-cart-table');</script>
         </fieldset>
     </form>
+    <ul class="cart-tools">
+        <li><a href="#shipping-form-wrapper" class="colorbox-inline"><?php echo $this->__('Estimate Shipping and Tax') ?></a></li>
+        <li><a href="#cart-discount" class="colorbox-inline"><?php echo $this->__('Enter Coupon Code') ?></a></li>
+    </ul>
     <div class="cart-collaterals">
-        <div class="col2-set">
+        <div class="col3-set">
             <div class="col-1">
                 <?php echo $this->getChildHtml('crosssell') ?>
             </div>
             <div class="col-2">
-                <div class="totals top">
-                    <?php echo $this->getChildHtml('totals'); ?>
-                    <?php if(!$this->hasError()): ?>
-                    <ul class="checkout-types">
-                    <?php foreach ($this->getMethods('methods') as $method): ?>
-                        <?php if ($methodHtml = $this->getMethodHtml($method)): ?>
-                        <li><?php echo $methodHtml; ?></li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    </ul>
-                    <?php else: ?>
-                    <div class="clear"></div>
-                    <?php endif; ?>
-                </div>
                 <?php echo $this->getChildHtml('coupon') ?>
                 <?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
+                <script type="text/javascript">WDN.jQuery('.colorbox-inline').colorbox({inline:true, innerWidth:300});</script>
+            </div>
+            <div class="col-3">
                 <div class="totals">
                     <?php echo $this->getChildHtml('totals'); ?>
                     <?php if(!$this->hasError()): ?>

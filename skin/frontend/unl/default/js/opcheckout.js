@@ -76,7 +76,7 @@ Checkout.prototype = {
     },
 
     setMethod: function(){
-        if ($('login:guest') && $('login:guest').checked) {
+        if ($('login:register') && $F('login:register') == 'guest') {
             this.method = 'guest';
             var request = new Ajax.Request(
                 this.saveMethodUrl,
@@ -85,7 +85,7 @@ Checkout.prototype = {
             Element.hide('register-customer-password');
             this.gotoSection('billing');
         }
-        else if($('login:register') && ($('login:register').checked || $('login:register').type == 'hidden')) {
+        else if($('login:register') && $F('login:register') == 'register') {
             this.method = 'register';
             var request = new Ajax.Request(
                 this.saveMethodUrl,
