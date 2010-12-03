@@ -23,6 +23,7 @@ body.fixed #maincontent { overflow: visible; }
 .f-none       { float:none !important; }
 .f-fix        { float:left; width:100%; }
 .no-display   { display:none; }
+.invisible    { visibility:hidden; }
 .no-margin    { margin:0 !important; }
 .no-padding   { padding:0 !important; }
 .no-bg        { background:none !important; }
@@ -1043,7 +1044,8 @@ f/********** Product Prices > */
 .cart .page-title {}
 
 /* Checkout Types */
-.cart .page-title .checkout-types { display:none !important; }
+.cart .page-title .checkout-types {}
+.cart .page-title .checkout-types button { margin-right: 0; }
 
 /* Shopping Cart Table */
 .cart-table th { padding:2px 10px; }
@@ -1054,15 +1056,19 @@ f/********** Product Prices > */
 .cart-table .btn-continue { float:left; }
 .cart-table .btn-continue span { background:none; padding:0; font:normal 1em/25px "Lucida Grande",Verdana,Arial; color:#cc0000; text-transform:none; }
 .cart-table .btn-continue:hover span { color: #ee0000; }
-.cart-table .btn-update span {}
+.cart-table .btn-update span { height:19px; background-image:url(../images/bkg_btn-neutral.png); padding:0 0 0 9px; font-size:10px; line-height:18px; color:#fff; }
+.cart-table .btn-update span span { padding:0 19px 0 10px; }
+
+#maincontent .cart .cart-tools { list-style:circle; }
+.cart .cart-tools li { float:right; margin-left: 25px; }
 
 /* Shopping Cart Collateral boxes */
-.cart .cart-collaterals { padding:25px 0 0; }
-.cart .cart-collaterals .col2-set .col-1 { width:275px; }
-.cart .cart-collaterals .col2-set .col-2 { width:645px; background:#e5e5e5; }
+.cart .cart-collaterals { padding:25px 0 0; clear:both; }
+.cart .cart-collaterals .col3-set .col-2 { width:28%; }
+.cart .cart-collaterals .col3-set .col-3 { width:36%; }
 
 .cart .crosssell { border:1px solid #ddd; background:#f7f7f7; padding:10px; }
-.cart .crosssell h2 { font-size:12px; font-weight:bold; }
+#maincontent .cart .crosssell h2 { font-size:12px; font-weight:bold; }
 .cart .crosssell .product-image { float:left; width:75px; height:75px; }
 .cart .crosssell .product-details { margin-left:85px; }
 .cart .crosssell .product-name { font-weight:bold; }
@@ -1073,36 +1079,35 @@ f/********** Product Prices > */
 .cart .no-crosssell img { display:block; margin:0 0 10px; }
 
 /* Discount Codes & Estimate Shipping and Tax Boxes */
-.cart .discount,
-.cart .shipping { padding:10px 0; margin:0 12px; }
-.cart .discount h2,
-.cart .shipping h2 { float:left; width:255px; }
 .cart .discount .discount-form,
-.cart .shipping .shipping-form { margin-left:285px; }
-.cart .discount .buttons-set,
+.cart .shipping .shipping-form {}
+#colorbox .form-list label.required em { color: #eb340a; }
+#colorbox .discount .buttons-set,
+#colorbox .shipping-form .buttons-set,
 .cart .shipping .buttons-set { margin:10px 0 0; border:0; padding:0; text-align:left; }
-.cart .discount .buttons-set button.button,
+#colorbox .discount .buttons-set button.button,
+#colorbox .shipping-form .buttons-set button.button, 
 .cart .shipping .buttons-set button.button { float:none; margin:0; }
-.cart .discount .buttons-set button.button span,
-.cart .shipping .buttons-set button.button span { height:19px; background-image:url(../images/bkg_btn-neutral.png); padding:0 0 0 9px; font-size:10px; line-height:18px; color:#fff; }
-.cart .discount .buttons-set button.button span span,
+#colorbox .discount .buttons-set button.button span,
+#colorbox .shipping-form .buttons-set button.button span,
+.cart .shipping .buttons-set button.button span { height:19px; background-image:url(../images/bkg_btn-neutral.png); padding:0 0 0 9px; font:bold 10px/18px Tahoma,Verdana,Arial,sans-serif; color:#fff; }
+#colorbox .discount .buttons-set button.button span span,
+#colorbox .shipping-form .buttons-set button.button span span,
 .cart .shipping .buttons-set button.button span span { padding:0 19px 0 10px; }
 
-.cart .discount { border-bottom:1px solid #afafaf ; }
-.cart .discount label { font-weight:bold; color:#555; }
-.cart .discount .input-box { width:270px; }
-.cart .discount input.input-text { width:264px; }
+#colorbox .discount label { font-weight:bold; color:#555; }
+#colorbox .discount .input-box { width:270px; }
+#colorbox .discount input.input-text { width:264px; }
 
 #maincontent .cart .shipping p { margin:0 0 3px; }
-.cart .shipping .sp-methods { margin:10px 0 0; padding:6px 0 0; border-top:1px solid #c0d2af; }
-.cart .shipping .form-list .input-box { width:270px; }
-.cart .shipping .form-list input.input-text { width:264px; }
-.cart .shipping .form-list select { width:270px; }
+.cart .shipping .sp-methods { }
+#colorbox .shipping-form .form-list .input-box { width:270px; }
+#colorbox .shipping-form .form-list input.input-text { width:264px; }
+#colorbox .shipping-form .form-list select { width:270px; }
 
 /* Shopping Cart Totals */
-.cart .totals { background:#fff url(../images/bkg_cart-totals.gif) 0 0 no-repeat; padding:12px 0; min-height:83px; }
-.cart .totals.top { background:#fff; padding-top:0; min-height:0; }
-.cart .totals table { float:right; width:400px; margin:0 0 8px; }
+.cart .totals { padding:12px 0; min-height:83px; }
+.cart .totals table { float:right; margin:0 0 8px; }
 .cart .totals td { padding:0 0 0 15px; }
 .cart .totals tr.last td {}
 .cart .totals tfoot td {}
@@ -1131,6 +1136,7 @@ f/********** Product Prices > */
 /* Shipping and Payment methods */
 .sp-methods { margin:0 0 8px; }
 .sp-methods dt { margin:13px 0 5px; font-weight:bold; }
+.sp-methods dt:first-child { margin-top:0; }
 .sp-methods dd {}
 .sp-methods dd li { margin:5px 0; }
 .sp-methods label { font-weight:bold; color:#555; }
@@ -1231,6 +1237,9 @@ f/********** Product Prices > */
 .block-progress .block-title { background:none; border:0; padding:0; margin:0 0 5px; }
 .block-progress .block-title strong { font-size:12px; }
 .block-progress .block-content { background:none; padding:0; }
+.block-progress .summary { margin:0 0 8px; text-align:center; position:relative; z-index:1; }
+#maincontent .block-progress .subtotal { background:url(../images/bkg_subtotal.gif) no-repeat 50% 0; margin:5px 0 0; line-height:23px; }
+.block-progress .subtotal .price { font-weight:bold; }
 .block-progress dt { font-size:10px; line-height:1.35; background:#eee; border:1px solid #ddd; margin:0 0 6px; padding:2px 8px; color:#555; text-transform:uppercase; }
 .block-progress dd { border-top:0; padding:2px 10px; margin:0 0 6px; }
 .block-progress dt.complete {}
@@ -1242,7 +1251,8 @@ f/********** Product Prices > */
 .opc .buttons-set p.required { margin:0; padding:0 0 10px; }
 .opc .buttons-set.disabled button.button { display:none; }
 .opc .buttons-set .please-wait { height:28px; line-height:28px; }
-.opc .ul { list-style:disc outside; padding-left:18px; }
+#maincontent .opc .ul { list-style:disc outside; padding-left:18px; }
+.opc .checkout-buttons { text-align:right; margin-bottom:1em; }
 
 .opc { position:relative; }
 .opc li.section {}
@@ -1265,11 +1275,13 @@ f/********** Product Prices > */
 .opc .step { border:1px solid #ddd; border-top:0; background:#fbfbfb; padding:15px 30px; position:relative; }
 .opc .step .tool-tip { right:10px; }
 
-#opc-login h3 { font-size:13px; border-bottom:1px solid #e4e4e4; padding-bottom:2px; text-transform:uppercase; }
+#opc-login h3, #opc-shipping_method h3 { font-size:13px; border-bottom:1px solid #e4e4e4; padding-bottom:2px; text-transform:uppercase; margin-bottom:10px; }
 #opc-login h4 { font-size:1em; font-weight:bold; margin:0; color:#2f2f2f; }
+#opc-login p.hint { font-size:0.8em; font-style:italic; }
+#opc-login .login-set { margin-bottom:15px; }
 
 #opc-shipping_method .buttons-set { border-top:0; }
-.opc .gift-messages-form, .opc .delivery-date-form { margin:0 -30px; background:#f4f4f4; border:1px solid #ddd; border-width:1px 0; padding:22px 24px 22px 30px; }
+.opc .gift-messages-form, .opc .delivery-date-form { margin:10px -30px; background:#f4f4f4; border:1px solid #ddd; border-width:1px 0; padding:22px 24px 22px 30px; }
 .opc .gift-messages-form .inner-box, .opc .delivery-date-form .inner-box { padding:5px; height:260px; overflow:auto; }
 
 #opc-review .step { padding:0; }
@@ -1282,19 +1294,25 @@ f/********** Product Prices > */
 /* Multiple Addresses Checkout */
 .checkout-progress { padding:0 90px; margin:0 0 20px; }
 .checkout-progress li { float:left; width:19%; margin:0 3px 0 0; border-top:6px solid #999; padding:2px 0 0; font-weight:bold; text-align:center; color:#888; }
-.checkout-progress li.active { border-top-color:#e96200; color:#e96200; }
+.checkout-progress li.active { border-top-color:#000080; color:#000080; }
 
-.multiple-checkout h2 { font-size:12px; font-weight:bold; margin:0 0 10px; }
-.multiple-checkout h3,
-.multiple-checkout h4 { font-size:12px; font-weight:bold; }
+#maincontent .multiple-checkout h2 { font-size:12px; font-weight:bold; margin:0 0 10px; }
+#maincontent .multiple-checkout h3,
+#maincontent .multiple-checkout h4 { font-size:12px; font-weight:bold; }
+.multiple-checkout .separator,
 .multiple-checkout h2 a,
 .multiple-checkout h3 a,
 .multiple-checkout h4 a { font-weight:normal; }
+.multiple-checkout .edit-link { font-variant:small-caps; font-size:0.9em; }
 #maincontent .multiple-checkout .data-table .product-name { font-size:1em !important; font-weight:bold !important; color:#4f8100 !important; }
 .multiple-checkout .data-table .product-name a { font-weight:bold !important; }
 .multiple-checkout .data-table .item-options { margin:5px 0 0; }
 
-.multiple-checkout .gift-messages { margin:15px 0 0; }
+.multiple-checkout .table-buttons { float:right; }
+.multiple-checkout .table-buttons .button span { height:19px; background-image:url(../images/bkg_btn-neutral.png); padding:0 0 0 9px; font-size:10px; line-height:18px; color:#fff; }
+.multiple-checkout .table-buttons .button span span { padding:0 19px 0 10px; }
+
+.multiple-checkout .shipping-options { margin:15px 0 0; }
 
 .multiple-checkout .tool-tip { top:50%; margin-top:-120px; right:20px; }
 
@@ -1308,12 +1326,14 @@ f/********** Product Prices > */
 .multiple-checkout .place-order .please-wait { float:right; padding:5px 10px 0 0; }
 .multiple-checkout .place-order .grand-total { float:right; }
 .multiple-checkout .place-order .grand-total .inner {}
-.multiple-checkout .place-order .grand-total big { float:left; margin-right:12px; font-size:1.5em; font-weight:bold; line-height:28px; color:#e26703; }
+.multiple-checkout .place-order .grand-total big { float:left; margin-right:12px; font-size:1.5em; font-weight:bold; line-height:28px; color:#000080; }
 .multiple-checkout .place-order .grand-total div { float:left; }
 
 /* Step 1 */
 #multiship-addresses-table td { padding:10px; }
 #multiship-addresses-table tfoot td { padding:5px 10px; }
+#multiship-addresses-table .button span { height:19px; background-image:url(../images/bkg_btn-neutral.png); padding:0 0 0 9px; font-size:10px; line-height:18px; color:#fff; }
+#multiship-addresses-table .button span span { padding:0 19px 0 10px; }
 
 /* Step 2 */
 .multiple-checkout .gift-messages-form .item .details .form-list { width:100%; overflow:hidden; }
