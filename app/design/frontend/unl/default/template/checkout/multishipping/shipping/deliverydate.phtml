@@ -1,0 +1,30 @@
+<div class="delivery-date">
+    <p class="control">
+        <input type="checkbox" id="toggle-delivery-date-<?php echo $this->getEntity()->getId() ?>" name="toggle-delivery-date[<?php echo $this->getEntity()->getId() ?>]" value="1" onclick="toggleVisibilityOnObjects(this, ['delivery-date-container-<?php echo $this->getEntity()->getId() ?>']);"<?php if($this->isChecked()): ?> checked="checked"<?php endif; ?> class="checkbox" />
+        <label for="toggle-delivery-date-<?php echo $this->getEntity()->getId() ?>"><?php echo $this->__('Would you like to delay shipping or specify a pickup date?') ?></label>
+    </p>
+</div>
+<div id="delivery-date-container-<?php echo $this->getEntity()->getId() ?>" class="delivery-date-form">
+    <dl>
+    	<dt class="input-box">
+    		<strong><?php echo $this->__("Delivery Date");?></strong>
+    	</dt>
+    	<dd><div><?php echo $this->getCalendarHtml()?></div>
+    	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_TIME_NOTICE_ENABLED)): ?>
+    		<em><?php echo $this->__("Please note that orders after %s will be delivered the next day", $this->getFormattedTime())?></em>
+    	<?php endif; ?>
+    	</dd>
+
+    	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_NOTICE_ENABLED)): ?>
+    	<dt class="input-box">
+    		<strong><?php echo $this->__("Delivery Notice");?></strong>
+    	</dt>
+    	<dd><textarea name="aw_deliverydate_notice[<?php echo $this->getEntity()->getId() ?>]" cols="64" rows="5" class="input-text"><?php echo $this->getAwDeliverydateNotice() ?></textarea></dd>
+    	<?php endif; ?>
+    </dl>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    toggleVisibilityOnObjects('toggle-delivery-date-<?php echo $this->getEntity()->getId() ?>', ['delivery-date-container-<?php echo $this->getEntity()->getId() ?>']);
+//]]>
+</script>

@@ -10,6 +10,33 @@
         <h1><?php echo $this->__('Select Shipping Method') ?></h1>
     </div>
     <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <script type="text/javascript">
+    //<![CDATA[
+    if(!window.toggleVisibilityOnObjects) {
+        var toggleVisibilityOnObjects = function(source, objects) {
+            if($(source) && $(source).checked) {
+                objects.each(function(item){
+                    $(item).show();
+                    $$('#' + item + ' .input-text').each(function(item) {
+                        item.removeClassName('validation-passed');
+                    });
+                });
+
+
+            } else {
+                objects.each(function(item){
+                    $(item).hide();
+                    $$('#' + item + ' .input-text').each(function(sitem) {
+                        sitem.addClassName('validation-passed');
+                    });
+                });
+
+            }
+
+        }
+    }
+    //]]>
+    </script>
     <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="shipping_method_form">
         <?php foreach ($this->getAddresses() as $_index => $_address): ?>
         <div class="col2-set">
@@ -17,7 +44,7 @@
             <div class="col-1 col-narrow">
                 <div class="box">
                     <div class="box-title">
-                        <h3><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a href="<?php echo $this->getAddressEditUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
+                        <h3><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a class="edit-link" href="<?php echo $this->getAddressEditUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
                     </div>
                     <div class="box-content">
                         <address><?php echo $_address->format('html') ?></address>
@@ -55,11 +82,11 @@
                                                     (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                                                 <?php endif; ?>
                                                 </label>
-                                               <?php if ($_rate->getCode() == 'pickup_store'): ?>
-                                               <div class="pickup-address">
-                                                   <label><?php echo $this->__('Pickup Location:') ?></label><br />
-                                                   <?php echo nl2br($_rate->getMethodDescription()) ?>
-                                               </div>
+                                                <?php if (strpos($_rate->getCode(), 'pickup_store') === 0): ?>
+                                                <div class="pickup-address">
+                                                    <label><?php echo $this->__('Pickup Location:') ?></label><br />
+                                                    <?php echo nl2br($this->escapeHtml($_rate->getMethodDescription())) ?>
+                                                </div>
                                                <?php endif; ?>
                                            <?php endif ?>
                                         </li>
@@ -74,7 +101,7 @@
             </div>
             <div class="col-2 col-wide">
                 <?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress_checkbox', $_address); ?>
-                <h3><?php echo $this->__('Items') ?> <span class="separator">|</span> <a href="<?php echo $this->getItemsEditUrl($_address) ?>"><?php echo $this->__('Edit Items') ?></a></h3>
+                <h3><?php echo $this->__('Items') ?> <span class="separator">|</span> <a class="edit-link" href="<?php echo $this->getItemsEditUrl($_address) ?>"><?php echo $this->__('Edit Items') ?></a></h3>
                 <table class="data-table" id="shipping-table-<?php echo $_address->getId() ?>">
                     <col />
                     <col width="1" />
@@ -96,14 +123,18 @@
                     </tbody>
                 </table>
                 <script type="text/javascript">decorateTable('shipping-table-<?php echo $_address->getId() ?>')</script>
-                <?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress', $_address); ?>
+                <div class="shipping-options">
+                    <h3><?php echo $this->__('Shipping Options') ?></h3>
+                    <?php echo $this->helper('deliverydate')->getInline($_address); ?>
+                    <?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress', $_address); ?>
+                </div>
             </div>
         </div>
         <?php endforeach; ?>
         <?php echo $this->getChildHtml('checkout_billing_items') ?>
         <div class="buttons-set">
             <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Select Addresses') ?></a></p>
-            <button type="submit" title="<?php echo $this->__('Continue to Billing Information') ?>" class="button"><span><span><?php echo $this->__('Continue to Billing Information') ?></span></span></button>
+            <button type="submit" title="<?php echo $this->__('Continue') ?>" class="button"><span><span><?php echo $this->__('Continue') ?></span></span></button>
         </div>
     </form>
 </div>
