@@ -26,9 +26,9 @@ if(!window.toggleVisibilityOnObjects) {
 //]]>
 </script>
 <div class="delivery-date">
-    <h3><?php echo $this->__('Would you like this order to ship later?'); ?></h3>
     <p class="control">
-        <input type="checkbox" id="toggle-delivery-date" name="toggle-delivery-date" value="1" onclick="toggleVisibilityOnObjects(this, ['delivery-date-container']);"<?php if(Mage::getSingleton('customer/session')->getDeliveryNotice() || Mage::getSingleton('customer/session')->getDeliveryDate()): ?> checked="checked"<?php endif; ?> class="checkbox" /><label for="toggle-delivery-date"><?php echo $this->__('Check this checkbox if you want to add a shipping date/comments.') ?></label>
+        <input type="checkbox" id="toggle-delivery-date" name="toggle-delivery-date" value="1" onclick="toggleVisibilityOnObjects(this, ['delivery-date-container']);"<?php if(Mage::getSingleton('customer/session')->getDeliveryNotice() || Mage::getSingleton('customer/session')->getDeliveryDate()): ?> checked="checked"<?php endif; ?> class="checkbox" />
+        <label for="toggle-delivery-date"><?php echo $this->__('Would you like to delay shipping or specify a pickup date?') ?></label>
     </p>
 </div>
 <div id="delivery-date-container" class="delivery-date-form">

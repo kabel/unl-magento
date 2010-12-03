@@ -152,7 +152,7 @@
         </li>
         <?php if (Mage::getSingleton('unl_core/shipping_carrier_pickup')->isAvailable($this->getQuote()->getAllItems())): ?>
         <li class="control">
-            <input type="radio" name="billing[use_for_shipping]" id="billing:use_for_shipping_yes_pickup" value="1" title="<?php echo  $this->__('Store Pickup Available: Ignore Shipping Address') ?>" onclick="$('shipping:same_as_billing').checked = true;" class="radio" /><label for="billing:use_for_shipping_yes_pickup"><?php echo  $this->__('Store Pickup Available: Ignore Shipping Address') ?></label>
+            <input type="radio" name="billing[use_for_shipping]" id="billing:use_for_shipping_yes_pickup" value="1" title="<?php echo  $this->__('Store Pickup: No Shipping Required') ?>" onclick="$('shipping:same_as_billing').checked = true;" class="radio" /><label for="billing:use_for_shipping_yes_pickup"><?php echo  $this->__('Store Pickup: No Shipping Required') ?></label>
         </li>
         <?php endif; ?>
     <?php endif; ?>

@@ -1,5 +1,11 @@
 <div class="zenbox cool block block-progress">
     <h3><?php echo $this->__('Your Checkout Progress') ?></h3>
+    <div class="summary">
+        <p class="subtotal">
+            <span class="label"><?php echo $this->__('Running Total:') ?></span>
+            <span class="price"><?php echo $this->formatPrice($this->getCheckout()->getQuote()->getGrandTotal()) ?></span>
+        </p>
+    </div>
     <dl>
     <?php if ($this->getCheckout()->getStepData('billing', 'is_show')): ?>
     <?php if($this->getCheckout()->getStepData('billing', 'complete')): ?>
