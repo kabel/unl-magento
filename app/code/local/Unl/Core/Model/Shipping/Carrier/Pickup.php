@@ -114,6 +114,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         // clear any values that link this address to anything else
         $address->setSameAsBilling(0)
             ->unsCustomerAddressId()
+            ->unsRegionId()
             ->setSaveInAddressBook(false);
 
         $data = array(
