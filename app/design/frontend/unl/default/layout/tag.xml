@@ -66,7 +66,23 @@ All tags page
         </reference>
         <reference name="content">
             <block type="tag/product_result" name="tag_products" template="catalogsearch/result.phtml">
-                <block type="catalog/product_list" name="search_result_list" template="catalog/product/list.phtml"></block>
+                <block type="catalog/product_list" name="search_result_list" template="catalog/product/list.phtml">
+                    <block type="catalog/product_list_toolbar" name="search_result_list_toolbar" template="catalog/product/list/toolbar.phtml">
+                        <block type="page/html_pager" name="search_result_list_toolbar_pager"/>
+                        <action method="setDefaultListPerPage"><limit>10</limit></action>
+                        <action method="setDefaultGridPerPage"><limit>12</limit></action>
+                        <action method="addPagerLimit"><mode>grid</mode><limit>12</limit></action>
+                        <action method="addPagerLimit"><mode>grid</mode><limit>20</limit></action>
+                        <action method="addPagerLimit"><mode>grid</mode><limit>32</limit></action>
+                        <action method="addPagerLimit"><mode>grid</mode><limit>all</limit><label>All</label></action>
+                        <action method="addPagerLimit"><mode>list</mode><limit>10</limit></action>
+                        <action method="addPagerLimit"><mode>list</mode><limit>20</limit></action>
+                        <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
+                        <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
+                    </block>
+                    <action method="setToolbarBlockName"><name>search_result_list_toolbar</name></action>
+                    <action method="setColumnCount"><columns>4</columns></action>
+                </block>
                 <action method="setListOrders"/>
                 <action method="setListModes"/>
                 <action method="setListCollection"/>
