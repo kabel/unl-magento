@@ -18,7 +18,12 @@ class Unl_Core_Model_Catalog_Category_Attribute_Backend_Image  extends Mage_Cata
                 ->saveAttribute($object, $this->getAttribute()->getName());
             return;
         }
-        
+
+        if (empty($_FILES)) {
+            //prevent core exception being logged all the time
+            return;
+        }
+
         $path = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'category' . DS;
 
         try {
@@ -33,7 +38,7 @@ class Unl_Core_Model_Catalog_Category_Attribute_Backend_Image  extends Mage_Cata
             if ($e->getCode() == UPLOAD_ERR_NO_FILE) {
                 return;
             }
-            
+
             Mage::logException($e);
             /** @TODO ??? */
             return;
