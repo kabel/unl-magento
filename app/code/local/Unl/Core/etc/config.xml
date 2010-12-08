@@ -480,6 +480,16 @@
                     </product_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_cms_page_edit>
+                
+            <controller_action_predispatch_adminhtml_index_login>
+                <observers>
+                    <ssl_check>
+                        <type>singleton</type>
+                        <class>unl_core/observer</class>
+                        <method>onBeforeAdminLoginCheckSSL</method>
+                    </ssl_check>
+                </observers>
+            </controller_action_predispatch_adminhtml_index_login>
             
             <controller_action_predispatch_adminhtml_sales_creditmemo_view>
                 <observers>

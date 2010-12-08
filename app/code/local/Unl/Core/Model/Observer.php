@@ -10,32 +10,32 @@ class Unl_Core_Model_Observer
             '/wdn/templates_3.0/css/all.css',
             $design->getSkinUrl('css/styles.css')
         );
-        
+
         if ($config->getContentCss()) {
             array_unshift($css, $config->getContentCss());
         }
-        
+
         $config->setContentCss(implode(',', $css));
     }
-    
+
     public function correctAdminBlocks($observer)
     {
         $block = $observer->getEvent()->getBlock();
-        
+
         //Do actions based on block type
-        
+
         $type = 'Mage_Adminhtml_Block_Catalog_Category_Tree';
         if ($block instanceof $type) {
             $block->getChild('store_switcher')->setTemplate('unl/store/switcher/enhanced.phtml');
             return;
         }
-        
+
         $type = 'Mage_Adminhtml_Block_Dashboard';
         if ($block instanceof $type) {
             $block->getChild('store_switcher')->setTemplate('unl/store/switcher.phtml');
             return;
         }
-        
+
         $reportSwitchers = array(
             'Mage_Adminhtml_Block_Report_Product_Downloads',
             'Mage_Adminhtml_Block_Report_Product_Lowstock',
@@ -53,7 +53,7 @@ class Unl_Core_Model_Observer
                 return;
             }
         }
-        
+
         $reportSwitchers = array(
             'Mage_Adminhtml_Block_Report_Sales_Bestsellers',
             'Mage_Adminhtml_Block_Report_Sales_Sales',
@@ -65,14 +65,14 @@ class Unl_Core_Model_Observer
                 return;
             }
         }
-        
-        
+
+
         $type = 'Mage_Adminhtml_Block_Report_Sales_Tax_Grid';
         if ($block instanceof $type) {
             $block->setStoreSwitcherVisibility(false);
             return;
         }
-        
+
         $type = 'Mage_Adminhtml_Block_System_Store_Edit_Form';
         if ($block instanceof $type) {
             /* @var $form Varien_Data_Form */
@@ -91,12 +91,12 @@ class Unl_Core_Model_Observer
             return;
         }
     }
-        
+
     // These occur before the correctAdminBlocks (_beforeToHtml) calls
     public function beforeCoreBlockToHtml($observer)
     {
         $block = $observer->getEvent()->getBlock();
-        
+
         $type = 'Mage_Adminhtml_Block_Permissions_User_Edit_Tabs';
         if ($block instanceof $type) {
             $block->addTab('scope_section', array(
@@ -107,14 +107,14 @@ class Unl_Core_Model_Observer
             ));
             return;
         }
-        
+
         $type = 'Mage_Adminhtml_Block_Catalog_Product_Grid';
         if ($block instanceof $type) {
             $request = Mage::app()->getRequest();
             $request->setParam('_unlcore_std_product_grid', true);
             return;
         }
-        
+
         $type = 'Mage_Page_Block_Switch';
         if ($block instanceof $type) {
             /* @var $block Mage_Page_Block_Switch */
@@ -126,9 +126,9 @@ class Unl_Core_Model_Observer
             return;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param Mage_Core_Model_Store_Group $a
      * @param Mage_Core_Model_Store_Group $b
      * @return int
@@ -137,18 +137,18 @@ class Unl_Core_Model_Observer
     {
         $sortA = $a->getDefaultStore()->getSortOrder();
         $sortB = $b->getDefaultStore()->getSortOrder();
-        
+
         if ($sortA == $sortB) {
             return 0;
         }
         return ($sortA > $sortB) ? 1 : -1;
     }
-    
+
     public function beforeEavCollectionLoad($observer)
     {
         $request = Mage::app()->getRequest();
         $collection = $observer->getEvent()->getCollection();
-        
+
         $type = 'Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection';
         if ($request->getParam('_unlcore_std_product_grid') && $collection instanceof $type) {
             $user = Mage::getSingleton('admin/session')->getUser();
@@ -158,22 +158,22 @@ class Unl_Core_Model_Observer
             }
         }
     }
-    
+
     /**
      * Event driven salable status setter
-     * 
+     *
      * @param $observer
      */
     public function checkNoSale($observer)
     {
         $product = $observer->getEvent()->getProduct();
         $result  = $observer->getEvent()->getSalable();
-        
+
         if ($product->getNoSale() !== null) {
             $result->setIsSalable($result->getIsSalable() && !$product->getNoSale());
         }
     }
-    
+
     /**
      * Save order tax information
      *
@@ -220,7 +220,7 @@ class Unl_Core_Model_Observer
         }
         $order->setAppliedTaxIsSaved(true);
     }
-    
+
     /**
      * Daily DB backup (called from cron)
      *
@@ -241,10 +241,10 @@ class Unl_Core_Model_Observer
         catch (Exception  $e) {
             Mage::logException($e);
         }
-        
+
         return $this;
     }
-    
+
     public function isCustomerAllowedCategory($observer)
     {
         $_cat = $observer->getEvent()->getCategory();
@@ -255,7 +255,7 @@ class Unl_Core_Model_Observer
             $result->setPreventDefault(true);
         }
     }
-    
+
     public function isCustomerAllowedProduct($observer)
     {
         $_prod = $observer->getEvent()->getProduct();
@@ -266,7 +266,7 @@ class Unl_Core_Model_Observer
             $result->setPreventDefault(true);
         }
     }
-    
+
     public function consumeCheckoutMessages($observer)
     {
         $block = $observer->getEvent()->getBlock();
@@ -278,12 +278,41 @@ class Unl_Core_Model_Observer
             }
         }
     }
-    
+
     public function onAfterSetSalesQuoteItemQty($observer)
     {
         $_item = $observer->getEvent()->getItem();
         $helper = Mage::helper('unl_core');
         $helper->checkCustomerAllowedProduct($_item);
         $helper->checkCustomerAllowedProductQty($_item);
+    }
+
+    public function onBeforeAdminLoginCheckSSL($observer)
+    {
+        // even POST requests to the login page should be checked
+        $controller = $observer->getEvent()->getControllerAction();
+        $request = $controller->getRequest();
+        $front = Mage::app()->getFrontController();
+
+        if ($this->_shouldBeSecureAdmin() && !Mage::app()->getStore()->isCurrentlySecure()) {
+            $url = Mage::app()->getStore(Mage_Core_Model_App::ADMIN_STORE_ID)->getBaseUrl('link', true).ltrim($request->getPathInfo(), '/');
+
+            $front->getResponse()
+                ->setRedirect($url)
+                ->sendResponse();
+            exit;
+        }
+    }
+
+    /**
+     * This logic has been copied from the Admin router for security checks
+     * @see Mage_Core_Controller_Varien_Router_Admin
+     *
+     */
+    protected function _shouldBeSecureAdmin()
+    {
+        return substr((string)Mage::getConfig()->getNode('default/web/unsecure/base_url'),0,5)==='https'
+            || Mage::getStoreConfigFlag('web/secure/use_in_adminhtml', Mage_Core_Model_App::ADMIN_STORE_ID)
+            && substr((string)Mage::getConfig()->getNode('default/web/secure/base_url'),0,5)==='https';
     }
 }
