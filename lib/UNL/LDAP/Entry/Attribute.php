@@ -3,10 +3,10 @@
  * LDAP attribute object
  *
  * PHP version 5
- * 
+ *
  * $Id$
- * 
- * @category  Default 
+ *
+ * @category  Default
  * @package   UNL_LDAP
  * @author    Brett Bieber <brett.bieber@gmail.com>
  * @copyright 2009 Regents of the University of Nebraska
@@ -16,8 +16,8 @@
 
 /**
  * Class representing an LDAP entry's attribute
- * 
- * @category  Default 
+ *
+ * @category  Default
  * @package   UNL_LDAP
  * @author    Brett Bieber <brett.bieber@gmail.com>
  * @copyright 2009 Regents of the University of Nebraska
@@ -27,7 +27,7 @@
 class UNL_LDAP_Entry_Attribute extends ArrayIterator
 {
     public $count;
-    
+
     /**
      * construct an ldap attribute object
      *
@@ -39,7 +39,7 @@ class UNL_LDAP_Entry_Attribute extends ArrayIterator
         unset($attribute['count']);
         parent::__construct($attribute);
     }
-    
+
     /**
      * Return the total number of attributes
      *
@@ -50,11 +50,9 @@ class UNL_LDAP_Entry_Attribute extends ArrayIterator
         return $this->count;
     }
 
-    public function __wakeup()
+    public function unserialize($data)
     {
-        if (isset($this->storage)) {
-            parent::__construct($this->storage);
-        }
+        parent::unserialize($data);
         $this->rewind();
     }
 
