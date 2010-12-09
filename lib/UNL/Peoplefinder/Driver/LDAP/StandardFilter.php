@@ -21,9 +21,17 @@
  */
 class UNL_Peoplefinder_Driver_LDAP_StandardFilter
 {
-    private $_filter;
+    protected $_filter;
     
-    private $_excludeRecords = array();
+    protected $_excludeRecords = array();
+
+    public static $searchFields = array(
+            'mail',
+            'cn',
+            'givenName',
+            'sn',
+            'eduPersonNickname'
+        );
     
     /**
      * Construct a standard filter.
@@ -36,7 +44,7 @@ class UNL_Peoplefinder_Driver_LDAP_StandardFilter
     {
         if (!empty($inquery)) {
             //ignore grouping and wildcard characters
-            $inquery = str_replace(array('"',',','*'),'',$inquery);
+            $inquery = str_replace(array('"', ',', '*'), '', $inquery);
 
             //escape query
             $inquery = UNL_Peoplefinder_Driver_LDAP_Util::escape_filter_value($inquery);
@@ -44,7 +52,9 @@ class UNL_Peoplefinder_Driver_LDAP_StandardFilter
             //put the query into an array of words
             $query = preg_split('/\s+/', $inquery, 4);
 
-            if ($operator!='&') $operator = '|';
+            if ($operator != '&') {
+                $operator = '|';
+            }
 
             //create our filter
             //search for the string parts
@@ -56,7 +66,9 @@ class UNL_Peoplefinder_Driver_LDAP_StandardFilter
                 }
 
                 $filter .= '(|';
-                $filter .= "(mail=$arg)(cn=$arg)(givenName=$arg)(sn=$arg)";
+                foreach (self::$searchFields as $field) {
+                    $filter .= "($field=$arg)";
+                }
 
                 //find hyphenated and multi-word surnames in the exact matches query
                 if (!$wild) {
@@ -73,9 +85,11 @@ class UNL_Peoplefinder_Driver_LDAP_StandardFilter
             }
 
             //and search for the string as entered
-            $filter = "(|" .
-                    "(|(mail=$inquery)(cn=$inquery)(givenName=$inquery)(sn=$inquery))" .
-                    "$filter)";
+            $as_entered = '';
+            foreach(self::$searchFields as $field) {
+                $as_entered .= "($field=$inquery)";
+            }
+            $filter = "(|(|$as_entered)$filter)";
         }
         $this->_filter = $filter;
     }
@@ -87,10 +101,14 @@ class UNL_Peoplefinder_Driver_LDAP_StandardFilter
      */
     function excludeRecords($records = array())
     {
-        $this->_excludeRecords = array_merge($this->_excludeRecords, $records);
+        if (count($this->_excludeRecords)) {
+            $this->_excludeRecords = array_merge($this->_excludeRecords, $records);
+        } else {
+            $this->_excludeRecords = $records;
+        }
     }
     
-    function __toString()
+    protected function addExcludedRecords()
     {
         if (count($this->_excludeRecords)) {
             $excludeFilter = '';
@@ -99,7 +117,12 @@ class UNL_Peoplefinder_Driver_LDAP_StandardFilter
             }
             $this->_filter = '(&'.$this->_filter.'(!(|'.$excludeFilter.')))';
         }
-        $this->_filter = '(&'.$this->_filter.'(!(eduPersonPrimaryAffiliation=guest)))';
+    }
+    
+    function __toString()
+    {
+        $this->addExcludedRecords();
+        $this->_filter = '(&'.$this->_filter.'(!(eduPersonPrimaryAffiliation=guest))(objectClass=person))';
         return $this->_filter;
     }
 }

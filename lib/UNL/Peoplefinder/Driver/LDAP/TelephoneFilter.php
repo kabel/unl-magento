@@ -15,16 +15,30 @@ class UNL_Peoplefinder_Driver_LDAP_TelephoneFilter
 {
     private $_filter;
     
-    function __construct($q)
+    protected $affiliation;
+    
+    function __construct($q, $affiliation = null)
     {
         if (!empty($q)) {
             $this->_filter = '(telephoneNumber=*'.str_replace('-','*',$q).')';
+        }
+        
+        switch ($affiliation) {
+            case 'faculty':
+            case 'staff':
+            case 'student':
+                $this->affiliation = $affiliation;
+                break;
         }
     }
     
     function __toString()
     {
-        $this->_filter = '(&'.$this->_filter.'(!(eduPersonPrimaryAffiliation=guest)))';
+        $this->_filter = '(&'.$this->_filter.'(!(|(ou=org)(eduPersonPrimaryAffiliation=guest)))';
+        if ($this->affiliation) {
+            $this->_filter .= '(eduPersonAffiliation='.$this->affiliation.')';
+        }
+        $this->_filter .= ')';
         return $this->_filter;
     }
 }

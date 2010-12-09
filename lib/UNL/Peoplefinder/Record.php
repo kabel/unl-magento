@@ -12,8 +12,10 @@
  */
 class UNL_Peoplefinder_Record
 {
+    public $dn; // distinguished name
     public $cn;
     public $ou;
+    public $eduPersonAffiliation;
     public $eduPersonNickname;
     public $eduPersonPrimaryAffiliation;
     public $givenName;
@@ -24,6 +26,7 @@ class UNL_Peoplefinder_Record
     public $telephoneNumber;
     public $title;
     public $uid;
+    public $unlHROrgUnitNumber;
     public $unlHRPrimaryDepartment;
     public $unlHRAddress;
     public $unlSISClassLevel;
@@ -41,28 +44,17 @@ class UNL_Peoplefinder_Record
 //    public $unlSISPermZip;
     public $unlSISMajor;
     public $unlEmailAlias;
-    
-    
-    static function fromLDAPEntry(array $entry)
+
+    function __construct($options = array())
     {
-        $r = new self();
-        foreach (get_object_vars($r) as $var=>$val) {
-            if (isset($entry[strtolower($var)], $entry[strtolower($var)][0])) {
-                $r->$var = $entry[strtolower($var)][0];
-            }
+        if (isset($options['uid'])
+            && $options['peoplefinder']) {
+            return $options['peoplefinder']->getUID($options['uid']);
         }
-        return $r;
     }
-    
-    static function fromUNLLDAPEntry(UNL_LDAP_Entry $entry)
-    {
-        $r = new self();
-        foreach (get_object_vars($r) as $var=>$val) {
-            $r->$var = $entry->$var;
-        }
-        return $r;
-    }
-    
+
+
+
     /**
      * Takes in a string from the LDAP directory, usually formatted like:
      *     ### ___ UNL 68588-####
@@ -73,50 +65,124 @@ class UNL_Peoplefinder_Record
      */
     function formatPostalAddress()
     {
-        /* this is a faculty postal address
-            Currently of the form:
-            ### ___ UNL 68588-####
-            Where ### is the room number, ___ = Building Abbreviation, #### zip extension
-        */
-        /**
-         * We assumed that the address format is: ### ___ UNL 68588-####.
-         * Some 'fortunate' people have addresses not in this format.
-         */
-        //RLIM
-        // treat UNL as the delimiter for the streetaddress and zip
-        if (strpos($this->postalAddress,'UNL')) {
-            $addressComponent = explode('UNL', $this->postalAddress);
-        } elseif (strpos($this->postalAddress,'UNO')) {
-            $addressComponent = explode('UNO', $this->postalAddress);
-        } elseif (strpos($this->postalAddress,'Omaha')) {
-            $addressComponent = explode('Omaha', $this->postalAddress);
-        } else {
-            $addressComponent = array($this->postalAddress);
-        }
+        $parts = explode(',', $this->postalAddress);
+
+        // Set up defaults:
+        $address = array();
+        $address['street-address'] = trim($parts[0]);
+        $address['locality']       = '';
         $address['region']         = 'NE';
-        $address['street-address'] = trim($addressComponent[0]);
-        if (isset($addressComponent[1])) {
-            $address['postal-code'] = trim($addressComponent[1]);
-        } else {
-            $address['postal-code'] = '';
+        $address['postal-code']    = '';
+
+        if (count($parts) == 3) {
+            // Assume we have a street address, city, zip.
+            $address['locality'] = trim($parts[1]);
         }
-        switch (substr($address['postal-code'],0,3)) {
+
+        // Now lets find some important bits.
+        foreach ($parts as $part) {
+            if (preg_match('/([\d]{5})(\-[\d]{4})?/', $part)) {
+                // Found a zip-code
+                $address['postal-code'] = trim($part);
+            }
+        }
+
+        switch (substr($address['postal-code'], 0, 3)) {
             case '681':
                 $address['locality'] = 'Omaha';
-            break;
+                break;
             case '685':
-            default:
                 $address['locality'] = 'Lincoln';
-            break;
+                break;
         }
-        
+
         return $address;
     }
-    
+
+    /**
+     * Formats a major subject code into a text description.
+     *
+     * @param string $subject Subject code for the major eg: MSYM
+     *
+     * @return string
+     */
+    public function formatMajor($subject)
+    {
+
+        $c = new UNL_Cache_Lite();
+        if ($subject_xml = $c->get('catalog subjects')) {
+
+        } else {
+            if ($subject_xml = file_get_contents('http://bulletin.unl.edu/?view=subjects&format=xml')) {
+                $c->save($subject_xml);
+            } else {
+                $c->extendLife();
+                $c->get('catalog subjects');
+            }
+        }
+
+        $d = new DOMDocument();
+        $d->loadXML($subject_xml);
+        if ($subject_el = $d->getElementById($subject)) {
+            return $subject_el->textContent;
+        }
+
+        switch ($subject) {
+            case 'UNDL':
+                return 'Undeclared';
+            case 'PBAC':
+                return 'Non-Degree Post-Baccalaureate';
+            default:
+                return $subject;
+        }
+    }
+
+    /**
+     * Format a three letter college abbreviation into the full college name.
+     *
+     * @param string $college College abbreviation = FPA
+     *
+     * @return string College of Fine &amp; Performing Arts
+     */
+    public function formatCollege($college)
+    {
+        include_once 'UNL/Common/Colleges.php';
+        $colleges = new UNL_Common_Colleges();
+        if (isset($colleges->colleges[$college])) {
+            return htmlentities($colleges->colleges[$college]);
+        }
+
+        return $college;
+    }
+
+    function getImageURL($size = 'medium')
+    {
+
+        if ($this->ou == 'org') {
+            return UNL_Peoplefinder::getURL().'images/organization.png';
+        }
+
+        switch ($size) {
+            case 'large':
+            case 'medium':
+            case 'tiny':
+            case 'topbar':
+                break;
+            default:
+                $size = 'medium';
+        }
+
+        return 'http://planetred.unl.edu/pg/icon/unl_'.str_replace('-', '_', $this->uid).'/'.$size.'/';
+    }
+
+    function getRoles()
+    {
+        return new UNL_Peoplefinder_Person_Roles(array('dn'=>$this->dn));
+    }
+
     function __toString()
     {
-        return $this->uid;
+        return (string)$this->uid;
     }
 }
 
-?>

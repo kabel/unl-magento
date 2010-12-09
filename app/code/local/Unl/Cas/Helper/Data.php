@@ -2,8 +2,14 @@
 
 class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const XML_PATH_CUSTOMER_UNL_LDAP_ACTIVE = 'customer/unl_ldap/active';
+    const XML_PATH_CUSTOMER_UNL_LDAP_SERVER = 'customer/unl_ldap/server';
+    const XML_PATH_CUSTOMER_UNL_LDAP_BASEDN = 'customer/unl_ldap/basedn';
+    const XML_PATH_CUSTOMER_UNL_LDAP_BINDDN = 'customer/unl_ldap/binddn';
+    const XML_PATH_CUSTOMER_UNL_LDAP_BINDPW = 'customer/unl_ldap/bindpw';
+
     protected $_cache = array();
-    
+
     protected $_specialCustomerGroups = array(
         'UNL Student',
         'UNL Student - Fee Paying',
@@ -11,12 +17,12 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         'UNL Cost Object Authorized'
     );
     protected $_specialGroupsCollection;
-    
+
     protected $_affiliations = array(
         'UNL Student' => 1,
         'UNL Faculty/Staff' => 2
     );
-    
+
     /**
      * Check customer is logged in
      *
@@ -36,61 +42,78 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return UNL_Auth::factory('SimpleCAS', array('requestClass' => 'Zend_Http_Client'));
     }
-    
+
     public function getCasUrl()
     {
         return $this->_getUrl('unlcas/account/cas');
     }
-    
+
     public function getRegisterPostUrl()
     {
         return $this->_getUrl('unlcas/account/createpost');
     }
-    
+
     public function cache($key, $value)
     {
         $this->_cache[$key] = $value;
     }
-    
+
     public function fetchPfUID($uid)
     {
         if (isset($this->_cache[$uid])) {
             return $this->_cache[$uid];
         }
-        
-        $pf = new UNL_Peoplefinder();
-        if ($r = @$pf->getUID($uid)) {
-            $this->cache($uid, $r);
+
+        if (Mage::getStoreConfigFlag(self::XML_PATH_CUSTOMER_UNL_LDAP_ACTIVE)) {
+            UNL_Peoplefinder_Driver_LDAP::$ldapServer = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_SERVER);
+            UNL_Peoplefinder_Driver_LDAP::$baseDN = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BASEDN);
+            UNL_Peoplefinder_Driver_LDAP::$bindDN = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BINDDN);
+            UNL_Peoplefinder_Driver_LDAP::$bindPW = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BINDPW);
+            $driver = new UNL_Peoplefinder_Driver_LDAP();
+        } else {
+            $driver = null;
         }
-        
+
+        $pf = new UNL_Peoplefinder($driver);
+        // The Pf Drivers now throw exceptions if a users isn't found
+        try {
+            $r = $pf->getUID($uid);
+            $this->cache($uid, $r);
+        } catch (Exception $e) {
+            if ($e->getCode() != 404) {
+                Mage::logException($e);
+            }
+            $r = null;
+        }
+
         return $r;
     }
-    
+
     public function isValidPf($uid)
     {
         return ($this->fetchPfUID($uid) !== null);
     }
-    
+
     public function isFacultyStaff($uid)
     {
         if ($r = $this->fetchPfUID($uid)) {
             $affiliation = $r->eduPersonPrimaryAffiliation;
             return (strpos($affiliation, 'staff') !== false || strpos($affiliation, 'faculty') !== false);
         }
-        
+
         return false;
     }
-    
+
     public function isStudent($uid)
     {
         if ($r = $this->fetchPfUID($uid)) {
             $affiliation = $r->eduPersonPrimaryAffiliation;
             return (strpos($affiliation, 'student') !== false);
         }
-        
+
         return false;
     }
-    
+
     public function isAllowedAffiliationSwitch($customer, $reload = false)
     {
         if ($reload) {
@@ -98,7 +121,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         } else {
             $_customer = $customer;
         }
-        
+
         if ($uid = $_customer->getUnlCasUid()) {
             if ($r = $this->fetchPfUID($uid)) {
                 $affiliations = 0;
@@ -109,21 +132,21 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
                         $affiliations |= 2;
                     }
                 }
-                
+
                 if (($affiliations & 3) == 3) {
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public function getAffiliations()
     {
         return $this->_affiliations;
     }
-    
+
     public function getCustomerAffiliation($customer)
     {
         foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
@@ -140,10 +163,10 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Add peoplefinder data to Varian Object
      *
@@ -153,7 +176,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $user = $this->getAuth()->getUser();
         if ($r = $this->fetchPfUID($user)) {
-            
+
             if (empty($data['email']) && isset($r->mail) && $r->mail->valid()) {
                 if (isset($r->unlEmailAlias)) {
                     $data['email'] = $r->unlEmailAlias . '@unl.edu';
@@ -161,17 +184,17 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
                     $data['email'] = (string)$r->mail;
                 }
             }
-            
+
             if (empty($data['firstname'])) {
                 $data['firstname'] = (string)$r->givenName;
             }
-            
+
             if (empty($data['lastname'])) {
                 $data['lastname'] = (string)$r->sn;
             }
         }
     }
-    
+
     /**
      * Assigns a group id based on peoplefinder results
      *
@@ -200,7 +223,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         if (!$this->isAllowedAffiliationSwitch($customer, true) || !Mage::app()->getRequest()->getPost('affiliation_switch')) {
             return;
         }
-        
+
         $specialGroups = $this->_getSpecialCustomerGroupsCollection();
         //should not trigger save becuase this should only be called on _beforeSave
         switch (Mage::app()->getRequest()->getPost('affiliation_switch')) {
@@ -213,11 +236,11 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
                 break;
         }
     }
-    
+
     /**
      * Reverts a customer's group classification back to the default
      * if it is a special group
-     * 
+     *
      * @param Mage_Customer_Model_Customer $customer
      */
     public function revokeSpecialCustomerGroup($customer)
@@ -231,10 +254,10 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
     }
-    
+
     /**
      * Assigns the customer group to the special group for Cost Object orders
-     * 
+     *
      * @param Mage_Customer_Model_Customer $customer
      */
     public function authorizeCostObject($customer)
@@ -242,7 +265,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         $coGroup = $this->_getSpecialCustomerGroupsCollection()->getItemByColumnValue('customer_group_code', 'UNL Cost Object Authorized');
         $this->_assignCustomerGroup($customer, $coGroup);
     }
-    
+
     public function revokeCostObjectAuth($customer)
     {
         $specialGroups = $this->_getSpecialCustomerGroupsCollection();
@@ -250,7 +273,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'));
         }
     }
-    
+
     public function isCustomerCostObjectAuthorized($customer)
     {
         foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
@@ -263,13 +286,13 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Sets the customer's group id and saves, if needed
-     * 
+     *
      * @param Mage_Customer_Model_Customer $customer
      * @param Mage_Customer_Model_Group $group
      */
@@ -282,10 +305,10 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
     }
-    
+
     /**
      * Retieves a collection of the special customer groups
-     * 
+     *
      * @return Mage_Customer_Model_Entity_Group_Collection
      */
     protected function _getSpecialCustomerGroupsCollection()
@@ -296,7 +319,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             $collection->addFieldToFilter('customer_group_code', array('in' => $this->_specialCustomerGroups));
             $this->_specialGroupsCollection = $collection;
         }
-        
+
         return $this->_specialGroupsCollection;
     }
 }

@@ -40,12 +40,15 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     public $listAttributes = array(
         'cn',
         'eduPersonNickname',
+        'eduPersonAffiliation',
         'eduPersonPrimaryAffiliation',
         'givenName',
         'sn',
         'telephoneNumber',
+        'title',
         'uid',
-        'unlHRPrimaryDepartment');
+        'unlHRPrimaryDepartment',
+        'unlHROrgUnitNumber');
     
     /**
      * Details are for UID detail display only.
@@ -54,6 +57,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     public $detailAttributes = array(
         'ou',
         'cn',
+        'eduPersonAffiliation',
         'eduPersonNickname',
         'eduPersonPrimaryAffiliation',
         'givenName',
@@ -64,6 +68,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         'telephoneNumber',
         'title',
         'uid',
+        'unlHROrgUnitNumber',
         'unlHRPrimaryDepartment',
         'unlHRAddress',
         'unlSISClassLevel',
@@ -112,7 +117,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
                 return $this->connected;
             }
         }
-        throw new Exception('Cound not connect to LDAP directory.');
+        throw new Exception('Cound not connect to the LDAP directory.', 500);
     }
     
     /**
@@ -150,22 +155,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
             $this->lastResultCount = @ldap_count_entries($this->linkID, $sr);
             $this->lastResult      = @ldap_get_entries($this->linkID, $sr);
             $this->unbind();
-            //sort the results
-            for ($i=0;$i<$this->lastResult['count'];$i++) {
-                if (isset($this->lastResult[$i]['givenname'])) {
-                    $name = $this->lastResult[$i]['sn'][0]
-                          . ', '
-                          . $this->lastResult[$i]['givenname'][0];
-                } else {
-                    $name = $this->lastResult[$i]['sn'][0];
-                }
-                $this->lastResult[$i]['insensitiveName'] = strtoupper($name);
-            }
-            @reset($this->lastResult);
-            $this->lastResult = @UNL_Peoplefinder_Driver_LDAP_Util::array_csort(
-                                                    $this->lastResult,
-                                                    'insensitiveName',
-                                                    SORT_ASC);
+            $this->lastResult = $this->caseInsensitiveSortLDAPResults($this->lastResult);
             return $this->lastResult;
         } else {
             $result = ldap_get_entries($this->linkID, $sr);
@@ -174,17 +164,43 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         }
     }
 
+    protected function caseInsensitiveSortLDAPResults($result)
+    {
+        if (!is_array($result)) {
+            return $result;
+        }
+        // sort the results
+        for ($i=0; $i<$result['count']; $i++) {
+            $name = $result[$i]['sn'][0];
+            if (isset($result[$i]['givenname'])) {
+                $name .= ', ' . $result[$i]['givenname'][0];
+            }
+            $result[$i]['insensitiveName'] = strtoupper($name);
+        }
+        reset($result);
+        $result = UNL_Peoplefinder_Driver_LDAP_Util::array_csort(
+                                                $result,
+                                                'insensitiveName',
+                                                SORT_ASC);
+        return $result;
+    }
+
     
     /**
      * Get records which match the query exactly.
      *
-     * @param string $q Search string.
+     * @param string $query       Search string.
+     * @param string $affiliation eduPersonAffiliation, eg staff/faculty/student
      * 
      * @return array(UNL_Peoplefinder_Record)
      */
-    public function getExactMatches($q)
+    public function getExactMatches($query, $affiliation = null)
     {
-        $filter = new UNL_Peoplefinder_Driver_LDAP_StandardFilter($q, '&', false);
+        if ($affiliation) {
+            $filter = new UNL_Peoplefinder_Driver_LDAP_AffiliationFilter($query, $affiliation, '&', false);
+        } else {
+            $filter = new UNL_Peoplefinder_Driver_LDAP_StandardFilter($query, '&', false);
+        }
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
     }
@@ -200,7 +216,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         $r = array();
         if ($this->lastResultCount > 0) {
             for ($i = 0; $i < $this->lastResultCount; $i++) {
-                $r[] = UNL_Peoplefinder_Record::fromLDAPEntry($this->lastResult[$i]);
+                $r[] = self::recordFromLDAPEntry($this->lastResult[$i]);
             }
         }
         return $r;
@@ -215,9 +231,9 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
      * 
      * @return array(UNL_Peoplefinder_Record)
      */
-    public function getAdvancedSearchMatches($sn, $cn, $eppa)
+    public function getAdvancedSearchMatches($query, $affiliation = null)
     {
-        $filter = new UNL_Peoplefinder_Driver_LDAP_AdvancedFilter($sn, $cn, $eppa, '&', true);
+        $filter = new UNL_Peoplefinder_Driver_LDAP_AdvancedFilter($query['sn'], $query['cn'], $affiliation, '&', true);
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
     }
@@ -225,15 +241,20 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     /**
      * Find matches similar to the query given
      *
-     * @param string $q                Search query
+     * @param string $query            Search query
+     * @param string $affiliation      eduPersonAffiliation, eg staff/faculty/student
      * @param array  $excluded_records Array of records to exclude.
      * 
      * @return array(UNL_Peoplefinder_Record)
      */
-    public function getLikeMatches($q, $excluded_records = array())
+    public function getLikeMatches($query, $affiliation = null, $excluded_records = array())
     {
-        // Build filter excluding those displayed above
-        $filter = new UNL_Peoplefinder_Driver_LDAP_StandardFilter($q, '&', true);
+        if ($affiliation) {
+            $filter = new UNL_Peoplefinder_Driver_LDAP_AffiliationFilter($query, $affiliation, '&', true);
+        } else {
+            $filter = new UNL_Peoplefinder_Driver_LDAP_StandardFilter($query, '&', true);
+        }
+        // Exclude those displayed above
         $filter->excludeRecords($excluded_records);
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
@@ -242,13 +263,14 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     /**
      * Get an array of records which matche by the phone number.
      *
-     * @param string $q EG: 472-1598
+     * @param string $q           EG: 472-1598
+     * @param string $affiliation eduPersonAffiliation, eg staff/faculty/student
      * 
      * @return array(UNL_Peoplefinder_Record)
      */
-    public function getPhoneMatches($q)
+    public function getPhoneMatches($query, $affiliation = null)
     {
-        $filter = new UNL_Peoplefinder_Driver_LDAP_TelephoneFilter($q);
+        $filter = new UNL_Peoplefinder_Driver_LDAP_TelephoneFilter($query, $affiliation);
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
     }
@@ -264,12 +286,54 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     {
         $r = $this->query("(&(uid=$uid))", $this->detailAttributes, false);
         if (isset($r[0])) {
-            return UNL_Peoplefinder_Record::fromLDAPEntry($r[0]);
+            return self::recordFromLDAPEntry($r[0]);
         } else {
-            header('HTTP/1.0 404 Not Found');
-            throw new Exception('Cannot find that UID.');
+            throw new Exception('Cannot find that UID.', 404);
         }
     }
     
+    public static function recordFromLDAPEntry(array $entry)
+    {
+        $r = new UNL_Peoplefinder_Record();
+        foreach (get_object_vars($r) as $var=>$val) {
+            if (isset($entry[strtolower($var)])) {
+                switch(gettype($entry[strtolower($var)])) {
+                    case 'string':
+                        $r->$var = $entry[strtolower($var)];
+                        break;
+                    default:
+                        $r->$var = new UNL_LDAP_Entry_Attribute($entry[strtolower($var)]);
+                }
+            }
+        }
+        $r->imageURL = $r->getImageURL();
+        return $r;
+    }
     
+    public static function recordFromUNLLDAPEntry(UNL_LDAP_Entry $entry)
+    {
+        $r = new UNL_Peoplefinder_Record();
+        foreach (get_object_vars($r) as $var=>$val) {
+            $r->$var = $entry->$var;
+        }
+        $r->imageURL = $r->getImageURL();
+        return $r;
+    }
+
+    public function getHRPrimaryDepartmentMatches($query, $affiliation = null)
+    {
+        $filter = new UNL_Peoplefinder_Driver_LDAP_HRPrimaryDepartmentFilter($query);
+        $this->query($filter->__toString(), $this->detailAttributes);
+        return $this->getRecordsFromResults();
+    }
+
+    public function getHROrgUnitNumberMatches($query, $affiliation = null)
+    {
+        $filter = new UNL_Peoplefinder_Driver_LDAP_HROrgUnitNumberFilter($query);
+
+        // @TODO Clean up this mess. Either use UNL_LDAP entirely, or use something internal
+        $this->query($filter->__toString(), $this->listAttributes);
+        
+        return new UNL_Peoplefinder_Department_Personnel(new ArrayIterator($this->getRecordsFromResults()));
+    }
 }

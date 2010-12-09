@@ -127,4 +127,14 @@
             </updates>
         </layout>
     </frontend>
+    
+    <default>
+        <customer>
+            <unl_ldap>
+                <server>ldap.unl.edu ldap-backup.unl.edu</server>
+                <basedn>dc=unl,dc=edu</basedn>
+                <bindpw backend_model="adminhtml/system_config_backend_encrypted"/>
+            </unl_ldap>
+        </customer>
+    </default>
 </config>

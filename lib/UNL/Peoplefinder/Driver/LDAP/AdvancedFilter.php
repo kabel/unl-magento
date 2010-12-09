@@ -72,7 +72,7 @@ class UNL_Peoplefinder_Driver_LDAP_AdvancedFilter
     
     function __toString()
     {
-        $this->_filter = '(&'.$this->_filter.'(!(eduPersonPrimaryAffiliation=guest)))';
+        $this->_filter = '(&'.$this->_filter.'(!(|(ou=org)(eduPersonPrimaryAffiliation=guest))))';
         return $this->_filter;
     }
 
