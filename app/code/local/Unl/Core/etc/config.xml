@@ -229,20 +229,7 @@
                     <module>Unl_Core</module>
                     <class>Mage_Eav_Model_Entity_Setup</class>
                 </setup>
-                <connection>
-                    <use>core_setup</use>
-                </connection>
             </unl_core_setup>
-            <unl_core_write>
-                <connection>
-                    <use>core_write</use>
-                </connection>
-            </unl_core_write>
-            <unl_core_read>
-                <connection>
-                    <use>core_read</use>
-                </connection>
-            </unl_core_read>
         </resources>
         
         <fieldsets>
