@@ -52,7 +52,7 @@ xajax.callback.global.beforeResponseProcessing = function() {\$('loading-mask').
     		$this->_loadorderjs = "
     		<script type='text/javascript'>
     			document.getElementById('order_id').value = '$incrementid';
-    			retrieveOrder();
+    			retrieveOrder(true);
     		</script>";
         }
 

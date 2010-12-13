@@ -22,11 +22,13 @@
 		window.scroll(0,0);
 	}
 
-	function retrieveOrder()  {
+	function retrieveOrder(keepMsg)  {
 		$('order_details').style.display='none';
 		$('create_shipment_top').style.display='none';
 		$('print_labels').style.display='none';
-		$('messages').innerHTML='';
+	    if (!keepMsg) {
+	      $('messages').innerHTML='';
+	    }
 		$('curr_order_id').value='';
 
 		//reset packages
