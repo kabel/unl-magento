@@ -190,6 +190,11 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 .success { color:#3d6611; font-weight:bold; }
 .error { color:#df280a; font-weight:bold; }
 .notice { color:#e26703; }
+.wdn_notice .message .title {
+	font: 1.4em/1.2em Helvetica,Arial,sans-serif;
+    font-weight: bold;	
+}
+#maincontent .wdn_notice .message p { margin:0; }
 
 .messages,
 .messages ul { list-style:none !important; margin:0 !important; padding:0 !important; }

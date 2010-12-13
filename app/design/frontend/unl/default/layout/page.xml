@@ -39,6 +39,8 @@ Default layout, loads most of the pages
 
             <block type="page/html_notices" name="global_notices" as="global_notices" template="page/html/notices.phtml" />
             
+            <block type="unl_core/page_html_contentnotices" name="content_notices" as="content_notices" template="page/html/contentnotices.phtml" />
+            
             <block type="page/html_header" name="header" as="header"/>
             
             <block type="page/template_links" name="top.links" as="topLinks" template="page/html/top.links.phtml"/>
