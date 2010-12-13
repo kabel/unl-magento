@@ -311,6 +311,7 @@ class Zenprint_Xajax_Model_Ordership extends Zenprint_Xajax_Model_Handler
 		$this->_xresponse->assign('curr_order_id', 'value', $orderid);
 		$this->_xresponse->assign('order_status', 'innerHTML', $order->getStatusLabel());
 		$this->_xresponse->assign('order_placed', 'innerHTML', $order->getCreatedAt());
+		$this->_xresponse->assign('order_url', 'href', Mage::getModel('adminhtml/url')->getUrl('adminhtml/sales_order/view', array('order_id' => $order->getId())));
 
 		$this->_xresponse->assign('ship_from_name', 'innerHTML', $order->getStore()->getWebsite()->getName());
 		$this->_xresponse->assign('ship_from_addr1', 'innerHTML', Mage::getStoreConfig('shipping/origin/address1'));
