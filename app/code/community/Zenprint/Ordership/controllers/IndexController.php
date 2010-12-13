@@ -31,6 +31,62 @@ class Zenprint_Ordership_IndexController extends Mage_Adminhtml_Controller_Actio
 
 	}
 
+	public function queueordersAction()
+	{
+	    $orderIds = $this->getRequest()->getPost('order_ids');
+	    if (!empty($orderIds)) {
+	        $session = $this->_getSession();
+	        $queue = $session->getOrdershipQueue();
+	        $count = 0;
+	        if (!$queue) {
+	            $queue = array();
+	        }
+            foreach ($orderIds as $orderId) {
+                $order = Mage::getModel('sales/order')->load($orderId);
+                if ($order->canShip()) {
+                    $count++;
+                    $queue[] = $orderId;
+                }
+            }
+            if ($count) {
+                $this->_getSession()->addSuccess($this->__('%s order(s) have been queued for auto ship.', $count));
+                $orderId = array_shift($queue);
+                $session->setOrdershipQueue($queue);
+                return $this->_redirect('*/*/', array(
+                    'order_id' => $orderId
+                ));
+            } else {
+                $this->_getSession()->addError($this->__('There are no shippable orders in the selected orders.'));
+                return $this->_redirect('*/*/');
+            }
+
+        }
+        $this->_redirect('*/*/');
+	}
+
+	public function clearqueueAction()
+	{
+	    $this->_getSession()->unsOrdershipQueue();
+	    $this->_getSession()->addSuccess($this->__('Successfully cleared the auto ship queue.'));
+	    $this->_redirect('*/*/');
+	}
+
+	public function nextinqueueAction()
+	{
+	    $session = $this->_getSession();
+        $queue = $session->getOrdershipQueue();
+        if (!empty($queue)) {
+            $orderId = array_shift($queue);
+            $session->setOrdershipQueue($queue);
+            $this->_redirect('*/*/', array(
+                'order_id' => $orderId
+            ));
+        } else {
+            $this->_getSession()->addError($this->__('The auto ship queue is empty.'));
+            $this->_redirect('*/*/');
+        }
+	}
+
 	public function highvalueAction() {
 	   $pkgid = $this->getRequest()->getParam('id');
         if(empty($pkgid))  {

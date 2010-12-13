@@ -15,21 +15,21 @@
  * @copyright  Copyright (c) 2009 ZenPrint (http://www.zenprint.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class Zenprint_Ordership_Block_Adminhtml_Sales_Order extends Mage_Adminhtml_Block_Sales_Order 
+class Zenprint_Ordership_Block_Adminhtml_Sales_Order extends Mage_Adminhtml_Block_Sales_Order
 {
     public function __construct()
     {
         parent::__construct();
-        
-        if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship'))  {
-	        //add a button for shipping an order by its order_id
-			$this->_addButton('ship', array(
-				'label'     => Mage::helper('sales')->__('Ship Orders'),
-				'onclick'   => "setLocation('".$this->getUrl('ordership')."')",
-				'class'     => 'none',
-			));
-        }
-              
+
+//        if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship'))  {
+//	        //add a button for shipping an order by its order_id
+//			$this->_addButton('ship', array(
+//				'label'     => Mage::helper('sales')->__('Ship Orders'),
+//				'onclick'   => "setLocation('".$this->getUrl('ordership')."')",
+//				'class'     => 'none',
+//			));
+//        }
+
     }
 
 }

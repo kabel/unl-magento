@@ -11,7 +11,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
                 'main_table.entity_id = o.entity_id',
                 array('external_id')
             );
-        
+
         $user  = Mage::getSingleton('admin/session')->getUser();
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
@@ -21,18 +21,18 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
                 ->columns(array('order_id'))
                 ->where('source_store_view IN (?)', $scope)
                 ->group('order_id');
-                
+
             $collection->getSelect()
                 ->joinInner(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
         }
-        
+
         //MAYBE: Add payment method to grid
-        
+
         $this->setCollection($collection);
-        
+
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
-    
+
     protected function _prepareColumns()
     {
         $this->addColumn('real_order_id', array(
@@ -42,7 +42,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'index' => 'increment_id',
             'filter_index' => 'main_table.increment_id',
         ));
-        
+
         $this->addColumn('external_id', array(
             'header' => Mage::helper('sales')->__('External #'),
             'width'  => '80px',
@@ -88,7 +88,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'currency' => 'base_currency_code',
         ));
 
-        /* THIS IS POINTLESS BECAUSE WE ONLY SUPPORT USD 
+        /* THIS IS POINTLESS BECAUSE WE ONLY SUPPORT USD
         $this->addColumn('grand_total', array(
             'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
             'index' => 'grand_total',
@@ -127,13 +127,25 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             ));
         }
         $this->addRssList('rss/order/new', Mage::helper('sales')->__('New Order RSS'));
-        
+
         $this->addExportType('*/*/exportCsv', Mage::helper('sales')->__('CSV'));
         $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
     }
-    
+
+    protected function _prepareMassaction()
+    {
+        parent::_prepareMassaction();
+
+        if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship'))  {
+            $this->getMassactionBlock()->addItem('ordership_queue', array(
+                 'label'=> Mage::helper('sales')->__('Queue for Auto Ship'),
+                 'url'  => $this->getUrl('ordership/index/queueorders'),
+            ));
+        }
+    }
+
     /**
      * Add new rss list to grid
      *
@@ -151,12 +163,12 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         );
         return $this;
     }
-    
+
     protected function _getPaymentMethods()
     {
         $config = Mage::getModel('payment/config');
         $methods = $config->getAllMethods();
-        
+
         1+1;
     }
 }

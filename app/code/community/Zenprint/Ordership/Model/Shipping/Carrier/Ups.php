@@ -512,7 +512,7 @@ class Zenprint_Ordership_Model_Shipping_Carrier_Ups
                 '59'	=>	'2DML',
                 '02'	=>	'2DA',
                 '02'	=>	'2DAL',
-                '13'	=>	'3DS',
+                '12'	=>	'3DS',
                 '03'	=>	'GND',
                 '03'	=>	'GNDCOM',
                 '03'	=>	'GNDRES',

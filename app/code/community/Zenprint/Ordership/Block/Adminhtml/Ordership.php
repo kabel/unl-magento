@@ -34,15 +34,16 @@ class Zenprint_Ordership_Block_Adminhtml_Ordership extends Mage_Adminhtml_Block_
 		$orderajax->setRequestURI($this->getUrl('xjx/ordership/'));
 		$this->_ajaxjs = $orderajax->getJavascript();
 		$this->_ajaxjs .= "<script type='text/javascript'>
-                                   xajax.callback.global.onRequest = function() {
-                                   	var loadingmask = \$('loading-mask');
-                					if(typeof loadingmask != 'undefined' && null != loadingmask ) {
-                                          loadingmask.style.display = 'block';
-    								}
-    							}
-                                      xajax.callback.global.beforeResponseProcessing = function() {\$('loading-mask').style.display='none';}
-                                      </script>";
-
+//<![CDATA[
+xajax.callback.global.onRequest = function() {
+   	var loadingmask = \$('loading-mask');
+	if(typeof loadingmask != 'undefined' && null != loadingmask ) {
+          loadingmask.style.display = 'block';
+	}
+}
+xajax.callback.global.beforeResponseProcessing = function() {\$('loading-mask').style.display='none';}
+//]]>
+</script>";
 
         //determine if there was an orderid passed
         $orderid = $this->getRequest()->getParam('order_id');
@@ -53,11 +54,18 @@ class Zenprint_Ordership_Block_Adminhtml_Ordership extends Mage_Adminhtml_Block_
     			document.getElementById('order_id').value = '$incrementid';
     			retrieveOrder();
     		</script>";
-        }      
-        
+        }
+
         return parent::_prepareLayout();
     }
-    
+
+    public function isQueueEmpty()
+    {
+        $session = Mage::getSingleton('adminhtml/session');
+        $queue = $session->getOrdershipQueue();
+        return empty($queue);
+    }
+
     /**
      * Retrieve all potential dimensions for container types for each carrier and unit
      *
@@ -72,11 +80,11 @@ class Zenprint_Ordership_Block_Adminhtml_Ordership extends Mage_Adminhtml_Block_
     		//TODO: Implement Fedex
 //    		'FEDEX' => ,
     	);
-    	
+
     	if($returntype == 'php')  {
     		return $retval;
     	}
-    	
+
     	//return as JS array
     	return json_encode($retval);
     }
