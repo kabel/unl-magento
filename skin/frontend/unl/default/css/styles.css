@@ -4,7 +4,13 @@
 #maincontent dd                          { padding: 0 }
 body.fixed #maincontent { overflow: visible; }
 #footer .contact .links                  { list-style: none; padding: 0; }
-#footer #wdn_copyright ul.links { padding: 0; margin: 0 0 1.1em; }
+#wdn_copyright ul.links { list-style:none; padding: 0; margin: 0 0 1.1em; }
+#wdn_copyright ul.links li { display: list-item; }
+#wdn_copyright .col-links { width: 700px; padding-right:8px; line-height:1.5em; }
+#wdn_copyright .col-payment { width: 220px; padding-left:8px; text-align:right; }
+#wdn_copyright .link-col { width: 169px; padding: 0 4px; float:left; }
+#wdn_copyright .link-col.left { padding-left:0; }
+#wdn_copyright .link-col.right { padding-right:0; }
 #wdn_copyright ul.links li { padding-right: 10px; }
 
 /* Tools */

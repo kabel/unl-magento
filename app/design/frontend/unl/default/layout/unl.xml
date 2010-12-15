@@ -1,5 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <layout version="0.1.0">
+    <default>
+        <reference name="marketplace_links">
+            <action method="addLink" translate="label title"><label>About Us</label><url/><title>About Us</title><prepare>true</prepare><urlParams><_direct>about-us</_direct></urlParams></action>
+            <action method="addLink" translate="label title"><label>Shipping</label><url/><title>Shipping</title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>shipping</_fragment></urlParams></action>
+            <action method="addLink" translate="label title"><label>Payment</label><url/><title>Payment</title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>payment</_fragment></urlParams></action>
+        </reference>
+    </default>
     <STORE_dairystore>
 	    <reference name="contact_link">
 	        <action method="addLink" module="contacts"><label>http://dairystore.unl.edu/</label><url>http://dairystore.unl.edu/</url><title>Dairy Store Website</title></action>
