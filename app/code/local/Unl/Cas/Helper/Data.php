@@ -218,6 +218,20 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
+    public function getDisplayName($uid = false)
+    {
+        if ($uid === false) {
+            $uid = $this->getAuth()->getUser();
+        }
+
+        if ($r = $this->fetchPfUID($uid)) {
+            if (isset($r->displayName)) {
+                return (string)$r->displayName;
+            }
+        }
+        return $uid;
+    }
+
     public function switchAffiliation($customer)
     {
         if (!$this->isAllowedAffiliationSwitch($customer, true) || !Mage::app()->getRequest()->getPost('affiliation_switch')) {

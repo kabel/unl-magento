@@ -62,17 +62,10 @@ class Unl_Cas_Block_Form_Register extends Mage_Directory_Block_Data
         }
         return null;
     }
-    
+
     public function getDisplayName()
     {
-        $user = Mage::helper('unl_cas')->getAuth()->getUser();
-        $pf = new UNL_Peoplefinder();
-        if ($r = $pf->getUID($user)) {
-            if (isset($r->displayName)) {
-                return $r->displayName;
-            }
-        }
-        return $user;
+        return Mage::helper('unl_cas')->getDisplayName();
     }
 
     /**
