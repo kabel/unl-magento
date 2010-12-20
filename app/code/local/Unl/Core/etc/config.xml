@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.15</version>
+            <version>0.1.16</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -320,6 +320,15 @@
                     </tax>
                 </observers>
             </sales_order_save_after>
+            <sales_order_shipment_resource_init_virtual_grid_columns>
+                <observers>
+                    <recon_grid>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>initShipmentGridVirtualColumns</method>
+                    </recon_grid>
+                </observers>
+            </sales_order_shipment_resource_init_virtual_grid_columns>
         </events>
         
         <pdf>

@@ -54,4 +54,28 @@ class Unl_Core_Model_Sales_Observer
 //            }
         }
     }
+
+    public function initShipmentGridVirtualColumns($observer)
+    {
+        /* @var $resource Mage_Sales_Model_Mysql4_Order_Shipment */
+        $resource = $observer->getEvent()->getResource();
+        $resource->addVirtualGridColumn(
+                'shipping_description',
+                'sales/order',
+                array('order_id' => 'entity_id'),
+                'shipping_description'
+            )
+            ->addVirtualGridColumn(
+                'base_shipping_amount',
+                'sales/order',
+                array('order_id' => 'entity_id'),
+                'base_shipping_amount'
+            )
+            ->addVirtualGridColumn(
+                'shipping_amount',
+                'sales/order',
+                array('order_id' => 'entity_id'),
+                'shipping_amount'
+            );
+    }
 }
