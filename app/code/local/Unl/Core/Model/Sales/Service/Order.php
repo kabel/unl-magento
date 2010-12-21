@@ -78,4 +78,40 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         $this->_order->getInvoiceCollection()->addItem($invoice);
         return $invoice;
     }
+
+    /**
+     * Prepare order shipment based on order items and requested items qty
+     *
+     * @param array $data
+     * @return Mage_Sales_Model_Order_Shipment
+     */
+    public function prepareShipment($qtys = array())
+    {
+        $totalQty = 0;
+        $shipment = $this->_convertor->toShipment($this->_order);
+        foreach ($this->_order->getAllItems() as $orderItem) {
+            if (!$this->_canShipItem($orderItem, $qtys)) {
+                continue;
+            }
+
+            $item = $this->_convertor->itemToShipmentItem($orderItem);
+            if ($orderItem->isDummy()) {
+                $qty = $orderItem->getQtyOrdered();
+            } else {
+                if (isset($qtys[$orderItem->getId()])) {
+                    $qty = min($qtys[$orderItem->getId()], $orderItem->getQtyToShip());
+                } elseif (!count($qtys)) {
+                    $qty = $orderItem->getQtyToShip();
+                } else {
+                    continue;
+                }
+            }
+
+            $totalQty += $qty;
+            $item->setQty($qty);
+            $shipment->addItem($item);
+        }
+        $shipment->setTotalQty($totalQty);
+        return $shipment;
+    }
 }
