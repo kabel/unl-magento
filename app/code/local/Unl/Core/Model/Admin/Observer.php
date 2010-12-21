@@ -6,9 +6,9 @@ class Unl_Core_Model_Admin_Observer
     {
         /* @var $user Mage_Admin_Model_User */
         $user = $observer->getEvent()->getObject();
-        
+
         $scope = $user->getScope();
-        
+
         if ($user->getAll() || empty($scope)) {
             $user->setData('scope', null);
         } else {
@@ -18,14 +18,14 @@ class Unl_Core_Model_Admin_Observer
             $user->setData('scope', $scope);
         }
     }
-    
+
     public function beforeCmsPageSave($observer)
     {
         /* @var $page Mage_Cms_Model_Page */
         $page = $observer->getEvent()->getObject();
-        
+
         $scope = $page->getPermissions();
-        
+
         if (Mage::getSingleton('admin/session')->isAllowed('cms/page/permissions')) {
             if ($page->getAll() || empty($scope)) {
                 $page->setData('permissions', null);
@@ -42,17 +42,17 @@ class Unl_Core_Model_Admin_Observer
             }
         }
     }
-    
+
     public function isAllowedAddRootCategory($observer)
     {
         $options = $observer->getEvent()->getOptions();
         $user = Mage::getSingleton('admin/session')->getUser();
-        
+
         if ($user->getScope()) {
             $options->setIsAllow(false);
         }
     }
-    
+
     public function controllerActionPredispatch($observer)
     {
         $storeIdActions = array(
@@ -81,9 +81,10 @@ class Unl_Core_Model_Admin_Observer
             'adminhtml_report_sales_coupons',
         	'unl_core_report_sales_reconcile_cc',
         	'unl_core_report_sales_reconcile_co',
-            'unl_core_report_sales_reconcile_nocap'
+            'unl_core_report_sales_reconcile_nocap',
+            'shippingoverride_report_index'
         );
-        
+
         $controller = $observer->getEvent()->getControllerAction();
         if (in_array($controller->getFullActionName(), $storeIdActions)) {
             $this->_setStoreParamFromUser('store');
@@ -93,11 +94,11 @@ class Unl_Core_Model_Admin_Observer
             return;
         }
     }
-    
+
     protected function _setStoreParamFromUser($param) {
         $user  = Mage::getSingleton('admin/session')->getUser();
         $request = Mage::app()->getRequest();
-        
+
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
             if ($store = $request->getParam($param)) {
@@ -109,12 +110,12 @@ class Unl_Core_Model_Admin_Observer
             }
         }
     }
-    
+
     public function catalogProductEditActionPreDispatch($observer)
     {
         $request = Mage::app()->getRequest();
         $user = Mage::getSingleton('admin/session')->getUser();
-        
+
         if (($productId = (int) $request->getParam('id')) && ($scope = $user->getScope())) {
             $scope = explode(',', $scope);
             if ($productId && $product = Mage::getModel('catalog/product')->load($productId)) {
@@ -127,15 +128,15 @@ class Unl_Core_Model_Admin_Observer
             }
         }
     }
-    
+
     public function onAdminCmsPageEditPreDispatch($observer)
     {
         $request = Mage::app()->getRequest();
         $user = Mage::getSingleton('admin/session')->getUser();
-        
+
         $id = $request->getParam('page_id');
         $model = Mage::getModel('cms/page');
-        
+
         if ($id) {
             $model->load($id);
             if ($user->getScope() && $model->getPermissions()) {
@@ -148,7 +149,7 @@ class Unl_Core_Model_Admin_Observer
                         break;
                     }
                 }
-                
+
                 if (!$allow) {
                     $request->initForward()
                         ->setActionName('denied')
@@ -157,34 +158,34 @@ class Unl_Core_Model_Admin_Observer
             }
         }
     }
-    
+
     public function onAdminSalesCreditmemoViewPreDispatch($observer)
     {
         $this->_onAdminSalesEntityViewPreDispatch($observer, 'creditmemo');
     }
-    
+
     public function onAdminSalesInvoiceViewPreDispatch($observer)
     {
         $this->_onAdminSalesEntityViewPreDispatch($observer, 'invoice');
     }
-    
+
     public function onAdminSalesOrderViewPreDispatch($observer)
     {
         $this->_onAdminSalesEntityViewPreDispatch($observer, 'order');
     }
-    
+
     public function onAdminSalesShipmentViewPreDispatch($observer)
     {
         $this->_onAdminSalesEntityViewPreDispatch($observer, 'shipment');
     }
-    
+
     protected function _onAdminSalesEntityViewPreDispatch($observer, $type)
     {
         $request = Mage::app()->getRequest();
         $user = Mage::getSingleton('admin/session')->getUser();
         /* @var $action Mage_Adminhtml_Controller_Action */
         $action = $observer->getControllerAction();
-        
+
         $param = $type . '_id';
         $model = null;
         switch ($type) {
@@ -213,7 +214,7 @@ class Unl_Core_Model_Admin_Observer
                 $orderId = $model->getOrderId();
             }
         }
-        
+
         if (!is_null($user->getScope()) && $request->getParam($param)) {
             $scope = explode(',', $user->getScope());
             $order_items = Mage::getModel('sales/order_item')->getCollection();
@@ -221,7 +222,7 @@ class Unl_Core_Model_Admin_Observer
             $order_items->getSelect()
                 ->where('source_store_view IN (?)', $scope)
                 ->where('order_id = ?', $orderId);
-                
+
             if (!count($order_items)) {
                 $request->initForward()
                     ->setActionName('denied')
@@ -229,12 +230,12 @@ class Unl_Core_Model_Admin_Observer
             }
         }
     }
-    
+
     public function onRssOrderNewCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
         $user = Mage::getSingleton('admin/session')->getUser();
-        
+
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
             $order_items = Mage::getModel('sales/order_item')->getCollection();
@@ -243,7 +244,7 @@ class Unl_Core_Model_Admin_Observer
                 ->columns(array('order_id'))
                 ->where('source_store_view IN (?)', $scope)
                 ->group('order_id');
-                
+
             $collection->getSelect()
                 ->joinInner(array('scope' => $select), 'e.entity_id = scope.order_id', array());
         }
