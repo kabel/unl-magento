@@ -122,4 +122,34 @@
             </block>
         </reference>
     </unl_core_report_sales_reconcile_nocap>
+    
+    <shippingoverride_index_index>
+        <reference name="content">
+            <block type="shippingoverride/shippingoverride" name="shipping_overrides"/>
+        </reference>
+    </shippingoverride_index_index>
+    <shippingoverride_index_edit>
+        <reference name="content">
+            <block type="shippingoverride/shippingoverride_edit" name="shippingoverride_edit"/>
+        </reference>
+    </shippingoverride_index_edit>
+    <shippingoverride_report_index>
+       <reference name="content">
+            <block type="shippingoverride/adminhtml_report_shippingoverride" template="report/grid/container.phtml" name="sales.report.grid.container">
+                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
+                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
+                </block>
+                <block type="shippingoverride/adminhtml_report_filter_form_reconcile" name="grid.filter.form">
+                    <action method="addReportTypeOption" translate="value">
+                        <key>created_at_order</key>
+                        <value>Created At Order</value>
+                    </action>
+                    <action method="addReportTypeOption" translate="value">
+                        <key>updated_at_order</key>
+                        <value>Updated At Order</value>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </shippingoverride_report_index>
 </layout>

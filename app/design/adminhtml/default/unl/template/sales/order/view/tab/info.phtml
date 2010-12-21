@@ -47,22 +47,28 @@
                     <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
                         (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                     <?php endif; ?>
+
+                    <?php if ($_order->getBaseOldShippingAmount()): ?>
+                        <br/>
+                        <?php echo Mage::helper('sales')->__('Original Shipping Quote:') ?>
+                        <?php echo $this->displayPriceAttribute('old_shipping_amount', false, ' ') ?>
+                    <?php endif; ?>
                 <?php else: ?>
                     <?php echo $this->helper('sales')->__('No shipping information available'); ?>
                 <?php endif; ?>
-				
+
 				<?php if ($_order->getAwDeliverydateDate()): ?>
                 <br/>
                 <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>:
                 <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
-                <?php endif; ?>			
-				
+                <?php endif; ?>
+
 				<?php if ($_order->getAwDeliverydateNotice()): ?>
                 <br/>
                 <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong>:
                 <?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?>
                 <?php endif; ?>
-                
+
             </fieldset>
         </div>
     </div>
