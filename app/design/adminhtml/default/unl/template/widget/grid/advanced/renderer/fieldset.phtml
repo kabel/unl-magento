@@ -1,0 +1,117 @@
+<?php $_element = $this->getElement() ?>
+<?php if ($_element->getFieldsetContainerId()): ?>
+<div id="<?php echo $_element->getFieldsetContainerId(); ?>">
+<?php endif; ?>
+<?php if ($_element->getLegend()): ?>
+<div class="entry-edit-head collapseable">
+	<a id="<?php echo $_element->getHtmlId() ?>-head" href="#" onclick="loadAdvFilters(); return false;"><?php echo $_element->getLegend() ?></a>
+</div>
+<?php endif; ?>
+<?php if (!$_element->getNoContainer()): ?>
+    <div class="fieldset <?php echo $_element->getClass() ?>" id="<?php echo $_element->getHtmlId() ?>">
+<?php endif; ?>
+    <div class="hor-scroll">
+        <?php if ($_element->getComment()): ?>
+            <p class="comment"><?php echo $this->escapeHtml($_element->getComment()) ?></p>
+        <?php endif; ?>
+        <?php if ($_element->hasHtmlContent()): ?>
+            <?php echo $_element->getHtmlContent(); ?>
+        <?php else: ?>
+        <table cellspacing="0" class="<?php echo $_element->hasTableClass() ? $_element->getTableClass() : 'form-list'?>">
+            <tbody>
+                <?php echo $_element->getChildrenHtml(); ?>
+            </tbody>
+        </table>
+        <?php endif; ?>
+    </div>
+    <?php echo $_element->getSubFieldsetHtml() ?>
+<?php if (!$_element->getNoContainer()): ?>
+    </div>
+<?php endif; ?>
+<script type="text/javascript">
+Fieldset.applyCollapse('<?php echo $_element->getHtmlId() ?>');
+function loadAdvFilters() {
+	var collapsed = $('<?php echo $_element->getHtmlId() ?>-head').collapsed;
+	if (collapsed || collapsed===undefined) {
+    	new Ajax.Request('<?php echo $_element->getAdvFiltersUrl() ?>', {
+        	loaderArea: false,
+        	parameters: {form_key: FORM_KEY},
+        	evalScripts: true,
+        	onFailure: function() {
+    			location.href = BASE_URL;
+        	},
+        	onComplete: function() {
+        		Fieldset.toggleCollapse('<?php echo $_element->getHtmlId() ?>');
+        	},
+        	onSuccess: function(transport) {
+        		try {
+                    if (transport.responseText.isJSON()) {
+                        var response = transport.responseText.evalJSON();
+                        if (response.error) {
+                            alert(response.message);
+                            return;
+                        }
+                        if(response.ajaxExpired && response.ajaxRedirect) {
+                            setLocation(response.ajaxRedirect);
+                            return;
+                        }
+
+                        var filters = $$('#<?php echo $_element->getHtmlId() ?> input', '#<?php echo $_element->getHtmlId() ?> select');
+                        filters.each(function(i) {
+                            if (response[i.id]!==undefined) {
+								i.setValue(response[i.id]);
+                            } else if (i.name) {
+								i.setValue('');
+                            }
+                        });
+                    }
+                }
+                catch (e) {}
+        	}
+        });
+        return;
+	} else {
+		Fieldset.toggleCollapse('<?php echo $_element->getHtmlId() ?>');
+	}
+}
+function advFilterFormSubmit() {
+    var filters = $$('#<?php echo $_element->getHtmlId() ?> input', '#<?php echo $_element->getHtmlId() ?> select');
+    var elements = [];
+    for(var i in filters){
+        if(filters[i].value && filters[i].value.length && !filters[i].disabled) elements.push(filters[i]);
+    }
+    new Ajax.Request('<?php echo $_element->getFilterUrl(); ?>advfilter/'+encode_base64(Form.serializeElements(elements))+'/', {
+    	loaderArea: '<?php echo $_element->getHtmlId() ?>',
+    	parameters: {form_key: FORM_KEY},
+    	evalScripts: true,
+    	onFailure: function() {
+			location.href = BASE_URL;
+    	},
+    	onComplete: function() {
+    		Fieldset.toggleCollapse('<?php echo $_element->getHtmlId() ?>');
+    	},
+    	onSuccess: function(transport) {
+    		try {
+                if (transport.responseText.isJSON()) {
+                    var response = transport.responseText.evalJSON();
+                    if (response.error) {
+                        alert(response.message);
+                    }
+                    if(response.ajaxExpired && response.ajaxRedirect) {
+                        setLocation(response.ajaxRedirect);
+                    }
+                } else {
+                	<?php echo $_element->getGridJsObject() ?>.doFilter();
+                }
+            }
+            catch (e) {
+                <?php echo $_element->getGridJsObject() ?>.doFilter();
+            }
+    	}
+    });
+    return;
+}
+</script>
+<?php if ($_element->getFieldsetContainerId()): ?>
+</div>
+<?php endif; ?>

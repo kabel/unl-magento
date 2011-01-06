@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <layout>
+    <adminhtml_customer_index>
+   		<block type="unl_core/adminhtml_customer_grid_filter_form" name="adv.filter" />
+    </adminhtml_customer_index>
+    
     <adminhtml_cms_page_edit>
         <reference name="cms_page_edit_tabs">
             <block type="unl_core/adminhtml_cms_page_edit_tab_permissions" name="cms_page_edit_tab_permissions" />

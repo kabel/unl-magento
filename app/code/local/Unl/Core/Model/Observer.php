@@ -90,6 +90,12 @@ class Unl_Core_Model_Observer
             }
             return;
         }
+
+        $type = 'Mage_Adminhtml_Block_Customer';
+        if ($block instanceof $type) {
+            $block->setTemplate('widget/grid/advanced/container.phtml');
+            $block->append('adv.filter');
+        }
     }
 
     // These occur before the correctAdminBlocks (_beforeToHtml) calls
@@ -301,6 +307,16 @@ class Unl_Core_Model_Observer
                 ->setRedirect($url)
                 ->sendResponse();
             exit;
+        }
+    }
+
+    public function onBeforeManageCustomers($observer)
+    {
+        $controller = $observer->getEvent()->getControllerAction();
+        $request = $controller->getRequest();
+        if ($request->has('filter') && $request->getParam('filter') == '') {
+            $session = Mage::getSingleton('adminhtml/session');
+            $session->unsetData('customerGridadvfilter');
         }
     }
 

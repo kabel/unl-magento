@@ -3,7 +3,7 @@
 class Unl_Core_Model_Store_Source_Filter
 {
     protected $_options;
-    
+
     /**
      * Builds the general option array for stores
      *
@@ -18,7 +18,7 @@ class Unl_Core_Model_Store_Source_Filter
             if (Mage::getSingleton('admin/session')->getUser()->getScope()) {
                 $scope = explode(',', Mage::getSingleton('admin/session')->getUser()->getScope());
             }
-            
+
             foreach ($this->getWebsiteCollection() as $_website) {
                 foreach ($this->getGroupCollection($_website) as $_group) {
                     foreach ($this->getStoreCollection($_group) as $_store) {
@@ -28,28 +28,28 @@ class Unl_Core_Model_Store_Source_Filter
                     }
                 }
             }
-            
+
             $this->_options = $options;
         }
-                
-        $options = $this->_options;
+
+        $options = array();
         if ($withEmpty) {
             $options[''] = '';
         }
-        
-        return $options;
+
+        return $options + $this->_options;
     }
-    
+
     public function getOptionArray()
     {
         return $this->getAllOptions(false);
     }
-    
+
     public function toOptionArray()
     {
         return $this->getAllOptions(false);
     }
-    
+
     public function getWebsiteCollection()
     {
         $collection = Mage::getModel('core/website')->getResourceCollection();
