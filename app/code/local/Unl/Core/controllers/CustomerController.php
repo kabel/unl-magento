@@ -29,13 +29,14 @@ class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
 
         $block = $this->getLayout()->createBlock('unl_core/adminhtml_customer_grid_filter_form');
         $block->toHtml();
+        $filters = $block->getFilterData();
         $resp = new Varien_Object();
         foreach ($block->getForm()->getElement('base_fieldset')->getElements() as $element) {
             switch ($element->getType()) {
                 case 'button':
                     break;
                 case 'checkbox':
-                    if ($element->getIsChecked()) {
+                    if ($filters->getIsRepeat()) {
                         $resp->setData($element->getHtmlId(), $element->getValue());
                     }
                     break;
