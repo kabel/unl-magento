@@ -66,8 +66,6 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
         $form->setUseContainer(false);
         $this->setForm($form);
 
-        $this->append($block);
-
         return parent::_prepareForm();
     }
 
