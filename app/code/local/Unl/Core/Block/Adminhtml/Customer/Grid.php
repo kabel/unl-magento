@@ -31,6 +31,10 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
                  );
             }
 
+            if ($advfilter->getData('is_repeat')) {
+                $orders->getSelect()->having('COUNT(DISTINCT(main_table.entity_id)) > 1');
+            }
+
             if ($advfilter->getData('from_store') || $advfilter->getData('item_sku')) {
                 $orders->getSelect()->join(array('oi' => $orders->getTable('sales/order_item')), 'main_table.entity_id = oi.order_id', array());
                 if ($advfilter->getData('from_store')) {

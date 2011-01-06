@@ -51,6 +51,12 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
             'title'     => Mage::helper('adminhtml')->__('Purchased To'),
         ));
 
+        $fieldset->addField('is_repeat', 'checkbox', array(
+            'name'      => 'is_repeat',
+            'label'     => Mage::helper('adminhtml')->__('Repeat Customer?'),
+            'value'     => '1',
+        ));
+
         $fieldset->addField('apply', 'button', array(
             'class'   => 'form-button',
             'value'   => 'Apply Filters',

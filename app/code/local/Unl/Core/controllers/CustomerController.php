@@ -31,8 +31,18 @@ class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
         $block->toHtml();
         $resp = new Varien_Object();
         foreach ($block->getForm()->getElement('base_fieldset')->getElements() as $element) {
-            if ($element->getValue() && $element->getType() != 'button') {
-                $resp->setData($element->getHtmlId(), $element->getValue());
+            switch ($element->getType()) {
+                case 'button':
+                    break;
+                case 'checkbox':
+                    if ($element->getIsChecked()) {
+                        $resp->setData($element->getHtmlId(), $element->getValue());
+                    }
+                    break;
+                default:
+                    if ($element->getValue()) {
+                        $resp->setData($element->getHtmlId(), $element->getValue());
+                    }
             }
         }
 
