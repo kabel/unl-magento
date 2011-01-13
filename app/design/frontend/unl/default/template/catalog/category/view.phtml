@@ -34,10 +34,10 @@
     <?php endif; ?>
 
 <?php if($this->isContentMode()): ?>
-    <div classs="std"><?php echo $this->getCmsBlockHtml() ?></div>
+    <div class="std"><?php echo $this->getCmsBlockHtml() ?></div>
 
 <?php elseif($this->isMixedMode()): ?>
-    <div classs="std"><?php echo $this->getCmsBlockHtml() ?></div>
+    <div class="std"><?php echo $this->getCmsBlockHtml() ?></div>
     <?php echo $this->getProductListHtml() ?>
 
 <?php else: ?>
