@@ -1,15 +1,15 @@
 <?php if (($_products = $this->getProductCollection()) && count($_products->getItems())): ?>
-<?php 
+<?php
     $_allFeaured = $_products->getItems();
     shuffle($_allFeaured);
-    $_helper = $this->helper('catalog/output'); 
+    $_helper = $this->helper('catalog/output');
 ?>
 <div class="featured-grid">
     <h2 class="sec_header"><?php echo $this->__('Featured Products') ?></h2>
     <?php for ($i = 0; $i < 4 && $i < count($_allFeaured); $i++) : ?>
-    <?php 
+    <?php
     $_product = current($_allFeaured);
-    next($_allFeaured); 
+    next($_allFeaured);
     ?>
     <div class="col<?php if ($i == 0) { echo ' left'; } elseif ($i == 3) { echo ' right'; } ?>">
         <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
@@ -19,6 +19,8 @@
             <?php echo $this->getPriceHtml($_product, true) ?>
             <?php if($_product->isSaleable()): ?>
                 <p><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+            <?php elseif ($_product->getNoSale()): ?>
+            	<p class="availability no-sale"><span><?php echo $this->__('Not Available Online') ?></span></p>
             <?php else: ?>
                 <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
             <?php endif; ?>
