@@ -51,7 +51,9 @@ class Unl_Core_Model_Bundle_Product_Type extends Mage_Bundle_Model_Product_Type
             $_appendAllSelections = true;
         }
 
-        $options = array_filter($buyRequest->getBundleOption(), 'intval');
+        if ($buyRequest->getBundleOption()) {
+            $options = array_filter($buyRequest->getBundleOption(), 'intval');
+        }
 
         if ($options) {
             $qtys = $buyRequest->getBundleOptionQty();
