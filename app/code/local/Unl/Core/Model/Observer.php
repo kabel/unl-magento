@@ -2,20 +2,42 @@
 
 class Unl_Core_Model_Observer
 {
+    protected $_skipWysiwygConfig = false;
+
     public function prepareWysiwygConfig($observer)
     {
         $config = $observer->getEvent()->getConfig();
-        $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
-        $css = array(
-            '/wdn/templates_3.0/css/all.css',
-            $design->getSkinUrl('css/styles.css')
-        );
 
-        if ($config->getContentCss()) {
-            array_unshift($css, $config->getContentCss());
+        if (!$this->_skipWysiwygConfig) {
+            // Add CSS from the Design
+            if (!$config->getDisableDesignCss()) {
+                $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
+                $css = array(
+                    '/wdn/templates_3.0/css/all.css',
+                    $design->getSkinUrl('css/styles.css')
+                );
+
+                if ($config->getContentCss()) {
+                    array_unshift($css, $config->getContentCss());
+                }
+
+                $config->setContentCss(implode(',', $css));
+            }
+
+            // Fix bad default values
+            $this->_skipWysiwygConfig = true; // prevent infinite observer loop
+            $defaultConfig = Mage::getSingleton('cms/wysiwyg_config')->getConfig();
+            $this->_skipWysiwygConfig = false;
+
+            if ($config->getData('files_browser_window_url') == $defaultConfig->getData('files_browser_window_url')) {
+                $config->setData('files_browser_window_url', Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/cms_wysiwyg_images/index'));
+            }
+
+            if ($config->getData('directives_url') == $defaultConfig->getData('directives_url')) {
+                $config->setData('directives_url', Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/cms_wysiwyg/directive'));
+                $config->setData('directives_url_quoted', preg_quote($config->getData('directives_url')));
+            }
         }
-
-        $config->setContentCss(implode(',', $css));
     }
 
     public function correctAdminBlocks($observer)

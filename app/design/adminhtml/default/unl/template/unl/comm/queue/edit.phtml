@@ -1,0 +1,76 @@
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3><?php echo $this->getHeaderText() ?></h3></td>
+            <td class="form-buttons">
+                <?php echo $this->getBackButtonHtml() ?>
+                <?php if (!$this->getIsPreview()): ?>
+                    <?php echo $this->getResetButtonHtml() ?>
+                    <?php if ($this->getCanDelete()): ?>
+                    	<?php echo $this->getDeleteButtonHtml() ?>
+                    <?php endif;?>
+                    <?php echo $this->getSaveButtonHtml() ?>
+                <?php else: ?>
+                	<?php echo $this->getPreviewButtonHtml() ?>
+                <?php endif ?>
+                <?php if ($this->getCanResume()): ?>
+                    <?php echo $this->getResumeButtonHtml() ?>
+                <?php endif ?>
+            </td>
+        </tr>
+    </table>
+</div>
+<form action="<?php echo $this->getSaveUrl() ?>" method="post" id="queue_edit_form">
+    <?php echo $this->getBlockHtml('formkey')?>
+    <div class="no-display">
+        <input type="hidden" name="_resume" id="_resume_flag" value="" />
+    </div>
+    <?php echo $this->getChildHtml('form') ?>
+</form>
+<form action="<?php echo $this->getPreviewUrl() ?>" method="post" id="queue_preview_form">
+    <?php echo $this->getBlockHtml('formkey')?>
+    <div class="no-display">
+        <input type="hidden" id="preview_type" name="type" value="" />
+        <input type="hidden" id="preview_text" name="text" value="" />
+        <input type="hidden" id="preview_styles" name="styles" value="" />
+    </div>
+</form>
+<script type="text/javascript">
+//<![CDATA[
+var queueForm = new varienForm('queue_edit_form');
+var previewForm = new varienForm('queue_preview_form');
+$('queue_preview_form').target = "_blank";
+
+var queueControl = {
+    id: 'text',
+    save: function() {
+        $('_resume_flag').value = '';
+        queueForm.submit();
+    },
+    preview: function() {
+        if (this.isEditor() && tinyMCE.get(this.id)) {
+            tinyMCE.triggerSave();
+            $('preview_text').value = $(this.id).value;
+            tinyMCE.triggerSave();
+        } else {
+            $('preview_text').value = $(this.id).value;
+        }
+        if ($('styles') != undefined) {
+            $('preview_styles').value = $('styles').value;
+        }
+        if ($('type') != undefined) {
+            $('preview_type').value = $F('type');
+        }
+        previewForm.submit();
+        return false;
+    },
+    isEditor: function() {
+        return (typeof tinyMceEditors != 'undefined' && tinyMceEditors.get(this.id) != undefined);
+    },
+    resume: function() {
+        $('_resume_flag').value = '1';
+        queueForm.submit();
+    }
+};
+//]]>
+</script>

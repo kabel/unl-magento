@@ -9,6 +9,10 @@
             <active>true</active>
             <codePool>local</codePool>
         </Unl_Cas>
+        <Unl_Comm>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Unl_Comm>
         
         <AW_Deliverydate>
             <active>true</active>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+    	<communication translate="label">
+    		<label>Communication</label>
+            <tab>customer</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>0</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+            	<queue translate="label">
+            		<label>Communication Queue Options</label>
+            		<show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+            		<fields>
+            			<count translate="label">
+            				<label># Queues to Process</label>
+            				<frontend_type>text</frontend_type>
+            				<sort_order>0</sort_order>
+            				<show_in_default>1</show_in_default>
+		                    <show_in_website>0</show_in_website>
+		                    <show_in_store>0</show_in_store>
+            			</count>
+            			<message_count translate="label">
+            				<label># Messages per Queue</label>
+            				<frontend_type>text</frontend_type>
+            				<sort_order>10</sort_order>
+            				<show_in_default>1</show_in_default>
+		                    <show_in_website>0</show_in_website>
+		                    <show_in_store>0</show_in_store>
+            			</message_count>
+            		</fields>
+            		
+            	</queue>
+            </groups>
+    	</communication>
+    </sections>
+</config>

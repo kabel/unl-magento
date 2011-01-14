@@ -143,10 +143,12 @@
                 </rewrite>
             </catalog_resource_eav_mysql4>
             <core>
-                <!-- Allow locale templates in Design -->
                 <rewrite>
+                	<!-- Allow locale templates in Design -->
                     <email_template>Unl_Core_Model_Core_Email_Template</email_template>
                     <translate>Unl_Core_Model_Core_Translate</translate>
+                    <!-- Allow Variables in Wysiwyg Editors outside of adminhtml -->
+                    <variable_config>Unl_Core_Model_Core_Variable_Config</variable_config>
                 </rewrite>
             </core>
             <customer>
@@ -223,6 +225,11 @@
                     <report_tax>Unl_Core_Model_Tax_Mysql4_Report_Tax</report_tax>
                 </rewrite>
             </tax_mysql4>
+            <widget>
+            	<rewrite>
+            		<widget_config>Unl_Core_Model_Widget_Widget_Config</widget_config>
+            	</rewrite>
+            </widget>
         </models>
         <resources>
             <unl_core_setup>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <customer>
+            <children>
+                <commqueue translate="title" module="unl_comm">
+                    <title>Communication Queue</title>
+                    <action>unlcomm/queue/</action>
+                    <sort_order>20</sort_order>
+                </commqueue>
+            </children>
+        </customer>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <communication translate="title" module="unl_comm">
+                                        <title>Communication Section</title>
+                                    </communication>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <customer>
+                        <children>
+                            <commqueue translate="title" module="unl_comm">
+                                <title>Communication Queue</title>
+                                <sort_order>20</sort_order>
+                            </commqueue>
+                        </children>
+                   </customer>
+               </children>
+           </admin>
+       </resources>
+    </acl>
+</config>

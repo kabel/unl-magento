@@ -1,26 +1,48 @@
 <?xml version="1.0"?>
 <layout>
+
+<!--
+Advanced Filters (add-on)
+-->
     <adminhtml_customer_index>
    		<block type="unl_core/adminhtml_customer_grid_filter_form" name="adv.filter" />
     </adminhtml_customer_index>
     
+<!--
+CMS Page Permissions (add-on)
+-->
+
     <adminhtml_cms_page_edit>
         <reference name="cms_page_edit_tabs">
             <block type="unl_core/adminhtml_cms_page_edit_tab_permissions" name="cms_page_edit_tab_permissions" />
             <action method="addTab"><name>permissions_section</name><block>cms_page_edit_tab_permissions</block></action>
         </reference>
     </adminhtml_cms_page_edit>
+    
+<!--
+Misc. Admin Updates
+-->
 
 	<adminhtml_report_sales_tax>
 	    <reference name="sales.report.grid.container">
 	        <action method="unsetChild"><name>store.switcher</name></action>
 	    </reference>
 	</adminhtml_report_sales_tax>
+
+<!--
+Shipment Packages Display (Ordership Module)
+-->
+	
 	<adminhtml_sales_order_shipment_view>
 	   <reference name="form">
 	       <block type="unl_core/adminhtml_sales_order_shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml"></block>
 	   </reference>
 	</adminhtml_sales_order_shipment_view>
+	
+<!--
+Bursar/Reconcile Reports
+-->
+
 	<unl_core_report_sales_bursar_cc>
 	   <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_cc" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -37,6 +59,7 @@
             </block>
         </reference>
 	</unl_core_report_sales_bursar_cc>
+	
 	<unl_core_report_sales_bursar_co>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_co" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -53,6 +76,7 @@
             </block>
         </reference>
     </unl_core_report_sales_bursar_co>
+    
     <unl_core_report_sales_bursar_nocap>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_nocap" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -69,6 +93,7 @@
             </block>
         </reference>
     </unl_core_report_sales_bursar_nocap>
+    
     <unl_core_report_sales_reconcile_cc>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_reconcile_cc" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -88,6 +113,7 @@
             </block>
         </reference>
     </unl_core_report_sales_reconcile_cc>
+    
     <unl_core_report_sales_reconcile_co>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_reconcile_co" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -107,6 +133,7 @@
             </block>
         </reference>
     </unl_core_report_sales_reconcile_co>
+    
     <unl_core_report_sales_reconcile_nocap>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_reconcile_nocap" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -126,17 +153,23 @@
             </block>
         </reference>
     </unl_core_report_sales_reconcile_nocap>
+
+<!--
+Shipping Override Module
+-->
     
     <shippingoverride_index_index>
         <reference name="content">
             <block type="shippingoverride/shippingoverride" name="shipping_overrides"/>
         </reference>
     </shippingoverride_index_index>
+    
     <shippingoverride_index_edit>
         <reference name="content">
             <block type="shippingoverride/shippingoverride_edit" name="shippingoverride_edit"/>
         </reference>
     </shippingoverride_index_edit>
+    
     <shippingoverride_report_index>
        <reference name="content">
             <block type="shippingoverride/adminhtml_report_shippingoverride" template="report/grid/container.phtml" name="sales.report.grid.container">
@@ -156,4 +189,22 @@
             </block>
         </reference>
     </shippingoverride_report_index>
+
+<!--
+Unl_Comm Module
+-->
+
+    <comm_queue_preview>
+	    <block type="core/template" name="root" output="toHtml" template="unl/comm/queue/preview.phtml">
+            <block type="unl_comm/queue_preview" name="content" as="content" />
+        </block>
+    </comm_queue_preview>
+    
+    <unl_comm_queue_edit>
+    	<update handle="editor"/>
+    	<reference name="content">
+    		<block type="unl_comm/queue_edit" name="queue_edit" template="unl/comm/queue/edit.phtml" />
+    	</reference>
+    </unl_comm_queue_edit>
+
 </layout>

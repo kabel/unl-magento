@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Comm>
+            <version>0.1.0</version>
+            <depends>
+                <Mage_Customer />
+            </depends>
+        </Unl_Comm>
+    </modules>
+    
+    <global>
+        <blocks>
+            <unl_comm>
+                <class>Unl_Comm_Block</class>
+            </unl_comm>
+        </blocks>
+        <helpers>
+            <unl_comm>
+                <class>Unl_Comm_Helper</class>
+            </unl_comm>
+        </helpers>
+        <models>
+            <unl_comm>
+                <class>Unl_Comm_Model</class>
+                <resourceModel>unl_comm_mysql4</resourceModel>
+            </unl_comm>
+            <unl_comm_mysql4>
+            	<class>Unl_Comm_Model_Mysql4</class>
+            	<entities>
+            		<queue>
+            			<table>comm_queue</table>
+            		</queue>
+            		<queue_link>
+            			<table>comm_queue_link</table>
+            		</queue_link>
+            	</entities>
+            </unl_comm_mysql4>
+        </models>
+        <resources>
+            <unl_comm_setup>
+                <setup>
+                    <module>Unl_Comm</module>
+                    <class>Mage_Core_Model_Resource_Setup</class>
+                </setup>
+            </unl_comm_setup>
+        </resources>
+    </global>
+    
+    <admin>
+        <routers>
+            <unl_comm>
+                <use>admin</use>
+                <args>
+                    <module>Unl_Comm</module>
+                    <frontName>unlcomm</frontName>
+                </args>
+            </unl_comm>
+        </routers>
+    </admin>
+    
+    <adminhtml>
+    	<events>
+    		<core_block_abstract_to_html_before>
+    			<observers>
+                    <comm_correct_admin>
+                        <type>singleton</type>
+                        <class>unl_comm/observer</class>
+                        <method>onBlockBeforeToHtml</method>
+                    </comm_correct_admin>
+                </observers>
+    		</core_block_abstract_to_html_before>
+    	    
+    	    <adminhtml_block_html_before>
+    			<observers>
+                    <comm_correct_admin>
+                        <type>singleton</type>
+                        <class>unl_comm/observer</class>
+                        <method>correctAdminBlocks</method>
+                    </comm_correct_admin>
+                </observers>
+    	    </adminhtml_block_html_before>
+    	</events>
+    </adminhtml>
+    
+    <default>
+        <communication>
+            <queue>
+                <count>3</count>
+                <message_count>20</message_count>
+            </queue>
+        </communication>
+    </default>
+    
+    <crontab>
+    	<jobs>
+    		<communication_send_all>
+    			<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+    			<run><model>unl_comm/observer::scheduledSend</model></run>
+    		</communication_send_all>
+    	</jobs>
+    </crontab>
+</config>
