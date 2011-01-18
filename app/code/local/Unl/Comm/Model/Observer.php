@@ -38,13 +38,15 @@ class Unl_Comm_Model_Observer
         //Do Actions Based on Block Type
 
         if ($block instanceof Mage_Adminhtml_Block_Customer_Edit_Tabs) {
-            if (Mage::getSingleton('admin/session')->isAllowed('customer/commqueue')) {
-                $block->addTab('commqueue', array(
-                    'label'     => Mage::helper('unl_comm')->__('Communication'),
-                    'class'     => 'ajax',
-                    'url'       => $block->getUrl('unl_comm/queue/customerGrid', array('_current'=>true)),
-                    'after'     => Mage::getSingleton('admin/session')->isAllowed('newsletter/subscriber') ? 'newsletter' : 'wishlist',
-                ));
+            if (Mage::registry('current_customer')->getId()) {
+                if (Mage::getSingleton('admin/session')->isAllowed('customer/commqueue')) {
+                    $block->addTab('commqueue', array(
+                        'label'     => Mage::helper('unl_comm')->__('Communication'),
+                        'class'     => 'ajax',
+                        'url'       => $block->getUrl('unl_comm/queue/customerGrid', array('_current'=>true)),
+                        'after'     => Mage::getSingleton('admin/session')->isAllowed('newsletter/subscriber') ? 'newsletter' : 'wishlist',
+                    ));
+                }
             }
             return;
         }
