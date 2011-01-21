@@ -212,6 +212,7 @@ ORDER BY zip_code, plus_4, fips_county_code DESC
    Copy the first 5 columns of the 'State Tax' sheet, Paste into a new text file
    Copy the last 5 columns of the 'City Tax' sheet, Paste into the text file
    Copy the last 5 columns of the 'County Tax' sheet, Paste into the text file
+   Copy the first 5 columns of the 'Special Tax' sheet, Paste into the text file
 6) You can now format the text file into a data format you can load into mysql.
    It's recommended to use CSV. To transform the pasted data from Tab Separated Values, use the text editor's find/replace capabilities to insert " at the beginning and end of every line and replace tabs with ","
 7) Log into MySQL and use the magento DB
