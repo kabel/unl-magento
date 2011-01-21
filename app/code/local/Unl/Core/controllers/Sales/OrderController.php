@@ -1,16 +1,14 @@
 <?php
 
-class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
+class Unl_Core_Sales_OrderController extends Mage_Adminhtml_Controller_Action
 {
     public function applyfilterAction()
     {
         $session = Mage::getSingleton('adminhtml/session');
-        $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('customer');
+        $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('order');
         if ($this->getRequest()->has('advfilter')) {
             $requestData = $this->getRequest()->getParam('advfilter');
             $requestData = Mage::helper('adminhtml')->prepareFilterString($requestData);
-            $requestData = $this->_filterDates($requestData, array('purchase_from', 'purchase_to'));
-
             $params = new Varien_Object();
 
             foreach ($requestData as $key => $value) {
@@ -27,7 +25,7 @@ class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
     {
         $this->loadLayout();
 
-        $block = $this->getLayout()->createBlock('unl_core/adminhtml_customer_grid_filter_form');
+        $block = $this->getLayout()->createBlock('unl_core/adminhtml_sales_order_grid_filter_form');
         $block->toHtml();
         $filters = $block->getFilterData();
         $resp = new Varien_Object();
@@ -56,6 +54,6 @@ class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('customer/manage');
+        return Mage::getSingleton('admin/session')->isAllowed('sales/order');
     }
 }

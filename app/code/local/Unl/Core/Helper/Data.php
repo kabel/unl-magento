@@ -5,23 +5,23 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     const CUSTOMER_ALLOWED_PRODUCT_SUCCESS       = 0;
     const CUSTOMER_ALLOWED_PRODUCT_FAILURE_LOGIN = 1;
     const CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL   = 2;
-    
+
     const CUSTOMER_ALLOWED_CATEGORY_SUCCESS       = 0;
     const CUSTOMER_ALLOWED_CATEGORY_FAILURE_LOGIN = 1;
     const CUSTOMER_ALLOWED_CATEGORY_FAILURE_ACL   = 2;
-    
+
     public function fetchServerFile($path)
     {
         $path = '/' . ltrim($path, '/');
         $root = Mage::app()->getRequest()->getServer('DOCUMENT_ROOT');
-        
+
         if (is_file($root . $path)) {
             return file_get_contents($root . $path);
         }
-        
+
         return false;
     }
-    
+
     public function getProductSourceStoreFilterOptions()
     {
         $options = Mage::getSingleton('unl_core/store_source_switcher')->getOptionArray();
@@ -29,7 +29,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         array_unshift($options, array('label'=>$this->__('Any Store'), 'value'=>''));
         return $options;
     }
-    
+
     public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
     {
         $_cat = $category;
@@ -38,7 +38,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         } else if ($reload) {
             $_cat->load($_cat->getId());
         }
-        
+
         $result = $this->_getCustomerAllowedCategory($_cat);
         switch ($result) {
             case self::CUSTOMER_ALLOWED_CATEGORY_FAILURE_LOGIN:
@@ -56,26 +56,26 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 }
                 break;
         }
-        
+
         return ($result == self::CUSTOMER_ALLOWED_CATEGORY_SUCCESS);
     }
-    
+
     protected function _getCustomerAllowedCategory($category) {
         if ($acl = $category->getGroupAcl()) {
             $session = Mage::getSingleton('customer/session');
             if (!empty($acl) && !$session->isLoggedIn()) {
                 return self::CUSTOMER_ALLOWED_CATEGORY_FAILURE_LOGIN;
             }
-            
+
             $customer = $session->getCustomer();
             if (!in_array($customer->getGroupId(), $acl)) {
                 return self::CUSTOMER_ALLOWED_CATEGORY_FAILURE_ACL;
             }
         }
-        
+
         return self::CUSTOMER_ALLOWED_CATEGORY_SUCCESS;
     }
-    
+
     protected function _getCustomerAllowedProduct($product)
     {
         if ($acl = $product->getProductGroupAcl()) {
@@ -83,16 +83,16 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             if (!empty($acl) && !$session->isLoggedIn()) {
                 return self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_LOGIN;
             }
-            
+
             $customer = $session->getCustomer();
             if (!in_array($customer->getGroupId(), $acl)) {
                 return self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL;
             }
         }
-        
+
         return self::CUSTOMER_ALLOWED_PRODUCT_SUCCESS;
     }
-    
+
     public function isCustomerAllowedProduct($product, $action=null)
     {
         $result = $this->_getCustomerAllowedProduct($product);
@@ -110,17 +110,17 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return ($result == self::CUSTOMER_ALLOWED_PRODUCT_SUCCESS);
     }
-    
+
     /**
      * Check if the product's security should disable the sale
-     * 
+     *
      * @param Mage_Sales_Model_Quote_Item $item
      */
     public function checkCustomerAllowedProduct($item)
     {
         $productId = $item->getProduct()->getId();
         $product = Mage::getModel('catalog/product')->load($productId);
-        
+
         if ($acl = $product->getProductGroupAcl()) {
             try {
                 $doRedirect = false;
@@ -139,10 +139,10 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 if ($item->getParentItem()) {
                     $item->getParentItem()->setMessage($e->getMessage());
                 }
-                
+
                 $item->getQuote()->setHasError(true)
                     ->addMessage($this->__('Some of the products cannot be ordered because you are not authorized'), 'security');
-                
+
                 if ($doRedirect) {
                     Mage::getSingleton('core/session')->addNotice($e->getMessage());
                     $checkout = Mage::getSingleton('checkout/session');
@@ -152,11 +152,11 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * Check if the product limits the Qty that can ever be purchased
-     * 
+     *
      * @param Mage_Sales_Model_Quote_Item $item
      */
     public function checkCustomerAllowedProductQty($item)
@@ -171,12 +171,12 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 if (!$session->isLoggedIn()) {
                     Mage::throwException($this->__('You must be logged in to order this product'));
                 }
-                
+
                 $rowQty = $item->getQty();
                 if ($item->getParentItem()) {
                     $rowQty *= $item->getParentItem()->getQty();
                 }
-                
+
                 if (!is_numeric($limit)) {
                     $limit = Mage::app()->getLocale()->getNumber($limit);
                 }
@@ -184,18 +184,18 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 if (!$stockItem->getIsQtyDecimal()) {
                     $limit = intval($limit);
                 }
-                
-                
+
+
                 /* @var $orderItems Mage_Sales_Model_Mysql4_Order_Item_Collection */
                 $orderItems = Mage::getModel('sales/order_item')->getCollection();
                 $orderItems->addFieldToFilter('product_id', $product->getId())
                     ->join('order', 'order.entity_id=main_table.order_id AND order.customer_id=' . $session->getCustomer()->getId(), array());
-                
+
                 $soldQty = 0;
                 foreach ($orderItems as $orderItem) {
                     $soldQty += $orderItem->getQtyOrdered() - $orderItem->getQtyCanceled();
                 }
-                
+
                 if (($rowQty + $soldQty) > $limit) {
                     $text = $this->__('You may only order %s of this product.', $limit);
                     if ($rowQty) {
@@ -212,14 +212,38 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 if ($item->getParentItem()) {
                     $item->getParentItem()->setMessage($e->getMessage());
                 }
-                
+
                 $item->getQuote()->setHasError(true)
                     ->addMessage($this->__('Some of the products cannot be ordered in the requested quantity'), 'qty');
-                
+
                 if ($doRedirect) {
                     Mage::app()->getResponse()->setRedirect($this->_getUrl('customer/account/login'));
                 }
             }
         }
+    }
+
+    public function getAdvancedGridFilters($type, $clear=false)
+    {
+        $session = Mage::getSingleton('adminhtml/session');
+
+        switch ($type) {
+            case 'order':
+            case 'customer':
+                return $session->getData($this->getAdvancedGridFiltersStorageKey($type), $clear);
+        }
+
+        return false;
+    }
+
+    public function getAdvancedGridFiltersStorageKey($type)
+    {
+        switch ($type) {
+            case 'order':
+            case 'customer':
+                return $type . 'Gridadvfilter';
+        }
+
+        return false;
     }
 }

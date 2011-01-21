@@ -13,24 +13,59 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             );
 
         $user  = Mage::getSingleton('admin/session')->getUser();
+        $select = false;
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
-            $order_items = Mage::getModel('sales/order_item')->getCollection();
-            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
-            $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
-                ->columns(array('order_id'))
-                ->where('source_store_view IN (?)', $scope)
-                ->group('order_id');
+            $select = $this->_getOrderItemSelect()->where('source_store_view IN (?)', $scope);
 
             $collection->getSelect()
-                ->joinInner(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
+                ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
         }
 
-        //MAYBE: Add payment method to grid
+        $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('order');
+        if (!empty($advfilter) && $advfilter->hasData()) {
+            if ($advfilter->getData('shipping_method')) {
+                $collection->getSelect()->where('o.shipping_description LIKE ?', '%' . $advfilter->getData('shipping_method') . '%');
+            }
+
+            if ($advfilter->getData('item_sku')) {
+                if (!$select) {
+                    $select = $this->_getOrderItemSelect();
+                    $collection->getSelect()
+                        ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
+                }
+
+                $select->where('sku LIKE ?', $advfilter->getData('item_sku') . '%');
+            }
+
+            if ($advfilter->getData('payment_method')) {
+                /* @var $payment Mage_Sales_Model_Mysql4_Order_Payment_Collection */
+                $payment = Mage::getModel('sales/order_payment')->getCollection();
+                $payment->addFieldToFilter('method', array('eq' => $advfilter->getData('payment_method')));
+                $payment->getSelect()
+                    ->reset(Zend_Db_Select::COLUMNS)
+                    ->columns(array('parent_id'))
+                    ->group('parent_id');
+
+                $collection->getSelect()
+                    ->join(array('p' => $payment->getSelect()), 'main_table.entity_id = p.parent_id', array());
+            }
+        }
 
         $this->setCollection($collection);
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+    }
+
+    protected function _getOrderItemSelect()
+    {
+        $order_items = Mage::getModel('sales/order_item')->getCollection();
+        /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+        $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
+            ->columns(array('order_id'))
+            ->group('order_id');
+
+        return $select;
     }
 
     protected function _prepareColumns()
@@ -162,13 +197,5 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             )
         );
         return $this;
-    }
-
-    protected function _getPaymentMethods()
-    {
-        $config = Mage::getModel('payment/config');
-        $methods = $config->getAllMethods();
-
-        1+1;
     }
 }

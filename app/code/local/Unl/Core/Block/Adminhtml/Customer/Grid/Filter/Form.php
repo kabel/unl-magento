@@ -83,8 +83,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
 
     public function getFilterData()
     {
-        $session = Mage::getSingleton('adminhtml/session');
-        $param = $session->getData('customerGridadvfilter');
+        $param = Mage::helper('unl_core')->getAdvancedGridFilters('customer');
 
         if (empty($param)) {
             return new Varien_Object();

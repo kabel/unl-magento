@@ -113,10 +113,16 @@ class Unl_Core_Model_Observer
             return;
         }
 
-        $type = 'Mage_Adminhtml_Block_Customer';
-        if ($block instanceof $type) {
-            $block->setTemplate('widget/grid/advanced/container.phtml');
-            $block->append('adv.filter');
+        $advFilterParents = array(
+        	'Mage_Adminhtml_Block_Customer',
+            'Mage_Adminhtml_Block_Sales_Order'
+        );
+        foreach ($advFilterParents as $type) {
+            if ($block instanceof $type) {
+                $block->setTemplate('widget/grid/advanced/container.phtml');
+                $block->append('adv.filter');
+                return;
+            }
         }
     }
 
@@ -337,8 +343,16 @@ class Unl_Core_Model_Observer
         $controller = $observer->getEvent()->getControllerAction();
         $request = $controller->getRequest();
         if ($request->has('filter') && $request->getParam('filter') == '') {
-            $session = Mage::getSingleton('adminhtml/session');
-            $session->unsetData('customerGridadvfilter');
+            Mage::helper('unl_core')->getAdvancedGridFilters('customer', true);
+        }
+    }
+
+    public function onBeforeSalesOrderGrid($observer)
+    {
+        $controller = $observer->getEvent()->getControllerAction();
+        $request = $controller->getRequest();
+        if ($request->has('filter') && $request->getParam('filter') == '') {
+            Mage::helper('unl_core')->getAdvancedGridFilters('order', true);
         }
     }
 

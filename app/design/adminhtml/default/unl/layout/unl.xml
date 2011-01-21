@@ -8,6 +8,10 @@ Advanced Filters (add-on)
    		<block type="unl_core/adminhtml_customer_grid_filter_form" name="adv.filter" />
     </adminhtml_customer_index>
     
+    <adminhtml_sales_order_index>
+   		<block type="unl_core/adminhtml_sales_order_grid_filter_form" name="adv.filter" />
+    </adminhtml_sales_order_index>
+    
 <!--
 CMS Page Permissions (add-on)
 -->

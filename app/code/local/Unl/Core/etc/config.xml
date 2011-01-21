@@ -525,6 +525,16 @@
                 </observers>
             </controller_action_predispatch_adminhtml_sales_invoice_view>
             
+            <controller_action_predispatch_adminhtml_sales_order_grid>
+            	<observers>
+            		<advfilter>
+            			<type>singleton</type>
+            			<class>unl_core/observer</class>
+                        <method>onBeforeSalesOrderGrid</method>
+            		</advfilter>
+            	</observers>
+            </controller_action_predispatch_adminhtml_sales_order_grid>
+            
             <controller_action_predispatch_adminhtml_sales_order_view>
                 <observers>
                     <order_auth>

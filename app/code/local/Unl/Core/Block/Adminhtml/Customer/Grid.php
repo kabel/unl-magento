@@ -19,7 +19,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
         $this->setCollection($collection);
         // END FROM PARENT
 
-        $advfilter = Mage::getSingleton('adminhtml/session')->getData('customerGridadvfilter');
+        $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('customer');
         if (!empty($advfilter) && $advfilter->hasData()) {
             /* @var $orders  Mage_Sales_Model_Mysql4_Order_Collection */
             $orders = Mage::getModel('sales/order')->getResourceCollection();
