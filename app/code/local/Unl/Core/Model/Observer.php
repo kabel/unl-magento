@@ -113,6 +113,32 @@ class Unl_Core_Model_Observer
             return;
         }
 
+        $type = 'Mage_Adminhtml_Block_Permissions_User_Edit_Tab_Main';
+        if ($block instanceof $type) {
+             /* @var $form Varien_Data_Form */
+            $form = $block->getForm();
+            if ($fs = $form->getElement('base_fieldset')) {
+                $model = Mage::registry('permissions_user');
+                $fs->addField('is_cas', 'select', array(
+                    'name' => 'is_cas',
+                    'label' => Mage::helper('adminhtml')->__('Is UNL CAS'),
+                	'title' => Mage::helper('adminhtml')->__('Is UNL CAS'),
+                    'values' => Mage::getModel('adminhtml/system_config_source_yesno')->toOptionArray(),
+                    'value' => $model->getIsCas(),
+                    'required' => true
+                ), 'username');
+            }
+
+            // define field dependencies
+            $block->setChild('form_after', $block->getLayout()->createBlock('adminhtml/widget_form_element_dependence')
+                ->addFieldMap("user_is_cas", 'cas_enabled')
+                ->addFieldMap("user_password", 'password')
+                ->addFieldMap("user_confirmation", 'confirmation')
+                ->addFieldDependence('password', 'cas_enabled', '0')
+                ->addFieldDependence('confirmation', 'cas_enabled', '0')
+            );
+        }
+
         $advFilterParents = array(
         	'Mage_Adminhtml_Block_Customer',
             'Mage_Adminhtml_Block_Sales_Order'

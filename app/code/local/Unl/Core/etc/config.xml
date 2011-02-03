@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.16</version>
+            <version>0.1.17</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -405,6 +405,26 @@
     
     <adminhtml>
         <events>
+        	<admin_user_authenticate_after>
+        		<observers>
+                    <filter_cas>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>preventNonCasLogin</method>
+                    </filter_cas>
+                </observers>
+        	</admin_user_authenticate_after>
+        	
+        	<admin_session_user_login_success>
+        		<observers>
+                    <filter_cas>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>tryAdminPfUpdate</method>
+                    </filter_cas>
+                </observers>
+        	</admin_session_user_login_success>
+        	
             <admin_user_save_before>
                 <observers>
                     <save_store>
@@ -454,6 +474,16 @@
                     </unl_prep_wysiwyg>
                 </observers>
             </cms_wysiwyg_config_prepare>
+            
+            <controller_action_postdispatch_adminhtml_index_logout>
+            	<observers>
+		            <clear_simplecas>
+		                <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>clearSimpleCasSession</method>
+		            </clear_simplecas>
+		        </observers>
+            </controller_action_postdispatch_adminhtml_index_logout>
             
             <controller_action_predispatch>
 		        <observers>
@@ -554,6 +584,16 @@
                     </order_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_sales_shipment_view>
+            
+            <core_collection_abstract_load_before>
+            	<observers>
+                    <filter_cas_users_from_forgot>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>filterCasUsersFromForgotPassword</method>
+                    </filter_cas_users_from_forgot>
+                </observers>
+            </core_collection_abstract_load_before>
             
             <eav_collection_abstract_load_before>
                 <observers>

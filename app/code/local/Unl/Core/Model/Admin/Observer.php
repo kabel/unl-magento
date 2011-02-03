@@ -19,6 +19,55 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
+    public function tryAdminPfUpdate($observer)
+    {
+        $user = $observer->getEvent()->getUser();
+        $user->reload();
+        if ($user->getIsCas()) {
+            try {
+                $pfData = new Varien_Object();
+                Mage::helper('unl_cas')->loadPfData($pfData);
+                $changed = false;
+                foreach (array('email', 'firstname', 'lastname') as $data) {
+                    if ($pfData->hasData($data) && $pfData->getData($data) != $user->getData($data)) {
+                        $user->setDataUsingMethod($data, $pfData->getData($data));
+                        $changed = true;
+                    }
+                }
+                if ($changed && !$user->userExists()) {
+                    $user->save();
+                }
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
+
+    public function preventNonCasLogin($observer)
+    {
+        /* @var $user Mage_Admin_Model_User */
+        $user = $observer->getEvent()->getUser();
+        $result = $observer->getEvent()->getResult();
+
+        if ($result && $user->getIsCas()) {
+            Mage::throwException(Mage::helper('adminhtml')->__('Invalid Username or Password.'));
+        }
+    }
+
+    public function filterCasUsersFromForgotPassword($observer)
+    {
+        $collection = $observer->getEvent()->getCollection();
+        if ($collection instanceof Mage_Admin_Model_Mysql4_User_Collection && Mage::app()->getRequest()->getActionName() == 'forgotpassword') {
+            $collection->addFieldToFilter('is_cas', false);
+        }
+    }
+
+    public function clearSimpleCasSession($observer)
+    {
+        unset($_SESSION['__SIMPLECAS_TICKET']);
+        unset($_SESSION['__SIMPLECAS_UID']);
+    }
+
     public function beforeCmsPageSave($observer)
     {
         /* @var $page Mage_Cms_Model_Page */
