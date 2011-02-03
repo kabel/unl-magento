@@ -186,7 +186,11 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             if (empty($data['firstname'])) {
-                $data['firstname'] = (string)$r->givenName;
+                if (isset($r->eduPersonNickname)) {
+                    $data['firstname'] = (string)$r->eduPersonNickname;
+                } else {
+                    $data['firstname'] = (string)$r->givenName;
+                }
             }
 
             if (empty($data['lastname'])) {
