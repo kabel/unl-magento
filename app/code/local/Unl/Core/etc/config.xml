@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.17</version>
+            <version>0.1.18</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -328,6 +328,24 @@
                     </tax>
                 </observers>
             </sales_order_save_after>
+            <sales_order_creditmemo_refund>
+            	<observers>
+                    <apply_refunded_at>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onSalesOrderCreditmemoRefund</method>
+                    </apply_refunded_at>
+                </observers>
+            </sales_order_creditmemo_refund>
+            <sales_order_invoice_pay>
+            	<observers>
+                    <apply_paid_at>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onSalesOrderInvoicePay</method>
+                    </apply_paid_at>
+                </observers>
+            </sales_order_invoice_pay>
             <sales_order_shipment_resource_init_virtual_grid_columns>
                 <observers>
                     <recon_grid>

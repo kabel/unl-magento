@@ -78,4 +78,16 @@ class Unl_Core_Model_Sales_Observer
                 'shipping_amount'
             );
     }
+
+    public function onSalesOrderCreditmemoRefund($observer)
+    {
+        $creditmemo = $observer->getEvent()->getCreditmemo();
+        $creditmemo->setRefundedAt(now());
+    }
+
+    public function onSalesOrderInvoicePay($observer)
+    {
+        $invoice = $observer->getEvent()->getInvoice();
+        $invoice->setPaidAt(now());
+    }
 }
