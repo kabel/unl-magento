@@ -1,26 +1,11 @@
 <?php
 
-class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
+class Unl_Core_CustomerController extends Unl_Core_Controller_Advfilter
 {
     public function applyfilterAction()
     {
-        $session = Mage::getSingleton('adminhtml/session');
         $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('customer');
-        if ($this->getRequest()->has('advfilter')) {
-            $requestData = $this->getRequest()->getParam('advfilter');
-            $requestData = Mage::helper('adminhtml')->prepareFilterString($requestData);
-            $requestData = $this->_filterDates($requestData, array('purchase_from', 'purchase_to'));
-
-            $params = new Varien_Object();
-
-            foreach ($requestData as $key => $value) {
-                if (!empty($value)) {
-                    $params->setData($key, $value);
-                }
-            }
-
-            $session->setData($sessionParamName, $params);
-        }
+        $this->_applyFilters($sessionParamName, array('purchase_from', 'purchase_to'));
     }
 
     public function currentfiltersAction()
@@ -28,28 +13,7 @@ class Unl_Core_CustomerController extends Mage_Adminhtml_Controller_Action
         $this->loadLayout();
 
         $block = $this->getLayout()->createBlock('unl_core/adminhtml_customer_grid_filter_form');
-        $block->toHtml();
-        $filters = $block->getFilterData();
-        $resp = new Varien_Object();
-        foreach ($block->getForm()->getElement('base_fieldset')->getElements() as $element) {
-            switch ($element->getType()) {
-                case 'button':
-                    break;
-                case 'checkbox':
-                    if ($filters->getIsRepeat()) {
-                        $resp->setData($element->getHtmlId(), $element->getValue());
-                    }
-                    break;
-                default:
-                    if ($element->getValue()) {
-                        $resp->setData($element->getHtmlId(), $element->getValue());
-                    }
-            }
-        }
-
-        if (!$resp->hasData()) {
-            $resp = new stdClass();
-        }
+        $resp = $this->_getFilterFromBlock($block);
 
         $this->getResponse()->setBody(Zend_Json::encode($resp));
     }
