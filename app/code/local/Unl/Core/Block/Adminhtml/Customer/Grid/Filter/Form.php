@@ -51,10 +51,22 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
             'title'     => Mage::helper('adminhtml')->__('Purchased To'),
         ));
 
-        $fieldset->addField('is_repeat', 'checkbox', array(
+        $fieldset->addField('is_repeat', 'select', array(
             'name'      => 'is_repeat',
+            'options'   => array(
+                '' => '',
+                1 => Mage::helper('adminhtml')->__('Yes'),
+            ),
             'label'     => Mage::helper('adminhtml')->__('Repeat Customer?'),
-            'value'     => '1',
+        ));
+
+        $fieldset->addField('is_subscriber', 'select', array(
+            'name'      => 'is_subscriber',
+            'options'   => array(
+                '' => '',
+                1 => Mage::helper('adminhtml')->__('Yes'),
+            ),
+            'label'     => Mage::helper('adminhtml')->__('Newsletter Subscriber'),
         ));
 
         $fieldset->addField('apply', 'button', array(

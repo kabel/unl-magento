@@ -5,6 +5,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
     protected function _prepareCollection()
     {
         // FROM PARENT
+        /* @var $collection Mage_Customer_Model_Entity_Customer_Collection */
         $collection = Mage::getResourceModel('customer/customer_collection')
             ->addNameToSelect()
             ->addAttributeToSelect('email')
@@ -21,21 +22,34 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
 
         $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('customer');
         if (!empty($advfilter) && $advfilter->hasData()) {
+            if ($advfilter->getData('is_subscriber')) {
+                $collection->getSelect()->join(array('s' => $collection->getTable('newsletter/subscriber')),
+                    's.customer_id = e.entity_id AND s.subscriber_status = ' . Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED, array());
+            }
+
+            $addOrders = false;
             /* @var $orders  Mage_Sales_Model_Mysql4_Order_Collection */
             $orders = Mage::getModel('sales/order')->getResourceCollection();
+            $orders->getSelect()
+                ->reset(Zend_Db_Select::COLUMNS)
+                ->columns(array('customer_id'))
+                ->group('customer_id');
 
             if ($advfilter->getData('purchase_from') || $advfilter->getData('purchase_to')) {
-                 $orders->addFieldToFilter('main_table.created_at', array(
-                 	'from' => $advfilter->getData('purchase_from'),
+                $addOrders = true;
+                $orders->addFieldToFilter('main_table.created_at', array(
+                    'from' => $advfilter->getData('purchase_from'),
                     'to' => $advfilter->getData('purchase_to'))
                  );
             }
 
             if ($advfilter->getData('is_repeat')) {
+                $addOrders = true;
                 $orders->getSelect()->having('COUNT(DISTINCT(main_table.entity_id)) > 1');
             }
 
             if ($advfilter->getData('from_store') || $advfilter->getData('item_sku')) {
+                $addOrders = true;
                 $orders->getSelect()->join(array('oi' => $orders->getTable('sales/order_item')), 'main_table.entity_id = oi.order_id', array());
                 if ($advfilter->getData('from_store')) {
                     $orders->getSelect()->where('oi.source_store_view = ?', $advfilter->getData('from_store'));
@@ -46,12 +60,9 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
                 }
             }
 
-            $orders->getSelect()
-                ->reset(Zend_Db_Select::COLUMNS)
-                ->columns(array('customer_id'))
-                ->group('customer_id');
-
-            $collection->getSelect()->join(array('o' => $orders->getSelect()), 'o.customer_id = e.entity_id', array());
+            if ($addOrders) {
+                $collection->getSelect()->join(array('o' => $orders->getSelect()), 'o.customer_id = e.entity_id', array());
+            }
         }
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
