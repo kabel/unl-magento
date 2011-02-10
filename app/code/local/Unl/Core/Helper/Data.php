@@ -246,4 +246,39 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
         return false;
     }
+
+    /**
+     * Retrieves the store_id of all the items in the quote, otherwise false
+     *
+     * @param Mage_Sales_Model_Quote $quote
+     * @return int|false
+     */
+    public function getSingleStoreFromQuote($quote)
+    {
+        $sourceStore = false;
+        $items = $quote->getAllItems();
+        $c = count($items);
+        $i = 0;
+
+        while ($i < $c) {
+            ++$i;
+            if ($items[$i-1]->getProduct()->isVirtual() || $items[$i-1]->getParentItem()) {
+                continue;
+            } else {
+                $sourceStore = $items[$i-1]->getSourceStoreView();
+                break;
+            }
+        }
+
+        for (;$i < $c; $i++) {
+            if ($items[$i]->getProduct()->isVirtual() || $items[$i]->getParentItem()) {
+                continue;
+            }
+            if ($items[$i]->getSourceStoreView() != $sourceStore) {
+                return false;
+            }
+        }
+
+        return $sourceStore;
+    }
 }

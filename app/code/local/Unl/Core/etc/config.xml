@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.18</version>
+            <version>0.1.19</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -821,6 +821,17 @@
                 <allowspecific>0</allowspecific>
                 <group>offline</group>
             </cash>
+            <invoicelater>
+                <active>0</active>
+                <model>unl_core/payment_method_invoicelater</model>
+                <order_status>pending</order_status>
+                <title>Invoice Later</title>
+                <allowspecific>0</allowspecific>
+                <group>offline</group>
+            </invoicelater>
+            <verisign>
+            	<reference_txn>0</reference_txn>
+            </verisign>
         </payment>
         <carriers>
             <pickup>
