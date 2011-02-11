@@ -1,0 +1,12 @@
+.content-subheader {
+	border-bottom: 4px double #DFDFDF;
+    margin-bottom: 5px;
+    padding-bottom: 0.25em;
+}
+
+.content-subheader h4 {
+	color: #6F8992;
+    float: left;
+    font-size: 1.1em;
+    margin: 1.3em 0.5em 0 0;
+}
