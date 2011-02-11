@@ -63,7 +63,7 @@ class Unl_Core_Block_Adminhtml_Widget_Grid_Multicontainer extends Mage_Adminhtml
             }
             unset($data['block_type']);
 
-            $child->setData($data);
+            $child->addData($data);
 
             foreach (array('filter_data', 'period_type') as $key) {
                 if ($this->hasData($key)) {
