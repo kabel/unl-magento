@@ -31,11 +31,9 @@ class Unl_Core_Model_Payment_Method_Invoicelater extends Mage_Payment_Model_Meth
         if (parent::isAvailable($quote)) {
             if (!empty($quote)) {
                 $customer = $quote->getCustomer();
-                if ($store = Mage::helper('unl_core')->getSingleStoreFromQuote($quote)) {
-                    foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
-                        if ($customer->getGroupId() == $group->getId()) {
-                            return true;
-                        }
+                foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
+                    if ($customer->getGroupId() == $group->getId()) {
+                        return true;
                     }
                 }
             }
