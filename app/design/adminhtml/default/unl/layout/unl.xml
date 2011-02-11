@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <layout>
 
+<default>
+	<reference name="head">
+		<action method="addCss"><name>unl_boxes.css</name></action>
+	</reference>
+</default>
+
 <!--
 Advanced Filters (add-on)
 -->
@@ -49,51 +55,24 @@ Bursar/Reconcile Reports
 
 	<unl_core_report_sales_bursar_cc>
 	   <reference name="content">
-            <block type="unl_core/adminhtml_report_sales_bursar_cc" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="sales/adminhtml_report_filter_form_order" name="grid.filter.form">
-                    <action method="addReportTypeOption" translate="value">
-                        <key>created_at_order</key>
-                        <value>Created At Order</value>
-                    </action>
-                    <action method="addReportTypeOption" translate="value">
-                        <key>updated_at_order</key>
-                        <value>Updated At Order</value>
-                    </action>
-                </block>
+            <block type="unl_core/adminhtml_report_sales_bursar_cc" name="sales.report.grid.container">
+                <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
 	</unl_core_report_sales_bursar_cc>
 	
 	<unl_core_report_sales_bursar_co>
        <reference name="content">
-            <block type="unl_core/adminhtml_report_sales_bursar_co" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="sales/adminhtml_report_filter_form_order" name="grid.filter.form">
-                    <action method="addReportTypeOption" translate="value">
-                        <key>created_at_order</key>
-                        <value>Created At Order</value>
-                    </action>
-                    <action method="addReportTypeOption" translate="value">
-                        <key>updated_at_order</key>
-                        <value>Updated At Order</value>
-                    </action>
-                </block>
+            <block type="unl_core/adminhtml_report_sales_bursar_co" name="sales.report.grid.container">
+                <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
     </unl_core_report_sales_bursar_co>
     
     <unl_core_report_sales_bursar_nocap>
        <reference name="content">
-            <block type="unl_core/adminhtml_report_sales_bursar_nocap" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="sales/adminhtml_report_filter_form_order" name="grid.filter.form">
-                    <action method="addReportTypeOption" translate="value">
-                        <key>created_at_order</key>
-                        <value>Created At Order</value>
-                    </action>
-                    <action method="addReportTypeOption" translate="value">
-                        <key>updated_at_order</key>
-                        <value>Updated At Order</value>
-                    </action>
-                </block>
+            <block type="unl_core/adminhtml_report_sales_bursar_nocap" name="sales.report.grid.container">
+                <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
     </unl_core_report_sales_bursar_nocap>
