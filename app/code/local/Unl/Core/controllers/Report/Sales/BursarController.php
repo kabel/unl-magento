@@ -2,7 +2,7 @@
 
 class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_Action
 {
-    public function _initAction()
+    protected function _initAction()
     {
         $this->loadLayout()
             ->_addBreadcrumb(Mage::helper('reports')->__('Reports'), Mage::helper('reports')->__('Reports'))
@@ -11,7 +11,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
         return $this;
     }
 
-    public function _initReportAction($blocks)
+    protected function _initReportAction($blocks)
     {
         if (!is_array($blocks)) {
             $blocks = array($blocks);
@@ -38,14 +38,8 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
         return $this;
     }
 
-    public function ccAction()
+    protected function _initActionBlocks()
     {
-        $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Credit Card'));
-
-        $this->_initAction()
-            ->_setActiveMenu('report/sales/sales')
-            ->_addBreadcrumb(Mage::helper('adminhtml')->__('Credit Card'), Mage::helper('adminhtml')->__('Credit Card'));
-
         $multiGridBlock = $this->getLayout()->getBlock('sales.report.grid.container');
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
@@ -55,9 +49,11 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
         ));
 
         $this->renderLayout();
+
+        return $this;
     }
 
-    protected function _exportCsv($gridId)
+    protected function _exportCsv($gridId, $paymentGroup)
     {
         $fileName   = "bursar_{$paymentGroup}_{$gridId}.csv";
         $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_bursar_{$paymentGroup}_grid_{$gridId}");
@@ -71,6 +67,17 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
         $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_bursar_{$paymentGroup}_grid_{$gridId}");
         $this->_initReportAction($grid);
         $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+    }
+
+    public function ccAction()
+    {
+        $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Credit Card'));
+
+        $this->_initAction()
+            ->_setActiveMenu('report/sales/sales')
+            ->_addBreadcrumb(Mage::helper('adminhtml')->__('Credit Card'), Mage::helper('adminhtml')->__('Credit Card'));
+
+        $this->_initActionBlocks();
     }
 
     public function exportCsvCcProductsPaidAction()
@@ -121,15 +128,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             ->_setActiveMenu('report/sales/sales')
             ->_addBreadcrumb(Mage::helper('adminhtml')->__('Cost Object'), Mage::helper('adminhtml')->__('Cost Object'));
 
-        $multiGridBlock = $this->getLayout()->getBlock('sales.report.grid.container');
-        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
-
-        $this->_initReportAction(array(
-            $multiGridBlock,
-            $filterFormBlock
-        ));
-
-        $this->renderLayout();
+        $this->_initActionBlocks();
     }
 
     public function exportCsvCoProductsPaidAction()
@@ -180,15 +179,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             ->_setActiveMenu('report/sales/sales')
             ->_addBreadcrumb(Mage::helper('adminhtml')->__('Non-Captured'), Mage::helper('adminhtml')->__('Non-Captured'));
 
-        $multiGridBlock = $this->getLayout()->getBlock('sales.report.grid.container');
-        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
-
-        $this->_initReportAction(array(
-            $multiGridBlock,
-            $filterFormBlock
-        ));
-
-        $this->renderLayout();
+        $this->_initActionBlocks();
     }
 
     public function exportCsvNocapProductsPaidAction()
