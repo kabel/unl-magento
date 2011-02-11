@@ -262,7 +262,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
         while ($i < $c) {
             ++$i;
-            if ($items[$i-1]->getProduct()->isVirtual() || $items[$i-1]->getParentItem()) {
+            if ($items[$i-1]->getParentItem()) {
                 continue;
             } else {
                 $sourceStore = $items[$i-1]->getSourceStoreView();
@@ -271,7 +271,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         for (;$i < $c; $i++) {
-            if ($items[$i]->getProduct()->isVirtual() || $items[$i]->getParentItem()) {
+            if ($items[$i]->getParentItem()) {
                 continue;
             }
             if ($items[$i]->getSourceStoreView() != $sourceStore) {
