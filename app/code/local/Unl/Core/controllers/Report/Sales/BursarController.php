@@ -10,7 +10,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             ->_addBreadcrumb(Mage::helper('reports')->__('Bursar'), Mage::helper('reports')->__('Bursar'));
         return $this;
     }
-    
+
     public function _initReportAction($blocks)
     {
         if (!is_array($blocks)) {
@@ -41,126 +41,196 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
     public function ccAction()
     {
         $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Credit Card'));
-        
+
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
             ->_addBreadcrumb(Mage::helper('adminhtml')->__('Credit Card'), Mage::helper('adminhtml')->__('Credit Card'));
-        
-        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_sales_bursar_cc.grid');
+
+        $multiGridBlock = $this->getLayout()->getBlock('sales.report.grid.container');
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $this->_initReportAction(array(
-            $gridBlock,
+            $multiGridBlock,
             $filterFormBlock
         ));
-            
+
         $this->renderLayout();
     }
-    
-    /**
-     * Export bursar report grid to CSV format
-     */
-    public function exportCcCsvAction()
+
+    protected function _exportCsv($gridId)
     {
-        $fileName   = 'bursar_cc.csv';
-        $grid       = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_cc_grid');
+        $fileName   = "bursar_{$paymentGroup}_{$gridId}.csv";
+        $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_bursar_{$paymentGroup}_grid_{$gridId}");
         $this->_initReportAction($grid);
         $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
     }
 
-    /**
-     * Export sales report grid to Excel XML format
-     */
-    public function exportCcExcelAction()
+    protected function _exportExcel($gridId, $paymentGroup)
     {
-        $fileName   = 'bursar_cc.xml';
-        $grid       = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_cc_grid');
+        $fileName   = "bursar_{$paymentGroup}_{$gridId}.xml";
+        $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_bursar_{$paymentGroup}_grid_{$gridId}");
         $this->_initReportAction($grid);
         $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
     }
-    
+
+    public function exportCsvCcProductsPaidAction()
+    {
+        $this->_exportCsv('products_paid', 'cc');
+    }
+
+    public function exportCsvCcProductsRefundedAction()
+    {
+        $this->_exportCsv('products_refunded', 'cc');
+    }
+
+    public function exportCsvCcShippingPaidAction()
+    {
+        $this->_exportCsv('shipping_paid', 'cc');
+    }
+
+    public function exportCsvCcShippingRefundedAction()
+    {
+        $this->_exportCsv('shipping_refunded', 'cc');
+    }
+
+    public function exportExcelCcProductsPaidAction()
+    {
+        $this->_exportExcel('products_paid', 'cc');
+    }
+
+    public function exportExcelCcProductsRefundedAction()
+    {
+        $this->_exportExcel('products_refunded', 'cc');
+    }
+
+    public function exportExcelCcShippingPaidAction()
+    {
+        $this->_exportExcel('shipping_paid', 'cc');
+    }
+
+    public function exportExcelCcShippingRefundedAction()
+    {
+        $this->_exportExcel('shipping_refunded', 'cc');
+    }
+
     public function coAction()
     {
         $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Cost Object'));
-        
+
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
             ->_addBreadcrumb(Mage::helper('adminhtml')->__('Cost Object'), Mage::helper('adminhtml')->__('Cost Object'));
-        
-        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_sales_bursar_co.grid');
+
+        $multiGridBlock = $this->getLayout()->getBlock('sales.report.grid.container');
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $this->_initReportAction(array(
-            $gridBlock,
+            $multiGridBlock,
             $filterFormBlock
         ));
-            
+
         $this->renderLayout();
     }
-    
-    /**
-     * Export bursar report grid to CSV format
-     */
-    public function exportCoCsvAction()
+
+    public function exportCsvCoProductsPaidAction()
     {
-        $fileName   = 'bursar_co.csv';
-        $grid       = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_co_grid');
-        $this->_initReportAction($grid);
-        $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
+        $this->_exportCsv('products_paid', 'co');
     }
 
-    /**
-     * Export sales report grid to Excel XML format
-     */
-    public function exportCoExcelAction()
+    public function exportCsvCoProductsRefundedAction()
     {
-        $fileName   = 'bursar_co.xml';
-        $grid       = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_co_grid');
-        $this->_initReportAction($grid);
-        $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+        $this->_exportCsv('products_refunded', 'co');
     }
-    
+
+    public function exportCsvCoShippingPaidAction()
+    {
+        $this->_exportCsv('shipping_paid', 'co');
+    }
+
+    public function exportCsvCoShippingRefundedAction()
+    {
+        $this->_exportCsv('shipping_refunded', 'co');
+    }
+
+    public function exportExcelCoProductsPaidAction()
+    {
+        $this->_exportExcel('products_paid', 'co');
+    }
+
+    public function exportExcelCoProductsRefundedAction()
+    {
+        $this->_exportExcel('products_refunded', 'co');
+    }
+
+    public function exportExcelCoShippingPaidAction()
+    {
+        $this->_exportExcel('shipping_paid', 'co');
+    }
+
+    public function exportExcelCoShippingRefundedAction()
+    {
+        $this->_exportExcel('shipping_refunded', 'co');
+    }
+
     public function nocapAction()
     {
         $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Non-Captured'));
-        
+
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
             ->_addBreadcrumb(Mage::helper('adminhtml')->__('Non-Captured'), Mage::helper('adminhtml')->__('Non-Captured'));
-        
-        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_sales_bursar_nocap.grid');
+
+        $multiGridBlock = $this->getLayout()->getBlock('sales.report.grid.container');
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $this->_initReportAction(array(
-            $gridBlock,
+            $multiGridBlock,
             $filterFormBlock
         ));
-            
+
         $this->renderLayout();
     }
-    
-    /**
-     * Export bursar report grid to CSV format
-     */
-    public function exportNocapCsvAction()
+
+    public function exportCsvNocapProductsPaidAction()
     {
-        $fileName   = 'bursar_nocap.csv';
-        $grid       = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_nocap_grid');
-        $this->_initReportAction($grid);
-        $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
+        $this->_exportCsv('products_paid', 'nocap');
     }
 
-    /**
-     * Export sales report grid to Excel XML format
-     */
-    public function exportNocapExcelAction()
+    public function exportCsvNocapProductsRefundedAction()
     {
-        $fileName   = 'bursar_nocap.xml';
-        $grid       = $this->getLayout()->createBlock('unl_core/adminhtml_report_sales_bursar_nocap_grid');
-        $this->_initReportAction($grid);
-        $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+        $this->_exportCsv('products_refunded', 'nocap');
     }
-    
+
+    public function exportCsvNocapShippingPaidAction()
+    {
+        $this->_exportCsv('shipping_paid', 'nocap');
+    }
+
+    public function exportCsvNocapShippingRefundedAction()
+    {
+        $this->_exportCsv('shipping_refunded', 'nocap');
+    }
+
+    public function exportExcelNocapProductsPaidAction()
+    {
+        $this->_exportExcel('products_paid', 'nocap');
+    }
+
+    public function exportExcelNocapProductsRefundedAction()
+    {
+        $this->_exportExcel('products_refunded', 'nocap');
+    }
+
+    public function exportExcelNocapShippingPaidAction()
+    {
+        $this->_exportExcel('shipping_paid', 'nocap');
+    }
+
+    public function exportExcelNocapShippingRefundedAction()
+    {
+        $this->_exportExcel('shipping_refunded', 'nocap');
+    }
+
     protected function _isAllowed()
     {
         $act = $this->getRequest()->getActionName();
@@ -170,16 +240,34 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             case 'nocap':
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/' . $act);
                 break;
-            case 'exportCcCsv':
-            case 'exportCcExcel':
+            case 'exportCsvCcProductsPaid':
+            case 'exportCsvCcProductsRefunded':
+            case 'exportCsvCcShippingPaid':
+            case 'exportCsvCcShippingRefunded':
+            case 'exportExcelCcProductsPaid':
+            case 'exportExcelCcProductsRefunded':
+            case 'exportExcelCcShippingPaid':
+            case 'exportExcelCcShippingRefunded':
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/cc');
                 break;
-            case 'exportCoCsv':
-            case 'exportCoExcel':
+            case 'exportCsvCoProductsPaid':
+            case 'exportCsvCoProductsRefunded':
+            case 'exportCsvCoShippingPaid':
+            case 'exportCsvCoShippingRefunded':
+            case 'exportExcelCoProductsPaid':
+            case 'exportExcelCoProductsRefunded':
+            case 'exportExcelCoShippingPaid':
+            case 'exportExcelCoShippingRefunded':
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/co');
                 break;
-            case 'exportNocapCsv':
-            case 'exportNocapExcel':
+            case 'exportCsvNocapProductsPaid':
+            case 'exportCsvNocapProductsRefunded':
+            case 'exportCsvNocapShippingPaid':
+            case 'exportCsvNocapShippingRefunded':
+            case 'exportExcelNocapProductsPaid':
+            case 'exportExcelNocapProductsRefunded':
+            case 'exportExcelNocapShippingPaid':
+            case 'exportExcelNocapShippingRefunded':
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/nocap');
                 break;
             default:
