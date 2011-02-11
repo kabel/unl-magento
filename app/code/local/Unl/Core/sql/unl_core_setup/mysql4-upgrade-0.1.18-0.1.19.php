@@ -11,7 +11,7 @@ $exemptOrg = Mage::getModel('tax/class')->getCollection()
                 ->getFirstItem();
 
 $installer->run("
-INSERT INTO `{$installer->getTable('customer/group')}` (`customer_group_code`, `tax_class_id`) VALUES ('Allow Invoicing', 3), ('Allow Invoicing - Exempt Org', {$exemptOrg->getId()});
+INSERT INTO `{$installer->getTable('customer/customer_group')}` (`customer_group_code`, `tax_class_id`) VALUES ('Allow Invoicing', 3), ('Allow Invoicing - Exempt Org', {$exemptOrg->getId()});
 ");
 
 $installer->endSetup();
