@@ -9,12 +9,12 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
     const DEFAULT_OFFSET_QTY      = 455;
     const DEFAULT_OFFSET_TAX      = 475;
     const DEFAULT_OFFSET_SUBTOTAL = 575;
-    
+
     const DEFAULT_WIDTH_TOTAL_EX  = 50;
     const DEFAULT_WIDTH_DISCOUNT  = 50;
     const DEFAULT_WIDTH_QTY       = 30;
     const DEFAULT_WIDTH_TAX       = 45;
-    
+
     public function getPdf($creditmemos = array())
     {
         $this->_beforeGetPdf();
@@ -43,7 +43,9 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(1));
             $this->_setFontRegular($page);
-            $page->drawText(Mage::helper('sales')->__('Credit Memo # ') . $creditmemo->getIncrementId(), self::DEFAULT_PAGE_LEFT, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
+            $text = Mage::helper('sales')->__('Credit Memo # ') . $creditmemo->getIncrementId();
+            $feed = self::DEFAULT_PAGE_MARGIN_RIGHT - self::DEFAULT_BOX_PAD - $this->widthForStringUsingFontSize($text, $page->getFont(), $page->getFontSize());
+            $page->drawText($text, $feed, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
 
             /* Add table head */
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
