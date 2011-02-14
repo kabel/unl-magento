@@ -172,6 +172,11 @@
                     <method_checkmo>Unl_Core_Model_Payment_Method_Checkmo</method_checkmo>
                 </rewrite>
             </payment>
+            <paypal>
+            	<rewrite>
+            		<payflowpro>Unl_Core_Model_Paypal_Payflowpro</payflowpro>
+            	</rewrite>
+            </paypal>
             <reports_mysql4>
                 <rewrite>
                     <!-- Dashboard Report Fixes for Store Owned Products -->
@@ -187,6 +192,7 @@
                     <order>Unl_Core_Model_Sales_Order</order>
                     <order_creditmemo_total_shipping>Unl_Core_Model_Sales_Order_Creditmemo_Total_Shipping</order_creditmemo_total_shipping>
                     <order_invoice>Unl_Core_Model_Sales_Order_Invoice</order_invoice>
+                    <order_payment>Unl_Core_Model_Sales_Order_Payment</order_payment>
                     <!-- Change size of order PDFs to US Letter -->
                     <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
                     <order_pdf_items_creditmemo_default>Unl_Core_Model_Sales_Order_Pdf_Items_Creditmemo_Default</order_pdf_items_creditmemo_default>
