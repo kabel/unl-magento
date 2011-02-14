@@ -14,15 +14,22 @@ class Unl_Core_IndexController extends Mage_Adminhtml_Controller_Action
 
     public function logincasAction()
     {
-        if (Mage::getSingleton('admin/session')->isLoggedIn()) {
-            $this->_redirect('adminhtml');
+        /* @var $session Mage_Admin_Model_Session */
+        $session = Mage::getSingleton('admin/session');
+
+        $referer = $this->getRequest()->getServer('HTTP_REFERER');
+        $baseUrl = $this->getUrl();
+        if (strpos($referer, $baseUrl) === 0) {
+            $session->setBeforeCasUrl(substr($referer, strlen($baseUrl)));
+        }
+
+        if ($session->isLoggedIn()) {
+            $this->_redirectLogin();
             return;
         }
 
         $auth = Mage::helper('unl_cas')->getAuth();
         if ($auth->isLoggedIn()) {
-            /* @var $session Mage_Admin_Model_Session */
-            $session = Mage::getSingleton('admin/session');
             $username = $auth->getUser();
 
             // simulate normal authentication
@@ -63,6 +70,18 @@ class Unl_Core_IndexController extends Mage_Adminhtml_Controller_Action
             $auth->login();
         }
 
-        $this->_redirect('adminhtml');
+        $this->_redirectLogin();
+    }
+
+    protected function _redirectLogin()
+    {
+        $session = Mage::getSingleton('admin/session');
+        if ($url = $session->getBeforeCasUrl(true)) {
+            $this->_redirect($url);
+        } else {
+            $this->_redirect('adminhtml');
+        }
+
+
     }
 }
