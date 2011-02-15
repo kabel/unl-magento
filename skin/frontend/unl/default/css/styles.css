@@ -1160,7 +1160,7 @@ f/********** Product Prices > */
 .sp-methods input.cvv { width:3em !important; }
 
 .sp-methods .checkmo-list li { margin:0 0 5px; }
-.sp-methods .checkmo-list label { width:135px; padding-right:10px; text-align:right; }
+.sp-methods .checkmo-list label { width:150px; padding-right:10px; text-align:right; }
 .sp-methods .checkmo-list address { float:left; }
 
 .sp-methods .centinel-logos a { margin-right:3px; }
