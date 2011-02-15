@@ -112,6 +112,27 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Checks the current admin user's scope to see if they have permission to edit
+     * the given product
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return bool
+     */
+    public function isAdminUserAllowedProductEdit($product)
+    {
+        $user = Mage::getSingleton('admin/session')->getUser();
+        if ($scope = $user->getScope()) {
+            $scope = explode(',', $scope);
+            $source = $product->getSourceStoreView();
+            if ($source && !in_array($source, $scope)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Check if the product's security should disable the sale
      *
      * @param Mage_Sales_Model_Quote_Item $item

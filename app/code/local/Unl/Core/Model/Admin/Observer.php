@@ -163,13 +163,11 @@ class Unl_Core_Model_Admin_Observer
     public function catalogProductEditActionPreDispatch($observer)
     {
         $request = Mage::app()->getRequest();
-        $user = Mage::getSingleton('admin/session')->getUser();
 
-        if (($productId = (int) $request->getParam('id')) && ($scope = $user->getScope())) {
-            $scope = explode(',', $scope);
-            if ($productId && $product = Mage::getModel('catalog/product')->load($productId)) {
-                $source = $product->getSourceStoreView();
-                if ($source && !in_array($source, $scope)) {
+        if ($productId = (int) $request->getParam('id')) {
+            $product = Mage::getModel('catalog/product')->load($productId);
+            if ($product->getId()) {
+                if (!Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
                     $request->initForward()
                         ->setActionName('denied')
                         ->setDispatched(false);

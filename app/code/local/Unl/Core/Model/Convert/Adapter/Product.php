@@ -61,7 +61,7 @@ class Unl_Core_Model_Convert_Adapter_Product
 
         return Mage_Eav_Model_Convert_Adapter_Entity::load();
     }
-    
+
     /**
      * Save product (import)
      *
@@ -97,6 +97,10 @@ class Unl_Core_Model_Convert_Adapter_Product
 
         if ($productId) {
             $product->load($productId);
+            if (!Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+                $message = Mage::helper('catalog')->__('Skip import row, permission denied');
+                Mage::throwException($message);
+            }
         }
         else {
             $productTypes = $this->getProductTypes();
