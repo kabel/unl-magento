@@ -59,6 +59,13 @@ class Unl_Core_Model_Convert_Adapter_Product
             ));
         }
 
+        if ($scope = Mage::getSingleton('admin/session')->getUser()->getScope()) {
+            $this->_filter[] = array(
+                'attribute' => 'source_store_view',
+                'in' => $scope
+            );
+        }
+
         return Mage_Eav_Model_Convert_Adapter_Entity::load();
     }
 
