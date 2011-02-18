@@ -14,9 +14,14 @@ class Unl_Core_Model_Sales_Observer
         $quote_item = $observer->getEvent()->getQuoteItem();
 
         $sourceStore = $product->getSourceStoreView();
+        $warehouse   = $product->getWarehouse();
 
         if (null !== $sourceStore) {
             $quote_item->setSourceStoreView($sourceStore);
+        }
+
+        if (null !== $warehouse) {
+            $quote_item->setWarehouse($warehouse);
         }
     }
 
@@ -46,7 +51,8 @@ class Unl_Core_Model_Sales_Observer
             $orderItem = $observer->getEvent()->getOrderItem();
 
             $orderItem->setStoreId($quoteItem->getStoreId())
-                ->setSourceStoreView($quoteItem->getSourceStoreView());
+                ->setSourceStoreView($quoteItem->getSourceStoreView())
+                ->setWarehouse($quoteItem->getWarehouse());
 
             //TODO: Fix tax_percent issue displayed in adminhtml
 //            if (null === $orderItem->getTaxPercent()) {

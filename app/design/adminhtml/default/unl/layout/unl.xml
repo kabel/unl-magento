@@ -109,6 +109,21 @@ Bursar/Reconcile Reports
             </block>
         </reference>
     </unl_core_report_sales_reconcile_nocap>
+    
+<!-- 
+Warehouse Stuff
+-->
+	<unl_core_warehouse_index>
+        <reference name="content">
+            <block type="unl_core/adminhtml_warehouse" name="warehouse.container"/>
+        </reference>
+    </unl_core_warehouse_index>
+    
+    <unl_core_warehouse_edit>
+        <reference name="content">
+            <block type="unl_core/adminhtml_warehouse_edit" name="warehouse_edit"/>
+        </reference>
+    </unl_core_warehouse_edit>
 
 <!--
 Shipping Override Module

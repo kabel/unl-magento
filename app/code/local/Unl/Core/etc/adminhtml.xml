@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<config>
+
+    <menu>
+        <report>
+            <children>
+                <salesroot>
+                    <children>
+                        <bursar translate="title" module="reports">
+                            <title>Bursar Reports</title>
+                            <children>
+                                <cc translate="title" module="reports">
+                                    <title>Credit Card</title>
+                                    <action>unl/report_sales_bursar/cc</action>
+                                </cc>
+                                <co translate="title" module="reports">
+                                    <title>Cost Object</title>
+                                    <action>unl/report_sales_bursar/co</action>
+                                </co>
+                                <nocap translate="title" module="reports">
+                                    <title>Non-Captured</title>
+                                    <action>unl/report_sales_bursar/nocap</action>
+                                </nocap>
+                            </children>
+                        </bursar>
+                        <reconcile translate="title" module="reports">
+                            <title>Reconcile Reports</title>
+                            <children>
+                                <cc translate="title" module="reports">
+                                    <title>Credit Card</title>
+                                    <action>unl/report_sales_reconcile/cc</action>
+                                </cc>
+                                <co translate="title" module="reports">
+                                    <title>Cost Object</title>
+                                    <action>unl/report_sales_reconcile/co</action>
+                                </co>
+                                <nocap translate="title" module="reports">
+                                    <title>Non-Captured</title>
+                                    <action>unl/report_sales_reconcile/nocap</action>
+                                </nocap>
+                            </children>
+                        </reconcile>
+                    </children>
+                </salesroot>
+                <products>
+                    <children>
+                        <orderdetails translate="title" module="reports">
+                            <title>Order Details</title>
+                            <action>unl/report_product/orderdetails</action>
+                        </orderdetails>
+                        <customized translate="title" module="reports">
+                            <title>Customized</title>
+                            <action>unl/report_product/customized</action>
+                        </customized>
+                    </children>
+                </products>
+            </children>
+        </report>
+        <sales>
+            <children>
+                <picklist translate="title" module="sales">
+                    <title>Pick Lists</title>
+                    <action>unl/sales_picklist</action>
+                    <sort_order>41</sort_order>
+                </picklist>
+            </children>
+        </sales>
+        <system>
+        	<children>
+        		<shippingroot>
+        			<children>
+        				<warehouse translate="title">
+		                    <title>Manage Warehouses</title>
+		                    <action>unl/warehouse</action>
+		                    <sort_order>20</sort_order>
+		                </warehouse>
+        			</children>
+        		</shippingroot>
+        	</children>
+        </system>
+    </menu>
+    
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <report>
+                        <children>
+                            <salesroot>
+                                <children>
+                                    <bursar translate="title">
+                                        <title>Bursar Reports</title>
+                                        <children>
+                                            <cc translate="title">
+                                                <title>Credit Card</title>
+                                            </cc>
+                                            <co translate="title">
+                                                <title>Cost Object</title>
+                                            </co>
+                                            <nocap translate="title">
+                                                <title>Non-Captured</title>
+                                            </nocap>
+                                        </children>
+                                    </bursar>
+                                    <reconcile translate="title">
+                                        <title>Reconcile Reports</title>
+                                        <children>
+                                            <cc translate="title">
+                                                <title>Credit Card</title>
+                                            </cc>
+                                            <co translate="title">
+                                                <title>Cost Object</title>
+                                            </co>
+                                            <nocap translate="title">
+                                                <title>Non-Captured</title>
+                                            </nocap>
+                                        </children>
+                                    </reconcile>
+                                </children>
+                            </salesroot>
+                            <products>
+                                <children>
+                                    <orderdetails translate="title">
+                                        <title>Order Details</title>
+                                    </orderdetails>
+                                    <customized translate="title">
+                                        <title>Customized</title>
+                                    </customized>
+                                </children>
+                            </products>
+                        </children>
+                    </report>
+                    <sales>
+                        <children>
+                            <picklist translate="title">
+                                <title>Pick Lists</title>
+                                <sort_order>41</sort_order>
+                            </picklist>
+                        </children>
+                    </sales>
+                    <system>
+                    	<children>
+                    		<shippingroot>
+                    			<children>
+                    				<warehouse translate="title">
+                    					<title>Manage Warehouses</title>
+                    				</warehouse>
+                    			</children>
+                    		</shippingroot>
+                    	</children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+
+</config>
