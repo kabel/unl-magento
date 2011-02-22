@@ -17,6 +17,9 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
             $select = $this->_getOrderItemSelect()->where('source_store_view IN (?)', $scope);
+            if ($user->getWarehouseScope()) {
+                $select->where('warehouse IN (?)', $user->getWarehouseScope());
+            }
 
             $collection->getSelect()
                 ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());

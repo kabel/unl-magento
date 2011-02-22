@@ -8,7 +8,6 @@ class Unl_Core_Model_Admin_Observer
         $user = $observer->getEvent()->getObject();
 
         $scope = $user->getScope();
-
         if ($user->getAll() || empty($scope)) {
             $user->setData('scope', null);
         } else {
@@ -16,6 +15,16 @@ class Unl_Core_Model_Admin_Observer
                 $scope = implode(',', $scope);
             }
             $user->setData('scope', $scope);
+        }
+
+        $warehouseScope = $user->getWarehouseScope();
+        if ($user->getWarehouseNone() || empty($warehouseScope)) {
+            $user->setData('warehouse_scope', null);
+        } else {
+            if (is_array($warehouseScope)) {
+                $warehouseScope = implode(',', $warehouseScope);
+            }
+            $user->setData('warehouse_scope', $warehouseScope);
         }
     }
 
@@ -270,6 +279,10 @@ class Unl_Core_Model_Admin_Observer
                 ->where('source_store_view IN (?)', $scope)
                 ->where('order_id = ?', $orderId);
 
+            if ($user->getWarehouseScope()) {
+                $order_items->getSelect()->where('warehouse IN (?)', $user->getWarehouseScope());
+            }
+
             if (!count($order_items)) {
                 $request->initForward()
                     ->setActionName('denied')
@@ -291,6 +304,10 @@ class Unl_Core_Model_Admin_Observer
                 ->columns(array('order_id'))
                 ->where('source_store_view IN (?)', $scope)
                 ->group('order_id');
+
+            if ($user->getWarehouseScope()) {
+                $select->where('warehouse IN (?)', $user->getWarehouseScope());
+            }
 
             $collection->getSelect()
                 ->joinInner(array('scope' => $select), 'e.entity_id = scope.order_id', array());

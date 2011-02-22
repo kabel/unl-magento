@@ -32,3 +32,32 @@
 
     </fieldset>
 </div>
+
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Warehouse Permissions') ?></h4>
+    </div>
+    <fieldset id="warehouse_perm">
+
+        <div class="field-row">
+            <label for="warehouse_none"><?php echo $this->__('Warehouse Permissions') ?></label>
+            <select id="warehouse_none" name="warehouse_none" onchange="$('warehouse_container').toggle()" class="select">
+                <option value="0" <?php echo ($this->getNoneSelected()?'':'selected="selected"'); ?>><?php echo $this->__('Custom') ?></option>
+                <option value="1" <?php echo ($this->getNoneSelected()?'selected="selected"':''); ?>><?php echo $this->__('None') ?></option>
+            </select>
+        </div>
+
+        <div class="field-row" id="warehouse_container"<?php if ($this->getNoneSelected()): ?> style="display: none;"<?php endif; ?>>
+            <label>&nbsp;</label>
+            <small>If no warehouses are selected, this will be ignored.</small>
+            <div style="margin-left:150px;">
+                <select multiple="multiple" class="select multiselect" size="6" style="width:280px;" name="warehouse_scope[]">
+                <?php foreach ($this->getWarehouseCollection() as $_warehouse): ?>
+                    <option value="<?php echo $_warehouse->getId() ?>"<?php if ($this->isWarehouseSelected($_warehouse)): ?> selected="selected"<?php endif; ?>><?php echo $this->htmlEscape($_warehouse->getName()) ?></option>
+                <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+    </fieldset>
+</div>
