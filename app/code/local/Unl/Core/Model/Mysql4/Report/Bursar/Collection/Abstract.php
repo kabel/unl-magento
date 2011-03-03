@@ -21,10 +21,10 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Abstract extends Mage_Sales
     protected function _applyDateRangeFilter()
     {
         if (!is_null($this->_from)) {
-            $this->getSelect()->where($this->_periodColumn . ' >= ?', $this->_from);
+            $this->getSelect()->where("DATE({$this->_periodColumn})  >= ?", $this->_from);
         }
         if (!is_null($this->_to)) {
-            $this->getSelect()->where($this->_periodColumn . ' <= ?', $this->_to);
+            $this->getSelect()->where("DATE({$this->_periodColumn}) <= ?", $this->_to);
         }
         return $this;
     }
