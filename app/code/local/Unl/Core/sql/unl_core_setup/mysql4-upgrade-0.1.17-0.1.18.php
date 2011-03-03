@@ -10,13 +10,13 @@ $installer->getConnection()->addColumn($this->getTable('sales/invoice'), 'paid_a
 
 $installer->run("
 	UPDATE {$this->getTable('sales/creditmemo')}
-	SET `refunded_at` = `updated_at`
+	SET `refunded_at` = `created_at`
 	WHERE `state` = " . Mage_Sales_Model_Order_Creditmemo::STATE_REFUNDED
 );
 
 $installer->run("
 	UPDATE {$this->getTable('sales/invoice')}
-	SET `paid_at` = `updated_at`
+	SET `paid_at` = `created_at`
 	WHERE `state` = " . Mage_Sales_Model_Order_Invoice::STATE_PAID
 );
 
