@@ -96,4 +96,28 @@ class Unl_Core_Model_Sales_Observer
         $invoice = $observer->getEvent()->getInvoice();
         $invoice->setPaidAt(now());
     }
+
+    public function onBeforeSalesItemSave($observer)
+    {
+        $item = $observer->getEvent()->getDataObject();
+
+        switch (true) {
+            case $item instanceof Mage_Sales_Model_Order_Item:
+                if (!$item->hasIsDummy()) {
+                    $item->setIsDummy($item->isDummy());
+                }
+                break;
+            case $item instanceof Mage_Sales_Model_Order_Invoice_Item:
+            case $item instanceof Mage_Sales_Model_Order_Creditmemo_Item:
+                if (!$item->hasIsDummy()) {
+                    $item->setIsDummy($item->getOrderItem()->isDummy());
+                }
+                break;
+            case $item instanceof Mage_Sales_Model_Order_Shipment_Item:
+                if (!$item->hasIsDummy()) {
+                    $item->setIsDummy($item->getOrderItem()->isDummy(true));
+                }
+                break;
+        }
+    }
 }

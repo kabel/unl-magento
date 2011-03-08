@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.20</version>
+            <version>0.1.21</version>
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
@@ -365,6 +365,42 @@
                     </recon_grid>
                 </observers>
             </sales_order_shipment_resource_init_virtual_grid_columns>
+            <sales_order_item_save_before>
+            	<observers>
+                    <set_dummy>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onBeforeSalesItemSave</method>
+                    </set_dummy>
+                </observers>
+            </sales_order_item_save_before>
+            <sales_creditmemo_item_save_before>
+            	<observers>
+                    <set_dummy>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onBeforeSalesItemSave</method>
+                    </set_dummy>
+                </observers>
+            </sales_creditmemo_item_save_before>
+            <sales_invoice_item_save_before>
+            	<observers>
+                    <set_dummy>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onBeforeSalesItemSave</method>
+                    </set_dummy>
+                </observers>
+            </sales_invoice_item_save_before>
+            <sales_shipment_item_save_before>
+            	<observers>
+                    <set_dummy>
+                        <type>singleton</type>
+                        <class>unl_core/sales_observer</class>
+                        <method>onBeforeSalesItemSave</method>
+                    </set_dummy>
+                </observers>
+            </sales_shipment_item_save_before>
         </events>
         
         <pdf>

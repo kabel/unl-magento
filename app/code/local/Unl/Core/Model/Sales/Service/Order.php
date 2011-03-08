@@ -95,8 +95,8 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
             }
 
             $item = $this->_convertor->itemToShipmentItem($orderItem);
-            if ($orderItem->isDummy()) {
-                $qty = $orderItem->getQtyOrdered();
+            if ($orderItem->isDummy(true)) {
+                $qty = 1;
             } else {
                 if (isset($qtys[$orderItem->getId()])) {
                     $qty = min($qtys[$orderItem->getId()], $orderItem->getQtyToShip());
