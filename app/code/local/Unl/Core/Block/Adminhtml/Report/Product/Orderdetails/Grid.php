@@ -8,7 +8,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'report_period' => 'day',
             'sku' => ''
         );
-    
+
     /**
      * Sub report size
      *
@@ -36,11 +36,11 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
     {
 //        $this->setFilter('report_period', 'day');
         parent::_prepareCollection();
-        
+
         if ($this->getFilter('sku')) {
             Mage::register('filter_sku', $this->getFilter('sku'));
         }
-        
+
         $this->getCollection()
             ->initReport('unl_core/report_product_orderdetails_collection');
         return $this;
@@ -57,7 +57,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'header'    =>Mage::helper('reports')->__('SKU'),
             'index'     =>'sku'
         ));
-        
+
         $this->addColumn('name', array(
             'header'    =>Mage::helper('reports')->__('Product Name'),
             'index'     =>'name'
@@ -70,17 +70,25 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'index'     =>'ordered_qty',
             'type'      =>'number'
         ));
-        
+
+        $currencyCode = $this->getCurrentCurrencyCode();
+        $this->addColumn('base_price', array(
+            'header'        => Mage::helper('reports')->__('Price'),
+            'type'          => 'currency',
+            'currency_code' => $currencyCode,
+            'index'         => 'base_price',
+        ));
+
         $this->addColumn('customer_firstname', array(
             'header'    =>Mage::helper('reports')->__('Customer First Name'),
             'index'     =>'customer_firstname'
         ));
-        
+
         $this->addColumn('customer_lastname', array(
             'header'    =>Mage::helper('reports')->__('Customer Last Name'),
             'index'     =>'customer_lastname'
         ));
-        
+
         $this->addColumn('ordernum', array(
             'header'    =>Mage::helper('reports')->__('Order #'),
             'index'     =>'ordernum'
