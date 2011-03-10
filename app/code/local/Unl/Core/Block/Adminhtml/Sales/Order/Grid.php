@@ -172,18 +172,6 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
     }
 
-    protected function _prepareMassaction()
-    {
-        parent::_prepareMassaction();
-
-        if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship'))  {
-            $this->getMassactionBlock()->addItem('ordership_queue', array(
-                 'label'=> Mage::helper('sales')->__('Queue for Auto Ship'),
-                 'url'  => $this->getUrl('ordership/index/queueorders'),
-            ));
-        }
-    }
-
     /**
      * Add new rss list to grid
      *
