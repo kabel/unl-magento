@@ -56,6 +56,13 @@
                     </tr>
                     <?php endif; ?>
 
+                    <?php if ($track->getEstimateddate()): ?>
+                    <tr>
+                        <th><?php echo $this->__('Estimated delivery on:'); ?></th>
+                        <td><?php echo $this->formatDeliveryDate($track->getEstimateddate()); ?></td>
+                    </tr>
+                    <?php endif; ?>
+
                     <?php if ($track->getSignedby()): ?>
                     <tr>
                         <th><?php echo $this->__('Signed by:'); ?></th>
@@ -73,7 +80,7 @@
                     <?php if ($track->getShippedDate()): ?>
                     <tr>
                         <th><?php echo $this->__('Shipped or billed on:'); ?></th>
-                        <td><?php echo $track->getShippedDate(); ?></td>
+                        <td><?php echo $this->formatDeliveryDate($track->getShippedDate()); ?></td>
                     </tr>
                     <?php endif; ?>
 
