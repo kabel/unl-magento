@@ -45,7 +45,7 @@ Shipment Packages Display (Ordership Module)
 	
 	<adminhtml_sales_order_shipment_view>
 	   <reference name="form">
-	       <block type="unl_core/adminhtml_sales_order_shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml"></block>
+	       <block type="unl_ship/shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml"></block>
 	   </reference>
 	</adminhtml_sales_order_shipment_view>
 	
@@ -124,6 +124,30 @@ Warehouse Stuff
             <block type="unl_core/adminhtml_warehouse_edit" name="warehouse_edit"/>
         </reference>
     </unl_core_warehouse_edit>
+
+<!-- 
+Auto Ship Module
+-->
+	<unl_ship_index_index>
+		<reference name="content">
+			<block type="unl_ship/shipment_create" name="shipment_create">
+                <block type="unl_ship/shipment_create_form" name="form" template="unl/ship/shipment/create/form.phtml">
+                    <block type="unl_ship/order_view_info" name="order_info" template="unl/ship/order/view/info.phtml">
+                    	<block type="unl_ship/shipment_create_address" name="shipping_address" template="unl/ship/shipment/create/address.phtml" />
+                    </block>
+                    <block type="unl_ship/shipment_create_items" name="order_items" template="unl/ship/shipment/create/items.phtml">
+                    	<block type="unl_ship/shipment_create_packages" name="packages" template="unl/ship/shipment/create/packages.phtml" />
+                        <action method="addItemRender"><type>default</type><block>adminhtml/sales_items_renderer_default</block><template>unl/ship/shipment/create/items/renderer/default.phtml</template></action>
+                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>unl/ship/shipment/create/items/column/bundle/name.phtml</template><tpye>bundle</tpye></action>
+                        <!-- 
+                        <action method="addColumnRender"><column>qty</column><block>adminhtml/sales_items_column_qty</block><template>sales/items/column/qty.phtml</template></action>
+                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
+                        -->
+                    </block>
+                </block>
+            </block>
+		</reference>
+	</unl_ship_index_index>
 
 <!--
 Shipping Override Module
