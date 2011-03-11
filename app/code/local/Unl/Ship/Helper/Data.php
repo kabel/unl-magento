@@ -10,7 +10,7 @@ class Unl_Ship_Helper_Data extends Mage_Core_Helper_Abstract
     public function isUnlShipQueueEmpty()
     {
         $queue = $this->getUnlShipQueue();
-        return !empty($queue);
+        return empty($queue);
     }
 
     public function getUnlShipQueue($clear = false)
