@@ -20,7 +20,7 @@
 <config>
     <modules>
         <Zenprint_Ordership>
-            <active>true</active>
+            <active>false</active>
             <codePool>community</codePool>
         </Zenprint_Ordership>
     </modules>
