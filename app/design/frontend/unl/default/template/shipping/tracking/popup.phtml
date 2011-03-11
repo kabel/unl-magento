@@ -1,6 +1,6 @@
 <?php  $_results = $this->getTrackingInfo() ?>
 <div class="page-title title-buttons">
-    <button class="button" onclick="window.close(); window.opener.focus();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
+    <button class="button" onclick="window.close(); if(window.opener){window.opener.focus();}"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
     <h1><?php echo $this->__('Tracking Information'); ?></h1>
 </div>
 <?php if(sizeof($_results)>0): ?>
@@ -104,9 +104,9 @@
                 <div class="divider"></div>
                 <?php if (is_object($track) && sizeof($track->getProgressdetail())>0): ?>
                 <table class="data-table" id="track-history-table-<?php echo $track->getTracking(); ?>">
-                    <col />
-                    <col width="1" />
-                    <col width="1" />
+                    <col width="" />
+                    <col width="110" />
+                    <col width="90" />
                     <col />
                     <thead>
                         <tr>
@@ -145,5 +145,5 @@
     <div><?php echo $this->__('There is no tracking available.'); ?></div>
 <?php endif; ?>
 <div class="buttons-set">
-    <button type="button" title="<?php echo $this->__('Close Window') ?>" class="button" onclick="window.close(); window.opener.focus();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
+    <button type="button" title="<?php echo $this->__('Close Window') ?>" class="button" onclick="window.close(); if(window.opener){window.opener.focus();}"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
 </div>

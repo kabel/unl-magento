@@ -1467,7 +1467,7 @@ f/********** Product Prices > */
 .tracking-table td { padding:1px 5px 0 0; }
 
 .tracking-table-popup { width:100%; }
-.tracking-table-popup th { font-weight:bold; white-space:nowrap; }
+#maincontent .tracking-table-popup th { font-weight:bold; white-space:nowrap; text-align:left; }
 .tracking-table-popup th,
 .tracking-table-popup td { padding:1px 8px; }
 
