@@ -114,13 +114,13 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
             <?php if ($_order->getAwDeliverydateDate()): ?>
             <tr>
                 <td class="label"><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></td>
-                <td><?php echo $this->formatDate($_order->getAwDeliverydateDate());?></td>
+                <td><strong><?php echo $this->formatDate($_order->getAwDeliverydateDate());?></strong></td>
             </tr>
             <?php endif;?>
             <?php if ($_order->getAwDeliverydateNotice()): ?>
             <tr>
                 <td class="label"><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></td>
-                <td><?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?></td>
+                <td><strong><?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?></strong></td>
             </tr>
             <?php endif; ?>
             <tr>
