@@ -74,6 +74,10 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 <td><strong><?php echo $_order->getBaseToOrderRate() ?></strong></td>
             </tr>
             <?php endif; ?>
+            <tr>
+                <td class="label">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
             <?php
             $carrier = $_order->getShippingCarrier();
             $ship = explode('_', $_order->getShippingMethod());
@@ -107,7 +111,22 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                     <?php endif; ?>
                 </strong></td>
             </tr>
-
+            <?php if ($_order->getAwDeliverydateNotice()): ?>
+            <tr>
+                <td class="label"><?php echo Mage::helper('deliverydate')->__('Delivery Date')?>;</td>
+                <td><?php echo $this->formatDate($_order->getAwDeliverydateDate());?></td>
+            </tr>
+            <?php endif;?>
+            <?php if ($_order->getAwDeliverydateNotice()): ?>
+            <tr>
+                <td class="label"><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?>;</td>
+                <td><?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?></td>
+            </tr>
+            <?php endif; ?>
+            <tr>
+                <td class="label">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Customer Name') ?></label></td>
                 <td>
