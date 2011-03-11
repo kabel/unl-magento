@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <sales>
+                        <children>
+                            <order>
+                                <children>
+                                    <actions>
+                                        <children>
+                                            <label_ship translate="title"><title>Label Ship</title></label_ship>
+                                        </children>
+                                    </actions>
+                                </children>
+                            </order>
+                        </children>
+                    </sales>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

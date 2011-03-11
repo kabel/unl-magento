@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Ship>
+            <version>0.1.0</version>
+            <depends>
+            	<Mage_Usa />
+                <Mage_Sales />
+                <Mage_Shipping />
+            </depends>
+        </Unl_Ship>
+    </modules>
+    
+    <admin>
+    	<routers>
+    		<unl_ship>
+    			<use>admin</use>
+    			<args>
+    				<module>Unl_Ship</module>
+    				<frontName>unlship</frontName>
+    			</args>
+    		</unl_ship>
+    	</routers>
+    </admin>
+    
+    <global>
+    	<helpers>
+            <unl_ship>
+               <class>Unl_Ship_Helper</class>
+            </unl_ship>
+        </helpers>
+    
+        <models>
+        	<unl_ship>
+                <class>Unl_Ship_Model</class>
+                <resourceModel>unl_ship_mysql4</resourceModel>
+            </unl_ship>
+            <unl_ship_mysql4>
+                <class>Unl_Ship_Model_Mysql4</class>
+                <entities>
+                    <shipment_package>
+                        <table>unl_shipment_package</table>
+                    </shipment_package>
+                </entities>
+            </unl_ship_mysql4>  
+            <usa>
+            	<rewrite>
+            		<shipping_carrier_fedex>Unl_Ship_Model_Shipping_Carrier_Fedex</shipping_carrier_fedex>
+            		<shipping_carrier_ups>Unl_Ship_Model_Shipping_Carrier_Ups</shipping_carrier_ups>
+            	</rewrite>
+            </usa>
+        </models>
+        
+        <resources>
+        	<unl_ship_setup>
+        		<setup>
+	               <module>Unl_Ship</module>
+	               <class>Mage_Core_Model_Resource_Setup</class>
+	            </setup>
+        	</unl_ship_setup>
+        </resources>
+        
+        <blocks>
+        	<unl_ship>
+                <class>Unl_Ship_Block</class>
+            </unl_ship>
+        </blocks>
+        
+    </global>
+    
+    <adminhtml>
+    	<events>
+    		<adminhtml_block_html_before>
+                <observers>
+                    <unl_ship_block_fix>
+                        <type>singleton</type>
+                        <class>unl_ship/observer</class>
+                        <method>correctAdminBlocks</method>
+                    </unl_ship_block_fix>
+                </observers>
+            </adminhtml_block_html_before>
+    	</events>
+    </adminhtml>
+    
+    <default>
+        <carriers>
+            <fedex>
+                <password backend_model="adminhtml/system_config_backend_encrypted"></password>
+                <key backend_model="adminhtml/system_config_backend_encrypted"></key>
+                <meter backend_model="adminhtml/system_config_backend_encrypted"></meter>
+            </fedex>
+
+            <ups>
+                <gateway_xml_url>https://onlinetools.ups.com/ups.app/xml/Rate</gateway_xml_url>
+                <third_party>0</third_party>
+                <third_party_country>US</third_party_country>
+            </ups>
+        </carriers>
+    </default>
+</config>
