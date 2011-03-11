@@ -1,0 +1,12 @@
+<?php $_pkg = $this->getPackage(); ?>
+<p><?php echo $_pkg->getTrackingNumber() ?></p>
+<p><?php echo Mage::helper('sales')->__('Label') ?>:
+    <a href="<?php echo $this->getUrl('unl_ship/index/label/id/' . $_pkg->getId()) ?>" onclick="window.open(this.href);return false;"><?php echo Mage::helper('sales')->__('View') ?></a>
+    <a href="<?php echo $this->getUrl('unl_ship/index/labelpdf/id/' . $_pkg->getId())?>" onclick="window.open(this.href);return false;"><?php echo Mage::helper('sales')->__('Print') ?></a>
+</p>
+<?php if ($_pkg->getInsDoc()): ?>
+    <p><a href="<?php echo $this->getUrl('unl_ship/index/highvalue/id/' . $_pkg->getId())?>" onclick="window.open(this.href);return false;"><?php echo Mage::helper('sales')->__('High Value Report') ?></a></p>
+<?php endif; ?>
+<?php if ($_pkg->getIntlDoc()): ?>
+    <p><a href="<?php echo $this->getUrl('unl_ship/index/customs/id/' . $_pkg->getId())?>" onclick="window.open(this.href);return false;"><?php echo Mage::helper('sales')->__('Customs Forms') ?></a></p>
+<?php endif; ?>

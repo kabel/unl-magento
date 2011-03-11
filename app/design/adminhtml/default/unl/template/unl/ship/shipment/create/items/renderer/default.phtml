@@ -1,0 +1,45 @@
+<?php $_item = $this->getItem() ?>
+<tr class="border">
+    <td><?php echo $this->getColumnHtml($_item, 'name') ?></td>
+    <td><?php echo $this->getColumnHtml($_item, 'qty') ?></td>
+	<td>
+        <input type="text" class="input-text package-item-weight" name="package_items[<?php echo $_item->getId() ?>][weight]" value="<?php echo $_item->getWeight()*1 ?>" />
+    </td>
+    <td class="last">
+    <?php if ($_item->canShip()): ?>
+    	<table class="" cellspacing="0">
+    		<col width="50%" />
+    		<col />
+    		<thead>
+    			<tr class="headings">
+    				<th><?php echo Mage::helper('unl_ship')->__('Index') ?></th>
+    				<th class="last"><?php echo Mage::helper('unl_ship')->__('Qty to Ship') ?></th>
+    			</tr>
+    		</thead>
+    		<?php if ((!$_item->getIsQtyDecimal() && $_item->getQtyToShip() > 1) || $_item->getIsQtyDecimal()): ?>
+    		<tfoot>
+				<tr>
+					<td colspan="2" class="a-right last">
+						<button type="button" class="split-item-button" onclick="packageItemControl.split(event)"><span><?php echo Mage::helper('unl_ship')->__('Split') ?></span></button>
+					</td>
+				</tr>
+    		</tfoot>
+    		<?php endif; ?>
+    		<tbody class="package-item-container">
+    			<tr>
+    				<td>
+    					<select class="select package-item-package" name="package_items[<?php echo $_item->getId() ?>][idx][]" style="width:100%;">
+                    		<option value="">-</option>
+                    	</select>
+    				</td>
+    				<td class="last">
+    					<input type="text" class="input-text package-item-qty" name="package_items[<?php echo $_item->getId() ?>][qty][]" value="<?php echo $_item->getQtyToShip()*1 ?>" />
+    				</td>
+    			</tr>
+    		</tbody>
+    	</table>
+    <?php else:?>
+    	&nbsp;
+    <?php endif; ?>
+    </td>
+</tr>
