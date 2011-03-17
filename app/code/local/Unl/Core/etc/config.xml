@@ -46,7 +46,6 @@
                 </rewrite>
             </adminhtml>
             <bundle>
-                
                 <rewrite>
                     <!-- Fix Item Renders -->
                     <adminhtml_sales_order_items_renderer>Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer</adminhtml_sales_order_items_renderer>
@@ -145,6 +144,12 @@
                     <category_tree>Unl_Core_Model_Catalog_Resource_Eav_Mysql4_Category_Tree</category_tree>
                 </rewrite>
             </catalog_resource_eav_mysql4>
+            <cms>
+            	<rewrite>
+            		<!-- Fix skin URL -->
+            		<wysiwyg_images_storage>Unl_Core_Model_Cms_Wysiwyg_Images_Storage</wysiwyg_images_storage>
+            	</rewrite>
+            </cms>
             <core>
                 <rewrite>
                 	<!-- Allow locale templates in Design -->
