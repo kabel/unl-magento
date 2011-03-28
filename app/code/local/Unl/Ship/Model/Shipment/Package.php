@@ -1,6 +1,7 @@
 <?php
 
-class Unl_Ship_Model_Shipment_Package extends Mage_Core_Model_Abstract  {
+class Unl_Ship_Model_Shipment_Package extends Mage_Core_Model_Abstract
+{
 
 	protected function _construct()
 	{

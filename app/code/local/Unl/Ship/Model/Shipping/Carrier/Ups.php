@@ -1,6 +1,5 @@
 <?php
 
-
 class Unl_Ship_Model_Shipping_Carrier_Ups
     extends Mage_Usa_Model_Shipping_Carrier_Ups
     implements Unl_Ship_Model_Shipping_Carrier_Xmlship_Interface

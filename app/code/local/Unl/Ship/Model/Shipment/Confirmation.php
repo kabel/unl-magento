@@ -91,4 +91,3 @@ class Unl_Ship_Model_Shipment_Confirmation extends Varien_Object
 	}
 
 }
-?>

@@ -1,7 +1,7 @@
 <?php
 
-interface Unl_Ship_Model_Shipping_Carrier_Xmlship_Interface  {
-
+interface Unl_Ship_Model_Shipping_Carrier_Xmlship_Interface
+{
 	/**
      * Creates a shipment to be sent. Should initialize the shipment, retrieve tracking number, and get shipping label.
      *

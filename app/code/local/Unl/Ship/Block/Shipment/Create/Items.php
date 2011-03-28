@@ -2,7 +2,7 @@
 
 class Unl_Ship_Block_Shipment_Create_Items extends Mage_Adminhtml_Block_Sales_Items_Abstract
 {
-/**
+	/**
      * Retrieve order model instance
      *
      * @return Mage_Sales_Model_Order
