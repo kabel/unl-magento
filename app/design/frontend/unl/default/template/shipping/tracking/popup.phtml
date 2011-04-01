@@ -54,9 +54,7 @@
                         <th><?php echo $this->__('Delivered on:'); ?></th>
                         <td><?php echo $this->formatDeliveryDateTime($track->getDeliverydate(),$track->getDeliverytime()); ?></td>
                     </tr>
-                    <?php endif; ?>
-
-                    <?php if ($track->getEstimateddate()): ?>
+                    <?php elseif ($track->getEstimateddate()): ?>
                     <tr>
                         <th><?php echo $this->__('Estimated delivery on:'); ?></th>
                         <td><?php echo $this->formatDeliveryDate($track->getEstimateddate()); ?></td>
