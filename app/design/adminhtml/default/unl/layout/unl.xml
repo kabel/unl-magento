@@ -202,4 +202,14 @@ Unl_Comm Module
     	</reference>
     </unl_comm_queue_edit>
 
+<!-- 
+Unl_Inventory Module
+-->
+
+    <unl_inventory_index_index>
+        <reference name="content">
+            <block type="unl_inventory/products" name="products_list" />
+        </reference>
+    </unl_inventory_index_index>
+
 </layout>

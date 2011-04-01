@@ -13,6 +13,10 @@
             <active>true</active>
             <codePool>local</codePool>
         </Unl_Comm>
+        <Unl_Inventory>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Unl_Inventory>
         <Unl_Ship>
             <active>true</active>
             <codePool>local</codePool>

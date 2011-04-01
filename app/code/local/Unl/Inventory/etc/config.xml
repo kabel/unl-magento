@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Inventory>
+            <version>0.1.0</version>
+            <depends>
+            	<Mage_Catalog />
+                <Mage_CatalogInventory />
+            </depends>
+        </Unl_Inventory>
+    </modules>
+    
+    <admin>
+    	<routers>
+    		<unl_inventory>
+    			<use>admin</use>
+    			<args>
+    				<module>Unl_Inventory</module>
+    				<frontName>unlinv</frontName>
+    			</args>
+    		</unl_inventory>
+    	</routers>
+    </admin>
+    
+    <global>
+    	<helpers>
+            <unl_inventory>
+               <class>Unl_Inventory_Helper</class>
+            </unl_inventory>
+        </helpers>
+    
+        <models>
+        	<unl_inventory>
+                <class>Unl_Inventory_Model</class>
+                <resourceModel>unl_inventory_mysql4</resourceModel>
+            </unl_inventory>
+            <unl_inventory_mysql4>
+                <class>Unl_Inventory_Model_Mysql4</class>
+                <entities>
+                    <audit>
+                        <table>unl_inventory_audit</table>
+                    </audit>
+                    <index>
+                        <table>unl_inventory_index</table>
+                    </index>
+                </entities>
+            </unl_inventory_mysql4>
+        </models>
+        
+        <resources>
+        	<unl_inventory_setup>
+        		<setup>
+	               <module>Unl_Inventory</module>
+	               <class>Mage_Core_Model_Resource_Setup</class>
+	            </setup>
+        	</unl_inventory_setup>
+        </resources>
+        
+        <blocks>
+        	<unl_inventory>
+                <class>Unl_Inventory_Block</class>
+            </unl_inventory>
+        </blocks>
+        
+    </global>
+    
+    <default>
+        <cataloginventory>
+            <options>
+                <accounting>2</accounting>
+            </options>
+        </cataloginventory>
+    </default>
+</config>

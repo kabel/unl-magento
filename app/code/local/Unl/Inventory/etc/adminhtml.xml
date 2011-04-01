@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <catalog>
+            <children>
+                <inventory translate="title" module="unl_inventory">
+                    <title>Manage Inventory</title>
+                    <action>unlinv/</action>
+                    <sort_order>1</sort_order>
+                </inventory>
+            </children>
+        </catalog>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <catalog>
+                        <children>
+                            <inventory translate="title" module="unl_inventory">
+                                <title>Manage Inventory</title>
+                            </inventory>
+                        </children>
+                    </catalog>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
