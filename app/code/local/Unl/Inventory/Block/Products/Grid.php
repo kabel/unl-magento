@@ -34,16 +34,10 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $collection->joinAttribute('audit_inventory', 'catalog_product/audit_inventory', 'entity_id');
 
         /* @var $auditSelect Varien_Db_Select */
-        $auditSelect = Mage::getModel('unl_inventory/audit')->getCollection()->getSelect();
-        $auditSelect->group('product_id')
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array('product_id'));
+        $auditSelect = Mage::getModel('unl_inventory/audit')->getCollection()->getProductSelect();
 
         /* @var $indexSelect Varien_Db_Select */
-        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->getSelect();
-        $indexSelect->group('product_id')
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array('qty' => 'SUM(qty_on_hand)', 'product_id'));
+        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->getQtyOnHandSelect();
 
         /* @var $select Varien_Db_Select */
         $select = $collection->getSelect();
@@ -143,8 +137,7 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
                     array(
                         'caption' => Mage::helper('catalog')->__('Edit'),
                         'url'     => array(
-                            'base'=>'*/*/edit',
-                            'params'=>array('store'=>$this->getRequest()->getParam('store'))
+                            'base'=>'*/*/edit'
                         ),
                         'field'   => 'id'
                     )
