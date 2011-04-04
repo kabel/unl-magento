@@ -11,22 +11,11 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Overview
 
     public function getQtyOnHand()
     {
-        $qty = $this->getProduct()->getStockItem()->getQty() * 1;
-        $collection = Mage::getResourceModel('unl_inventory/index_collection');
-        $collection->getQtyOnHandSelect();
-        $collection->load();
-
-        $row = current($collection->getItems());
-
         if ($this->getProduct()->getAuditInventory()) {
-            if ($row) {
-                return $row->getQty();
-            }
-
-            return 0;
+            return Mage::helper('unl_inventory')->getQtyOnHand();
         }
 
-        return $qty;
+        return $this->getProduct()->getStockItem()->getQty() * 1;
     }
 
     public function getIsInStock()

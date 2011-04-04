@@ -25,14 +25,14 @@ class Unl_Inventory_Model_Mysql4_Audit_Collection extends Mage_Core_Model_Mysql4
 	/**
 	 * Get the select statement to show audited products
 	 *
-	 * @return Varien_Db_Select
+	 * @return Unl_Inventory_Model_Mysql4_Audit_Collection
 	 */
-	public function getProductSelect()
+	public function selectProducts()
 	{
 	    $select = $this->getSelect()->reset(Zend_Db_Select::COLUMNS);
 	    $select->columns(array('product_id'))
 	        ->group('product_id');
 
-	    return $select;
+	    return $this;
 	}
 }

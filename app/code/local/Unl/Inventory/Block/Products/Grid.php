@@ -34,10 +34,10 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $collection->joinAttribute('audit_inventory', 'catalog_product/audit_inventory', 'entity_id');
 
         /* @var $auditSelect Varien_Db_Select */
-        $auditSelect = Mage::getModel('unl_inventory/audit')->getCollection()->getProductSelect();
+        $auditSelect = Mage::getModel('unl_inventory/audit')->getCollection()->selectProducts()->getSelect();
 
         /* @var $indexSelect Varien_Db_Select */
-        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->getQtyOnHandSelect();
+        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectQtyOnHand()->getSelect();
 
         /* @var $select Varien_Db_Select */
         $select = $collection->getSelect();
