@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Inventory_Block_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
+class Unl_Inventory_Block_Inventory_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     protected function _prepareForm()
     {
@@ -8,7 +8,7 @@ class Unl_Inventory_Block_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 
         $product = Mage::registry('current_product');
         $form->addField('product_id', 'hidden', array(
-            'name' => 'product_id',
+            'name' => 'id',
             'value' => $product->getId()
         ));
 
