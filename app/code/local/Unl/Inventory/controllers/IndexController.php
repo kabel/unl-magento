@@ -22,6 +22,9 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
 
     protected function _initProduct()
     {
+        $this->_title($this->__('Catalog'))
+             ->_title($this->__('Manage Inventory'));
+
         $productId  = (int) $this->getRequest()->getParam('id');
         if (!$productId) {
             return null;
@@ -35,7 +38,14 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
 
     public function editAction()
     {
+        if (!$product = $this->_initProduct()) {
+            return $this->_redirect('*/*/');
+        }
 
+        $this->loadLayout();
+        $this->_title($product->getName());
+        $this->_setActiveMenu('catalog/inventory');
+        $this->renderLayout();
     }
 
     public function saveAction()
@@ -45,9 +55,19 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
 
     public function auditGridAction()
     {
+        $this->_initProduct();
+        $this->getResponse()->setBody($this->getLayout()->createBlock('unl_inventory/inventory_edit_tab_audit')->toHtml());
+    }
+
+    public function exportAuditCsvAction()
+    {
 
     }
 
+    public function exportAuditExcelAction()
+    {
+
+    }
 
     protected function _isAllowed()
     {
