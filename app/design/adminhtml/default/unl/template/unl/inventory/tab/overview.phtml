@@ -1,0 +1,60 @@
+<?php $_product = $this->getProduct(); ?>
+<div class="entry-edit">
+    <div class="entry-edit-head"><h4 class="icon-head head-inventory-view"><?php echo Mage::helper('unl_inventory')->__('Product Information') ?> (<a href="<?php echo $this->getUrl('adminhtml/catalog_product/edit', array('id' => $_product->getId())) ?>"><?php echo $this->__('edit') ?></a>)</h4></div>
+    <fieldset>
+        <table cellspacing="2" class="box-left">
+            <tr>
+                <td><strong><?php echo $this->__('Name:') ?></strong></td>
+                <td><?php echo $_product->getName() ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('SKU:') ?></strong></td>
+                <td><?php echo $_product->getSku() ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('Source Store:') ?></strong></td>
+                <td><?php echo $_product->getAttributeText('source_store_view') ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('Status:') ?></strong></td>
+                <td><?php echo $_product->getAttributeText('status') ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('Price:') ?></strong></td>
+                <td><?php echo Mage::helper('core')->formatPrice($_product->getPrice()) ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('Cost:') ?></strong></td>
+                <td><?php echo Mage::helper('core')->formatPrice($_product->getCost()) ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('Visibility:') ?></strong></td>
+                <td><?php echo $_product->getAttributeText('visibility') ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $this->__('Stock Availability:') ?></strong></td>
+                <td><?php echo $this->getIsInStock() ?></td>
+            </tr>
+            <?php if ($_product->getWarehouse()): ?>
+            <tr>
+                <td><strong><?php echo $this->__('Location:') ?></strong></td>
+                <td><?php echo $_product->getAttributeText('warehouse') ?></td>
+            </tr>
+            <?php endif;?>
+            <tr>
+                <td><strong><?php echo $this->__('Qty on Hand:') ?></strong></td>
+                <td><?php echo $this->getQtyOnHand() ?></td>
+            </tr>
+        </table>
+        <div class="box-right">
+            <div>
+                <strong><?php echo $this->__('Default Image') ?></strong><br/>
+                <img src="<?php echo Mage::helper('catalog/image')->init($this->getProduct(), 'image')->resize(100) ?>" width="100" />
+            </div>
+            <div class="std">
+                <strong><?php echo $this->__('Short Description') ?></strong><br/>
+                <?php echo $this->getProduct()->getShortDescription() ?>
+            </div>
+        </div>
+    </fieldset>
+</div>

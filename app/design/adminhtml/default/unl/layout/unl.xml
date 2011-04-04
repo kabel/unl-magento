@@ -211,5 +211,17 @@ Unl_Inventory Module
             <block type="unl_inventory/products" name="products_list" />
         </reference>
     </unl_inventory_index_index>
+    
+    <unl_inventory_index_edit>
+        <reference name="content">
+            <block type="unl_inventory/inventory_edit" name="inventory_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="unl_inventory/inventory_edit_tabs" name="inventory_edit_tabs">
+                <block type="unl_inventory/inventory_edit_tab_overview" name="inventory_edit_tab_overview" template="unl/inventory/tab/overview.phtml" />
+                <action method="addTab"><name>inventory_edit_tab_overview</name><block>inventory_edit_tab_overview</block></action>
+            </block>
+        </reference>
+    </unl_inventory_index_edit>
 
 </layout>
