@@ -216,6 +216,6 @@ class Unl_Ship_IndexController extends Mage_Adminhtml_Controller_Action
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/labelship');
+        return Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/label_ship');
     }
 }
