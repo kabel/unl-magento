@@ -45,7 +45,7 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Audit extends Mage_Adminhtml_Block_
         $this->addColumn('amount', array(
             'header'       => Mage::helper('unl_inventory')->__('Cost'),
             'type'         => 'currency',
-            'currencyCode' => Mage::app()->getBaseCurrencyCode(),
+            'currency_code' => Mage::app()->getBaseCurrencyCode(),
             'index'        => 'amount',
             'default'      => ' '
         ));

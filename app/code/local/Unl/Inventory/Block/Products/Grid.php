@@ -11,7 +11,6 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
         $this->setVarNameFilter('product_filter');
-
     }
 
     protected function _prepareCollection()
@@ -39,13 +38,19 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         /* @var $indexSelect Varien_Db_Select */
         $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectQtyOnHand()->getSelect();
 
+        $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
+        $auditCondition = "IF(_table_qty.use_config_manage_stock, {$configStock}, _table_qty.manage_stock) && _table_audit_inventory.value";
+
         /* @var $select Varien_Db_Select */
         $select = $collection->getSelect();
         $select->joinLeft(array('ia' => $auditSelect), 'e.entity_id = ia.product_id', array())
             ->joinLeft(array('ii' => $indexSelect), 'e.entity_id = ii.product_id', array())
-            ->columns(array('qty_on_hand' => 'IF(_table_audit_inventory.value, ii.qty, _table_qty.qty)'));
+            ->columns(array(
+            	'qty_on_hand' => "IF({$auditCondition}, ii.qty, _table_qty.qty)",
+                'audit_active' => "({$auditCondition})"
+            ));
 
-        $select->where('(ia.product_id IS NOT NULL OR _table_audit_inventory.value)');
+        $select->where("(ia.product_id IS NOT NULL OR {$auditCondition})");
 
         $this->setCollection($collection);
 
@@ -106,6 +111,15 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
                 'type'  => 'price',
                 'currency_code' => $store->getBaseCurrency()->getCode(),
                 'index' => 'price',
+        ));
+
+        $this->addColumn('audit_active',
+            array(
+                'header'=> Mage::helper('catalog')->__('Audit Status'),
+                'width' => '70px',
+                'index' => 'audit_active',
+                'type'  => 'options',
+                'options' => Mage::getSingleton('catalog/product_status')->getOptionArray(),
         ));
 
         $this->addColumn('status',

@@ -42,6 +42,15 @@
             </tr>
             <?php endif;?>
             <tr>
+                <td><strong><?php echo $this->__('Audit Status:') ?></strong></td>
+                <td><?php if (Mage::helper('unl_inventory')->getIsAuditInventory($_product)): ?>
+                    <?php echo $this->__('Enabled') ?>
+                <?php else:?>
+                    <?php echo $this->__('Disabled') ?>
+                <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
                 <td><strong><?php echo $this->__('Qty on Hand:') ?></strong></td>
                 <td><?php echo $this->getQtyOnHand() ?></td>
             </tr>
