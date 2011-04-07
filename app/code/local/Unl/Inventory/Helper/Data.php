@@ -17,7 +17,7 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getIndexProductCost($productId)
     {
-        $accounting = Mage::getModel('unl_inventory/config')->getAccounting();
+        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
         $collection = Mage::getResourceModel('unl_inventory/index_collection')
             ->addProductFilter($productId)
             ->addAccountingOrder($accounting);
@@ -27,5 +27,23 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return 0;
+    }
+
+    public function getIsAuditInventory($product, $fromOriginal = false, $fromStockData = false)
+    {
+        $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
+        if ($fromStockData) {
+            $stockData = $product->getStockData();
+            $manageStock = $stockData['use_config_manage_stock'] ? $configStock : (bool)$stockData['manage_stock'];
+        } else {
+            $stockData = $product->getStockItem();
+            $manageStock = $stockData->getManageStock();
+        }
+
+        if ($fromOriginal) {
+            return $manageStock && $product->getOrigData('audit_inventory');
+        }
+
+        return $manageStock && $product->getAuditInventory();
     }
 }
