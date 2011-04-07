@@ -25,6 +25,10 @@ class Unl_Inventory_Model_Source_Audittype
                     'value' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
                     'label' => Mage::helper('unl_inventory')->__('Credit')
                 ),
+                array(
+                    'value' => Unl_Inventory_Model_Audit::TYPE_NOTE_ONLY,
+                    'label' => Mage::helper('unl_inventory')->__('Note')
+                ),
             ));
         }
 
