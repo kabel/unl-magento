@@ -8,7 +8,7 @@ class Unl_Inventory_Model_Config
 
     const XML_PATH_ACCOUNTING = 'cataloginventory/options/accounting';
 
-    public function getAccouting()
+    public function getAccounting()
     {
         return Mage::getStoreConfig(self::XML_PATH_ACCOUNTING);
     }
