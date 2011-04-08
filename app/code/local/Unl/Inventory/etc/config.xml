@@ -43,6 +43,12 @@
                     <index>
                         <table>unl_inventory_index</table>
                     </index>
+                    <index_tmp>
+                        <table>unl_inventory_index_tmp</table>
+                    </index_tmp>
+                    <index_idx>
+                        <table>unl_inventory_index_idx</table>
+                    </index_idx>
                 </entities>
             </unl_inventory_mysql4>
         </models>
@@ -62,6 +68,40 @@
             </unl_inventory>
         </blocks>
         
+        <events>
+            <catalog_product_save_before>
+                <observers>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onBeforeProductSave</method>
+                    </unl_audit_inventory>
+                </observers>
+            </catalog_product_save_before>
+        
+            <admin_system_config_changed_section_cataloginventory>
+                <observers>
+                    <inventory>
+                        <type>disabled</type>
+                    </inventory>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onInventoryConfigChange</method>
+                    </unl_audit_inventory>
+                </observers>
+            </admin_system_config_changed_section_cataloginventory>
+        
+            <controller_action_predispatch_adminhtml_system_config_save>
+                <observers>
+                    <check_inventory_config>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onPredispatchSaveConfig</method>
+                    </check_inventory_config>
+                </observers>
+            </controller_action_predispatch_adminhtml_system_config_save>
+        </events>
     </global>
     
     <default>
