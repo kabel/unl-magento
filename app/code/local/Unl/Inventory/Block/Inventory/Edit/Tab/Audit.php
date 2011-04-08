@@ -53,7 +53,7 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Audit extends Mage_Adminhtml_Block_
         $this->addColumn('cost_per_item', array(
             'header'       => Mage::helper('unl_inventory')->__('Cost per Item'),
             'type'         => 'currency',
-            'currencyCode' => Mage::app()->getBaseCurrencyCode(),
+            'currency_code' => Mage::app()->getBaseCurrencyCode(),
             'index'        => 'cost_per_item',
             'default'      => ' '
         ));

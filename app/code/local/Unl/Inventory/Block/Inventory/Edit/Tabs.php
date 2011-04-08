@@ -13,7 +13,7 @@ class Unl_Inventory_Block_Inventory_Edit_Tabs extends Mage_Adminhtml_Block_Widge
 
     protected function _beforeToHtml()
     {
-        if (Mage::registry('current_product')->getAuditInventory()) {
+        if (Mage::helper('unl_inventory')->getIsAuditInventory(Mage::registry('current_product'))) {
 
             $this->addTab('adjustment', array(
                 'label'     => Mage::helper('unl_inventory')->__('Purchase/Adjustment'),
@@ -27,6 +27,18 @@ class Unl_Inventory_Block_Inventory_Edit_Tabs extends Mage_Adminhtml_Block_Widge
             'url'       => $this->getUrl('*/*/auditGrid', array('_current' => true)),
         ));
 
+        $this->_updateActiveTab();
         return parent::_beforeToHtml();
+    }
+
+    protected function _updateActiveTab()
+    {
+        $tabId = $this->getRequest()->getParam('tab');
+        if( $tabId ) {
+            $tabId = preg_replace("#{$this->getId()}_#", '', $tabId);
+            if($tabId) {
+                $this->setActiveTab($tabId);
+            }
+        }
     }
 }

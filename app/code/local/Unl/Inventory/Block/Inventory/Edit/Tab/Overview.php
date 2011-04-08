@@ -11,8 +11,8 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Overview
 
     public function getQtyOnHand()
     {
-        if ($this->getProduct()->getAuditInventory()) {
-            return Mage::helper('unl_inventory')->getQtyOnHand();
+        if (Mage::helper('unl_inventory')->getIsAuditInventory($this->getProduct())) {
+            return Mage::helper('unl_inventory')->getQtyOnHand($this->getProduct()->getId()) * 1;
         }
 
         return $this->getProduct()->getStockItem()->getQty() * 1;

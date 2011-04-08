@@ -48,6 +48,7 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Inventory extends Mage_Adminhtml_Bl
             'label'    => Mage::helper('unl_inventory')->__('Note'),
         ));
 
+        $form->setValues($product->getAdjustmentFormData());
         $this->setForm($form);
         return $this;
     }
