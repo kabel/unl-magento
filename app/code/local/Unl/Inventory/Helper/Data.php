@@ -20,7 +20,8 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
         $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
         $collection = Mage::getResourceModel('unl_inventory/index_collection')
             ->addProductFilter($productId)
-            ->addAccountingOrder($accounting);
+            ->addAccountingOrder($accounting)
+            ->setPageSize(1);
 
         foreach ($collection as $index) {
             return $index->getAmount() / $index->getQtyOnHand();
@@ -32,8 +33,7 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
     public function getIsAuditInventory($product, $fromOriginal = false, $fromStockData = false)
     {
         $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
-        if ($fromStockData) {
-            $stockData = $product->getStockData();
+        if ($fromStockData && $stockData = $product->getStockData()) {
             $manageStock = $stockData['use_config_manage_stock'] ? $configStock : (bool)$stockData['manage_stock'];
         } else {
             $stockData = $product->getStockItem();
