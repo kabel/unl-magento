@@ -222,6 +222,9 @@ Unl_Inventory Module
                 <action method="addTab"><name>inventory_edit_tab_overview</name><block>inventory_edit_tab_overview</block></action>
             </block>
         </reference>
+        <reference name="js">
+            <block type="adminhtml/template" template="unl/inventory/edit/js.phtml" name="inventory.edit.js" as="inventory_edit_js"></block>
+        </reference>
     </unl_inventory_index_edit>
 
 </layout>
