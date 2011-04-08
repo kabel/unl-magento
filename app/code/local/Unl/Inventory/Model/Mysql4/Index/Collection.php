@@ -42,6 +42,8 @@ class Unl_Inventory_Model_Mysql4_Index_Collection extends Mage_Core_Model_Mysql4
 	            break;
 	    }
 
+	    $this->setOrder('index_id', self::SORT_ORDER_DESC);
+
 	    return $this;
 	}
 }

@@ -79,7 +79,7 @@ class Unl_Inventory_Model_Mysql4_Index extends Mage_Core_Model_Mysql4_Abstract
 	    return $this;
 	}
 
-	public function publishIndex(Mage_Core_Model_Abstract $object)
+	public function publish(Mage_Core_Model_Abstract $object)
 	{
 	    $write = $this->_getWriteAdapter();
 	    $write->insertOnDuplicate($this->getTable('unl_inventory/index_idx'), array(
