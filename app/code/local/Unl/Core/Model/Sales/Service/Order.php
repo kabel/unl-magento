@@ -39,6 +39,58 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 
         $this->_initCreditmemoData($creditmemo, $data);
 
+        Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array('order'=>$this->_order, 'creditmemo'=>$creditmemo));
+
+        $creditmemo->collectTotals();
+        return $creditmemo;
+    }
+
+    /**
+     * Prepare order creditmemo based on invoice items and requested requested params
+     *
+     * @param array $data
+     * @return Mage_Sales_Model_Order_Creditmemo
+     */
+    public function prepareInvoiceCreditmemo($invoice, $data = array())
+    {
+        $totalQty = 0;
+        $qtys = isset($data['qtys']) ? $data['qtys'] : array();
+        $creditmemo = $this->_convertor->toCreditmemo($this->_order);
+        $creditmemo->setInvoice($invoice);
+        foreach ($invoice->getAllItems() as $invoiceItem) {
+            $orderItem = $invoiceItem->getOrderItem();
+            if (!$this->_canRefundItem($orderItem, $qtys)) {
+                continue;
+            }
+
+            $item = $this->_convertor->itemToCreditmemoItem($orderItem);
+            if ($orderItem->isDummy()) {
+                $qty = $orderItem->getQtyOrdered();
+            } else {
+                if (isset($qtys[$orderItem->getId()])) {
+                    $qty = (float) $qtys[$orderItem->getId()];
+                } elseif (!count($qtys)) {
+                    $qty = $orderItem->getQtyToRefund();
+                } else {
+                    continue;
+                }
+            }
+            $qty = min($qty, $invoiceItem->getQty());
+            $totalQty += $qty;
+            $item->setQty($qty);
+            $creditmemo->addItem($item);
+        }
+        $creditmemo->setTotalQty($totalQty);
+
+        $this->_initCreditmemoData($creditmemo, $data);
+        if (!isset($data['shipping_amount'])) {
+            $order = $invoice->getOrder();
+            $baseAllowedAmount = $order->getBaseShippingAmount()-$order->getBaseShippingRefunded();
+            $creditmemo->setBaseShippingAmount(min($baseAllowedAmount, $invoice->getBaseShippingAmount()));
+        }
+
+        Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array('order'=>$this->_order, 'creditmemo'=>$creditmemo));
+
         $creditmemo->collectTotals();
         return $creditmemo;
     }
@@ -74,6 +126,9 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
             $invoice->addItem($item);
         }
         $invoice->setTotalQty($totalQty);
+
+        Mage::dispatchEvent('sales_model_service_order_prepare_invoice', array('order'=>$this->_order, 'invoice'=>$invoice));
+
         $invoice->collectTotals();
         $this->_order->getInvoiceCollection()->addItem($invoice);
         return $invoice;
