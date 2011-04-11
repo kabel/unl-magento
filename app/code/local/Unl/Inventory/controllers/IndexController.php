@@ -80,9 +80,9 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
                 Mage::throwException($result);
             }
 
-            $auditLog->setRegisterFlag(true);
-            $auditLog->setCreatedAt(now());
-            $auditLog->save();
+            $auditLog->setRegisterFlag(true)
+                ->setCreatedAt(now())
+                ->save();
 
             Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('unl_inventory')->__('The inventory update has been logged.'));
 
