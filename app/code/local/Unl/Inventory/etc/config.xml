@@ -78,6 +78,46 @@
                     </unl_audit_inventory>
                 </observers>
             </catalog_product_save_before>
+            
+            <sales_model_service_order_prepare_invoice>
+                <observers>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onPrepareInvoice</method>
+                    </unl_audit_inventory>
+                </observers>
+            </sales_model_service_order_prepare_invoice>
+            
+            <sales_order_invoice_save_after>
+                <observers>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onAfterSaveInvoice</method>
+                    </unl_audit_inventory>
+                </observers>
+            </sales_order_invoice_save_after>
+            
+            <adminhtml_sales_order_creditmemo_register_before>
+                <observers>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onBeforeCreditmemoRegistry</method>
+                    </unl_audit_inventory>
+                </observers>
+            </adminhtml_sales_order_creditmemo_register_before>
+            
+            <sales_order_creditmemo_save_after>
+                <observers>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onAfterSaveCreditmemo</method>
+                    </unl_audit_inventory>
+                </observers>
+            </sales_order_creditmemo_save_after>
         
             <admin_system_config_changed_section_cataloginventory>
                 <observers>

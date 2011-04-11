@@ -40,9 +40,9 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 
 	            if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG && $indexCount) {
 	                $index = $collection->getFirstItem();
-	                $index->setQtyOnHand($this->getQty() + $index->getQtyOnHand());
-	                $index->setAmount($this->getAmount() + $index->getAmount());
-	                $index->setProduct($this->getProduct());
+	                $index->setQtyOnHand($this->getQty() + $index->getQtyOnHand())
+	                    ->setAmount($this->getAmount() + $index->getAmount())
+	                    ->setProduct($this->getProduct());
 	            } else {
     	            $index = Mage::getModel('unl_inventory/index');
     	            $index->setData(array(
@@ -58,7 +58,7 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 	            if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_LIFO || $indexCount == 0) {
 	                $index->publish();
 	            } elseif ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG) {
-	                $this->_setProductCost($index->getAmount() / $index->getQtyOnHand());
+	                $this->_setProductCost($index->getCostPerItem());
 	            }
 
 	            break;
@@ -75,40 +75,61 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
     	                'amount' => 0,
     	                'created_at' => $this->getCreatedAt(),
     	            ));
-    	            $index->save();
-    	            $index->publish();
+    	            $index->save()
+    	                ->publish();
 	            } elseif ($indexCount) {
-	                $qty = $this->getQty();
-	                $republish = false;
-
-	                foreach ($collection as $index) {
-	                    $step = $qty;
-	                    $qty += $index->getQtyOnHand();
-	                    if ($qty <= 0) {
-	                        $republish = true;
-	                        $index->isDeleted(true);
-	                        $index->save();
-	                    } else {
-	                        $index->setQtyOnHand($qty);
-	                        // adjustments do not affect cost
-                            $index->setAmount(($index->getAmount() / ($qty - $step)) * $qty);
-	                        $index->save();
-	                        break;
-	                    }
-	                }
-
-	                if ($republish) {
-	                    foreach ($collection as $index) {
-	                        if ($index->isDeleted()) {
-	                            continue;
-	                        }
-
-	                        $index->publish();
-	                        break;
-	                    }
-	                }
+	                $this->_updateIndexes($collection, $this->getQty());
 	            }
 
+	            break;
+
+	        case Unl_Inventory_Model_Audit::TYPE_SALE:
+	            if ($indexCount == 0) {
+	                break;
+	            }
+	            $this->_updateIndexes($collection, $this->getQty());
+	            break;
+	        case Unl_Inventory_Model_Audit::TYPE_CREDIT:
+	            if (!$indexCount) {
+	                $index = Mage::getModel('unl_inventory/index');
+    	            $index->setData(array(
+    	                'product_id' => $this->getProductId(),
+    	                'qty_on_hand' => $this->getQty(),
+    	                'amount' => $this->getAmount(),
+    	                'created_at' => $this->getCreatedAt(),
+    	            ));
+    	            $index->save()
+    	                ->publish();
+	            } else {
+                    $index = $collection->getFirstItem();
+	                if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG
+	                    || $index->getCostPerItem() == $this->getCostPerItem()) {
+	                    // return to next out
+	                    $index->setQtyOnHand($index->getQtyOnHand() + $this->getQty())
+	                        ->setAmount($index->getAmount() + $this->getAmount())
+	                        ->save();
+	                    if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG) {
+	                        $this->_setProductCost($index->getAmount() / $index->getQtyOnHand());
+	                    }
+	                } else {
+	                    // create a next out index and publish
+	                    $nextOutDate = new Zend_Date(strtotime($index->getCreatedAt()));
+	                    if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_LIFO) {
+	                        $nextOutDate->addSecond(1);
+	                    } else {
+	                        $nextOutDate->subSecond(1);
+	                    }
+	                    $newIndex = Mage::getModel('unl_inventory/index');
+	                    $index->setData(array(
+        	                'product_id' => $this->getProductId(),
+        	                'qty_on_hand' => $this->getQty(),
+        	                'amount' => $this->getAmount(),
+        	                'created_at' => $nextOutDate->toString('YYYY-MM-dd HH:mm:ss'),
+        	            ));
+        	            $index->save()
+        	                ->publish();
+    	            }
+	            }
 	            break;
 	        default:
 	            break;
@@ -145,6 +166,43 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 	    $product->setCostFlag(true)
 	        ->setCost($cost)
 	        ->save();
+
+        return $this;
+	}
+
+	/**
+	 *
+	 * @param Unl_Inventory_Model_Mysql4_Index_Collection $collection
+	 * @param float $qty
+	 */
+	protected function _updateIndexes($collection, $qty)
+	{
+	    $republish = false;
+        foreach ($collection as $index) {
+            $step = $qty;
+            $qty += $index->getQtyOnHand();
+            if ($qty <= 0) {
+                $republish = true;
+                $index->isDeleted(true);
+                $index->save();
+            } else {
+                $index->setQtyOnHand($qty);
+                $index->setAmount(($index->getAmount() / ($qty - $step)) * $qty);
+                $index->save();
+                break;
+            }
+        }
+
+        if ($republish) {
+            foreach ($collection as $index) {
+                if ($index->isDeleted()) {
+                    continue;
+                }
+
+                $index->publish();
+                break;
+            }
+        }
 
         return $this;
 	}
@@ -208,5 +266,10 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 	    }
 
 	    return $this->getData('product');
+	}
+
+	public function getCostPerItem()
+	{
+	    return $this->getAmount() / $this->getQty();
 	}
 }

@@ -53,20 +53,136 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
-    public function onInvoiceRegister($observer)
+    public function onPrepareInvoice($observer)
     {
-        /* TODO: Add to Audit as TYPE_SALE w/ note of Invoice #
-         * FIFO/LIFO: deduct/delete inventory_index and amount, set order_item cost if spans indexes, update cost if delete
-         * Moving Avg: deduct inventory_index and cost, update cost
-         */
+        /* @var $order Mage_Sales_Model_Order */
+        $order = $observer->getEvent()->getOrder();
+        /* @var $invoice Mage_Sales_Model_Order_Invoice */
+        $invoice = $observer->getEvent()->getInvoice();
+        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
+        $auditLogs = array();
+
+        foreach ($invoice->getAllItems() as $item) {
+            /* @var $item Mage_Sales_Model_Order_Invoice_Item */
+            $product = Mage::getModel('catalog/product')->load($item->getProductId());
+            if ($item->getOrderItem()->isDummy() || !Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
+                continue;
+            }
+
+            $auditLog = Mage::getModel('unl_inventory/audit');
+            $auditLog->setData(array(
+                'product_id' => $item->getProductId(),
+                'type' => Unl_Inventory_Model_Audit::TYPE_SALE,
+                'qty' => $item->getQty() * -1,
+                'amount' => $item->getQty() * $item->getBaseCost() * -1
+            ));
+            $auditLogs[] = $auditLog;
+
+            // TODO?: Check for backordered items and reassign cost
+
+            // check to see if we need to update the order item product cost (if spans multiple indexes)
+            if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG) {
+                continue;
+            }
+
+            $indexes = Mage::getResourceModel('unl_inventory/index_collection')
+                ->addProductFilter($product->getId())
+                ->addAccountingOrder($accounting)
+                ->load();
+
+            $costAmount = 0;
+            $qty = $item->getQty();
+            foreach ($indexes as $index) {
+                if ($qty > $index->getQtyOnHand()) {
+                    $costAmount += $index->getAmount();
+                    $qty -= $index->getQtyOnHand();
+                } else {
+                    if ($costAmount) {
+                        $costAmount += $index->getAmount() / $index->getQtyOnHand() * $qty;
+                    }
+                    break;
+                }
+            }
+
+            if ($costAmount) {
+                $cost = $costAmount / $item->getQty();
+                $item->setBaseCost($cost);
+                $item->setCost($cost * $order->getBaseToOrderRate());
+                $item->getOrderItem()->setBaseCost($cost);
+                $item->getOrderItem()->setCost($cost * $order->getBaseToOrderRate());
+            } else {
+                $costAmount = $item->getQty() * $item->getBaseCost();
+            }
+
+            $auditLog->setAmount($costAmount * -1);
+        }
+
+        if ($auditLogs) {
+            $invoice->setAuditLogs($auditLogs);
+        }
+
+        return $this;
     }
 
-    public function onCreditMemoRegister($observer)
+    public function onAfterSaveInvoice($observer)
     {
-        /* TODO: (if return to stock!) Add to Audit as TYPE_CREDIT w/ note of memo #
-         * FIFO/LIFO: If cost matches: add back to qty index; Else: add as next out index
-         * Moving Avg: Add cost * qty to index amount and add qty, update cost
-         */
+        $invoice = $observer->getEvent()->getInvoice();
+        if ($auditLogs = $invoice->getAuditLogs()) {
+            foreach ($auditLogs as $auditLog) {
+                $auditLog->setRegisterFlag(true)
+                    ->setNote(Mage::helper('unl_inventory')->__('Order # %s , Invoice # %s', $invoice->getOrder()->getRealOrderId(), $invoice->getIncrementId()))
+                    ->setCreatedAt(now())
+                    ->save();
+            }
+        }
+
+        return $this;
+    }
+
+    public function onBeforeCreditmemoRegistry($observer)
+    {
+    	/* @var $creditmemo Mage_Sales_Model_Order_Creditmemo */
+        $creditmemo = $observer->getEvent()->getCreditmemo();
+        $auditLogs = array();
+
+        foreach ($creditmemo->getAllItems() as $item) {
+            /* @var $item Mage_Sales_Model_Order_Creditmemo_Item */
+            $product = Mage::getModel('catalog/product')->load($item->getProductId());
+            if ($item->getOrderItem()->isDummy() || !$item->getBackToStock()
+                || !Mage::helper('unl_inventory')->getIsAuditInventory($product) ) {
+                continue;
+            }
+
+            $auditLog = Mage::getModel('unl_inventory/audit');
+            $auditLog->setData(array(
+                'product_id' => $item->getProductId(),
+                'type' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
+                'qty' => $item->getQty(),
+                'amount' => $item->getBaseCost() * $item->getQty()
+            ));
+            $auditLogs[] = $auditLog;
+        }
+
+        if ($auditLogs) {
+            $creditmemo->setAuditLogs($auditLogs);
+        }
+
+        return $this;
+    }
+
+    public function onAfterSaveCreditmemo($observer)
+    {
+        $creditmemo = $observer->getEvent()->getCreditmemo();
+        if ($auditLogs = $creditmemo->getAuditLogs()) {
+            foreach ($auditLogs as $auditLog) {
+                $auditLog->setRegisterFlag(true)
+                    ->setNote(Mage::helper('unl_inventory')->__('Order # %s , Creditmemo # %s', $creditmemo->getOrder()->getRealOrderId(), $creditmemo->getIncrementId()))
+                    ->setCreatedAt(now())
+                    ->save();
+            }
+        }
+
+        return $this;
     }
 
     public function onPredispatchSaveConfig($observer)

@@ -15,10 +15,7 @@ class Unl_Inventory_Model_Index extends Mage_Core_Model_Abstract
 
 	    $this->_getResource()->publish($this);
 
-	    $cost = 0;
-	    if ($this->getQtyOnHand()) {
-    	    $cost = $this->getAmount() / $this->getQtyOnHand();
-	    }
+	    $cost = $this->getCostPerItem();
 	    $this->getProduct()
 	        ->setCostFlag(true)
 	        ->setCost($cost)
@@ -34,5 +31,15 @@ class Unl_Inventory_Model_Index extends Mage_Core_Model_Abstract
 	    }
 
 	    return $this->getData('product');
+	}
+
+	public function getCostPerItem()
+	{
+	    $cost = 0;
+	    if ($this->getQtyOnHand()) {
+	        $cost = $this->getAmount() / $this->getQtyOnHand();
+	    }
+
+	    return $cost;
 	}
 }
