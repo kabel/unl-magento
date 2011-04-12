@@ -10,6 +10,18 @@
                 </inventory>
             </children>
         </catalog>
+        <report>
+            <children>
+                <products>
+                    <children>
+                        <inventory_valuation translate="title" module="unl_inventory">
+                            <title>Inventory Valuation</title>
+                            <action>unlinv/report/valuation</action>
+                        </inventory_valuation>
+                    </children>
+                </products>
+            </children>
+        </report>
     </menu>
     <acl>
         <resources>
@@ -22,6 +34,17 @@
                             </inventory>
                         </children>
                     </catalog>
+                    <report>
+                        <children>
+                            <products>
+                                <children>
+                                    <inventory_valuation translate="title" module="unl_inventory">
+                                        <title>Inventory Valuation</title>
+                                    </inventory_valuation>
+                                </children>
+                            </products>
+                        </children>
+                    </report>
                 </children>
             </admin>
         </resources>

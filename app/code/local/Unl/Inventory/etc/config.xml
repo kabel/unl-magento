@@ -144,6 +144,20 @@
         </events>
     </global>
     
+    <adminhtml>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <unl_invengtory_store_id>
+                        <type>singleton</type>
+                        <class>unl_inventory/admin_observer</class>
+                        <method>controllerActionPredispatch</method>
+                    </unl_invengtory_store_id>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+    </adminhtml>
+    
     <default>
         <cataloginventory>
             <options>

@@ -22,6 +22,20 @@ class Unl_Inventory_Model_Mysql4_Index_Collection extends Mage_Core_Model_Mysql4
 	    return $this;
 	}
 
+	public function selectValuation()
+	{
+	    $select = $this->getSelect()->reset(Zend_Db_Select::COLUMNS);
+	    $select->columns(array(
+    	    	'qty' => 'SUM(qty_on_hand)',
+	            'value' => 'SUM(amount)',
+	            'avg_cost' => 'SUM(amount) / SUM(qty_on_hand)',
+    	    	'product_id'
+	        ))
+	        ->group('product_id');
+
+	    return $this;
+	}
+
 	public function addProductFilter($productId)
 	{
 	    $this->addFieldToFilter('product_id', $productId);
