@@ -31,6 +31,13 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
         }
         $product = Mage::getModel('catalog/product')->load($productId);
 
+        $flags = new Varien_Object(array('denied' => false));
+        Mage::dispatchEvent('unl_inventory_controller_product_init', array('product' => $product, 'flags' => $flags));
+        if ($flags->getDenied()) {
+            $this->_forward('denied');
+            return -1;
+        }
+
         Mage::register('product', $product);
         Mage::register('current_product', $product);
         return $product;
@@ -40,6 +47,9 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
     {
         if (!$product = $this->_initProduct()) {
             return $this->_redirect('*/*/');
+        }
+        if ($product == -1) {
+            return;
         }
 
         // set entered data if was error when we do save
@@ -56,6 +66,9 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
     {
         if (!$product = $this->_initProduct()) {
             return $this->_redirect('*/*/');
+        }
+        if ($product == -1) {
+            return;
         }
 
         $data = $this->getRequest()->getPost();
@@ -109,12 +122,36 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
 
     public function exportAuditCsvAction()
     {
-        //TODO: Implement Export
+        if (!$product = $this->_initProduct()) {
+            $this->_forward('noroute');
+            return;
+        }
+        if ($product == -1) {
+            return;
+        }
+
+        $fileName   = 'inventory_audit.csv';
+        $content    = $this->getLayout()->createBlock('unl_inventory/inventory_edit_tab_audit')
+            ->getCsvFile();
+
+        $this->_prepareDownloadResponse($fileName, $content);
     }
 
     public function exportAuditExcelAction()
     {
-        //TODO: Implement Export
+        if (!$product = $this->_initProduct()) {
+            $this->_forward('noroute');
+            return;
+        }
+        if ($product == -1) {
+            return;
+        }
+
+        $fileName   = 'valuation.xml';
+        $content    = $this->getLayout()->createBlock('unl_inventory/inventory_edit_tab_audit')
+            ->getExcelFile($fileName);
+
+        $this->_prepareDownloadResponse($fileName, $content);
     }
 
     protected function _isAllowed()

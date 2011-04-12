@@ -30,6 +30,13 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $collection->addAttributeToSelect('cost');
         $collection->addAttributeToSelect('price');
         $collection->addAttributeToSelect('status');
+
+        $user = Mage::getSingleton('admin/session')->getUser();
+        if ($scope = $user->getScope()) {
+            $scope = explode(',', $scope);
+            $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
+        }
+
         $collection->joinAttribute('audit_inventory', 'catalog_product/audit_inventory', 'entity_id');
 
         /* @var $auditSelect Varien_Db_Select */

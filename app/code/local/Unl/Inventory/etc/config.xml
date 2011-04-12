@@ -6,6 +6,7 @@
             <depends>
             	<Mage_Catalog />
                 <Mage_CatalogInventory />
+                <Unl_Core />
             </depends>
         </Unl_Inventory>
     </modules>
@@ -155,6 +156,16 @@
                     </unl_invengtory_store_id>
                 </observers>
             </controller_action_predispatch>
+            
+            <unl_inventory_controller_product_init>
+                <observers>
+                    <product_auth>
+                        <type>singleton</type>
+                        <class>unl_inventory/admin_observer</class>
+                        <method>onInventoryProductInit</method>
+                    </product_auth>
+                </observers>
+            </unl_inventory_controller_product_init>
         </events>
     </adminhtml>
     

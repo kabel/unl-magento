@@ -11,7 +11,7 @@ class Unl_Inventory_Model_Admin_Observer
         $controller = $observer->getEvent()->getControllerAction();
         if (in_array($controller->getFullActionName(), $storeIdActions)) {
             $this->_setStoreParamFromUser('store');
-            return;
+            return $this;
         }
     }
 
@@ -29,5 +29,21 @@ class Unl_Inventory_Model_Admin_Observer
                 $request->setParam($param, current($scope));
             }
         }
+
+        return $this;
+    }
+
+    public function onInventoryProductInit($observer)
+    {
+        $product = $observer->getEvent()->getProduct();
+        $flags = $observer->getEvent()->getFlags();
+
+        if ($product->getId()) {
+            if (!Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+                $flags->setDenied(true);
+            }
+        }
+
+        return $this;
     }
 }
