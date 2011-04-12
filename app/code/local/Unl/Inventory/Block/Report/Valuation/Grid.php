@@ -24,6 +24,7 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
         $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
+            ->addAttributeToSelect('price')
             ->joinField('qty_order',
                 'cataloginventory/stock_item',
                 'qty',
@@ -103,9 +104,17 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
         $this->addColumn('avg_cost',
             array(
                 'header' => Mage::helper('unl_inventory')->__('Avg Cost'),
-                'type'   => 'currency',
+                'type'   => 'price',
                 'currency_code' => $store->getBaseCurrency()->getCode(),
                 'index'  => 'avg_cost',
+        ));
+
+        $this->addColumn('price',
+            array(
+                'header' => Mage::helper('catalog')->__('Price'),
+                'type'   => 'price',
+                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'index'  => 'price',
         ));
 
 
