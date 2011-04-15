@@ -229,7 +229,8 @@
     changeManageStockOption();
 
     function changeAuditInventoryOption() {
-        if (!$('inventory_audit')) {
+        var $audit = $('inventory_audit');
+        if (!$audit || !$audit.up('tr').visible()) {
             return;
         }
         var auditInventory = $('inventory_audit').value;
@@ -245,6 +246,9 @@
     changeAuditInventoryOption();
 
     function applyEnableQtyIncrements() {
+        if (!$('inventory_enable_qty_increments').visible()) {
+            return;
+        }
         if ($('inventory_use_config_enable_qty_increments').checked) {
             var enableQtyIncrements = $('inventory_enable_qty_increments_default').value;
         }
