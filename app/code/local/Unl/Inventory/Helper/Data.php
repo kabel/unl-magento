@@ -32,11 +32,18 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getIsAuditInventory($product, $fromOriginal = false, $fromStockData = false)
     {
+        if ($fromOriginal && !$product->getId()) {
+            return false;
+        }
+
         $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
         if ($fromStockData && $stockData = $product->getStockData()) {
             $manageStock = $stockData['use_config_manage_stock'] ? $configStock : (bool)$stockData['manage_stock'];
         } else {
             $stockData = $product->getStockItem();
+            if (!$stockData) {
+                return false;
+            }
             $manageStock = $stockData->getManageStock();
         }
 
