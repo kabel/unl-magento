@@ -32,4 +32,36 @@ class Unl_Ship_Helper_Data extends Mage_Core_Helper_Abstract
         $this->setUnlShipQueue($queue);
         return $id;
     }
+
+    /**
+     *
+     * @param Mage_Shipping_Model_Rate_Request $request
+     * @param Mage_Usa_Model_Shipping_Carrier_Abstract $carrier
+     */
+    public function validateRateRequestStreet(Mage_Shipping_Model_Rate_Request $request, $carrier)
+    {
+        $showMethod = $carrier->getConfigData('showmethod');
+        $errorMsg = '';
+
+        if ($request->getDestStreet()) {
+            if (preg_match('/(?:P\.?\s*O\.?\s*)?Box\s/i', $request->getDestStreet())) {
+                $errorMsg = $this->__('This shipping method does not support shipping to P.O. Boxes. Please change your shipping address or select a different method.');
+            } else {
+                //TODO: Implement Street Level Address Validation?
+                //$errorMsg = $carrier->getAddressValidation($request);
+            }
+        }
+
+        if ($errorMsg && $showMethod) {
+            $error = Mage::getModel('shipping/rate_result_error');
+            $error->setCarrier($carrier->getCarrierCode());
+            $error->setCarrierTitle($carrier->getConfigData('title'));
+            $error->setErrorMessage($errorMsg);
+            return $error;
+        } elseif ($errorMsg) {
+            return false;
+        }
+
+        return $carrier;
+    }
 }

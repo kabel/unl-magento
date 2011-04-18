@@ -671,6 +671,26 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         return $result;
     }
 
+    public function proccessAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
+    {
+        $result = parent::proccessAdditionalValidation($request);
+        if (!$result || $result instanceof Mage_Shipping_Model_Rate_Result_Error) {
+            return $result;
+        }
+
+        $result = Mage::helper('unl_ship')->validateRateRequestStreet($request, $this);
+        if (!$result || $result instanceof Mage_Shipping_Model_Rate_Result_Error) {
+            return $result;
+        }
+
+        return $this;
+    }
+
+    public function getAddressValidation(Mage_Shipping_Model_Rate_Request $request)
+    {
+        return '';
+    }
+
 
     /********************************************************************************************************************
      * New functions created for shipment functionality
