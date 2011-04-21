@@ -2,6 +2,16 @@
 
 class  Unl_Core_Model_Tax_Mysql4_Report_Collection extends Mage_Tax_Model_Mysql4_Report_Collection
 {
+    protected $_codeCases = array(
+        "WHEN code LIKE '%-CountyFips-%' OR code LIKE '%-CityFips-%' THEN CONCAT('US-NE-', RIGHT(code, 14))",
+        "WHEN code LIKE '%-CityFips+-%' THEN CONCAT('US-NE-CityFips-', SUBSTRING(code, LOCATE('-CityFips+-', code) + 11))",
+    );
+
+    protected $_cityFipsCases = array(
+        "WHEN code LIKE '%-CityFips-%' THEN RIGHT(code, 5) = pf.fips_place_number",
+        "WHEN code LIKE '%-CityFips+-%' THEN SUBSTRING(code, LOCATE('-CityFips+-', code) + 11, 5) = pf.fips_place_number",
+    );
+
     protected function _getSelectedColumns()
     {
         if ('month' == $this->_period) {
@@ -15,7 +25,7 @@ class  Unl_Core_Model_Tax_Mysql4_Report_Collection extends Mage_Tax_Model_Mysql4
         if (!$this->isTotals() && !$this->isSubTotals()) {
             $this->_selectedColumns = array(
                 'period'                => $this->_periodFormat,
-                'code'                  => "CASE WHEN code LIKE '%-CountyFips-%' OR code LIKE '%-CityFips-%' THEN CONCAT('US-NE-', RIGHT(code, 14)) ELSE code END",
+                'code'                  => 'CASE ' . implode(' ', $this->_codeCases) . ' ELSE code END',
                 'base_sales_amount_sum' => 'sum(base_sales_amount_sum)',
                 'percent'               => 'percent',
                 'orders_count'          => 'sum(orders_count)',
@@ -33,17 +43,17 @@ class  Unl_Core_Model_Tax_Mysql4_Report_Collection extends Mage_Tax_Model_Mysql4
 
         return $this->_selectedColumns;
     }
-    
+
     protected  function _initSelect()
     {
         $this->getSelect()->from($this->getResource()->getMainTable() , $this->_getSelectedColumns());
         if (!$this->isTotals() && !$this->isSubTotals()) {
             $this->getSelect()
-                ->joinLeft(array('pf' => 'unl_tax_places'), "CASE WHEN code LIKE '%-CityFips-%' THEN RIGHT(code, 5) = pf.fips_place_number ELSE NULL END", array('city' => 'name'))
+                ->joinLeft(array('pf' => 'unl_tax_places'), 'CASE ' . implode(' ', $this->_cityFipsCases) . ' ELSE NULL END', array('city' => 'name'))
                 ->joinLeft(array('cf' => 'unl_tax_counties'), "CASE WHEN code LIKE '%-CountyFips-%' THEN RIGHT(code, 3) = cf.county_id ELSE NULL END", array('county' => 'name'))
                 ->group(array(
                     $this->_periodFormat,
-                    "CASE WHEN code LIKE '%-CountyFips-%' OR code LIKE '%-CityFips-%' THEN RIGHT(code, 14) ELSE code END"
+                    'CASE ' . implode(' ', $this->_codeCases) . ' ELSE code END'
                 ));
         }
 

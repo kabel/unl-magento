@@ -5,7 +5,17 @@ class Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection extends Mage_Tax_Mod
     protected $_selectedColumns = array(
         'tax_base_amount_sum'   => 'SUM(tax.base_real_amount * e.base_to_global_rate)'
     );
-    
+
+    protected $_codeCases = array(
+        "WHEN code LIKE '%-CountyFips-%' OR code LIKE '%-CityFips-%' THEN CONCAT('US-NE-', RIGHT(code, 14))",
+        "WHEN code LIKE '%-CityFips+-%' THEN CONCAT('US-NE-CityFips-', SUBSTRING(code, LOCATE('-CityFips+-', code) + 11))",
+    );
+
+    protected $_cityFipsCases = array(
+        "WHEN code LIKE '%-CityFips-%' THEN RIGHT(code, 5) = pf.fips_place_number",
+        "WHEN code LIKE '%-CityFips+-%' THEN SUBSTRING(code, LOCATE('-CityFips+-', code) + 11, 5) = pf.fips_place_number",
+    );
+
     protected function _getSelectedColumns()
     {
         if ('month' == $this->_period) {
@@ -20,7 +30,7 @@ class Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection extends Mage_Tax_Mod
             $this->_selectedColumns = array(
                 'period'                => $this->_periodFormat,
                 'store_id'              => 'store_id',
-                'code'                  => "CASE WHEN tax.code LIKE '%-CountyFips-%' OR tax.code LIKE '%-CityFips-%' THEN CONCAT('US-NE-', RIGHT(tax.code, 14)) ELSE tax.code END",
+                'code'                  => 'CASE ' . implode(' ', $this->_codeCases) . ' ELSE code END',
                 'order_status'          => 'e.status',
                 'percent'               => 'tax.percent',
                 'orders_count'          => 'COUNT(DISTINCT(e.entity_id))',
@@ -35,7 +45,7 @@ class Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection extends Mage_Tax_Mod
 
         return $this->_selectedColumns;
     }
-    
+
     /**
      * Add selected data
      *
@@ -64,7 +74,7 @@ class Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection extends Mage_Tax_Mod
         $select = $this->getSelect()
             ->from(array('e' => $mainTable), $columns)
             ->joinInner(array('tax'=> $this->getTable('tax/sales_order_tax')), 'e.entity_id = tax.order_id', array())
-            ->joinLeft(array('pf' => 'unl_tax_places'), "CASE WHEN tax.code LIKE '%-CityFips-%' THEN RIGHT(tax.code, 5) = pf.fips_place_number ELSE NULL END", array('city' => 'name'))
+            ->joinLeft(array('pf' => 'unl_tax_places'), 'CASE ' . implode(' ', $this->_cityFipsCases) . ' ELSE NULL END', array('city' => 'name'))
             ->joinLeft(array('cf' => 'unl_tax_counties'), "CASE WHEN tax.code LIKE '%-CountyFips-%' THEN RIGHT(tax.code, 3) = cf.county_id ELSE NULL END", array('county' => 'name'));
 
         $this->_applyStoresFilter();
@@ -78,7 +88,7 @@ class Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection extends Mage_Tax_Mod
             $select->group(array(
                 $this->_periodFormat,
                 'store_id',
-                "CASE WHEN code LIKE '%-CountyFips-%' OR code LIKE '%-CityFips-%' THEN RIGHT(code, 14) ELSE code END"
+                'CASE ' . implode(' ', $this->_codeCases) . ' ELSE code END'
             ));
         }
 
