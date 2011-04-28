@@ -8,6 +8,11 @@ class Unl_Core_Model_Widget_Widget_Config extends Mage_Widget_Model_Widget_Confi
      * @param Varien_Object Editor element config
      * @return string
      */
+    /*
+     * Overrides the logic of
+     * @see Mage_Widget_Model_Widget_Config::getWidgetWindowUrl()
+     * by getting a URL that does not always originate from adminhtml
+     */
     public function getWidgetWindowUrl($config)
     {
         $params = array();

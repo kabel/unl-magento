@@ -2,12 +2,9 @@
 
 class Unl_Core_Model_Sales_Mysql4_Report_Bestsellers extends Mage_Sales_Model_Mysql4_Report_Bestsellers
 {
-    /**
-     * Aggregate Orders data by order created at
-     *
-     * @param mixed $from
-     * @param mixed $to
-     * @return Unl_Core_Model_Sales_Mysql4_Report_Bestsellers
+    /* Override the logic of
+     * @see Mage_Sales_Model_Mysql4_Report_Bestsellers::aggregate()
+     * by using source_store
      */
     public function aggregate($from = null, $to = null)
     {

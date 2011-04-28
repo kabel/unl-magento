@@ -2,12 +2,9 @@
 
 class Unl_Core_Model_Tax_Mysql4_Report_Tax extends Mage_Tax_Model_Mysql4_Report_Tax
 {
-/**
-     * Aggregate Tax data
-     *
-     * @param mixed $from
-     * @param mixed $to
-     * @return Mage_Tax_Model_Mysql4_Tax
+    /* Overrides the logic of
+     * @see Mage_Tax_Model_Mysql4_Report_Tax::aggregate()
+     * to also aggregate the sales_amount
      */
     public function aggregate($from = null, $to = null)
     {
@@ -18,7 +15,7 @@ class Unl_Core_Model_Tax_Mysql4_Report_Tax extends Mage_Tax_Model_Mysql4_Report_
         $this->_checkDates($from, $to);
         $writeAdapter = $this->_getWriteAdapter();
         $writeAdapter->beginTransaction();
-        
+
         try {
             if ($from !== null || $to !== null) {
                 $subSelect = $this->_getTableDateRangeSelect(
@@ -39,24 +36,25 @@ class Unl_Core_Model_Tax_Mysql4_Report_Tax extends Mage_Tax_Model_Mysql4_Report_
                 'percent'               => 'tax.percent',
                 'orders_count'          => 'COUNT(DISTINCT(e.entity_id))',
                 'tax_base_amount_sum'   => 'SUM(tax.base_real_amount * e.base_to_global_rate)',
+                // additional column
                 'base_sales_amount_sum' => 'SUM(tax.base_sale_amount * e.base_to_global_rate)'
             );
 
             $select = $writeAdapter->select();
-            $select->from(array('tax' => $this->getTable('sales/order_tax')), $columns)
+            $select->from(array('tax' => $this->getTable('tax/sales_order_tax')), $columns)
                 ->joinInner(array('e' => $this->getTable('sales/order')), 'e.entity_id = tax.order_id', array())
                 ->useStraightJoin();
+
+            $select->where('e.state NOT IN (?)', array(
+                Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+                Mage_Sales_Model_Order::STATE_NEW
+            ));
 
             if ($subSelect !== null) {
                 $select->where($this->_makeConditionFromDateRangeSelect($subSelect, 'e.created_at'));
             }
-            
-            $select->group(array(
-                'period',
-                'store_id',
-                'code',
-                'order_status'
-            ));
+
+            $select->group(array('period', 'store_id', 'code', 'tax.percent', 'order_status'));
 
             $writeAdapter->query($select->insertFromSelect($this->getMainTable(), array_keys($columns)));
 
@@ -70,22 +68,19 @@ class Unl_Core_Model_Tax_Mysql4_Report_Tax extends Mage_Tax_Model_Mysql4_Report_
                 'percent'               => 'percent',
                 'orders_count'          => 'SUM(orders_count)',
                 'tax_base_amount_sum'   => 'SUM(tax_base_amount_sum)',
+                // additional column
                 'base_sales_amount_sum' => 'SUM(base_sales_amount_sum)'
             );
 
             $select
                 ->from($this->getMainTable(), $columns)
-                ->where("store_id <> 0");
+                ->where('store_id <> 0');
 
             if ($subSelect !== null) {
                 $select->where($this->_makeConditionFromDateRangeSelect($subSelect, 'period'));
             }
 
-            $select->group(array(
-                'period',
-                'code',
-                'order_status'
-            ));
+            $select->group(array('period', 'code', 'percent', 'order_status'));
 
             $writeAdapter->query($select->insertFromSelect($this->getMainTable(), array_keys($columns)));
 

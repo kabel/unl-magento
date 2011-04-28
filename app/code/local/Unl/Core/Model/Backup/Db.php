@@ -2,15 +2,18 @@
 
 class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
 {
+    /**
+     * The list of tables to exclude from the backup
+     *
+     * @var array
+     */
     protected $_ignoreTables = array(
         'unl_tax_boundary'
     );
-    
-    /**
-     * Create backup and stream write to adapter
-     *
-     * @param Mage_Backup_Model_Backup $backup
-     * @return Mage_Backup_Model_Db
+
+    /* Overrides
+     * @see Mage_Backup_Model_Db::createBackup()
+     * by excluding certain tables and allowing infinite time
      */
     public function createBackup(Mage_Backup_Model_Backup $backup)
     {
@@ -27,7 +30,7 @@ class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
             if (in_array($table, $this->_ignoreTables)) {
                 continue;
             }
-            
+
             $backup->write($this->getResource()->getTableHeader($table) . $this->getResource()->getTableDropSql($table) . "\n");
             $backup->write($this->getResource()->getTableCreateSql($table, false) . "\n");
 

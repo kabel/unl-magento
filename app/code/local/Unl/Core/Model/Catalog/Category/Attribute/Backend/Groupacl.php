@@ -16,7 +16,7 @@ class Unl_Core_Model_Catalog_Category_Attribute_Backend_Groupacl
         }
         return $this;
     }
-    
+
     public function afterLoad($object)
     {
         $attributeCode = $this->getAttribute()->getName();

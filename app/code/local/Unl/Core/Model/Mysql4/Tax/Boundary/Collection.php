@@ -784,7 +784,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             'WELLS'
         )
     );
-    
+
     protected $_secondaryAbbr = array(
         'APT'  => 'APARTMENT',
         'BSMT' => 'BASEMENT',
@@ -810,12 +810,12 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
         'UNIT' => 'UNIT',
         'UPPR' => 'UPPER'
     );
-    
+
     protected function _construct()
     {
         $this->_init('unl_core/tax_boundary');
     }
-    
+
     protected function _matchesSecondaryAbbr($piece)
     {
         if (array_key_exists($piece, $this->_secondaryAbbr)) {
@@ -824,7 +824,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             return array_search($piece, $this->_secondaryAbbr);
         }
     }
-    
+
     protected function _matchesStreetSuffix($piece)
     {
         if (array_key_exists($piece, $this->_streetSuffixes)) {
@@ -836,17 +836,17 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     protected function _reverseSuffix($suffix)
     {
         if (!empty($this->_streetSuffixes[$suffix])) {
             return $this->_streetSuffixes[$suffix][0];
         }
     }
-    
+
     protected function _processPieces($pieces, &$search, &$possib, $strict = false)
     {
         $street_name = array();
@@ -854,7 +854,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
         for ($i = count($pieces) - 1; $i >= 0; $i--) {
             $piece = strtoupper(trim($pieces[$i]));
             if (empty($piece)) { continue; }
-                    
+
             if ($temp = $this->_matchesSecondaryAbbr($piece)) {
                 if (!empty($street_name) || !empty($possib['street_suffix']) || !empty($possib['post-directional'])) {
                     $street_name[] = $piece;
@@ -867,7 +867,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                 } else {
                     $possib['post-directional'] = $piece;
                 }
-            } elseif ($temp = $this->_matchesStreetSuffix($piece)) {              
+            } elseif ($temp = $this->_matchesStreetSuffix($piece)) {
                 if (!empty($street_name) || !empty($possib['street_suffix'])) {
                     $street_name[] = $piece;
                 } elseif ($strict && isset($possib['secondary_addr']) && empty($possib['secondary_abbr'])) {
@@ -894,7 +894,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                 }
             }
         }
-        
+
         if (empty($street_name)) {
             if (!empty($possib['street_suffix'])) {
                 $street_name[] = $this->_reverseSuffix($possib['street_suffix']);
@@ -910,25 +910,25 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                 unset($possib['pre-directional']);
             }
         }
-        
+
         if ($strict && !$addr2Swap && !empty($possib['secondary_addr'])) {
             array_unshift($street_name, $possib['secondary_addr']);
             unset($possib['secondary_addr']);
         }
-        
+
         $search['street_name'] = array_reverse($street_name);
     }
-    
+
     protected function _processSecondary($addr2, &$possib)
     {
         $addr2 = str_replace(array('#', '.', ','), '', $addr2);
         $addr2 = str_replace(array("\n", "\r", "\t"), ' ', $addr2);
         $pieces = explode(' ', $addr2);
-        
+
         foreach ($pieces as $piece) {
             $piece = strtoupper(trim($piece));
             if (empty($piece)) { continue; }
-            
+
             if ($temp = $this->_matchesSecondaryAbbr($piece)) {
                 $possib['secondary_abbr'] = $temp;
             } else {
@@ -936,14 +936,14 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             }
         }
     }
-    
+
     protected function _runFilters($items, $addr2, $possib, $search)
     {
         $filtered = $items;
         if (!empty($addr2)) {
             $this->_processSecondary($addr2, $possib);
         }
-        
+
         if (!empty($possib)) {
             foreach ($possib as $key => $value) {
                 switch ($key) {
@@ -965,7 +965,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                 }
             }
         }
-        
+
         if (count($filtered) > 1) {
             $value = array('B');
             if ($search['address'] % 2 == 0) {
@@ -975,14 +975,14 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             }
             $this->_applyFilter('odd_even_indicator', $value, $filtered);
         }
-        
+
         if (empty($filtered)) {
             return current($items);
         } else {
             return array_shift($filtered);
         }
     }
-    
+
     protected function _applyFilter($name, $value, &$filtered, $name2 = null)
     {
         foreach ($filtered as $key => $item) {
@@ -996,13 +996,13 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                     $keep = ($item[$name] == $value);
                 }
             }
-            
+
             if (!$keep) {
                 unset($filtered[$key]);
             }
         }
     }
-    
+
     protected function _getHighestRate($address, $fromZip = true)
     {
         $this->_reset();
@@ -1010,51 +1010,51 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             ->where('NOW() BETWEEN begin_date AND end_date')
             ->where('fips_place_number != ?', '')
             ->limit(1);
-        
+
         if ($fromZip) {
             $select->where('zip_code = ?', $address->getPostcode());
         } else {
             $select->where('city_name = ?', $address->getCity());
         }
-        
+
         $count = count($this);
         if ($count) {
             $item = $this->getFirstItem();
-            
+
             return $item['zip_code'] . '-' . $item['plus_4'];
         } elseif ($fromZip) {
             return $this->_getHighestRate($address, false);
         }
-        
+
         return '';
     }
-    
+
     protected function _runOnMatch($address, $matches, $secondaryOffset, $strict = false, $zipInstead = false)
     {
         $this->_reset();
         $addr = $address->getStreet();
         $search = array('address' => $matches[1]);
         $possib = array();
-        
+
         $pre = trim($matches[2]);
         if (!empty($pre)) {
             $possib = array('pre-directional' => $pre);
         }
-        
+
         $street_pieces = explode(' ', $matches[3]);
         $this->_processPieces($street_pieces, $search, $possib, $strict);
-        
+
         $select = $this->getSelect()->where('record_type = ?', 'A')
             ->where('NOW() BETWEEN begin_date AND end_date')
             ->where('? BETWEEN low_address_range AND high_address_range', $search['address'])
             ->where('street_name LIKE ?', implode(' ', $search['street_name']) . '%');
-            
+
         if ($zipInstead) {
             $select->where('zip_code = ?', $address->getPostcode());
         } else {
             $select->where('city_name = ?', $address->getCity());
         }
-            
+
         $count = count($this);
         if ($count) {
             if ($count > 1) {
@@ -1062,7 +1062,7 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
             } else {
                 $item = current($this->getItems());
             }
-            
+
             return $item['zip_code'] . '-' . $item['plus_4'];
         } else {
             if (!$strict) {
@@ -1071,44 +1071,44 @@ class Unl_Core_Model_Mysql4_Tax_Boundary_Collection extends Mage_Core_Model_Mysq
                 return $this->_runOnMatch($address, $matches, $secondaryOffset, false, true);
             }
         }
-        
+
         return '';
     }
-    
+
     public function getZipFromAddress($address)
     {
         $zip = '';
         $addr = $address->getStreet();
-        
+
         for ($i = 0; $i < count($addr); $i++) {
             if ($i == 1) {
                 $secondaryOffset = 0;
             } else {
                 $secondaryOffset = 1;
             }
-            
+
             $addr[$i] = str_replace(array('#', '.', ','), '', $addr[$i]);
             $addr[$i] = str_replace(array("\n", "\r", "\t"), ' ', $addr[$i]);
             if (preg_match('/(\d+)\s([ns][ew]?\s|[ew]\s)?([^\W_][a-z\d\-\/\s]*)/i', $addr[$i], $matches)) {
                 $zip = $this->_runOnMatch($address, $matches, $secondaryOffset);
             }
-            
+
             if ($zip) {
                 break;
             }
         }
-        
+
         // If we can't zip plus4 using the street address, grab it from the first available FIPS (zip first, then city)
         if (!$zip) {
             $zip = $this->_getHighestRate($address);
         }
-        
+
         // This is BAD, but if we don't have a valid plus4 by now just default to Lincoln, NE (WICK)
         // It should never happen given a valid zip OR NE city
         if (!$zip) {
             $zip = '68508-1651';
         }
-                
+
         return $zip;
     }
 }

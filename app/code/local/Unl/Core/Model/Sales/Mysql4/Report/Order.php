@@ -2,12 +2,9 @@
 
 class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_Report_Order
 {
-    /**
-     * Aggregate Orders data
-     *
-     * @param mixed $from
-     * @param mixed $to
-     * @return Unl_Core_Model_Sales_Mysql4_Report_Order
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Mysql4_Report_Order::aggregate()
+     * by using the order_item table for totals and using source_store
      */
     public function aggregate($from = null, $to = null)
     {
@@ -31,7 +28,9 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
             $this->_clearTableByDateRange($this->getMainTable(), $from, $to, $subSelect);
 
             $columns = array(
+                // convert dates from UTC to current admin timezone
                 'period'                         => "DATE(CONVERT_TZ(o.created_at, '+00:00', '" . $this->_getStoreTimezoneUtcOffset() . "'))",
+                // use source_store instead
                 'store_id'                       => 'oi.source_store_view',
                 'order_status'                   => 'o.status',
                 'orders_count'                   => 'COUNT(DISTINCT(o.entity_id))',
@@ -58,8 +57,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
                 ->join(array('oi' => $this->getTable('sales/order_item')), 'oi.order_id = o.entity_id AND oi.parent_item_id IS NULL', array())
                 ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW,
-                    Mage_Sales_Model_Order::STATE_CANCELED,
+                    Mage_Sales_Model_Order::STATE_NEW
                 ));
 
             if ($subSelect !== null) {
@@ -102,8 +100,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
                 ->join(array('oi' => $this->getTable('sales/order_item')), 'oi.order_id = o.entity_id AND oi.parent_item_id IS NULL', array())
                 ->where('o.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW,
-                    Mage_Sales_Model_Order::STATE_CANCELED,
+                    Mage_Sales_Model_Order::STATE_NEW
                 ));
 
             if ($subSelect !== null) {
@@ -126,7 +123,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order extends Mage_Sales_Model_Mysql4_R
 
             $select->reset();
             $select->from($this->getMainTable(), $columns)
-                ->where("store_id <> 0 OR store_id IS NULL");
+                ->where('store_id <> 0 OR store_id IS NULL');
 
             if ($subSelect !== null) {
                 $select->where($this->_makeConditionFromDateRangeSelect($subSelect, 'period'));

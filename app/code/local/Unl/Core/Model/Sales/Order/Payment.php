@@ -2,10 +2,9 @@
 
 class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
 {
-    /**
-     * Decide whether authorization transaction may close (if the amount to capture will cover entire order)
-     * @param float $amountToCapture
-     * @return bool
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Order_Payment::_isCaptureFinal()
+     * by fixing a rounding oversight
      */
     protected function _isCaptureFinal($amountToCapture)
     {
@@ -21,6 +20,7 @@ class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
 
 	/**
      * Decide whether parent transaction may close (if the amount to credit will cover entire order)
+     *
      * @param float $amountToRefund
      * @return bool
      */
@@ -36,13 +36,9 @@ class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
         return false;
     }
 
-    /**
-     * Refund payment online or offline, depending on whether there is invoice set in the creditmemo instance
-     * Updates transactions hierarchy, if required
-     * Updates payment totals, updates order status and adds proper comments
-     *
-     * @param Mage_Sales_Model_Order_Creditmemo $creditmemo
-     * @return Mage_Sales_Model_Order_Payment
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Order_Payment::refund()
+     * by implementing multiple refunds per capture
      */
     public function refund($creditmemo)
     {
@@ -90,7 +86,11 @@ class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
         ));
 
         // update transactions and order state
-        $transaction = $this->_addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_REFUND, $creditmemo, $isOnline);
+        $transaction = $this->_addTransaction(
+            Mage_Sales_Model_Order_Payment_Transaction::TYPE_REFUND,
+            $creditmemo,
+            $isOnline
+        );
         if ($invoice) {
             $message = Mage::helper('sales')->__('Refunded amount of %s online.', $this->_formatPrice($baseAmountToRefund));
         } else {

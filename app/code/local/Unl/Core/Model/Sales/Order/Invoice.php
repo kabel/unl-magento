@@ -13,13 +13,10 @@ class Unl_Core_Model_Sales_Order_Invoice extends Mage_Sales_Model_Order_Invoice
             && $this->getState() != self::STATE_PAID
             && $this->getOrder()->getPayment()->getMethodInstance()->getAllowForcePay();
     }
-    
-    /**
-     * Register invoice
-     *
-     * Apply to order, order items etc.
-     *
-     * @return unknown
+
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Order_Invoice::register()
+     * by adding a "force pay" capture case (used with checkmo)
      */
     public function register()
     {

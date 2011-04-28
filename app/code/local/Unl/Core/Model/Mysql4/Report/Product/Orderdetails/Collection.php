@@ -2,7 +2,7 @@
 
 class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_Sales_Model_Mysql4_Order_Item_Collection
 {
-    
+
     /**
      * Set Date range to collection
      *
@@ -33,9 +33,9 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
         }
         return $this;
     }
-    
+
     /**
-     * 
+     *
      * @param int $from
      * @param int $to
      * @return Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection
@@ -54,7 +54,7 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
         $this->getSelect()->reset()->from(
             array('order_items' => $this->getTable('sales/order_item')),
             array('*', 'ordered_qty' => 'order_items.qty_ordered'));
-        
+
         $_joinCondition = $this->getConnection()->quoteInto(
             'order.entity_id = order_items.order_id AND order.state<>?', Mage_Sales_Model_Order::STATE_CANCELED
         );
@@ -65,7 +65,7 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
             $_joinCondition,
             array('ordernum' => 'increment_id')
         );
-        
+
         $this->getSelect()
             ->joinInner(array('_table_billing_address' => $this->getTable('sales/order_address')), "order.entity_id = _table_billing_address.parent_id AND _table_billing_address.address_type = 'billing'", array('customer_firstname' => new Zend_Db_Expr('CASE WHEN order.customer_id IS NULL THEN _table_billing_address.firstname ELSE order.customer_firstname END'), 'customer_lastname' => new Zend_Db_Expr('CASE WHEN order.customer_id IS NULL THEN _table_billing_address.lastname ELSE order.customer_lastname END')));
 
@@ -73,7 +73,7 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
         if ($sku) {
             $this->getSelect()->where('order_items.sku LIKE ?', $sku . '%');
         }
-        
+
         return $this;
     }
 }
