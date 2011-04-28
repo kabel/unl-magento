@@ -6,7 +6,7 @@ class Unl_Comm_Block_Queue_Grid_Renderer_Action extends Mage_Adminhtml_Block_Wid
     {
         $actions = array();
 
-        if($row->getQueueStatus()==Unl_Comm_Model_Queue::STATUS_NEVER) {
+        if ($row->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_NEVER) {
             $actions[] = array(
                 'url' => $this->getUrl('*/*/delete', array('id' => $row->getId())),
              	'confirm'	=>	Mage::helper('unl_comm')->__('Do you really want to delete the queue?'),
@@ -18,7 +18,7 @@ class Unl_Comm_Block_Queue_Grid_Renderer_Action extends Mage_Adminhtml_Block_Wid
                     'caption'	=> Mage::helper('unl_comm')->__('Start')
                 );
             }
-        } else if ($row->getQueueStatus()==Unl_Comm_Model_Queue::STATUS_SENDING) {
+        } else if ($row->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_SENDING) {
             $actions[] = array(
                     'url' => $this->getUrl('*/*/pause', array('id'=>$row->getId())),
                     'caption'	=>	Mage::helper('unl_comm')->__('Pause')
@@ -31,7 +31,7 @@ class Unl_Comm_Block_Queue_Grid_Renderer_Action extends Mage_Adminhtml_Block_Wid
             );
 
 
-        } else if ($row->getQueueStatus()==Unl_Comm_Model_Queue::STATUS_PAUSE) {
+        } else if ($row->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_PAUSE) {
 
             $actions[] = array(
                 'url' => $this->getUrl('*/*/resume', array('id'=>$row->getId())),

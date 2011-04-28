@@ -34,7 +34,7 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
 
     public function isPlain()
     {
-        return ($this->getType() == Mage_Core_Model_Email_Template::TYPE_TEXT);
+        return ($this->getType() == Mage_Core_Model_Template::TYPE_TEXT);
     }
 
     /**
@@ -56,7 +56,7 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
      * Set $_data['queue_start'] based on string from backend, which based on locale.
      *
      * @param string|null $startAt start date of the mailing queue
-     * @return Mage_Newsletter_Model_Queue
+     * @return Unl_Comm_Model_Queue
      */
     public function setQueueStartAtByString($startAt)
     {
@@ -76,7 +76,7 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
      *
      * @param   int     $count
      * @param   array   $additionalVariables
-     * @return Mage_Newsletter_Model_Queue
+     * @return Unl_Comm_Model_Queue
      */
     public function sendPerRecipient($count=20, array $additionalVariables=array())
     {
@@ -100,36 +100,23 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
             ->setCurPage(1)
             ->load();
 
-        /* @var $sender Mage_Core_Model_Email_Template */
-        $sender = Mage::getModel('core/email_template');
-        $filter = Mage::helper('unl_comm')->getTemplateProcessor();
+        $sender = $this->getEmailTemplate();
         $sender->setSenderName($this->getMessageSenderName())
             ->setSenderEmail($this->getMessageSenderEmail())
-            ->setTemplateType($this->getType())
-            ->setTemplateSubject($this->getMessageSubject())
-            ->setTemplateText($this->getMessageText())
-            ->setTemplateStyles($this->getMessageStyles())
-            ->setTemplateFilter($filter);
+            ->setTemplateSubject($this->getMessageSubject());
 
         /* @var $item Mage_Customer_Model_Customer */
         foreach($collection->getItems() as $item) {
             $email = $item->getEmail();
             $name = $item->getName();
-            $storeId = $item->getStoreId();
-            if (!$storeId) {
-                $storeId = Mage::app()->getDefaultStoreView()->getId();
-            }
 
-            $filter->setStoreId($storeId);
-
-            $sender->setDesignConfig(array(
-                'store' => $storeId,
-                'area'  => 'frontend'
-            ));
+            $sender->emulateDesign($item->getStoreId());
             $successSend = $sender->send($email, $name, array('customer'=>$item));
+            $sender->revertDesign();
 
-            $this->_getResource()->markReceived($this, $item);
-            if(!$successSend) {
+            if($successSend) {
+                $this->_getResource()->markReceived($this, $item);
+            } else {
                 Mage::log('Customer communication failure. Please refer to exception.log', Zend_Log::WARN);
             }
         }
@@ -142,32 +129,21 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
         return $this;
     }
 
-    public function getProcessedTemplate(array $variables)
+    /**
+     * Returns an Email_Template instance for this queue
+     *
+     * @return Mage_Core_Model_Email_Template
+     */
+    public function getEmailTemplate()
     {
         /* @var $template Mage_Core_Model_Email_Template */
         $template = Mage::getModel('core/email_template');
-        $filter = Mage::helper('unl_comm')->getTemplateProcessor();
-
         $template->setTemplateType($this->getType())
             ->setTemplateText($this->getMessageText())
             ->setTemplateStyles($this->getMessageStyles())
-            ->setTemplateFilter($filter);
+            ->setTemplateFilter(Mage::helper('unl_comm')->getTemplateProcessor());
 
-        $variables['customer'] = Mage::getModel('customer/customer');
-
-        $storeId = (int)$this->getStoreId();
-        if(!$storeId) {
-            $storeId = Mage::app()->getDefaultStoreView()->getId();
-        }
-
-        $filter->setStoreId($storeId);
-
-        $template->setDesignConfig(array(
-            'store' => $storeId,
-            'area'  => 'frontend'
-        ));
-
-        return $template->getProcessedTemplate($variables);
+        return $template;
     }
 
     /**
@@ -187,7 +163,8 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
      *
      * @return int|string
      */
-    public function getType(){
+    public function getType()
+    {
         return $this->getMessageType();
     }
 }

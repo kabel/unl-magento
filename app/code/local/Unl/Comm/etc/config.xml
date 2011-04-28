@@ -3,9 +3,6 @@
     <modules>
         <Unl_Comm>
             <version>0.1.0</version>
-            <depends>
-                <Mage_Customer />
-            </depends>
         </Unl_Comm>
     </modules>
     

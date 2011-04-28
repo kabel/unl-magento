@@ -8,7 +8,7 @@ class Unl_Comm_Model_Mysql4_Queue extends Mage_Core_Model_Mysql4_Abstract
     }
 
     /**
-     * Add subscribers to queue
+     * Add customers to queue
      *
      * @param Unl_Comm_Model_Queue $queue
      * @param array $cusotmerIds

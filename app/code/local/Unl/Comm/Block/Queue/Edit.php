@@ -3,9 +3,9 @@
 class Unl_Comm_Block_Queue_Edit extends Mage_Adminhtml_Block_Template
 {
     /**
-     * Retrieve current Newsletter Queue Object
+     * Retrieve current Comm Queue Object
      *
-     * @return Mage_Newsletter_Model_Queue
+     * @return Unl_Comm_Model_Queue
      */
     public function getQueue()
     {
@@ -187,6 +187,11 @@ class Unl_Comm_Block_Queue_Edit extends Mage_Adminhtml_Block_Template
         return $this->getChildHtml('delete_button');
     }
 
+    /**
+     * Getter for deleteability mode
+     *
+     * @return boolean
+     */
     public function getCanDelete()
     {
         return in_array($this->getQueue()->getQueueStatus(), array(

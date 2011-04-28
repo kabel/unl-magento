@@ -110,7 +110,10 @@ class Unl_Comm_Block_Customer_Edit_Tab_Queue extends Mage_Adminhtml_Block_Widget
                 array(
                     'caption' => Mage::helper('unl_comm')->__('View'),
                     'popup'   => true,
-                    'url'     => array('base' => 'unl_comm/queue/preview'),
+                    'url'     => array(
+                    	'base' => 'unl_comm/queue/preview',
+                    	'params'  => array('customer' => $this->_getCustomer()->getId())
+                    ),
                     'field'   => 'id'
                 )
             )
