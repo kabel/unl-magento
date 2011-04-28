@@ -1,6 +1,7 @@
 <?php
 
-abstract class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Shipping_Refunded extends Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Shipping
+abstract class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Shipping_Refunded
+    extends Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Shipping
 {
     protected function _prepareColumns() {
         $currencyCode = $this->getCurrentCurrencyCode();

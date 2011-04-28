@@ -1,9 +1,8 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Catalog_Category_Helper_Groupacl
-    extends Varien_Data_Form_Element_Multiselect
+class Unl_Core_Block_Adminhtml_Catalog_Category_Helper_Groupacl extends Varien_Data_Form_Element_Multiselect
 {
-/**
+	/**
      * Retrieve Element HTML fragment
      *
      * @return string

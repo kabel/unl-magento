@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid extends Mage_Adminhtml_Block_Report_Sales_Sales_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Report_Sales_Sales_Grid::_prepareColumns()
+     * by changing default columns
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('period', array(
@@ -167,8 +171,9 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid extends Mage_Adminhtml_Bl
             'sortable'      => false
         ));
 
-        $this->addExportType('*/*/exportSalesCsv', Mage::helper('reports')->__('CSV'));
-        $this->addExportType('*/*/exportSalesExcel', Mage::helper('reports')->__('Excel'));
+
+        $this->addExportType('*/*/exportSalesCsv', Mage::helper('adminhtml')->__('CSV'));
+        $this->addExportType('*/*/exportSalesExcel', Mage::helper('adminhtml')->__('Excel XML'));
 
         return Mage_Adminhtml_Block_Report_Grid_Abstract::_prepareColumns();
     }

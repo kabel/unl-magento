@@ -7,7 +7,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             'report_to' => '',
             'sku' => ''
         );
-    
+
     /**
      * Initialize Grid settings
      *
@@ -55,15 +55,15 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
         } else if(0 !== sizeof($this->_defaultFilter)) {
             $this->_setFilterValues($this->_defaultFilter);
         }
-        
+
         $collection = Mage::getResourceModel('unl_core/report_product_customized_collection');
         /* @var $collection Unl_Core_Model_Mysql4_Report_Product_Customized_Collection */
-        
+
         if ($this->getFilter('sku')) {
             $collection->addFieldToFilter('sku', array('like' => $this->getFilter('sku') . '%'));
         }
-        
-        
+
+
         if ($this->getFilter('report_from') && $this->getFilter('report_to')) {
             /**
              * Validate from and to date
@@ -91,18 +91,18 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
         } else {
             $storeIds = array('');
         }
-        
+
         $storeId = array_pop($storeIds);
         if ($storeId) {
             $collection->addFieldToFilter('source_store_view', array('eq' => $storeId));
         }
-        
+
         $this->setCollection($collection);
 
         Mage::dispatchEvent('adminhtml_widget_grid_filter_collection',
                 array('collection' => $this->getCollection(), 'filter_values' => $this->_filterValues)
         );
-        
+
         return $this;
     }
 
@@ -118,17 +118,17 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
 
         return parent::_prepareColumns();
     }
-    
+
     public function getEmptyText()
     {
         return $this->__('No records found.');
     }
-    
+
     public function getCsv()
     {
         $csv = '';
         $this->_prepareGrid();
-        
+
         $data = array(
             '"' . $this->__('Period') . '"',
             '"' . $this->__('SKU') . '"',
@@ -140,7 +140,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             '"' . $this->__('Options') . '"'
         );
         $csv .= implode(',', $data) . "\n";
-        
+
         foreach ($this->getCollection() as $_item) {
             $_order = $_item->getOrder();
             if ($_order->getCustomerIsGuest()) {
@@ -150,7 +150,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
                 $customerFirstname = $_order->getCustomerFirstname();
                 $customerLastname  = $_order->getCustomerLastname();
             }
-            
+
             $data = array(
                 $this->_cleanCsvValue($this->formatDate($_order->getCreatedAtDate())),
                 $this->_cleanCsvValue($_item->getSku()),
@@ -160,27 +160,27 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
                 $this->_cleanCsvValue($customerFirstname),
                 $this->_cleanCsvValue($customerLastname),
             );
-            
+
             foreach ($_item->getProductOptionByCode('options') as $option) {
                 $data[] = $this->_cleanCsvValue($option['label']);
                 $data[] = $this->_cleanCsvValue($option['print_value']);
             }
-            
+
             $csv .= implode(',', $data) . "\n";
         }
-        
+
         return $csv;
     }
-    
+
     protected function _cleanCsvValue($value)
     {
         return '"' . str_replace(array('"', '\\'), array('""', '\\\\'), $value) . '"';
     }
-    
+
     public function getExcel($filename = '')
     {
         $this->_prepareGrid();
-        
+
         $data = array();
         $row = array(
             $this->__('Period'),
@@ -193,7 +193,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             $this->__('Options')
         );
         $data[] = $row;
-        
+
         foreach ($this->getCollection() as $_item) {
             $_order = $_item->getOrder();
             if ($_order->getCustomerIsGuest()) {
@@ -203,8 +203,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
                 $customerFirstname = $_order->getCustomerFirstname();
                 $customerLastname  = $_order->getCustomerLastname();
             }
-            
-            
+
+
             $row = array(
                 $this->formatDate($_order->getCreatedAtDate()),
                 $_item->getSku(),
@@ -214,15 +214,15 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
                 $customerFirstname,
                 $customerLastname
             );
-            
+
             foreach ($_item->getProductOptionByCode('options') as $option) {
                 $row[] = $option['label'];
                 $row[] = $option['print_value'];
             }
-            
+
             $data[] = $row;
         }
-        
+
         $xmlObj = new Varien_Convert_Parser_Xml_Excel();
         $xmlObj->setVar('single_sheet', $filename);
         $xmlObj->setData($data);

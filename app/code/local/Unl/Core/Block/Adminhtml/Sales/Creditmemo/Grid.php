@@ -2,10 +2,14 @@
 
 class Unl_Core_Block_Adminhtml_Sales_Creditmemo_Grid extends Mage_Adminhtml_Block_Sales_Creditmemo_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Creditmemo_Grid::_prepareCollection()
+     * by adding a scope filter
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel($this->_getCollectionClass());
-        
+
         $user  = Mage::getSingleton('admin/session')->getUser();
         if (!is_null($user->getScope())) {
             $scope = explode(',', $user->getScope());
@@ -15,16 +19,20 @@ class Unl_Core_Block_Adminhtml_Sales_Creditmemo_Grid extends Mage_Adminhtml_Bloc
                 ->columns(array('order_id'))
                 ->where('source_store_view IN (?)', $scope)
                 ->group('order_id');
-                
+
             $collection->getSelect()
                 ->joinInner(array('scope' => $select), 'main_table.order_id = scope.order_id', array());
         }
-        
+
         $this->setCollection($collection);
-        
+
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
-    
+
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Creditmemo_Grid::getRowUrl()
+     * to fix an ACL error
+     */
     public function getRowUrl($row)
     {
         if (!Mage::getSingleton('admin/session')->isAllowed('sales/creditmemo')) {

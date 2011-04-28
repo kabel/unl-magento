@@ -1,42 +1,24 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Scope extends Mage_Adminhtml_Block_Widget_Form implements Mage_Adminhtml_Block_Widget_Tab_Interface
+class Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Scope
+    extends Mage_Adminhtml_Block_Widget_Form
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
-/**
-     * Get tab label
-     *
-     * @return string
-     */
     public function getTabLabel()
     {
         return Mage::helper('adminhtml')->__('User Scope');
     }
 
-    /**
-     * Get tab title
-     *
-     * @return string
-     */
     public function getTabTitle()
     {
         return $this->getTabLabel();
     }
 
-    /**
-     * Whether tab is available
-     *
-     * @return bool
-     */
     public function canShowTab()
     {
         return true;
     }
 
-    /**
-     * Whether tab is visible
-     *
-     * @return bool
-     */
     public function isHidden()
     {
         return false;

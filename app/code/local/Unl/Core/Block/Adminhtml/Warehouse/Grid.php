@@ -2,7 +2,6 @@
 
 class Unl_Core_Block_Adminhtml_Warehouse_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-
     public function __construct()
     {
         parent::__construct();

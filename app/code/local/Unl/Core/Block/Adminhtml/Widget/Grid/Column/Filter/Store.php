@@ -1,7 +1,12 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Filter_Store extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Store
+class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Filter_Store
+    extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Store
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Store::getHtml()
+     * by using a disabled option rather than an empty optgroup
+     */
     public function getHtml()
     {
         $storeModel = Mage::getSingleton('adminhtml/system_store');

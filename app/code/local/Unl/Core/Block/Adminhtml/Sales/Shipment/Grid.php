@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Sales_Shipment_Grid extends Mage_Adminhtml_Block_Sales_Shipment_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Shipment_Grid::_prepareCollection()
+     * by adding scope filter
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel($this->_getCollectionClass());
@@ -25,6 +29,10 @@ class Unl_Core_Block_Adminhtml_Sales_Shipment_Grid extends Mage_Adminhtml_Block_
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
 
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Shipment_Grid::_prepareColumns()
+     * by adding addition columns
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('increment_id', array(
@@ -99,6 +107,10 @@ class Unl_Core_Block_Adminhtml_Sales_Shipment_Grid extends Mage_Adminhtml_Block_
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
     }
 
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Shipment_Grid::getRowUrl()
+     * to fix an ACL error
+     */
     public function getRowUrl($row)
     {
         if (!Mage::getSingleton('admin/session')->isAllowed('sales/shipment')) {

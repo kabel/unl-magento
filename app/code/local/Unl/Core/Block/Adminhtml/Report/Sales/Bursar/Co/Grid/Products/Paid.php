@@ -1,6 +1,7 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Co_Grid_Products_Paid extends Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Products
+class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Co_Grid_Products_Paid
+    extends Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Products
 {
     protected $_resourceCollectionName  = 'unl_core/report_bursar_co_products_paid';
 

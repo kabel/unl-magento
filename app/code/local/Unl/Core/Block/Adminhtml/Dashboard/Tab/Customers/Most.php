@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most extends Mage_Adminhtml_Block_Dashboard_Tab_Customers_Most
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Dashboard_Tab_Customers_Most::_prepareCollection()
+     * by adding scope filter
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel('reports/order_collection');

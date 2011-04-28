@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid extends Mage_Adminhtml_Block_Report_Product_Lowstock_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Report_Product_Lowstock_Grid::_prepareCollection()
+     * by adding scope filter
+     */
     protected function _prepareCollection()
     {
         if ($this->getRequest()->getParam('website')) {

@@ -1,12 +1,11 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Currency
+class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency
+    extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Currency
 {
-    /**
-     * Render column for export
-     *
-     * @param Varien_Object $row
-     * @return string
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract::renderExport()
+     * by not including currency symbol info
      */
     public function renderExport(Varien_Object $row)
     {

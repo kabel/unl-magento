@@ -7,9 +7,9 @@ class Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Permissions
     public function __construct()
     {
         parent::__construct();
-        
+
         $model = Mage::registry('cms_page');
-        
+
         $scope = $model->getPermissions();
         if (!empty($scope)) {
             $selStores = explode(',', $scope);
@@ -20,13 +20,13 @@ class Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Permissions
 
         $this->setTemplate('cms/permissions/stores.phtml');
     }
-    
+
     public function getEverythingAllowed()
     {
         $selStores = $this->getSelectedScope();
         return empty($selStores);
     }
-    
+
     public function getWebsiteCollection()
     {
         $collection = Mage::getModel('core/website')->getResourceCollection();
@@ -40,7 +40,7 @@ class Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Permissions
         }
         return $website->getGroupCollection();
     }
-    
+
     public function isGroupSelected($group)
     {
         $selStores = $this->getSelectedScope();
@@ -49,55 +49,35 @@ class Unl_Core_Block_Adminhtml_Cms_Page_Edit_Tab_Permissions
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public function getSelectionValue($group)
     {
         $value = array();
         foreach ($group->getStoreCollection() as $store) {
             $value[] = $store->getId();
         }
-        
+
         return implode(',', $value);
     }
-    
-    /**
-     * Prepare label for tab
-     *
-     * @return string
-     */
+
     public function getTabLabel()
     {
         return Mage::helper('cms')->__('Page Permissions');
     }
 
-    /**
-     * Prepare title for tab
-     *
-     * @return string
-     */
     public function getTabTitle()
     {
         return Mage::helper('cms')->__('Page Permissions');
     }
 
-    /**
-     * Returns status flag about this tab can be shown or not
-     *
-     * @return true
-     */
     public function canShowTab()
     {
         return Mage::getSingleton('admin/session')->isAllowed('cms/page/permissions');
     }
 
-    /**
-     * Returns status flag about this tab hidden or not
-     *
-     * @return true
-     */
     public function isHidden()
     {
         return false;

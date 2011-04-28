@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid extends Mage_Adminhtml_Block_Report_Sales_Tax_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Report_Sales_Tax_Grid::_prepareColumns()
+     * by adding extra columns
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('period', array(
@@ -14,28 +18,28 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid extends Mage_Adminhtml_Bloc
             'totals_label'      => Mage::helper('adminhtml')->__('Total'),
             'subtotals_label'   => Mage::helper('adminhtml')->__('SubTotal')
         ));
-        
+
         $this->addColumn('code', array(
             'header'    => Mage::helper('sales')->__('Tax Code'),
             'index'     => 'code',
             'type'      => 'string',
             'sortable'  => false
         ));
-        
+
         $this->addColumn('city', array(
             'header'    => Mage::helper('sales')->__('City'),
             'index'     => 'city',
             'type'      => 'string',
             'sortable'  => false
         ));
-        
+
         $this->addColumn('county', array(
             'header'    => Mage::helper('sales')->__('County'),
             'index'     => 'county',
             'type'      => 'string',
             'sortable'  => false
         ));
-        
+
         $this->addColumn('base_sales_amount_sum', array(
             'header'        => Mage::helper('sales')->__('Sales Amount'),
             'index'         => 'base_sales_amount_sum',
@@ -69,8 +73,8 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid extends Mage_Adminhtml_Bloc
             'sortable'      => false
         ));
 
-        $this->addExportType('*/*/exportTaxCsv', Mage::helper('reports')->__('CSV'));
-        $this->addExportType('*/*/exportTaxExcel', Mage::helper('reports')->__('Excel'));
+        $this->addExportType('*/*/exportTaxCsv', Mage::helper('adminhtml')->__('CSV'));
+        $this->addExportType('*/*/exportTaxExcel', Mage::helper('adminhtml')->__('Excel XML'));
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
     }

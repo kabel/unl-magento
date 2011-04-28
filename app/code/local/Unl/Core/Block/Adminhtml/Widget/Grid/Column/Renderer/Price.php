@@ -1,12 +1,11 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Price extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Price
+class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Price
+    extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Price
 {
-    /**
-     * Render column for export
-     *
-     * @param Varien_Object $row
-     * @return string
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract::renderExport()
+     * by not including currency symbol info
      */
     public function renderExport(Varien_Object $row)
     {

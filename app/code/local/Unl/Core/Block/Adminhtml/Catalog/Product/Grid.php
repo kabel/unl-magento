@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block_Catalog_Product_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Catalog_Product_Grid::_prepareCollection()
+     * by adding scope filter
+     */
     protected function _prepareCollection()
     {
         $store = $this->_getStore();
@@ -30,8 +34,8 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
         }
         else {
             $collection->addAttributeToSelect('price');
-            $collection->addAttributeToSelect('status');
-            $collection->addAttributeToSelect('visibility');
+            $collection->joinAttribute('status', 'catalog_product/status', 'entity_id', null, 'inner');
+            $collection->joinAttribute('visibility', 'catalog_product/visibility', 'entity_id', null, 'inner');
         }
 
         $this->setCollection($collection);
@@ -40,7 +44,11 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
         $this->getCollection()->addWebsiteNamesToResult();
         return $this;
     }
-    
+
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Catalog_Product_Grid::_prepareColumns()
+     * by changing columns
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('entity_id',
@@ -141,7 +149,7 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
 //                    'options'   => Mage::getModel('core/website')->getCollection()->toOptionHash(),
 //            ));
 //        }
-//        
+//
         $this->addColumn('source_store',
             array(
                 'header'=> Mage::helper('catalog')->__('Source Store'),
@@ -176,23 +184,5 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
         $this->addRssList('rss/catalog/notifystock', Mage::helper('catalog')->__('Notify Low Stock RSS'));
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
-    }
-     
-     /**
-     * Add new rss list to grid
-     *
-     * @param   string $url
-     * @param   string $label
-     * @return  Mage_Adminhtml_Block_Widget_Grid
-     */
-    public function addRssList($url, $label)
-    {
-        $this->_rssLists[] = new Varien_Object(
-            array(
-                'url'   => Mage::getModel('core/url')->getUrl($url, array('_store' => 'default')),
-                'label' => $label
-            )
-        );
-        return $this;
     }
 }

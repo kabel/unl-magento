@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sales_Order_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Order_Grid::_prepareCollection()
+     * by adding extra cols and filters
+     */
     protected function _prepareCollection()
     {
         /* @var $collection Mage_Sales_Model_Mysql4_Order_Grid_Collection */
@@ -60,6 +64,11 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
 
+    /**
+     * Gets a sales/order_item select for joining with an order collection
+     *
+     * @return Zend_Db_Select
+     */
     protected function _getOrderItemSelect()
     {
         $order_items = Mage::getModel('sales/order_item')->getCollection();
@@ -71,6 +80,10 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         return $select;
     }
 
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Sales_Order_Grid::_prepareColumns()
+     * by changing displayed columns
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('real_order_id', array(
@@ -170,23 +183,5 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
         $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));
 
         return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
-    }
-
-    /**
-     * Add new rss list to grid
-     *
-     * @param   string $url
-     * @param   string $label
-     * @return  Mage_Adminhtml_Block_Widget_Grid
-     */
-    public function addRssList($url, $label)
-    {
-        $this->_rssLists[] = new Varien_Object(
-            array(
-                'url'   => Mage::getModel('core/url')->getUrl($url, array('_store' => 'default')),
-                'label' => $label
-            )
-        );
-        return $this;
     }
 }

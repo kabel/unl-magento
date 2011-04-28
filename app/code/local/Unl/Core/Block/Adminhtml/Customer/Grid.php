@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Customer_Grid
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Customer_Grid::_prepareCollection()
+     * to add advanced filter
+     */
     protected function _prepareCollection()
     {
         // FROM PARENT

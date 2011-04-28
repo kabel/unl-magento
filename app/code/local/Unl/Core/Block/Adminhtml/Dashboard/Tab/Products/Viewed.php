@@ -2,6 +2,10 @@
 
 class Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed extends Mage_Adminhtml_Block_Dashboard_Tab_Products_Viewed
 {
+    /* Overrides
+     * @see Mage_Adminhtml_Block_Dashboard_Tab_Products_Viewed::_prepareCollection()
+     * by adding scope filter
+     */
     protected function _prepareCollection()
     {
         if ($this->getParam('website')) {

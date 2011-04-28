@@ -1,6 +1,7 @@
 <?php
 
-abstract class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Abstract extends Unl_Core_Block_Adminhtml_Widget_Grid_Multicontainer
+abstract class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Abstract
+    extends Unl_Core_Block_Adminhtml_Widget_Grid_Multicontainer
 {
     protected $_blockGroup = 'unl_core';
 
