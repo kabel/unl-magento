@@ -9,20 +9,20 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
             ->_addBreadcrumb(Mage::helper('reports')->__('Products'), Mage::helper('reports')->__('Products'));
         return $this;
     }
-    
+
     public function orderdetailsAction()
     {
         $this->_title($this->__('Reports'))
              ->_title($this->__('Products'))
              ->_title($this->__('Products Ordered'));
-             
+
         $this->_initAction()
             ->_setActiveMenu('report/product/orderdetails')
             ->_addBreadcrumb(Mage::helper('reports')->__('Order Details'), Mage::helper('reports')->__('Order Details'))
             ->_addContent($this->getLayout()->createBlock('unl_core/adminhtml_report_product_orderdetails'))
             ->renderLayout();
     }
-    
+
     public function exportOrderdetailsCsvAction()
     {
         $fileName   = 'products_orderdetails.csv';
@@ -31,7 +31,7 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
-    
+
     public function exportOrderdetailsExcelAction()
     {
         $fileName   = 'products_orderdetails.xml';
@@ -40,20 +40,20 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
-    
+
     public function customizedAction()
     {
         $this->_title($this->__('Reports'))
              ->_title($this->__('Products'))
              ->_title($this->__('Customized'));
-             
+
         $this->_initAction()
             ->_setActiveMenu('report/product/customized')
             ->_addBreadcrumb(Mage::helper('reports')->__('Customized'), Mage::helper('reports')->__('Customized'))
             ->_addContent($this->getLayout()->createBlock('unl_core/adminhtml_report_product_customized'))
             ->renderLayout();
     }
-    
+
     public function exportCustomizedCsvAction()
     {
         $fileName   = 'products_customized.csv';
@@ -62,7 +62,7 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
-    
+
     public function exportCustomizedExcelAction()
     {
         $fileName   = 'products_customized.xml';
@@ -71,7 +71,7 @@ class Unl_Core_Report_ProductController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
-    
+
     protected function _isAllowed()
     {
         $act = $this->getRequest()->getActionName();

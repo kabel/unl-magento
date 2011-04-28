@@ -43,7 +43,7 @@ class Unl_Core_Sales_Order_InvoiceController extends Mage_Adminhtml_Controller_A
         Mage::register('current_invoice', $invoice);
         return $invoice;
     }
-    
+
     /**
      * Save data for invoice and related order
      *
@@ -60,7 +60,7 @@ class Unl_Core_Sales_Order_InvoiceController extends Mage_Adminhtml_Controller_A
 
         return $this;
     }
-    
+
     /**
      * Capture invoice action
      */
@@ -84,7 +84,7 @@ class Unl_Core_Sales_Order_InvoiceController extends Mage_Adminhtml_Controller_A
             $this->_forward('noRoute');
         }
     }
-    
+
     protected function _isAllowed()
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/invoice');

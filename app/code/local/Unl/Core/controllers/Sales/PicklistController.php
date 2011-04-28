@@ -9,7 +9,7 @@ class Unl_Core_Sales_PicklistController extends Mage_Adminhtml_Controller_Action
             ->_addBreadcrumb(Mage::helper('sales')->__('Picklist'), Mage::helper('sales')->__('Picklist'));
         return $this;
     }
-    
+
     public function indexAction()
     {
         $this->_initAction()
@@ -17,7 +17,7 @@ class Unl_Core_Sales_PicklistController extends Mage_Adminhtml_Controller_Action
             ->_addContent($this->getLayout()->createBlock('unl_core/adminhtml_sales_picklist'))
             ->renderLayout();
     }
-    
+
     public function exportCsvAction()
     {
         $fileName   = 'picklist.csv';
@@ -26,7 +26,7 @@ class Unl_Core_Sales_PicklistController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
-    
+
     public function exportExcelAction()
     {
         $fileName   = 'picklist.xml';
@@ -35,7 +35,7 @@ class Unl_Core_Sales_PicklistController extends Mage_Adminhtml_Controller_Action
 
         $this->_prepareDownloadResponse($fileName, $content);
     }
-    
+
     protected function _isAllowed()
     {
          return Mage::getSingleton('admin/session')->isAllowed('sales/picklist');

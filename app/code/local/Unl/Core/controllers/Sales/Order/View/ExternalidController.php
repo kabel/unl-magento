@@ -6,7 +6,7 @@ class Unl_Core_Sales_Order_View_ExternalidController extends Mage_Adminhtml_Cont
     {
         $this->setUsedModuleName('Mage_Sales');
     }
-    
+
     public function saveAction()
     {
         try {
@@ -19,12 +19,12 @@ class Unl_Core_Sales_Order_View_ExternalidController extends Mage_Adminhtml_Cont
         } catch (Exception $e) {
             $this->_getSession()->addError($this->__('Error while saving external ID'));
         }
-        
+
         $this->getResponse()->setBody(
             $this->_getSaveModel()->getSaved() ? 'YES' : 'NO'
         );
     }
-    
+
     protected function _getSaveModel()
     {
         return Mage::getSingleton('unl_core/adminhtml_externalid_save');
