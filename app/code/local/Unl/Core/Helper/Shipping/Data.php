@@ -2,13 +2,9 @@
 
 class Unl_Core_Helper_Shipping_Data extends Mage_Shipping_Helper_Data
 {
-    /**
-     * Retrieve tracking url with params
-     *
-     * @param  string $key
-     * @param  integer|Mage_Sales_Model_Order|Mage_Sales_Model_Order_Shipment|Mage_Sales_Model_Order_Shipment_Track $model
-     * @param  string $method - option
-     * @return string
+    /* Overrides
+     * @see Mage_Shipping_Helper_Data::_getTrackingUrl()
+     * by using the right story_id/model
      */
     protected function _getTrackingUrl($key, $model, $method = 'getId')
     {
@@ -21,14 +17,15 @@ class Unl_Core_Helper_Shipping_Data extends Mage_Shipping_Helper_Data
                  'hash' => Mage::helper('core')->urlEncode("{$key}:{$model->$method()}:{$model->getProtectCode()}")
              );
          }
-         
+
+         $storeId = null;
          // Track model doesn't have store_id
          if ($model instanceof Mage_Sales_Model_Order_Shipment_Track) {
-             $storeModel = Mage::app()->getStore($model->getShipment()->getStoreId());
-         } else {
-             $storeModel = Mage::app()->getStore($model->getStoreId());
+             $storeId = $model->getShipment()->getStoreId();
+         } elseif (is_object($model)) {
+             $storeId = $model->getStoreId();
          }
-         
+         $storeModel = Mage::app()->getStore($storeId);
          return $storeModel->getUrl('shipping/tracking/popup', $param);
     }
 }
