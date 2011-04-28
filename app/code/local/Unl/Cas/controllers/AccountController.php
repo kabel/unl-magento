@@ -21,7 +21,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             $this->_redirect('customer/account/');
             return;
         }
-        
+
         $auth = Mage::helper('unl_cas')->getAuth();
         if ($auth->isLoggedIn()) {
             if ($customer = $this->_checkUidExists($auth->getUser())) {
@@ -31,7 +31,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             } else {
                 $pfData = new Varien_Object();
                 Mage::helper('unl_cas')->loadPfData($pfData);
-                
+
                 if (!empty($pfData['email'])) {
                     $this->_createCustomerFromPfData($pfData);
                     return;
@@ -43,7 +43,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             $auth->login();
         }
     }
-    
+
     /**
      * Define target URL and redirect customer after logging in
      */
@@ -88,34 +88,34 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         $this->_initLayoutMessages('customer/session');
         $this->renderLayout();
     }
-    
+
     protected function _checkUidExists($uid)
     {
         $resource = Mage::getModel('customer/customer')->getResourceCollection();
         $resource->addAttributeToFilter('unl_cas_uid', array('eq' => $uid));
         $resource->load();
-            
+
         if (count($resource)) {
             return current($resource->getItems());
         } else {
             return false;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param Varien_Object $data
      */
     protected function _createCustomerFromPfData($data)
     {
         /* @var $customer Mage_Customer_Model_Customer */
         $customer = Mage::getModel('customer/customer')->setId(null);
-        
+
         $customer->addData($data->toArray());
         $uid = Mage::helper('unl_cas')->getAuth()->getUser();
         $customer->setData('unl_cas_uid', $uid);
         $customer->setPassword($customer->generatePassword());
-        
+
         try {
             $this->_completeCustomer($customer);
         } catch (Mage_Core_Exception $e) {
@@ -124,7 +124,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
                     $customer->loadByEmail($data['email']);
                     $customer->setData('unl_cas_uid', $uid)
                         ->save();
-                        
+
                     $this->_getSession()->setCustomerAsLoggedIn($customer);
                     $this->_loginPostRedirect();
                 } catch (Exception $e) {
@@ -137,32 +137,32 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             $this->_failException($e);
         }
     }
-    
+
     protected function _failException($e)
     {
         $this->_getSession()->addException($e, $this->__('Can\'t save customer'));
         $this->_redirectError(Mage::getUrl('*/*/create', array('_secure'=>true)));
     }
-    
+
     protected function _checkSessionAndAuth()
     {
         if ($this->_getSession()->isLoggedIn()) {
             $this->_redirect('customer/account');
             return false;
         }
-        
+
         $auth = Mage::helper('unl_cas')->getAuth();
         if (!$auth->isLoggedIn()) {
             $this->_redirect('*/*/cas', array('_secure' => true));
             return false;
         }
-        
+
         if ($customer = $this->_checkUidExists($auth->getUser())) {
             $this->_getSession()->setCustomerAsLoggedIn($customer);
             $this->_loginPostRedirect();
             return false;
         }
-        
+
         return true;
     }
 
@@ -174,7 +174,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         if (!$this->_checkSessionAndAuth()) {
             return;
         }
-        
+
         if ($this->getRequest()->isPost()) {
             $errors = array();
 
@@ -185,7 +185,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
 			$pass = $customer->generatePassword();
             $customer->setPassword($pass);
 			$customer->setConfirmation($pass);
-            
+
             foreach (Mage::getConfig()->getFieldset('customer_account') as $code=>$node) {
                 if ($node->is('create') && ($value = $this->getRequest()->getParam($code)) !== null) {
                     $customer->setData($code, $value);
@@ -250,10 +250,10 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         $this->_getSession()->setEscapeMessages(true);
         $this->_redirectError(Mage::getUrl('*/*/create', array('_secure'=>true)));
     }
-    
+
     /**
      * Saves the customer to the database and redirects
-     * 
+     *
      * @param Mage_Customer_Model_Customer $customer
      */
     protected function _completeCustomer($customer)
@@ -289,7 +289,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
 
         return $this->_getSuccessUrl();
     }
-    
+
     protected function _getSuccessUrl()
     {
         $successUrl = Mage::getUrl('customer/account/index', array('_secure'=>true));
