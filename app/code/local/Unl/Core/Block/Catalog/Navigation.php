@@ -2,66 +2,41 @@
 
 class Unl_Core_Block_Catalog_Navigation extends Mage_Catalog_Block_Navigation
 {
-    public function drawItem($category, $level=0, $last=false)
+    /* Overrides
+     * @see Mage_Catalog_Block_Navigation::renderCategoriesMenuHtml()
+     * by disabling hover events
+     */
+    public function renderCategoriesMenuHtml($level = 0, $outermostItemClass = '', $childrenWrapClass = '')
     {
+        $activeCategories = array();
+        foreach ($this->getStoreCategories() as $child) {
+            if ($child->getIsActive()) {
+                $activeCategories[] = $child;
+            }
+        }
+        $activeCategoriesCount = count($activeCategories);
+        $hasActiveCategoriesCount = ($activeCategoriesCount > 0);
+
+        if (!$hasActiveCategoriesCount) {
+            return '';
+        }
+
         $html = '';
-        if (!$category->getIsActive() || !Mage::helper('unl_core')->isCustomerAllowedCategory($category)) {
-            return $html;
+        $j = 0;
+        foreach ($activeCategories as $category) {
+            $html .= $this->_renderCategoryMenuItemHtml(
+                $category,
+                $level,
+                ($j == $activeCategoriesCount - 1),
+                ($j == 0),
+                true,
+                $outermostItemClass,
+                $childrenWrapClass,
+                false
+            );
+            $j++;
         }
-        
-        if (Mage::helper('catalog/category_flat')->isEnabled()) {
-            $children = $category->getChildrenNodes();
-            $childrenCount = count($children);
-        } else {
-            $children = $category->getChildren();
-            $childrenCount = $children->count();
-        }
-        $hasChildren = $children && $childrenCount;
-        $html.= '<li';
-        /*if ($hasChildren) {
-             $html.= ' onmouseover="toggleMenu(this,1)" onmouseout="toggleMenu(this,0)"';
-        }*/
 
-        $html.= ' class="level'.$level;
-        $html.= ' nav-'.str_replace('/', '-', Mage::helper('catalog/category')->getCategoryUrlPath($category->getRequestPath()));
-        if ($this->isCategoryActive($category)) {
-            $html.= ' active';
-        }
-        if ($last) {
-            $html .= ' last';
-        }
-        if ($hasChildren) {
-            $cnt = 0;
-            foreach ($children as $child) {
-                if ($child->getIsActive()) {
-                    $cnt++;
-                }
-            }
-            if ($cnt > 0) {
-                $html .= ' parent';
-            }
-        }
-        $html.= '">'."\n";
-        $html.= '<a href="'.$this->getCategoryUrl($category).'"><span>'.$this->htmlEscape($category->getName()).'</span></a>'."\n";
-
-        if ($hasChildren){
-
-            $j = 0;
-            $htmlChildren = '';
-            foreach ($children as $child) {
-                if ($child->getIsActive()) {
-                    $htmlChildren.= $this->drawItem($child, $level+1, ++$j >= $cnt);
-                }
-            }
-
-            if (!empty($htmlChildren)) {
-                $html.= '<ul class="level' . $level . '">'."\n"
-                        .$htmlChildren
-                        .'</ul>';
-            }
-
-        }
-        $html.= '</li>'."\n";
         return $html;
     }
 }

@@ -2,15 +2,13 @@
 
 class Unl_Core_Block_Catalog_Breadcrumbs extends Mage_Catalog_Block_Breadcrumbs
 {
+    /* Overrides
+     * @see Mage_Catalog_Block_Breadcrumbs::_prepareLayout()
+     * by skipping the "Home" breadcrumb and not reversing the crumbs
+     */
     protected function _prepareLayout()
     {
         if ($breadcrumbsBlock = $this->getLayout()->getBlock('breadcrumbs')) {
-            /*$breadcrumbsBlock->addCrumb('home', array(
-                'label'=>Mage::helper('catalog')->__('Home'),
-                'title'=>Mage::helper('catalog')->__('Go to Home Page'),
-                'link'=>Mage::getBaseUrl()
-            ));*/
-
             $title = array();
             $path  = Mage::helper('catalog')->getBreadcrumbPath();
 

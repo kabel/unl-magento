@@ -1,11 +1,11 @@
 <?php
-class Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer extends Mage_Bundle_Block_Adminhtml_Sales_Order_Items_Renderer
+
+class Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer
+    extends Mage_Bundle_Block_Adminhtml_Sales_Order_Items_Renderer
 {
-    /**
-     * Getting all available childs for Invoice, Shipmen or Creditmemo item
-     *
-     * @param Varien_Object $item
-     * @return array
+    /* Overrides
+     * @see Mage_Bundle_Block_Adminhtml_Sales_Order_Items_Renderer::getChilds()
+     * by sorting by bundle options
      */
     public function getChilds($item)
     {
@@ -28,11 +28,11 @@ class Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer extends Mage_Bu
                 if (!$offsetItem) {
                     $offsetItem = $_item->getOrderItem();
                 }
-                
+
                 if ($offsetItem->getId() != $item->getOrderItem()->getId()) {
                     continue;
                 }
-                    
+
                 $_itemsArray[$_item->getOrderItemId()] = $_item;
             }
         }
@@ -44,11 +44,11 @@ class Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer extends Mage_Bu
             return null;
         }
     }
-    
+
 	/**
      * A custom sort callback used to ensure bundle selections for the
      * same option_id are together in the result array
-     * 
+     *
      * @param Varien_Object $a
      * @param Varien_Object $b
      */
@@ -56,14 +56,14 @@ class Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer extends Mage_Bu
     {
         $aAttributes = $this->getSelectionAttributes($a);
         $bAttributes = $this->getSelectionAttributes($b);
-        
+
         if (!$aAttributes) {
             return (!$bAttributes) ? 0 : -1;
         } else {
             if (!$bAttributes) {
                 return 1;
             }
-            
+
             if ($aAttributes['option_id'] == $bAttributes['option_id']) {
                 return 0;
             }

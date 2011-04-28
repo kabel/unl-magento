@@ -2,36 +2,41 @@
 
 class Unl_Core_Block_GoogleAnalytics_Ga extends Mage_GoogleAnalytics_Block_Ga
 {
-    /**
-     * Prepare and return block's html output
-     *
-     * @return string
+    const XML_PATH_OUTPUT_SCRIPT = 'google/analytics/output_script';
+
+    /* Overrides
+     * @see Mage_GoogleAnalytics_Block_Ga::_toHtml()
+     * by conditionally outputting the GA lib code
      */
     protected function _toHtml()
     {
-        if (!Mage::getStoreConfigFlag('google/analytics/active')) {
+        if (!Mage::helper('googleanalytics')->isGoogleAnalyticsAvailable()) {
+            return '';
+        }
+        $accountId = Mage::getStoreConfig(Mage_GoogleAnalytics_Helper_Data::XML_PATH_ACCOUNT);
+        return '
+<!-- BEGIN GOOGLE ANALYTICS CODE -->
+<script type="text/javascript">
+//<![CDATA[' . $this->_getAnalyticsScriptCode() . '
+    var _gaq = _gaq || [];
+' . $this->_getPageTrackingCode($accountId) . '
+' . $this->_getOrdersTrackingCode() . '
+//]]>
+</script>
+<!-- END GOOGLE ANALYTICS CODE -->';
+    }
+
+    protected function _getAnalyticsScriptCode()
+    {
+        if (!Mage::getStoreConfigFlag(self::XML_PATH_OUTPUT_SCRIPT)) {
             return '';
         }
 
-        $this->addText('
-<!-- BEGIN GOOGLE ANALYTICS CODE -->
-<script type="text/javascript">
-//<![CDATA[
-    var _gaq = _gaq || [];
-    _gaq.push(["_setAccount", "' . $this->getAccount() . '"]);
-    _gaq.push(["_trackPageview", "'.$this->getPageName().'"]);
-//]]>
-</script>
-<!-- END GOOGLE ANALYTICS CODE -->
-        ');
-
-        $this->addText($this->getQuoteOrdersHtml());
-
-        if ($this->getGoogleCheckout()) {
-            $protocol = Mage::app()->getStore()->isCurrentlySecure() ? 'https' : 'http';
-            $this->addText('<script src="'.$protocol.'://checkout.google.com/files/digital/ga_post.js" type="text/javascript"></script>');
-        }
-
-        return Mage_Core_Block_Text::_toHtml();
+        return '
+    (function() {
+        var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;
+        ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';
+        (document.getElementsByTagName(\'head\')[0] || document.getElementsByTagName(\'body\')[0]).appendChild(ga);
+    })();' . "\n";
     }
 }

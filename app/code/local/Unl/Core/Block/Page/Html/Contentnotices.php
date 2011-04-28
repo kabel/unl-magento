@@ -1,4 +1,5 @@
 <?php
+
 class Unl_Core_Block_Page_Html_Contentnotices extends Mage_Core_Block_Template
 {
     /**
