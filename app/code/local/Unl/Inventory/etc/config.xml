@@ -3,11 +3,6 @@
     <modules>
         <Unl_Inventory>
             <version>0.1.0</version>
-            <depends>
-            	<Mage_Catalog />
-                <Mage_CatalogInventory />
-                <Unl_Core />
-            </depends>
         </Unl_Inventory>
     </modules>
     
