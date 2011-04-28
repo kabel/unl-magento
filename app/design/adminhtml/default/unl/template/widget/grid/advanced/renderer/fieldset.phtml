@@ -29,6 +29,7 @@
     </div>
 <?php endif; ?>
 <script type="text/javascript">
+//<![CDATA[
 Fieldset.applyCollapse('<?php echo $_element->getHtmlId() ?>');
 function loadAdvFilters() {
 	var collapsed = $('<?php echo $_element->getHtmlId() ?>-head').collapsed;
@@ -111,6 +112,7 @@ function advFilterFormSubmit() {
     });
     return;
 }
+//]]>
 </script>
 <?php if ($_element->getFieldsetContainerId()): ?>
 </div>
