@@ -21,7 +21,8 @@ class Unl_Ship_Model_Observer
 
         $type = 'Mage_Adminhtml_Block_Sales_Order_View';
         if ($block instanceof $type) {
-            if ($this->_isAllowedSalesAction('label_ship') && $block->getOrder()->canShip()) {
+            if ($this->_isAllowedSalesAction('label_ship') && $block->getOrder()->canShip()
+                && Mage::helper('unl_ship')->isOrderSupportAutoShip($block->getOrder())) {
                 $block->addButton('auto_ship', array(
                     'label'     => Mage::helper('sales')->__('Auto Ship'),
                     'onclick'   => "setLocation('{$block->getUrl('unlship/')}')",

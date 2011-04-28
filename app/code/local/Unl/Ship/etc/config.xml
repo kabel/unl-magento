@@ -3,11 +3,6 @@
     <modules>
         <Unl_Ship>
             <version>0.1.0</version>
-            <depends>
-            	<Mage_Usa />
-                <Mage_Sales />
-                <Mage_Shipping />
-            </depends>
         </Unl_Ship>
     </modules>
     

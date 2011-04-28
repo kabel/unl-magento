@@ -48,143 +48,33 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         return dirname(__FILE__) . '/Fedex/wsdl/';
     }
 
+    /* Extends the logic of
+     * @see Mage_Usa_Model_Shipping_Carrier_Fedex::setRequest()
+     * by adding the origin region and city to the raw request
+     */
     public function setRequest(Mage_Shipping_Model_Rate_Request $request)
     {
-        $this->_request = $request;
-
-        $r = new Varien_Object();
-
-        if ($request->getLimitMethod()) {
-            $r->setService($request->getLimitMethod());
-        }
-
-        if ($request->getFedexAccount()) {
-            $account = $request->getFedexAccount();
-        } else {
-            $account = $this->getConfigData('account');
-        }
-        $r->setAccount($account);
-
-        if ($request->getFedexDropoff()) {
-            $dropoff = $request->getFedexDropoff();
-        } else {
-            $dropoff = $this->getConfigData('dropoff');
-        }
-        $r->setDropoffType($dropoff);
-
-        if ($request->getFedexPackaging()) {
-            $packaging = $request->getFedexPackaging();
-        } else {
-            $packaging = $this->getConfigData('packaging');
-        }
-        $r->setPackaging($packaging);
-
-        if ($request->getOrigCountry()) {
-            $origCountry = $request->getOrigCountry();
-        } else {
-            $origCountry = Mage::getStoreConfig('shipping/origin/country_id', $this->getStore());
-        }
-        $r->setOrigCountry(Mage::getModel('directory/country')->load($origCountry)->getIso2Code());
+        parent::setRequest($request);
+        $r = $this->_rawRequest;
 
         if ($request->getOrigRegionCode()) {
             $origRegionCode = $request->getOrigRegionCode();
         } else {
-            $origRegionCode = Mage::getStoreConfig('shipping/origin/region_id', $this->getStore());
+            $origRegionCode = Mage::getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_REGION_ID, $this->getStore());
             if (is_numeric($origRegionCode)) {
                 $origRegionCode = Mage::getModel('directory/region')->load($origRegionCode)->getCode();
             }
         }
         $r->setOrigRegionCode($origRegionCode);
 
-        if ($request->getOrigPostcode()) {
-            $r->setOrigPostal($request->getOrigPostcode());
-        } else {
-            $r->setOrigPostal(Mage::getStoreConfig('shipping/origin/postcode', $this->getStore()));
-        }
-
         if ($request->getOrigCity()) {
             $r->setOrigCity($request->getOrigCity());
         } else {
-            $r->setOrigCity(Mage::getStoreConfig('shipping/origin/city', $this->getStore()));
+            $r->setOrigCity(Mage::getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY, $this->getStore()));
         }
-
-        if ($request->getDestCountryId()) {
-            $destCountry = $request->getDestCountryId();
-        } else {
-            $destCountry = self::USA_COUNTRY_ID;
-        }
-        $r->setDestCountry(Mage::getModel('directory/country')->load($destCountry)->getIso2Code());
-
-        if ($request->getDestPostcode()) {
-            $r->setDestPostal($request->getDestPostcode());
-        }
-
-        $weight = $this->getTotalNumOfBoxes($request->getPackageWeight());
-        $r->setWeight($weight);
-        if ($request->getFreeMethodWeight()!= $request->getPackageWeight()) {
-            $r->setFreeMethodWeight($request->getFreeMethodWeight());
-        }
-
-        $r->setValue($request->getPackagePhysicalValue());
-        $r->setValueWithDiscount($request->getPackageValueWithDiscount());
-
-        $this->_rawRequest = $r;
 
         return $this;
     }
-
-    //
-    // FROM MAGENTO 1.5 Mage_Usa_Model_Shipping_Carrier_Abstract
-    const GUAM_COUNTRY_ID = 'GU';
-    const GUAM_REGION_CODE = 'GU';
-
-    protected static $_quotesCache = array();
-
-    /**
-     * Returns cache key for some request to carrier quotes service
-     *
-     * @param string|array $requestParams
-     * @return string
-     */
-    protected function _getQuotesCacheKey($requestParams)
-    {
-        if (is_array($requestParams)) {
-            $requestParams = implode(',', array_merge(array($this->getCarrierCode()), array_keys($requestParams), $requestParams));
-        }
-        return crc32($requestParams);
-    }
-
-    /**
-     * Checks whether some request to rates have already been done, so we have cache for it
-     * Used to reduce number of same requests done to carrier service during one session
-     *
-     * Returns cached response or null
-     *
-     * @param string|array $requestParams
-     * @return null|string
-     */
-    protected function _getCachedQuotes($requestParams)
-    {
-        $key = $this->_getQuotesCacheKey($requestParams);
-        return isset(self::$_quotesCache[$key]) ? self::$_quotesCache[$key] : null;
-    }
-
-    /**
-     * Sets received carrier quotes to cache
-     *
-     * @param string|array $requestParams
-     * @param string $response
-     * @return Mage_Usa_Model_Shipping_Carrier_Abstract
-     */
-    protected function _setCachedQuotes($requestParams, $response)
-    {
-        $key = $this->_getQuotesCacheKey($requestParams);
-        self::$_quotesCache[$key] = $response;
-        return $this;
-    }
-
-    // END
-    //
 
     public function getCode($type, $code='')
     {
@@ -387,6 +277,10 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         return $versionId;
     }
 
+    /* Overrides the logic of
+     * @see Mage_Usa_Model_Shipping_Carrier_Fedex::_getXMLTracking()
+     * by using the FedEx SOAP APIs
+     */
     protected function _getXMLTracking($tracking, $uid = null)
     {
         $r = $this->_rawTrackingRequest;
@@ -433,6 +327,10 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         $this->_parseXmlTrackingResponse($tracking, $response);
     }
 
+    /* Overrides the logic of
+     * @see Mage_Usa_Model_Shipping_Carrier_Fedex::_parseXmlTrackingResponse()
+     * by using the FedEx SOAP APIs
+     */
     protected function _parseXmlTrackingResponse($trackingvalue,$response)
     {
         $resultArr=array();
@@ -514,6 +412,10 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
          }
     }
 
+	/* Overrides the logic of
+     * @see Mage_Usa_Model_Shipping_Carrier_Fedex::_getXmlQuotes()
+     * by using the FedEx SOAP APIs
+     */
     protected function _getXmlQuotes()
     {
         $r = $this->_rawRequest;
@@ -618,6 +520,10 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         return $this->_parseXmlResponse($response);
     }
 
+    /* Overrides the logic of
+     * @see Mage_Usa_Model_Shipping_Carrier_Fedex::_parseXmlResponse()
+     * by using the FedEx SOAP APIs
+     */
     protected function _parseXmlResponse($response)
     {
         $costArr = array();
@@ -671,6 +577,10 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         return $result;
     }
 
+    /* Extends the logic of
+     * @see Mage_Usa_Model_Shipping_Carrier_Abstract::proccessAdditionalValidation()
+     * by passing the rate request to a helper to validate the street address
+     */
     public function proccessAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
     {
         $result = parent::proccessAdditionalValidation($request);
