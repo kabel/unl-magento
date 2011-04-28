@@ -11,7 +11,7 @@ $conn->addColumn($this->getTable('sales/quote_item'), 'source_store_view', 'int(
 $select = $conn->select()
     ->from(array('e' => $this->getTable('sales/quote_item')))
     ->where('e.source_store_view IS NULL');
-    
+
 $stmt = $conn->query($select);
 $rows = $stmt->fetchAll();
 
@@ -32,7 +32,7 @@ $conn->addColumn($this->getTable('sales/order_item'), 'source_store_view', 'int(
 $select = $conn->select()
     ->from(array('e' => $this->getTable('sales/order_item')))
     ->where('e.source_store_view IS NULL');
-    
+
 $stmt = $conn->query($select);
 $rows = $stmt->fetchAll();
 
