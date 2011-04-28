@@ -4,32 +4,110 @@
         <Unl_Core>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Mage_Admin />
+                <Mage_Adminhtml />
+                <Mage_Bundle />
+                <Mage_Catalog />
+                <Mage_Cms />
+                <Mage_Customer />
+                <Mage_Reports />
+                <Mage_Sales />
+                <Mage_Tax />
+            </depends>
         </Unl_Core>
         <Unl_Cas>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+            </depends>
         </Unl_Cas>
         <Unl_Comm>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+            </depends>
         </Unl_Comm>
         <Unl_Inventory>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+                <Mage_CatalogInventory />
+            </depends>
         </Unl_Inventory>
         <Unl_Ship>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+                <Mage_Shipping />
+                <Mage_Usa />
+            </depends>
         </Unl_Ship>
         
         <AW_Deliverydate>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Mage_Sales />
+                <Mage_Checkout />
+            </depends>
         </AW_Deliverydate>
         
         <Webshopapps_Shippingoverride>
             <active>true</active>
             <codePool>local</codePool>
         </Webshopapps_Shippingoverride>
+        
+        <!-- Disable Unused Modules -->
+        <Mage_Authorizenet>
+            <active>false</active>
+        </Mage_Authorizenet>
+        <Mage_Chronopay>
+            <active>false</active>
+        </Mage_Chronopay>
+        <Mage_Cybermut>
+            <active>false</active>
+        </Mage_Cybermut>
+        <Mage_Cybersource>
+            <active>false</active>
+        </Mage_Cybersource>
+        <Mage_Eway>
+            <active>false</active>
+        </Mage_Eway>
+        <Mage_Flo2Cash>
+            <active>false</active>
+        </Mage_Flo2Cash>
+        <Mage_GoogleBase>
+            <active>false</active>
+        </Mage_GoogleBase>
+        <Mage_GoogleCheckout>
+            <active>false</active>
+        </Mage_GoogleCheckout>
+        <Mage_Ideal>
+            <active>false</active>
+        </Mage_Ideal>
+        <Mage_Ogone>
+            <active>false</active>
+        </Mage_Ogone>
+        <Mage_Oscommerce>
+            <active>false</active>
+        </Mage_Oscommerce>
+        <Mage_Paybox>
+            <active>false</active>
+        </Mage_Paybox>
+        <Mage_Protx>
+            <active>false</active>
+        </Mage_Protx>
+        
+        <Find_Feed>
+            <active>false</active>
+        </Find_Feed>
+        <Phoenix_Moneybookers>
+            <active>false</active>
+        </Phoenix_Moneybookers>
     </modules>
 </config>
