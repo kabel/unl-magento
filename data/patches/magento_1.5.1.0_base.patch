@@ -1,0 +1,140 @@
+Index: .htaccess
+===================================================================
+--- .htaccess	(revision 105734)
++++ .htaccess	(working copy)
+@@ -34,6 +34,9 @@
+ #    php_value memory_limit 64M
+     php_value memory_limit 256M
+     php_value max_execution_time 18000
++    php_value max_input_time 9000
++    php_value upload_max_filesize 700M
++    php_value post_max_size 700M
+ 
+ ############################################
+ ## disable magic quotes for php request vars
+@@ -80,22 +83,22 @@
+     # Insert filter on all content
+     ###SetOutputFilter DEFLATE
+     # Insert filter on selected content types only
+-    #AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
++    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+ 
+     # Netscape 4.x has some problems...
+-    #BrowserMatch ^Mozilla/4 gzip-only-text/html
++    BrowserMatch ^Mozilla/4 gzip-only-text/html
+ 
+     # Netscape 4.06-4.08 have some more problems
+-    #BrowserMatch ^Mozilla/4\.0[678] no-gzip
++    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+ 
+     # MSIE masquerades as Netscape, but it is fine
+-    #BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
++    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+ 
+     # Don't compress images
+-    #SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
++    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+ 
+     # Make sure proxies don't deliver the wrong content
+-    #Header append Vary User-Agent env=!dont-vary
++    Header append Vary User-Agent env=!dont-vary
+ 
+ </IfModule>
+ 
+@@ -161,6 +164,7 @@
+ ## Add default Expires header
+ ## http://developer.yahoo.com/performance/rules.html#expires
+ 
++    ExpiresActive On
+     ExpiresDefault "access plus 1 year"
+ 
+ </IfModule>
+Index: index.php
+===================================================================
+--- index.php	(revision 105734)
++++ index.php	(working copy)
+@@ -43,7 +43,7 @@
+ }
+ 
+ $mageFilename = 'app/Mage.php';
+-$maintenanceFile = 'maintenance.flag';
++$maintenanceFile = '.htmaint';
+ 
+ if (!file_exists($mageFilename)) {
+     if (is_dir('downloader')) {
+@@ -54,7 +54,7 @@
+     exit;
+ }
+ 
+-if (file_exists($maintenanceFile)) {
++if (file_exists($maintenanceFile) && !in_array($_SERVER['REMOTE_ADDR'], array('129.93.245.119'))) {
+     include_once dirname(__FILE__) . '/errors/503.php';
+     exit;
+ }
+Index: app/code/core/Mage/Adminhtml/Block/Widget/Grid/Column/Filter/Abstract.php
+===================================================================
+--- app/code/core/Mage/Adminhtml/Block/Widget/Grid/Column/Filter/Abstract.php	(revision 105734)
++++ app/code/core/Mage/Adminhtml/Block/Widget/Grid/Column/Filter/Abstract.php	(working copy)
+@@ -54,7 +54,8 @@
+ 
+     protected function _getHtmlId()
+     {
+-        return $this->getColumn()->getGrid()->getVarNameFilter().'_'.$this->getColumn()->getId();
++        $grid = $this->getColumn()->getGrid();
++        return $grid->getId() . '_' . $grid->getVarNameFilter() . '_' . $this->getColumn()->getId();
+     }
+ 
+     public function getEscapedValue($index=null)
+Index: app/code/core/Mage/Catalog/controllers/CategoryController.php
+===================================================================
+--- app/code/core/Mage/Catalog/controllers/CategoryController.php	(revision 105734)
++++ app/code/core/Mage/Catalog/controllers/CategoryController.php	(working copy)
+@@ -56,11 +56,13 @@
+         Mage::getSingleton('catalog/session')->setLastVisitedCategoryId($category->getId());
+         Mage::register('current_category', $category);
+         try {
++            $result = new Varien_Object(array('prevent_default' => false));
+             Mage::dispatchEvent(
+                 'catalog_controller_category_init_after',
+                 array(
+                     'category' => $category,
+-                    'controller_action' => $this
++                    'controller_action' => $this,
++                    'result' => $result
+                 )
+             );
+         } catch (Mage_Core_Exception $e) {
+@@ -68,6 +70,10 @@
+             return false;
+         }
+ 
++        if ($result->getPreventDefault()) {
++            return false;
++        }
++
+         return $category;
+     }
+ 
+Index: js/mage/adminhtml/wysiwyg/tiny_mce/setup.js
+===================================================================
+--- js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(revision 105734)
++++ js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(working copy)
+@@ -163,6 +163,18 @@
+         if (this.config.height) {
+             settings.height = this.config.height;
+         }
++        
++        if (this.config.extended_valid_elements) {
++        	settings.extended_valid_elements = this.config.extended_valid_elements;
++        }
++        
++        if (this.config.body_id) {
++        	settings.body_id = this.config.body_id;
++        }
++        
++        if (this.config.body_class) {
++        	settings.body_class = this.config.body_class;
++        }
+ 
+         return settings;
+     },
