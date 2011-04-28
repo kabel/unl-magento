@@ -3,18 +3,6 @@
     <modules>
         <Unl_Core>
             <version>0.1.21</version>
-            <depends>
-                <Mage_Admin />
-                <Mage_Adminhtml />
-                <Mage_Bundle />
-                <Mage_Catalog />
-                <Mage_Cms />
-                <Mage_Core />
-                <Mage_Customer />
-                <Mage_Reports />
-                <Mage_Sales />
-                <Mage_Tax />
-            </depends>
         </Unl_Core>
     </modules>
     
@@ -22,25 +10,33 @@
         <blocks>
             <adminhtml>
                 <rewrite>
+                    <!-- Adds scope filter -->
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                     <cms_page_grid>Unl_Core_Block_Adminhtml_Cms_Page_Grid</cms_page_grid>
+                    <!-- Adv Filter -->
                     <customer_grid>Unl_Core_Block_Adminhtml_Customer_Grid</customer_grid>
+                    <!-- Customize the dashboard elements for scope -->
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
                     <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
+                     <!-- Customize report grids -->
                     <report_product_downloads_grid>Unl_Core_Block_Adminhtml_Report_Product_Downloads_Grid</report_product_downloads_grid>
                     <report_product_lowstock_grid>Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid</report_product_lowstock_grid>
                     <report_review_product_grid>Unl_Core_Block_Adminhtml_Report_Review_Product_Grid</report_review_product_grid>
                     <report_sales_sales_grid>Unl_Core_Block_Adminhtml_Report_Sales_Sales_Grid</report_sales_sales_grid>
                     <report_sales_tax_grid>Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid</report_sales_tax_grid>
+                    <!-- Customize sales grids (scoped) -->
                     <sales_creditmemo_grid>Unl_Core_Block_Adminhtml_Sales_Creditmemo_Grid</sales_creditmemo_grid>
                     <sales_invoice_grid>Unl_Core_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
                     <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
-                    <sales_order_invoice_view>Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View</sales_order_invoice_view>
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
+                    <!-- Adds a force pay button to invoice -->
+                    <sales_order_invoice_view>Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View</sales_order_invoice_view>
+                    <!-- No empty optgroups -->
                     <widget_grid_column_filter_store>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Filter_Store</widget_grid_column_filter_store>
+                    <!-- Don't export the currenct symbols -->
                     <widget_grid_column_renderer_currency>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency</widget_grid_column_renderer_currency>
                     <widget_grid_column_renderer_price>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Price</widget_grid_column_renderer_price>
                 </rewrite>
@@ -56,42 +52,48 @@
                     <catalog_product_view_type_bundle_option_multi>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Multi</catalog_product_view_type_bundle_option_multi>
                     <catalog_product_view_type_bundle_option_radio>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Radio</catalog_product_view_type_bundle_option_radio>
                     <catalog_product_view_type_bundle_option_select>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Select</catalog_product_view_type_bundle_option_select>
-                    <checkout_cart_item_renderer>Unl_Core_Block_Bundle_Checkout_Cart_Item_Renderer</checkout_cart_item_renderer>
                 </rewrite>
             </bundle>
             <catalog>
                 <rewrite>
+                    <!-- Disable Hover Events -->
                     <navigation>Unl_Core_Block_Catalog_Navigation</navigation>
+                    <!-- Customizes the order/display of breadcrumbs -->
                     <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
                 </rewrite>
             </catalog>
-            <checkout>
-                <rewrite>
-                    <links>Unl_Core_Block_Checkout_Links</links>
-                </rewrite>
-            </checkout>
             <googleanalytics>
                 <rewrite>
+                    <!-- Check config option to export GA lib -->
                     <ga>Unl_Core_Block_GoogleAnalytics_Ga</ga>
                 </rewrite>
             </googleanalytics>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
-            <wishlist>
-                <rewrite>
-                    <links>Unl_Core_Block_Wishlist_Links</links>
-                </rewrite>
-            </wishlist>
         </blocks>
         <helpers>
             <adminhtml>
                 <rewrite>
+                    <!-- Fix source_store logic -->
                     <dashboard_order>Unl_Core_Helper_Adminhtml_Dashboard_Order</dashboard_order>
                 </rewrite>
             </adminhtml>
+            <bundle>
+                <rewrite>
+                    <!-- Fix Price Display when +$0.00 -->
+                    <catalog_product_configuration>Unl_Core_Helper_Bundle_Catalog_Product_Configuration</catalog_product_configuration>
+                </rewrite>
+            </bundle>
+            <catalog>
+                <rewrite>
+                    <!-- Upate Security Logic -->
+                    <product>Unl_Core_Helper_Catalog_Product</product>
+                </rewrite>
+            </catalog>
             <shipping>
                 <rewrite>
+                    <!-- Fix missing store_id -->
                     <data>Unl_Core_Helper_Shipping_Data</data>
                 </rewrite>
             </shipping>
@@ -117,6 +119,7 @@
             </unl_core_mysql4>
             <backup>
                 <rewrite>
+                    <!-- Excludes certain backup tables -->
                     <db>Unl_Core_Model_Backup_Db</db>
                 </rewrite>
             </backup>
@@ -130,20 +133,13 @@
                 </rewrite>
             </bundle>
             <catalog>
-                
                 <rewrite>
+                    <!-- Fix upload exception logging when no upload occurs -->
                     <category_attribute_backend_image>Unl_Core_Model_Catalog_Category_Attribute_Backend_Image</category_attribute_backend_image>
                     <!-- Allow product import of configs/upsells/related -->
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
-                    <!-- Fix problem with products that are in the root category -->
-                    <url>Unl_Core_Model_Catalog_Url</url>
                 </rewrite>
             </catalog>
-            <catalog_resource_eav_mysql4>
-                <rewrite>
-                    <category_tree>Unl_Core_Model_Catalog_Resource_Eav_Mysql4_Category_Tree</category_tree>
-                </rewrite>
-            </catalog_resource_eav_mysql4>
             <cms>
             	<rewrite>
             		<!-- Fix skin URL -->
@@ -159,29 +155,21 @@
                     <variable_config>Unl_Core_Model_Core_Variable_Config</variable_config>
                 </rewrite>
             </core>
-            <customer>
-                <rewrite>
-                    <address_config>Unl_Core_Model_Customer_Address_Config</address_config>
-                </rewrite>
-            </customer>
             <dataflow>
                 <!-- Fix Double HTML Escaping -->
                 <rewrite>
                     <convert_parser_xml_excel>Unl_Core_Model_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
                 </rewrite>
             </dataflow>
-            <newsletter>
-                <rewrite>
-                    <template>Unl_Core_Model_Newsletter_Template</template>
-                </rewrite>
-            </newsletter>
             <payment>
                 <rewrite>
+                    <!-- Custom availability/display logic (single store) -->
                     <method_checkmo>Unl_Core_Model_Payment_Method_Checkmo</method_checkmo>
                 </rewrite>
             </payment>
             <paypal>
             	<rewrite>
+                    <!-- Fixes for partial capture/refund -->
             		<payflowpro>Unl_Core_Model_Paypal_Payflowpro</payflowpro>
             	</rewrite>
             </paypal>
@@ -196,10 +184,10 @@
             </reports_mysql4>
             <sales>
                 <rewrite>
-                    <!-- Adds the total product amount applied to the tax rate -->
                     <order>Unl_Core_Model_Sales_Order</order>
-                    <order_creditmemo_total_shipping>Unl_Core_Model_Sales_Order_Creditmemo_Total_Shipping</order_creditmemo_total_shipping>
+                    <!-- Adds force pay abstaction for checkmo -->
                     <order_invoice>Unl_Core_Model_Sales_Order_Invoice</order_invoice>
+                    <!-- Allow for better multi-transaction payments -->
                     <order_payment>Unl_Core_Model_Sales_Order_Payment</order_payment>
                     <!-- Change size of order PDFs to US Letter -->
                     <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
@@ -208,8 +196,9 @@
                     <order_pdf_items_shipment_default>Unl_Core_Model_Sales_Order_Pdf_Items_Shipment_Default</order_pdf_items_shipment_default>
                     <order_pdf_invoice>Unl_Core_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
                     <order_pdf_shipment>Unl_Core_Model_Sales_Order_Pdf_Shipment</order_pdf_shipment>
-                    
+                    <!-- Adds an event to fire after setting shipping_method -->
                     <quote_address>Unl_Core_Model_Sales_Quote_Address</quote_address>
+                    <!-- Fixes dummy qty and adds before total events -->
                     <service_order>Unl_Core_Model_Sales_Service_Order</service_order>
                 </rewrite>
             </sales>
@@ -225,9 +214,9 @@
                 <rewrite>
                     <!-- Fixes to Attach Sale Amount to tax report and Zip+4 -->
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
-                    <config>Unl_core_Model_Tax_Config</config>
+                    <config>Unl_Core_Model_Tax_Config</config>
+                    <!-- Adds the total product amount applied to the tax rate -->
                     <sales_total_quote_tax>Unl_Core_Model_Tax_Sales_Total_Quote_Tax</sales_total_quote_tax>
-                    <sales_total_quote_subtotal>Unl_Core_Model_Tax_Sales_Total_Quote_Subtotal</sales_total_quote_subtotal>
                 </rewrite>
             </tax>
             <tax_mysql4>
@@ -241,6 +230,7 @@
             </tax_mysql4>
             <widget>
             	<rewrite>
+                    <!-- Allow WYWSIWYG outside of adminhtml -->
             		<widget_config>Unl_Core_Model_Widget_Widget_Config</widget_config>
             	</rewrite>
             </widget>
@@ -427,15 +417,6 @@
             </totals>
         </pdf>
         
-        <customer>
-            <address>
-                <formats>
-                    <oneline>
-                        <htmlEscape></htmlEscape>
-                    </oneline>
-                </formats>
-            </address>
-        </customer>
     </global>
     
     <frontend>
@@ -732,6 +713,8 @@
             </design>
         </admin>
     </stores>
+    
+    <!-- Fixes admin 404 issue
     <websites>
         <admin>
             <web>
@@ -741,13 +724,9 @@
             </web>
         </admin>
     </websites>
+     -->
     
     <default>
-        <design>
-            <header>
-                <storearticle>the</storearticle>
-            </header>
-        </design>
         <payment>
             <cash>
                 <active>0</active>
@@ -784,5 +763,15 @@
                 <exempt_shipping_tax_class></exempt_shipping_tax_class>
             </classes>
         </tax>
+        <dev>
+            <template>
+                <allow_symlink>1</allow_symlink>
+            </template>
+        </dev>
+        <google>
+            <analytics>
+                <output_script>0</output_script>
+            </analytics>
+        </google>
     </default>
 </config>
