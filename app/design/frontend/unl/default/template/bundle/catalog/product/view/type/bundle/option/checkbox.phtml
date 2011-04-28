@@ -16,13 +16,13 @@
 
                 <?php if ($_selection->getSelectionCanChangeQty()): ?>
                 <span class="qty-holder"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>-qty-input"><?php echo $this->__('Qty:') ?></label>
-                    <input onkeyup="bundle.changeOptionSelectionQty(this, event)" onblur="bundle.changeOptionSelectionQty(this, event)" class="input-text qty" id="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>-qty-input" type="text" name="bundle_option_qty[<?php echo $_option->getId() ?>][<?php echo $_selection->getSelectionId() ?>]"<?php echo ($_selection->getIsDefault() && $_selection->isSaleable())?'':' disabled="disabled" ' ?> value="" /></span>
+                    <input onkeyup="bundle.changeOptionSelectionQty(this, event)" onblur="bundle.changeOptionSelectionQty(this, event)" class="input-text qty" id="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>-qty-input" type="text" name="bundle_option_qty[<?php echo $_option->getId() ?>][<?php echo $_selection->getSelectionId() ?>]"<?php if (!$this->_isSelected($_selection)) echo ' disabled="disabled"' ?> value="<?php if ($this->_isSelected($_selection)) echo $this->_getSelectionQty($_selection)*1 ?>" /></span>
                 <span class="label"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>"><?php echo $this->getSelectionTitlePrice($_selection) ?></label></span>
                 <?php else: ?>
                 <span class="qty-holder"><label><?php echo $this->__('Qty:') ?>&nbsp;</label><?php echo $_selection->getSelectionQty()*1 ?></span>
                 <span class="label"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>"><?php echo $this->getSelectionTitlePrice($_selection) ?></label></span>
                 <?php endif; ?>
-            
+
                 <?php if($_option->getRequired()): ?>
                     <?php echo $this->setValidationContainer('bundle-option-'.$_option->getId().'-'.$_selection->getSelectionId(), 'bundle-option-'.$_option->getId().'-container') ?>
                 <?php endif; ?>

@@ -6,10 +6,26 @@ Product.Bundle = Class.create();
 Product.Bundle.prototype = {
     initialize: function(config){
         this.config = config;
+
+        // Set preconfigured values for correct price base calculation
+        if (config.defaultValues) {
+            for (var option in config.defaultValues) {
+                if (this.config['options'][option].isMulti) {
+                    var selected = new Array();
+                    for (var i = 0; i < config.defaultValues[option].length; i++) {
+                        selected.push(config.defaultValues[option][i]);
+                    }
+                    this.config.selected[option] = selected;
+                } else {
+                    this.config.selected[option] = new Array(config.defaultValues[option] + "");
+                }
+            }
+        }
+
         this.reloadPrice();
     },
     changeSelection: function(selection){
-        parts = selection.id.split('-');
+        var parts = selection.id.split('-');
         if (this.config['options'][parts[2]].isMulti) {
             selected = new Array();
             if (selection.tagName == 'SELECT') {
@@ -23,16 +39,16 @@ Product.Bundle.prototype = {
                 selections = $$('.'+selector);
                 for (var i = 0; i < selections.length; i++) {
                     var multiQty = $(selector+'-'+selections[i].value+'-qty-input');
-                	if (selections[i].checked && selections[i].value != '') {
+                    if (selections[i].checked && selections[i].value != '') {
                         selected.push(selections[i].value);
                         if (multiQty && multiQty.disabled) {
-                        	multiQty.disabled=false;
-                        	multiQty.value=this.config.options[parts[2]].selections[selections[i].value].qty;
+                            multiQty.disabled=false;
+                            multiQty.value=this.config.options[parts[2]].selections[selections[i].value].qty;
                         }
                     } else {
                     	if (multiQty && !multiQty.disabled) {
-                    		multiQty.disabled=true;
-                    		multiQty.value='';
+                    	    multiQty.disabled=true;
+                    	    multiQty.value='';
                         }
                     }
                 }
@@ -53,23 +69,22 @@ Product.Bundle.prototype = {
     reloadPrice: function() {
         var calculatedPrice = 0;
         var dispositionPrice = 0;
+        var includeTaxPrice = 0;
         for (var option in this.config.selected) {
             if (this.config.options[option]) {
                 for (var i=0; i < this.config.selected[option].length; i++) {
                     var prices = this.selectionPrice(option, this.config.selected[option][i]);
                     calculatedPrice += Number(prices[0]);
                     dispositionPrice += Number(prices[1]);
+                    includeTaxPrice += Number(prices[2]);
                 }
             }
         }
 
-        if (this.config.specialPrice) {
-            var newPrice = (calculatedPrice*this.config.specialPrice)/100;
-            calculatedPrice = Math.min(newPrice, calculatedPrice);
-        }
-
+        optionsPrice.specialTaxPrice = 'true';
         optionsPrice.changePrice('bundle', calculatedPrice);
         optionsPrice.changePrice('nontaxable', dispositionPrice);
+        optionsPrice.changePrice('priceInclTax', includeTaxPrice);
         optionsPrice.reload();
 
         return calculatedPrice;
@@ -79,7 +94,7 @@ Product.Bundle.prototype = {
         if (selectionId == '' || selectionId == 'none') {
             return 0;
         }
-
+        var qty = null;
         if (this.config.options[optionId].selections[selectionId].customQty == 1 && !this.config['options'][optionId].isMulti) {
             if ($('bundle-option-' + optionId + '-qty-input')) {
                 qty = $('bundle-option-' + optionId + '-qty-input').value;
@@ -113,7 +128,22 @@ Product.Bundle.prototype = {
         var disposition = this.config.options[optionId].selections[selectionId].plusDisposition +
             this.config.options[optionId].selections[selectionId].minusDisposition;
 
-        var result = new Array(price*qty, disposition*qty);
+        if (this.config.specialPrice) {
+            newPrice = (price*this.config.specialPrice)/100;
+            newPrice = (Math.round(newPrice*100)/100).toString();
+            price = Math.min(newPrice, price);
+        }
+
+        taxPercent = this.config.options[optionId].selections[selectionId].taxPercent;
+        if (this.config.includeTax == 'true') {
+            priceInclTax = price;
+            price = price / ((100 + taxPercent) / 100);
+        }
+        else {
+            priceInclTax = price * ((100 + taxPercent) / 100);
+        }
+
+        var result = new Array(price*qty, disposition*qty, priceInclTax*qty);
         return result;
     },
 
@@ -177,7 +207,7 @@ Product.Bundle.prototype = {
     },
 
     validationCallback: function (elmId, result){
-        if (typeof elmId == 'undefined') {
+        if (elmId == undefined || $(elmId) == undefined) {
             return;
         }
         var container = $(elmId).up('ul.options-list');

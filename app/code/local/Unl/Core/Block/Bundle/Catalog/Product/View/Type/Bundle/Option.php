@@ -55,4 +55,23 @@ class Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option extends Mage
 
         return $formated;
     }
+
+    protected function _getSelectionQty($selection)
+    {
+        if ($this->getProduct()->hasPreconfiguredValues()) {
+            $selectedQty = $this->getProduct()->getPreconfiguredValues()
+                ->getData('bundle_option_qty/' . $this->getOption()->getId());
+            if (isset($selectedQty[$selection->getSelectionId()])) {
+                $selectedQty = $selectedQty[$selection->getSelectionId()];
+            }
+            $selectedQty = (float)$selectedQty;
+            if ($selectedQty < 0) {
+                $selectedQty = 0;
+            }
+        } else {
+            $selectedQty = 0;
+        }
+
+        return $selectedQty;
+    }
 }
