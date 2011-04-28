@@ -8,10 +8,8 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
 
         $items = $this->getAllVisibleItems();
         foreach ($items as $item) {
-            if ($store = $item->getSourceStoreView()) {
-                if (!in_array($store, $storeIds)) {
-                    $storeIds[] = $store;
-                }
+            if (($store = $item->getSourceStoreView()) && !in_array($store, $storeIds)) {
+                $storeIds[] = $store;
             }
         }
 
@@ -32,7 +30,7 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
         if ($configPath == self::XML_PATH_EMAIL_COPY_TO) {
             $warehouseIds = array();
             foreach ($this->getAllItems() as $item) {
-                if ($item->getWarehouse()) {
+                if ($item->getWarehouse() && !in_array($item->getWarehouse(), $warehouseIds)) {
                     $warehouseIds[] = $item->getWarehouse();
                 }
             }

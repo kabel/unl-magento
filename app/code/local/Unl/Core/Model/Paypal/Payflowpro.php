@@ -2,21 +2,29 @@
 
 class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
 {
+    /* Extends the logic of
+     * @see Mage_Payment_Model_Method_Abstract::canCapturePartial()
+     * by first checking the config for reference_txn
+     */
     public function canCapturePartial()
     {
         return ($this->getConfigData('reference_txn') || parent::canCapturePartial());
     }
 
+    /* Extends the logic of
+     * @see Mage_Payment_Model_Method_Abstract::canRefundPartialPerInvoice()
+     * by first checking the config for reference_txn
+     */
     public function canRefundPartialPerInvoice()
     {
         return ($this->getConfigData('reference_txn') || parent::canRefundPartialPerInvoice());
     }
 
     /**
-     * Checks to see if there is an existing capture transaction for the given order payment
+     * Checks if any capture transaction exists for the payment's order
      *
      * @param Mage_Sales_Model_Order_Payment $payment
-     * @return bool
+     * @return boolean
      */
     protected function _isOrderPartialCaptured($payment)
     {
@@ -24,18 +32,16 @@ class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
             ->setOrderFilter($payment->getOrder())
             ->addPaymentIdFilter($payment->getId())
             ->addTxnTypeFilter(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
-        if (count($collection)) {
+        if ($collection->getSize()) {
             return true;
         }
 
         return false;
     }
 
-    /**
-     * Capture payment
-     *
-     * @param Mage_Sales_Model_Order_Payment $payment
-     * @return Mage_Paypal_Model_Payflowpro
+    /* Override the logic of
+     * @see Mage_Paypal_Model_Payflowpro::capture()
+     * by implementing delayed capture and partial capture
      */
     public function capture(Varien_Object $payment, $amount)
     {
@@ -69,28 +75,6 @@ class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
                 $payment->setIsTransactionPending(true);
                 $payment->setIsFraudDetected(true);
                 break;
-        }
-        return $this;
-    }
-
-    /**
-     * Refund capture
-     *
-     * @param Mage_Sales_Model_Order_Payment $payment
-     * @return Mage_Paypal_Model_Payflowpro
-     */
-    public function refund(Varien_Object $payment, $amount)
-    {
-        $request = $this->_buildBasicRequest($payment);
-        $request->setAmt(round($amount,2));
-        $request->setTrxtype(self::TRXTYPE_CREDIT);
-        $request->setOrigid($payment->getParentTransactionId());
-        $response = $this->_postRequest($request);
-        $this->_processErrors($response);
-
-        if ($response->getResultCode() == self::RESPONSE_CODE_APPROVED){
-            $payment->setTransactionId($response->getPnref())
-                ->setIsTransactionClosed(1);
         }
         return $this;
     }

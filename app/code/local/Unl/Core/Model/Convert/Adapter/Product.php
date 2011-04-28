@@ -3,22 +3,22 @@
 class Unl_Core_Model_Convert_Adapter_Product
     extends Mage_Catalog_Model_Convert_Adapter_Product
 {
-    /**
-     * Load product collection Id(s)
-     *
+    /* Overrides the logic of
+     * @see Mage_Catalog_Model_Convert_Adapter_Product::load()
+     * by adding a source_store filter and auto-applying scope filter
      */
     public function load()
     {
         $attrFilterArray = array();
-        $attrFilterArray ['name']              = 'like';
-        $attrFilterArray ['sku']               = 'like';
-        $attrFilterArray ['type']              = 'eq';
-        $attrFilterArray ['attribute_set']     = 'eq';
-        $attrFilterArray ['visibility']        = 'eq';
-        $attrFilterArray ['status']            = 'eq';
-        $attrFilterArray ['price']             = 'fromTo';
-        $attrFilterArray ['qty']               = 'fromTo';
-        $attrFilterArray ['store_id']          = 'eq';
+        $attrFilterArray ['name']           = 'like';
+        $attrFilterArray ['sku']            = 'startsWith';
+        $attrFilterArray ['type']           = 'eq';
+        $attrFilterArray ['attribute_set']  = 'eq';
+        $attrFilterArray ['visibility']     = 'eq';
+        $attrFilterArray ['status']         = 'eq';
+        $attrFilterArray ['price']          = 'fromTo';
+        $attrFilterArray ['qty']            = 'fromTo';
+        $attrFilterArray ['store_id']       = 'eq';
         $attrFilterArray ['source_store_view'] = 'eq';
 
         $attrToDb = array(
@@ -29,8 +29,8 @@ class Unl_Core_Model_Convert_Adapter_Product
         $filters = $this->_parseVars();
 
         if ($qty = $this->getFieldValue($filters, 'qty')) {
-            $qtyFrom = isset($qty['from']) ? $qty['from'] : 0;
-            $qtyTo   = isset($qty['to']) ? $qty['to'] : 0;
+            $qtyFrom = isset($qty['from']) ? (float) $qty['from'] : 0;
+            $qtyTo   = isset($qty['to']) ? (float) $qty['to'] : 0;
 
             $qtyAttr = array();
             $qtyAttr['alias']       = 'qty';
@@ -43,7 +43,7 @@ class Unl_Core_Model_Convert_Adapter_Product
             $this->setJoinField($qtyAttr);
         }
 
-        Mage_Eav_Model_Convert_Adapter_Entity::setFilter($attrFilterArray, $attrToDb);
+        parent::setFilter($attrFilterArray, $attrToDb);
 
         if ($price = $this->getFieldValue($filters, 'price')) {
             $this->_filter[] = array(
@@ -69,34 +69,40 @@ class Unl_Core_Model_Convert_Adapter_Product
         return Mage_Eav_Model_Convert_Adapter_Entity::load();
     }
 
-    /**
-     * Save product (import)
-     *
-     * @param array $importData
-     * @throws Mage_Core_Exception
-     * @return bool
+    /* Overrides the logic of
+     * @see Mage_Catalog_Model_Convert_Adapter_Product::saveRow()
+     * by adding product link support, source values matching, and scope checks
      */
     public function saveRow(array $importData)
     {
-        $product = $this->getProductModel()->reset();
+        $product = $this->getProductModel()
+            ->reset();
 
         if (empty($importData['store'])) {
             if (!is_null($this->getBatchParams('store'))) {
                 $store = $this->getStoreById($this->getBatchParams('store'));
             } else {
-                $message = Mage::helper('catalog')->__('Skip import row, required field "%s" not defined', 'store');
+                $message = Mage::helper('catalog')->__(
+                    'Skipping import row, required field "%s" is not defined.',
+                    'store'
+                );
                 Mage::throwException($message);
             }
-        } else {
+        }
+        else {
             $store = $this->getStoreByCode($importData['store']);
         }
 
         if ($store === false) {
-            $message = Mage::helper('catalog')->__('Skip import row, store "%s" field not exists', $importData['store']);
+            $message = Mage::helper('catalog')->__(
+                'Skipping import row, store "%s" field does not exist.',
+                $importData['store']
+            );
             Mage::throwException($message);
         }
+
         if (empty($importData['sku'])) {
-            $message = Mage::helper('catalog')->__('Skip import row, required field "%s" not defined', 'sku');
+            $message = Mage::helper('catalog')->__('Skipping import row, required field "%s" is not defined.', 'sku');
             Mage::throwException($message);
         }
         $product->setStoreId($store->getId());
@@ -104,8 +110,9 @@ class Unl_Core_Model_Convert_Adapter_Product
 
         if ($productId) {
             $product->load($productId);
+            // adds additional scope check
             if (!Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
-                $message = Mage::helper('catalog')->__('Skip import row, permission denied');
+                $message = Mage::helper('catalog')->__('Skipping import row, permission denied');
                 Mage::throwException($message);
             }
         }
@@ -118,7 +125,11 @@ class Unl_Core_Model_Convert_Adapter_Product
              */
             if (empty($importData['type']) || !isset($productTypes[strtolower($importData['type'])])) {
                 $value = isset($importData['type']) ? $importData['type'] : '';
-                $message = Mage::helper('catalog')->__('Skip import row, is not valid value "%s" for field "%s"', $value, 'type');
+                $message = Mage::helper('catalog')->__(
+                    'Skip import row, is not valid value "%s" for field "%s"',
+                    $value,
+                    'type'
+                );
                 Mage::throwException($message);
             }
             $product->setTypeId($productTypes[strtolower($importData['type'])]);
@@ -127,7 +138,11 @@ class Unl_Core_Model_Convert_Adapter_Product
              */
             if (empty($importData['attribute_set']) || !isset($productAttributeSets[$importData['attribute_set']])) {
                 $value = isset($importData['attribute_set']) ? $importData['attribute_set'] : '';
-                $message = Mage::helper('catalog')->__('Skip import row, is not valid value "%s" for field "%s"', $value, 'attribute_set');
+                $message = Mage::helper('catalog')->__(
+                    'Skip import row, the value "%s" is invalid for field "%s"',
+                    $value,
+                    'attribute_set'
+                );
                 Mage::throwException($message);
             }
             $product->setAttributeSetId($productAttributeSets[$importData['attribute_set']]);
@@ -135,11 +150,16 @@ class Unl_Core_Model_Convert_Adapter_Product
             foreach ($this->_requiredFields as $field) {
                 $attribute = $this->getAttribute($field);
                 if (!isset($importData[$field]) && $attribute && $attribute->getIsRequired()) {
-                    $message = Mage::helper('catalog')->__('Skip import row, required field "%s" for new products not defined', $field);
+                    $message = Mage::helper('catalog')->__(
+                        'Skipping import row, required field "%s" for new products is not defined.',
+                        $field
+                    );
                     Mage::throwException($message);
                 }
             }
         }
+
+        $this->setProductTypeInstance($product);
 
         /**
          * Handle configurable products and linking of products
@@ -222,7 +242,7 @@ class Unl_Core_Model_Convert_Adapter_Product
 
         if (isset($importData['websites'])) {
             $websiteIds = $product->getWebsiteIds();
-            if (!is_array($websiteIds)) {
+            if (!is_array($websiteIds) || !$store->getId()) {
                 $websiteIds = array();
             }
             $websiteCodes = explode(',', $importData['websites']);
@@ -243,7 +263,7 @@ class Unl_Core_Model_Convert_Adapter_Product
             if (in_array($field, $this->_inventoryFields)) {
                 continue;
             }
-            if (in_array($field, $this->_imageFields)) {
+            if (is_null($value)) {
                 continue;
             }
 
@@ -270,6 +290,7 @@ class Unl_Core_Model_Convert_Adapter_Product
 
                 if ($isArray) {
                     foreach ($options as $item) {
+                        // adds support for optgroups and value matching
                         if (is_array($item['value'])) {
                             foreach ($item['value'] as $subitem) {
                                 if (in_array($subitem['label'], $value) || in_array($subitem['value'], $value)) {
@@ -282,10 +303,10 @@ class Unl_Core_Model_Convert_Adapter_Product
                             }
                         }
                     }
-                }
-                else {
-                    $setValue = null;
+                } else {
+                    $setValue = false;
                     foreach ($options as $item) {
+                        // adds support for optgroups and value matching
                         if (is_array($item['value'])) {
                             foreach ($item['value'] as $subitem) {
                                 if ($subitem['label'] == $value || $subitem['value'] == $value) {
@@ -324,21 +345,45 @@ class Unl_Core_Model_Convert_Adapter_Product
         }
         $product->setStockData($stockData);
 
-        $imageData = array();
-        foreach ($this->_imageFields as $field) {
-            if (!empty($importData[$field]) && $importData[$field] != 'no_selection') {
-                if (!isset($imageData[$importData[$field]])) {
-                    $imageData[$importData[$field]] = array();
+        $mediaGalleryBackendModel = $this->getAttribute('media_gallery')->getBackend();
+
+        $arrayToMassAdd = array();
+
+        foreach ($product->getMediaAttributes() as $mediaAttributeCode => $mediaAttribute) {
+            if (isset($importData[$mediaAttributeCode])) {
+                $file = trim($importData[$mediaAttributeCode]);
+                if (!empty($file) && !$mediaGalleryBackendModel->getImage($product, $file)) {
+                    $arrayToMassAdd[] = array('file' => trim($file), 'mediaAttribute' => $mediaAttributeCode);
                 }
-                $imageData[$importData[$field]][] = $field;
             }
         }
 
-        foreach ($imageData as $file => $fields) {
-            try {
-                $product->addImageToMediaGallery(Mage::getBaseDir('media') . DS . 'import' . $file, $fields);
+        $addedFilesCorrespondence = $mediaGalleryBackendModel->addImagesWithDifferentMediaAttributes(
+            $product,
+            $arrayToMassAdd, Mage::getBaseDir('media') . DS . 'import',
+            false,
+            false
+        );
+
+        foreach ($product->getMediaAttributes() as $mediaAttributeCode => $mediaAttribute) {
+            $addedFile = '';
+            if (isset($importData[$mediaAttributeCode . '_label'])) {
+                $fileLabel = trim($importData[$mediaAttributeCode . '_label']);
+                if (isset($importData[$mediaAttributeCode])) {
+                    $keyInAddedFile = array_search($importData[$mediaAttributeCode],
+                        $addedFilesCorrespondence['alreadyAddedFiles']);
+                    if ($keyInAddedFile !== false) {
+                        $addedFile = $addedFilesCorrespondence['alreadyAddedFilesNames'][$keyInAddedFile];
+                    }
+                }
+
+                if (!$addedFile) {
+                    $addedFile = $product->getData($mediaAttributeCode);
+                }
+                if ($fileLabel && $addedFile) {
+                    $mediaGalleryBackendModel->updateImage($product, $addedFile, array('label' => $fileLabel));
+                }
             }
-            catch (Exception $e) {}
         }
 
         $product->setIsMassupdate(true);

@@ -4,11 +4,9 @@ class Unl_Core_Model_Reports_Mysql4_Product_Sold_Collection extends Mage_Reports
 {
     public function setStoreIds($storeIds)
     {
-        $storeId = array_pop($storeIds);
-        $this->setStoreId($storeId);
-        $this->addStoreFilter($storeId);
-        if ($storeId) {
-            $this->getSelect()->where('order_items.source_store_view = ?', $storeId);
+        parent::setStoreIds($storeIds);
+        if ($this->getStoreId()) {
+            $this->addAttributeToFilter('source_store_view', array('eq' => $this->getStoreId()));
         }
         return $this;
     }

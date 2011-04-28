@@ -11,7 +11,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
             ->group('order_id');
         $this->getSelect()->joinInner(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
     }
-    
+
    /**
      * Prepare report summary
      *
@@ -59,18 +59,18 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                     'quantity' => 'COUNT(main_table.entity_id)',
                     'range' => $this->_getRangeExpressionForAttribute($range, 'created_at'),
                 ));
-                
+
                 $this->addFieldToFilter('store_id', array('in' => $storeIds));
                 $this->addFieldToFilter('created_at', $this->getDateRange($range, $customStart, $customEnd));
             } else {
                 $this->getSelect()->joinInner(array('oi' => $this->getTable('sales/order_item')), 'main_table.entity_id = oi.order_id AND oi.parent_item_id IS NULL', array());
-                
+
                 $this->getSelect()->columns(array(
                     'revenue' => 'SUM(oi.base_row_total - ABS(oi.base_discount_amount) - ((oi.base_row_total - oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled))',
                     'quantity' => 'COUNT(DISTINCT(main_table.entity_id))',
                     'range' => $this->_getRangeExpressionForAttribute($range, 'main_table.created_at'),
                 ));
-                
+
                 $this->addFieldToFilter('oi.source_store_view', array('in' => $storeIds));
                 $this->addFieldToFilter('main_table.created_at', $this->getDateRange($range, $customStart, $customEnd));
             }
@@ -112,7 +112,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
         if (empty($statuses)) {
             $statuses = array(0);
         }
-        
+
         if (empty($storeIds)) {
             $storeIds = array(Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId());
         }
@@ -121,7 +121,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
         $this->getSelect()->where('main_table.order_status NOT IN(?)', $statuses);
         return $this;
     }
-    
+
     /**
      * Calculate lifitime sales
      *
@@ -157,39 +157,39 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
         } else {
             $this->setMainTable('sales/order');
             $this->removeAllFieldsFromSelect();
-            
+
             if (!$isFilter || $websiteScope) {
                 $expr = 'IFNULL(main_table.base_subtotal, 0) - IFNULL(main_table.base_subtotal_refunded, 0)'
-                . ' - IFNULL(main_table.base_subtotal_canceled, 0) - IFNULL(main_table.base_discount_amount, 0)'
+                . ' - IFNULL(main_table.base_subtotal_canceled, 0) - ABS(IFNULL(main_table.base_discount_amount, 0))'
                 . ' + IFNULL(main_table.base_discount_refunded, 0)';
 
                 $this->getSelect()->columns(array(
                     'lifetime' => "SUM({$expr})",
                     'average'  => "AVG({$expr})"
                 ));
-                
+
                 if ($isFilter) {
                     $collection->addFieldToFilter('store_id', array('in' => $storeIds));
                 }
             } else {
                 $this->getSelect()->joinInner(array('oi' => $this->getTable('sales/order_item')), 'main_table.entity_id = oi.order_id AND oi.parent_item_id IS NULL', array());
-                
+
                 $expr = 'oi.base_row_total - ABS(oi.base_discount_amount) - ((oi.base_row_total - oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled)';
-                
+
                 $this->getSelect()->columns(array(
                     'lifetime' => "SUM({$expr})",
                     'average'  => "SUM({$expr})/COUNT(DISTINCT(main_table.entity_id))"
                 ));
-                
+
                 $this->addFieldToFilter('oi.source_store_view', array('in' => $storeIds));
             }
-            
+
             $this->getSelect()->where('main_table.status NOT IN(?)', $statuses)
                 ->where('main_table.state NOT IN(?)', array(Mage_Sales_Model_Order::STATE_NEW, Mage_Sales_Model_Order::STATE_PENDING_PAYMENT));
         }
         return $this;
     }
-    
+
     /**
      * Calculate totals report
      *
@@ -233,18 +233,18 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
                     'shipping' => 'SUM((main_table.base_shipping_amount-IFNULL(main_table.base_shipping_refunded,0)-IFNULL(main_table.base_shipping_canceled,0)))',
                     'quantity' => 'COUNT(main_table.entity_id)'
                 ));
-                
+
                 $this->addFieldToFilter('store_id', array('in' => $storeIds));
             } else {
                 $this->getSelect()->joinInner(array('oi' => $this->getTable('sales/order_item')), 'main_table.entity_id = oi.order_id AND oi.parent_item_id IS NULL', array());
-                
+
                 $this->getSelect()->columns(array(
                     'revenue' => 'SUM(oi.base_row_total - ABS(oi.base_discount_amount) - ((oi.base_row_total - oi.base_discount_amount) / oi.qty_ordered * oi.qty_canceled))',
                     'tax' => 'SUM(oi.base_tax_amount - (oi.base_tax_amount / oi.qty_ordered * oi.qty_canceled) - IFNULL(oi.base_tax_amount / oi.qty_ordered * oi.qty_refunded, 0))',
                     'shipping' => '0',
                     'quantity' => 'COUNT(DISTINCT(main_table.entity_id))'
                 ));
-                
+
                 $this->addFieldToFilter('oi.source_store_view', array('in' => $storeIds));
             }
         }
@@ -278,7 +278,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
         if (empty($statuses)) {
             $statuses = array(0);
         }
-        
+
         if (empty($storeIds)) {
             $storeIds = array(Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId());
         }
@@ -288,7 +288,7 @@ class Unl_Core_Model_Reports_Mysql4_Order_Collection extends Mage_Reports_Model_
 
         return $this;
     }
-    
+
     /**
      * Add period filter by created_at attribute
      *

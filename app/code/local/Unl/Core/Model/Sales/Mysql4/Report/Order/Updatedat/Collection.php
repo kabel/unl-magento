@@ -19,11 +19,10 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
         'total_discount_amount'          => 'IFNULL(SUM((ABS(e.base_discount_amount) - IFNULL(e.base_discount_canceled, 0)) * e.base_to_global_rate), 0)',
         'total_discount_amount_actual'   => 'IFNULL(SUM((e.base_discount_invoiced - IFNULL(e.base_discount_refunded, 0)) * e.base_to_global_rate), 0)',
     );
-    
-    /**
-     * Apply stores filter
-     *
-     * @return Mage_Sales_Model_Mysql4_Report_Order_Updatedat_Collection
+
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Mysql4_Report_Order_Updatedat_Collection::_applyStoresFilter()
+     * by extended the logic to use source_store
      */
     protected function _applyStoresFilter()
     {
@@ -57,17 +56,16 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
                     'total_qty_invoiced' => 'SUM(qty_invoiced)',
                 ))
                 ->group('order_id');
-                
+
             $this->getSelect()->join(array('oi' => $selectOrderItem), 'oi.order_id = e.entity_id', array());
         }
 
         return $this;
     }
-    
-    /**
-     * Retrieve array of columns to select
-     *
-     * @return array
+
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Mysql4_Report_Order_Updatedat_Collection::_getSelectedColumns()
+     * by conditionally using the order_item columns
      */
     protected function _getSelectedColumns()
     {
@@ -86,6 +84,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
         }
 
         if ($nullCheck || $storeIds[0] != '') {
+            // Duplicated from Unl_Core_Model_Sales_Mysql4_Report_Order
             $this->_selectedColumns = array(
                 'total_qty_ordered'              => 'SUM(oi.qty_ordered - IFNULL(oi.qty_canceled, 0))',
                 'total_qty_invoiced'             => 'SUM(oi.qty_invoiced)',
@@ -104,7 +103,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
                 'total_discount_amount_actual'   => 'SUM((ABS(oi.base_discount_invoiced) - (ABS(oi.base_discount_invoiced) / oi.qty_invoiced * oi.qty_refunded)) * e.base_to_global_rate)'
             );
         }
-        
+
         if (!$this->isTotals()) {
             if ('month' == $this->_period) {
                 $this->_periodFormat = 'DATE_FORMAT(e.updated_at, \'%Y-%m\')';
@@ -120,13 +119,13 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
         }
         return $this->_selectedColumns;
     }
-    
+
     protected function _initSelect()
     {
         if ($this->_inited) {
             return $this;
         }
-        
+
         $columns = $this->_getSelectedColumns();
 
         $mainTable = $this->getResource()->getMainTable();
@@ -135,8 +134,7 @@ class Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection extends Mage
             ->from(array('e' => $mainTable), $columns)
             ->where('e.state NOT IN (?)', array(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW,
-                    Mage_Sales_Model_Order::STATE_CANCELED,
+                    Mage_Sales_Model_Order::STATE_NEW
                 ));
 
         $this->_applyStoresFilter();

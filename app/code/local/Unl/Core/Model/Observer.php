@@ -24,6 +24,10 @@ class Unl_Core_Model_Observer
                 $config->setContentCss(implode(',', $css));
             }
 
+            $config->setBodyId('maincontent');
+            $config->setBodyClass('fixed');
+            $config->setExtendedValidElements('iframe[align|frameborder|height|longdesc|marginheight|marginwidth|name|scrolling|src|width|class|id|style|title]');
+
             // Fix bad default values
             $this->_skipWysiwygConfig = true; // prevent infinite observer loop
             $defaultConfig = Mage::getSingleton('cms/wysiwyg_config')->getConfig();

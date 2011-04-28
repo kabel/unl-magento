@@ -2,15 +2,17 @@
 
 class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_Images_Storage
 {
-    /**
-     * Return files
-     *
-     * @param string $path Parent directory path
-     * @param string $type Type of storage, e.g. image, media etc.
-     * @return Varien_Data_Collection_Filesystem
-     */
     public function getFilesCollection($path, $type = null)
     {
+        if (Mage::helper('core/file_storage_database')->checkDbUsage()) {
+            $files = Mage::getModel('core/file_storage_database')->getDirectoryFiles($path);
+
+            $fileStorageModel = Mage::getModel('core/file_storage_file');
+            foreach ($files as $file) {
+                $fileStorageModel->saveFile($file);
+            }
+        }
+
         $collection = $this->getCollection($path)
             ->setCollectDirs(false)
             ->setCollectFiles(true)

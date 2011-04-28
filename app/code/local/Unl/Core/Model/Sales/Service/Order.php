@@ -2,11 +2,10 @@
 
 class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 {
-    /**
-     * Prepare order creditmemo based on order items and requested params
-     *
-     * @param array $data
-     * @return Mage_Sales_Model_Order_Creditmemo
+
+    /* Overrides logic of
+     * @see Mage_Sales_Model_Service_Order::prepareCreditmemo()
+     * by changing the dummy Qty and adding an event before total collection
      */
     public function prepareCreditmemo($data = array())
     {
@@ -21,7 +20,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 
             $item = $this->_convertor->itemToCreditmemoItem($orderItem);
             if ($orderItem->isDummy()) {
-                $qty = $orderItem->getQtyOrdered();
+                $qty = $orderItem->getQtyOrdered() ? $orderItem->getQtyOrdered() : 1;
             } else {
                 if (isset($qtys[$orderItem->getId()])) {
                     $qty = (float) $qtys[$orderItem->getId()];
@@ -45,11 +44,10 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         return $creditmemo;
     }
 
-    /**
-     * Prepare order creditmemo based on invoice items and requested requested params
-     *
-     * @param array $data
-     * @return Mage_Sales_Model_Order_Creditmemo
+
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Service_Order::prepareInvoiceCreditmemo()
+     * by changing the dummy Qty and adding an event before total collection
      */
     public function prepareInvoiceCreditmemo($invoice, $data = array())
     {
@@ -57,9 +55,37 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         $qtys = isset($data['qtys']) ? $data['qtys'] : array();
         $creditmemo = $this->_convertor->toCreditmemo($this->_order);
         $creditmemo->setInvoice($invoice);
+
+        $invoiceQtysRefunded = array();
+        foreach($invoice->getOrder()->getCreditmemosCollection() as $createdCreditmemo) {
+            if ($createdCreditmemo->getState() != Mage_Sales_Model_Order_Creditmemo::STATE_CANCELED
+                && $createdCreditmemo->getInvoiceId() == $invoice->getId()) {
+                foreach($createdCreditmemo->getAllItems() as $createdCreditmemoItem) {
+                    $orderItemId = $createdCreditmemoItem->getOrderItem()->getId();
+                    if (isset($invoiceQtysRefunded[$orderItemId])) {
+                        $invoiceQtysRefunded[$orderItemId] += $createdCreditmemoItem->getQty();
+                    } else {
+                        $invoiceQtysRefunded[$orderItemId] = $createdCreditmemoItem->getQty();
+                    }
+                }
+            }
+        }
+
+        $invoiceQtysRefundLimits = array();
+        foreach($invoice->getAllItems() as $invoiceItem) {
+            $invoiceQtyCanBeRefunded = $invoiceItem->getQty();
+            $orderItemId = $invoiceItem->getOrderItem()->getId();
+            if (isset($invoiceQtysRefunded[$orderItemId])) {
+                $invoiceQtyCanBeRefunded = $invoiceQtyCanBeRefunded - $invoiceQtysRefunded[$orderItemId];
+            }
+            $invoiceQtysRefundLimits[$orderItemId] = $invoiceQtyCanBeRefunded;
+        }
+
+
         foreach ($invoice->getAllItems() as $invoiceItem) {
             $orderItem = $invoiceItem->getOrderItem();
-            if (!$this->_canRefundItem($orderItem, $qtys)) {
+
+            if (!$this->_canRefundItem($orderItem, $qtys, $invoiceQtysRefundLimits)) {
                 continue;
             }
 
@@ -74,6 +100,9 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
                 } else {
                     continue;
                 }
+                if (isset($invoiceQtysRefundLimits[$orderItem->getId()])) {
+                    $qty = min($qty, $invoiceQtysRefundLimits[$orderItem->getId()]);
+                }
             }
             $qty = min($qty, $invoiceItem->getQty());
             $totalQty += $qty;
@@ -85,8 +114,16 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         $this->_initCreditmemoData($creditmemo, $data);
         if (!isset($data['shipping_amount'])) {
             $order = $invoice->getOrder();
-            $baseAllowedAmount = $order->getBaseShippingAmount()-$order->getBaseShippingRefunded();
-            $creditmemo->setBaseShippingAmount(min($baseAllowedAmount, $invoice->getBaseShippingAmount()));
+            $isShippingInclTax = Mage::getSingleton('tax/config')->displaySalesShippingInclTax($order->getStoreId());
+            if ($isShippingInclTax) {
+                $baseAllowedAmount = $order->getBaseShippingInclTax()
+                        - $order->getBaseShippingRefunded()
+                        - $order->getBaseShippingTaxRefunded();
+            } else {
+                $baseAllowedAmount = $order->getBaseShippingAmount() - $order->getBaseShippingRefunded();
+                $baseAllowedAmount = min($baseAllowedAmount, $invoice->getBaseShippingAmount());
+            }
+            $creditmemo->setBaseShippingAmount($baseAllowedAmount);
         }
 
         Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array('order'=>$this->_order, 'creditmemo'=>$creditmemo));
@@ -95,11 +132,9 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         return $creditmemo;
     }
 
-    /**
-     * Prepare order invoice based on order data and requested items qtys
-     *
-     * @param array $data
-     * @return Mage_Sales_Model_Order_Invoice
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_Service_Order::prepareInvoice()
+     * by adding an event before total collection
      */
     public function prepareInvoice($qtys = array())
     {
@@ -111,7 +146,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
             }
             $item = $this->_convertor->itemToInvoiceItem($orderItem);
             if ($orderItem->isDummy()) {
-                $qty = $orderItem->getQtyOrdered();
+                $qty = $orderItem->getQtyOrdered() ? $orderItem->getQtyOrdered() : 1;
             } else {
                 if (isset($qtys[$orderItem->getId()])) {
                     $qty = (float) $qtys[$orderItem->getId()];
@@ -132,41 +167,5 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         $invoice->collectTotals();
         $this->_order->getInvoiceCollection()->addItem($invoice);
         return $invoice;
-    }
-
-    /**
-     * Prepare order shipment based on order items and requested items qty
-     *
-     * @param array $data
-     * @return Mage_Sales_Model_Order_Shipment
-     */
-    public function prepareShipment($qtys = array())
-    {
-        $totalQty = 0;
-        $shipment = $this->_convertor->toShipment($this->_order);
-        foreach ($this->_order->getAllItems() as $orderItem) {
-            if (!$this->_canShipItem($orderItem, $qtys)) {
-                continue;
-            }
-
-            $item = $this->_convertor->itemToShipmentItem($orderItem);
-            if ($orderItem->isDummy(true)) {
-                $qty = 1;
-            } else {
-                if (isset($qtys[$orderItem->getId()])) {
-                    $qty = min($qtys[$orderItem->getId()], $orderItem->getQtyToShip());
-                } elseif (!count($qtys)) {
-                    $qty = $orderItem->getQtyToShip();
-                } else {
-                    continue;
-                }
-            }
-
-            $totalQty += $qty;
-            $item->setQty($qty);
-            $shipment->addItem($item);
-        }
-        $shipment->setTotalQty($totalQty);
-        return $shipment;
     }
 }
