@@ -1,5 +1,29 @@
 <?xml version="1.0"?>
 <!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_modern
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
 Supported layout update handles (action):
 - catalog_product_gallery
@@ -25,22 +49,12 @@ Default layout, loads most of the pages
             <block type="catalog/navigation" name="catalog.topnav" template="catalog/navigation/top.phtml"/>
         </reference>
         <reference name="left">
-        	<!--
-            <block type="core/template" name="left.permanent.callout" template="callouts/left_col.phtml">
-                <action method="setImgSrc"><src>images/media/col_left_callout.jpg</src></action>
+            <!--block type="core/template" name="left.permanent.callout" template="callouts/left_col.phtml">
+                <action method="setImgSrc"><src>images/media/left_col_callout.jpg</src></action>
                 <action method="setImgAlt" translate="alt" module="catalog"><alt>Our customer service is available 24/7. Call us at (555) 555-0123.</alt></action>
                 <action method="setLinkUrl"><url>checkout/cart</url></action>
-            </block>
-            -->
+            </block-->
             <block type="catalog/product_compare_sidebar" before="cart_sidebar" name="catalog.compare.sidebar" template="catalog/product/compare/sidebar.phtml"/>
-        </reference>
-        <reference name="right">
-            <!--
-            <block type="core/template" name="right.permanent.callout" template="callouts/right_col.phtml">
-                <action method="setImgSrc"><src>images/media/col_right_callout.jpg</src></action>
-                <action method="setImgAlt" translate="alt" module="catalog"><alt>Keep your eyes open for our special Back to School items and save A LOT!</alt></action>
-            </block>
-            -->
         </reference>
         <reference name="footer_links">
             <action method="addLink" translate="label title" module="catalog" ifconfig="catalog/seo/site_map"><label>Site Map</label><url helper="catalog/map/getCategoryUrl" /><title>Site Map</title></action>
@@ -55,11 +69,8 @@ Category default layout
 
     <catalog_category_default translate="label">
         <label>Catalog Category (Non-Anchor)</label>
-        <reference name="root">
-            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
-        </reference>
+        <update handle="page_two_columns_left"/>
         <reference name="left">
-            <action method="unsetChild"><name>left.permanent.callout</name></action>
             <block type="catalog/navigation" name="catalog.leftnav" after="currency" template="catalog/navigation/left.phtml"/>
         </reference>
         <reference name="content">
@@ -79,8 +90,12 @@ Category default layout
                             <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
                             <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
                     </block>
+                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
                     <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
-                    <action method="setColumnCount"><columns>4</columns></action>
                 </block>
             </block>
         </reference>
@@ -92,11 +107,8 @@ Category layered navigation layout
 
     <catalog_category_layered translate="label">
         <label>Catalog Category (Anchor)</label>
-        <reference name="root">
-            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
-        </reference>
+        <update handle="page_two_columns_left"/>
         <reference name="left">
-        	<action method="unsetChild"><name>left.permanent.callout</name></action>
             <block type="catalog/layer_view" name="catalog.leftnav" after="currency" template="catalog/layer/view.phtml"/>
         </reference>
         <reference name="content">
@@ -117,8 +129,12 @@ Category layered navigation layout
                             <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
                             <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
                     </block>
+                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
                     <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
-                    <action method="setColumnCount"><columns>4</columns></action>
                 </block>
             </block>
         </reference>
@@ -163,6 +179,7 @@ Product view
         </reference>
         <reference name="head">
             <action method="addJs"><script>varien/product.js</script></action>
+            <action method="addJs"><script>varien/configurable.js</script></action>
 
             <action method="addItem"><type>js_css</type><name>calendar/calendar-win2k-1.css</name><params/><!--<if/><condition>can_load_calendar_js</condition>--></action>
             <action method="addItem"><type>js</type><name>calendar/calendar.js</name><!--<params/><if/><condition>can_load_calendar_js</condition>--></action>
@@ -212,6 +229,7 @@ Product view
                     <action method="insert"><block>product.tierprices</block></action>
                     <block type="catalog/product_view" name="product.clone_prices" as="prices" template="catalog/product/view/price_clone.phtml"/>
                     <action method="append"><block>product.info.addtocart</block></action>
+                    <action method="append"><block>product.info.addto</block></action>
                 </block>
 
                 <block type="core/template_facade" name="product.info.container1" as="container1">
@@ -245,16 +263,20 @@ Additional block dependant on product type
     <PRODUCT_TYPE_simple translate="label" module="catalog">
         <label>Catalog Product View (Simple)</label>
         <reference name="product.info">
-            <block type="catalog/product_view_type_simple" name="product.info.simple" as="product_type_data" template="catalog/product/view/type/simple.phtml">
-                <block type="core/text_list" name="product.info.simple.extra" as="product_type_data_extra"/>
+            <block type="catalog/product_view_type_simple" name="product.info.simple" as="product_type_data" template="catalog/product/view/type/default.phtml">
+                <block type="core/text_list" name="product.info.simple.extra" as="product_type_data_extra" translate="label">
+                    <label>Product Extra Info</label>
+                </block>
             </block>
         </reference>
     </PRODUCT_TYPE_simple>
     <PRODUCT_TYPE_configurable translate="label" module="catalog">
         <label>Catalog Product View (Configurable)</label>
         <reference name="product.info">
-            <block type="catalog/product_view_type_configurable" name="product.info.configurable" as="product_type_data" template="catalog/product/view/type/configurable.phtml">
-                <block type="core/text_list" name="product.info.configurable.extra" as="product_type_data_extra"/>
+            <block type="catalog/product_view_type_configurable" name="product.info.configurable" as="product_type_data" template="catalog/product/view/type/default.phtml">
+                <block type="core/text_list" name="product.info.configurable.extra" as="product_type_data_extra" translate="label">
+                    <label>Product Extra Info</label>
+                </block>
             </block>
         </reference>
         <reference name="product.info.options.wrapper">
@@ -265,15 +287,19 @@ Additional block dependant on product type
         <label>Catalog Product View (Grouped)</label>
         <reference name="product.info">
             <block type="catalog/product_view_type_grouped" name="product.info.grouped" as="product_type_data" template="catalog/product/view/type/grouped.phtml">
-                <block type="core/text_list" name="product.info.grouped.extra" as="product_type_data_extra"/>
+                <block type="core/text_list" name="product.info.grouped.extra" as="product_type_data_extra" translate="label">
+                    <label>Product Extra Info</label>
+                </block>
             </block>
         </reference>
     </PRODUCT_TYPE_grouped>
     <PRODUCT_TYPE_virtual translate="label" module="catalog">
         <label>Catalog Product View (Virtual)</label>
         <reference name="product.info">
-            <block type="catalog/product_view_type_virtual" name="product.info.virtual" as="product_type_data" template="catalog/product/view/type/virtual.phtml">
-                <block type="core/text_list" name="product.info.virtual.extra" as="product_type_data_extra"/>
+            <block type="catalog/product_view_type_virtual" name="product.info.virtual" as="product_type_data" template="catalog/product/view/type/default.phtml">
+                <block type="core/text_list" name="product.info.virtual.extra" as="product_type_data_extra" translate="label">
+                    <label>Product Extra Info</label>
+                </block>
             </block>
         </reference>
     </PRODUCT_TYPE_virtual>

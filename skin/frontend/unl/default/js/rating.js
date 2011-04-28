@@ -17,7 +17,7 @@
 				if (select >= 0) {
 					stars.slice(0, select + 1).addClass('on');
 				}
-			}
+			};
 			
 			stars.hover(fill, reset).focus(fill).blur(reset).click(function() {
 				select = stars.index(this);

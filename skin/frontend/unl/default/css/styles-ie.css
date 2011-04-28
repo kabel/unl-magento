@@ -6,6 +6,11 @@
 .block-poll li,
 .opc li.section { vertical-align:top; }
 
+* html button.button span { background-image:url(../images/bkg_btn.gif); }
+* html .form-search button.button span,
+* html .block button.button span,
+* html .product-view .box-tags .form-add button.button span { background-image:url(../images/bkg_btn-small.gif); }
+
 /* Doubled Margin Fixes */
 .product-view .product-img-box .more-views li,
 .product-view .box-tags .form-add .input-box,
@@ -31,7 +36,7 @@ button.btn-checkout { height:28px; }
 .cart .discount .buttons-set button.button,
 .cart .shipping .buttons-set button.button { height:19px; }
 
-table { face-color:expression(runtimeStyle.scrollbarFaceColor = '#fff', cellSpacing = 0); }
+table { scrollbar-face-color:expression(runtimeStyle.scrollbarFaceColor = '#fff', cellSpacing = 0); }
 
 .product-view .product-img-box .zoom.disabled { filter:alpha(opacity=30); }
 
@@ -41,6 +46,8 @@ table { face-color:expression(runtimeStyle.scrollbarFaceColor = '#fff', cellSpac
 
 .product-view .box-tags .product-tags li { padding:0 4px 0 7px; }
 .footer li { padding-right:2px; margin-right:6px; }
+
+.product-options dd .time-picker select { margin:0; padding:0; position:relative; top:-1px; }
 
 /* Clearer */
 .clearer { display:block; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
@@ -80,7 +87,10 @@ table { face-color:expression(runtimeStyle.scrollbarFaceColor = '#fff', cellSpac
 .product-tabs,
 .product-view .product-img-box .more-views ul,
 .product-view .box-tags .form-add,
+.product-view .product-shop .short-description,
+.product-view .box-description,
 .product-options .options-list li,
+.product-options,
 .product-options-bottom,
 .truncated,
 .truncated .truncated_full_value,
@@ -108,7 +118,8 @@ table { face-color:expression(runtimeStyle.scrollbarFaceColor = '#fff', cellSpac
 .advanced-search-summary,
 .advanced-search-summary p,
 .gift-messages-form .item,
-.send-friend .form-list li p { zoom:1; }
+.send-friend .form-list li p,
+.centinel .authentication { zoom:1; }
 
 /* Hover Fix */
 iframe.hover-fix { position:absolute; left:-1px; top:-1px; z-index:-1; background:transparent; filter:progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0); }

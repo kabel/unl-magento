@@ -14,9 +14,6 @@
     <catalogsearch_result_index translate="label">
         <label>Quick Search Form</label>
         <update handle="page_two_columns_left" />
-        <reference name="root">
-            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
-        </reference>
         <reference name="left">
             <block type="catalogsearch/layer" name="catalogsearch.leftnav" before="-" template="catalog/layer/view.phtml"/>
         </reference>
@@ -36,8 +33,12 @@
                         <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
                         <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
                     </block>
+                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
                     <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
-                    <action method="setColumnCount"><columns>4</columns></action>
                 </block>
                 <action method="setListOrders"/>
                 <action method="setListModes"/>
@@ -49,9 +50,7 @@
     <catalogsearch_advanced_index translate="label">
         <label>Advanced Search Form</label>
         <!-- Mage_Catalogsearch -->
-        <reference name="root">
-            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
-        </reference>
+        <update handle="page_two_columns_left" />
         <reference name="head">
             <action method="addItem"><type>js_css</type><name>calendar/calendar-win2k-1.css</name><params/><!--<if/><condition>can_load_calendar_js</condition>--></action>
             <action method="addItem"><type>js</type><name>calendar/calendar.js</name><!--<params/><if/><condition>can_load_calendar_js</condition>--></action>
@@ -71,9 +70,6 @@ Advanced search results
         <label>Advanced Search Result</label>
         <update handle="page_two_columns_left" />
         <!-- Mage_Catalogsearch -->
-        <reference name="root">
-            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
-        </reference>
         <reference name="content">
             <block type="catalogsearch/advanced_result" name="catalogsearch_advanced_result" template="catalogsearch/advanced/result.phtml">
                 <block type="catalog/product_list" name="search_result_list" template="catalog/product/list.phtml">
@@ -90,8 +86,12 @@ Advanced search results
                         <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
                         <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
                     </block>
+                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
                     <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
-                    <action method="setColumnCount"><columns>4</columns></action>
                 </block>
                 <action method="setListOrders"/>
                 <action method="setListModes"/>

@@ -1,7 +1,7 @@
 <?php
     $_order  = $this->getOrder();
     $_source = $this->getSource();
-    $_fullInfo = $_source->getFullTaxInfo();
+    $_fullInfo = $_order->getFullTaxInfo();
     global $taxIter; $taxIter++;
 ?>
 <?php  ?>
@@ -20,8 +20,8 @@
         <tr class="summary-details-<?php echo $taxIter; ?> summary-details<?php if ($isTop): echo ' summary-details-first'; endif; ?>"<?php if (!$this->getIsPlaneMode()):?> style="display:none;"<?php endif;?>>
             <td <?php echo $this->getLabelProperties()?>>
                 <?php echo $rate['title']; ?>
-                <?php if ($rate['percent']): ?>
-                    (<?php echo $rate['percent']; ?>%)
+                <?php if (!is_null($rate['percent'])): ?>
+                    (<?php echo (float)$rate['percent']; ?>%)
                 <?php endif; ?>
                 <br />
             </td>
@@ -46,9 +46,9 @@
 <?php endif; ?>
     <td <?php echo $this->getLabelProperties()?>>
         <?php if ($this->displayFullSummary()): ?>
-            <div class="summary-collapse"><?php echo $this->__('Tax') . $this->__(' (may include shipping)'); ?></div>
+            <div class="summary-collapse"><?php echo $this->__('Tax') . ' ' . $this->__('(may include shipping)'); ?></div>
         <?php else: ?>
-            <?php echo $this->__('Tax') . $this->__(' (may include shipping)'); ?>
+            <?php echo $this->__('Tax') . ' ' . $this->__('(may include shipping)'); ?>
         <?php endif;?>
     </td>
     <td <?php echo $this->getValueProperties()?>><?php echo $_order->formatPrice($_source->getTaxAmount()) ?></td>

@@ -9,7 +9,8 @@
 <ol>
 <?php foreach ($this->getItems() as $_item): ?>
     <li>
-        <label class="filter-label"><input type="radio" class="radio" <?php if ($_item->getCount() == 0): ?>disabled="disabled" <?php endif ?>onclick="setLocation(this.value)" value="<?php echo $this->urlEscape($_item->getUrl()) ?>" /><?php echo $_item->getLabel() ?>
+        <label class="filter-label"><input type="radio" class="radio" <?php if ($_item->getCount() <= 0): ?>disabled="disabled" <?php endif ?>onclick="setLocation(this.value)" value="<?php echo $this->urlEscape($_item->getUrl()) ?>" />
+        <?php echo $_item->getLabel() ?>
         <span class="filter-count">(<?php echo $_item->getCount() ?>)</span></label>
     </li>
 <?php endforeach ?>

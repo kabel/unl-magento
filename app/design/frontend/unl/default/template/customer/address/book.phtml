@@ -26,7 +26,7 @@
                 <?php echo $this->__('You have no default billing address in your address book.') ?>
             </li>
         <?php endif ?>
-        
+
         <?php if($_pAddsses = Mage::getSingleton('customer/session')->getCustomer()->getDefaultShipping()): ?>
             <li class="item">
                 <h3><?php echo $this->__('Default Shipping Address') ?> <span class="heading-link"><a href="<?php echo $this->getAddressEditUrl(Mage::getSingleton('customer/session')->getCustomer()->getAddressById($_pAddsses)) ?>"><?php echo $this->__('Edit') ?></a></span></h3>

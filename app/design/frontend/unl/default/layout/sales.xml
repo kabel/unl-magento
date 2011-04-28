@@ -1,4 +1,31 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_modern
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+-->
 <layout version="0.1.0">
 
 <!--
@@ -35,6 +62,7 @@ Customer account home dashboard layout
     <customer_account_index>
         <!-- Mage_Sales -->
         <reference name="customer_account_dashboard">
+            <action method="unsetChild"><name>top</name></action>
             <block type="sales/order_recent" name="customer_account_dashboard_top" as="top" template="sales/order/recent.phtml"/>
         </reference>
 
@@ -45,7 +73,9 @@ Customer account home dashboard layout
         <update handle="customer_account"/>
         <reference name="my.account.wrapper">
             <block type="sales/order_history" name="sales.order.history">
-                <block type="core/text_list" name="sales.order.history.info" as="info"/>
+                <block type="core/text_list" name="sales.order.history.info" as="info" translate="label">
+                    <label>Order History Info</label>
+                </block>
             </block>
             <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
         </reference>
@@ -91,6 +121,7 @@ Customer account home dashboard layout
                         <action method="setValueProperties"><value>class="last a-right"</value></action>
                         <block type="tax/sales_order_tax" name="tax" template="tax/order/tax.phtml" />
                     </block>
+                    <block type="sales/order_comments" name="invoice_comments" template="sales/order/comments.phtml" />
                 </block>
             </block>
         </reference>
@@ -110,6 +141,7 @@ Customer account home dashboard layout
             <block type="sales/order_shipment" name="sales.order.shipment">
                 <block type="sales/order_shipment_items" name="shipment_items" template="sales/order/shipment/items.phtml">
                     <action method="addItemRender"><type>default</type><block>sales/order_item_renderer_default</block><template>sales/order/shipment/items/renderer/default.phtml</template></action>
+                    <block type="sales/order_comments" name="shipment_comments" template="sales/order/comments.phtml" />
                 </block>
             </block>
         </reference>
@@ -135,6 +167,7 @@ Customer account home dashboard layout
                         <action method="setValueProperties"><value>class="a-right"</value></action>
                         <block type="tax/sales_order_tax" name="tax" template="tax/order/tax.phtml"/>
                     </block>
+                    <block type="sales/order_comments" name="creditmemo_comments" template="sales/order/comments.phtml" />
                 </block>
             </block>
         </reference>

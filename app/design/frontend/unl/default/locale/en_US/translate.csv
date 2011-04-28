@@ -1,7 +1,11 @@
+My Cart (%s item),Your Cart
+My Cart (%s items),Your Cart
 My Cart,Your Cart
 My Account,Your Account
 My Orders,Your Orders
 My Tags,Your Tags
+My Wishlist (%d items),Your Wishlist
+My Wishlist (%d item),Your Wishlist
 My Wishlist,Your Wishlist
 My Product Reviews,Your Product Reviews
 My Downloadable Products,Your Downloadable Products
@@ -16,3 +20,4 @@ From your My Account Dashboard you have the ability to view a snapshot of your r
 Delivery Date,Ship Date
 Delivery Notice,Shipping/Order Notes
 Specified delivery date is invalid.,Specified ship date is invalid.
+Previous Step,Back
