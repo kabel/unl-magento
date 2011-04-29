@@ -101,6 +101,9 @@ Default layout, loads most of the pages
     <checkout_cart_configure translate="label">
         <label>Configure Cart Item</label>
         <update handle="catalog_product_view"/>
+        <reference name="product.info">
+            <block type="checkout/cart_item_configure" name="checkout.cart.item.configure.block"></block>
+        </reference>
     </checkout_cart_configure>
 
 <!--
