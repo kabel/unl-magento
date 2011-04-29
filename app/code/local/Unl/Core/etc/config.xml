@@ -32,6 +32,8 @@
                     <sales_invoice_grid>Unl_Core_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
                     <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
+                    <!-- Fix Order Item Renderer (giftmessage border) -->
+                    <sales_order_view_items_renderer_default>Unl_Core_Block_Adminhtml_Sales_Order_View_Items_Renderer_Default</sales_order_view_items_renderer_default>
                     <!-- Adds a force pay button to invoice -->
                     <sales_order_invoice_view>Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View</sales_order_invoice_view>
                     <!-- No empty optgroups -->
