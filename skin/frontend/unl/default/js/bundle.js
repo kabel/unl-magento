@@ -38,19 +38,16 @@ Product.Bundle.prototype = {
                 selector = parts[0]+'-'+parts[1]+'-'+parts[2];
                 selections = $$('.'+selector);
                 for (var i = 0; i < selections.length; i++) {
-                    var multiQty = $(selector+'-'+selections[i].value+'-qty-input');
                     if (selections[i].checked && selections[i].value != '') {
                         selected.push(selections[i].value);
-                        if (multiQty && multiQty.disabled) {
-                            multiQty.disabled=false;
-                            multiQty.value=this.config.options[parts[2]].selections[selections[i].value].qty;
-                        }
-                    } else {
-                    	if (multiQty && !multiQty.disabled) {
-                    	    multiQty.disabled=true;
-                    	    multiQty.value='';
-                        }
                     }
+                }
+                if (selection.value != '') {
+                	if (selection.checked && this.config.options[parts[2]].selections[selection.value].customQty == 1) {
+                        this.showQtyInput(parts[2] + '-' + selection.value, this.config.options[parts[2]].selections[selection.value].qty, true);
+                	} else if (this.config.options[parts[2]].selections[selection.value].customQty == 1) {
+                        this.showQtyInput(parts[2] + '-' + selection.value, '', false);
+                	}
                 }
             }
             this.config.selected[parts[2]] = selected;
@@ -95,11 +92,19 @@ Product.Bundle.prototype = {
             return 0;
         }
         var qty = null;
-        if (this.config.options[optionId].selections[selectionId].customQty == 1 && !this.config['options'][optionId].isMulti) {
-            if ($('bundle-option-' + optionId + '-qty-input')) {
-                qty = $('bundle-option-' + optionId + '-qty-input').value;
+        if (this.config.options[optionId].selections[selectionId].customQty == 1) {
+            if (this.config['options'][optionId].isMulti) {
+            	if ($('bundle-option-' + optionId + '-' + selectionId + '-qty-input')) {
+            		qty = $('bundle-option-' + optionId + '-' + selectionId + '-qty-input').value;
+            	} else {
+            		qty = 1;
+            	}
             } else {
-                qty = 1;
+	        	if ($('bundle-option-' + optionId + '-qty-input')) {
+	                qty = $('bundle-option-' + optionId + '-qty-input').value;
+	            } else {
+	                qty = 1;
+	            }
             }
         } else {
             qty = this.config.options[optionId].selections[selectionId].qty;
@@ -186,6 +191,10 @@ Product.Bundle.prototype = {
             selectionId = this.config.selected[optionId][0];
             this.config.options[optionId].selections[selectionId].qty = element.value*1;
             this.reloadPrice();
+        } else if (parts[3] != 'qty') {
+        	selectionId = parts[3];
+        	this.config.options[optionId].selections[selectionId].qty = element.value*1;
+        	this.reloadPrice();
         }
     },
     
