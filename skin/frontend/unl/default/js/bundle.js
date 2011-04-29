@@ -46,7 +46,7 @@ Product.Bundle.prototype = {
                 	if (selection.checked && this.config.options[parts[2]].selections[selection.value].customQty == 1) {
                         this.showQtyInput(parts[2] + '-' + selection.value, this.config.options[parts[2]].selections[selection.value].qty, true);
                 	} else if (this.config.options[parts[2]].selections[selection.value].customQty == 1) {
-                        this.showQtyInput(parts[2] + '-' + selection.value, '', false);
+                        this.showQtyInput(parts[2] + '-' + selection.value, '0', false);
                 	}
                 }
             }

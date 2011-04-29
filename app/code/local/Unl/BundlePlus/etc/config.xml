@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_BundlePlus>
+            <version>0.2.0</version>
+        </Unl_BundlePlus>
+    </modules>
+    
+    <global>
+        <blocks>
+            <bundle>
+                <rewrite>
+                    <!-- Fix Item Renders -->
+                    <adminhtml_sales_order_items_renderer>Unl_BundlePlus_Block_Adminhtml_Sales_Order_Items_Renderer</adminhtml_sales_order_items_renderer>
+                    <adminhtml_sales_order_view_items_renderer>Unl_BundlePlus_Block_Adminhtml_Sales_Order_View_Items_Renderer</adminhtml_sales_order_view_items_renderer>
+                    <sales_order_items_renderer>Unl_BundlePlus_Block_Sales_Order_Items_Renderer</sales_order_items_renderer>
+                    <!-- Fix Price Display when +$0.00 -->
+                    <catalog_product_view_type_bundle_option_checkbox>Unl_BundlePlus_Block_Catalog_Product_View_Type_Bundle_Option_Checkbox</catalog_product_view_type_bundle_option_checkbox>
+                    <catalog_product_view_type_bundle_option_multi>Unl_BundlePlus_Block_Catalog_Product_View_Type_Bundle_Option_Multi</catalog_product_view_type_bundle_option_multi>
+                    <catalog_product_view_type_bundle_option_radio>Unl_BundlePlus_Block_Catalog_Product_View_Type_Bundle_Option_Radio</catalog_product_view_type_bundle_option_radio>
+                    <catalog_product_view_type_bundle_option_select>Unl_BundlePlus_Block_Catalog_Product_View_Type_Bundle_Option_Select</catalog_product_view_type_bundle_option_select>
+                </rewrite>
+            </bundle>
+        </blocks>
+        <helpers>
+            <bundle>
+                <rewrite>
+                    <!-- Fix Price Display when +$0.00 -->
+                    <catalog_product_configuration>Unl_BundlePlus_Helper_Catalog_Product_Configuration</catalog_product_configuration>
+                </rewrite>
+            </bundle>
+        </helpers>
+        <models>
+            <bundle>
+                <!-- User Defined Qty for Checkbox Bundle Option -->
+                <rewrite>
+                    <product_type>Unl_BundlePlus_Model_Product_Type</product_type>
+                    <sales_order_pdf_items_creditmemo>Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Creditmemo</sales_order_pdf_items_creditmemo>
+                    <sales_order_pdf_items_invoice>Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Invoice</sales_order_pdf_items_invoice>
+                    <sales_order_pdf_items_shipment>Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Shipment</sales_order_pdf_items_shipment>
+                </rewrite>
+            </bundle>
+        </models>
+    </global>
+</config>

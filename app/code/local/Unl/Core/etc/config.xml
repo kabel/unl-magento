@@ -41,19 +41,6 @@
                     <widget_grid_column_renderer_price>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Price</widget_grid_column_renderer_price>
                 </rewrite>
             </adminhtml>
-            <bundle>
-                <rewrite>
-                    <!-- Fix Item Renders -->
-                    <adminhtml_sales_order_items_renderer>Unl_Core_Block_Bundle_Adminhtml_Sales_Order_Items_Renderer</adminhtml_sales_order_items_renderer>
-                    <adminhtml_sales_order_view_items_renderer>Unl_Core_Block_Bundle_Adminhtml_Sales_Order_View_Items_Renderer</adminhtml_sales_order_view_items_renderer>
-                    <sales_order_items_renderer>Unl_Core_Block_Bundle_Sales_Order_Items_Renderer</sales_order_items_renderer>
-                    <!-- Fix Price Display when +$0.00 -->
-                    <catalog_product_view_type_bundle_option_checkbox>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Checkbox</catalog_product_view_type_bundle_option_checkbox>
-                    <catalog_product_view_type_bundle_option_multi>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Multi</catalog_product_view_type_bundle_option_multi>
-                    <catalog_product_view_type_bundle_option_radio>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Radio</catalog_product_view_type_bundle_option_radio>
-                    <catalog_product_view_type_bundle_option_select>Unl_Core_Block_Bundle_Catalog_Product_View_Type_Bundle_Option_Select</catalog_product_view_type_bundle_option_select>
-                </rewrite>
-            </bundle>
             <catalog>
                 <rewrite>
                     <!-- Disable Hover Events -->
@@ -79,12 +66,6 @@
                     <dashboard_order>Unl_Core_Helper_Adminhtml_Dashboard_Order</dashboard_order>
                 </rewrite>
             </adminhtml>
-            <bundle>
-                <rewrite>
-                    <!-- Fix Price Display when +$0.00 -->
-                    <catalog_product_configuration>Unl_Core_Helper_Bundle_Catalog_Product_Configuration</catalog_product_configuration>
-                </rewrite>
-            </bundle>
             <catalog>
                 <rewrite>
                     <!-- Upate Security Logic -->
@@ -123,15 +104,6 @@
                     <db>Unl_Core_Model_Backup_Db</db>
                 </rewrite>
             </backup>
-            <bundle>
-                <!-- User Defined Qty for Checkbox Bundle Option -->
-                <rewrite>
-                    <product_type>Unl_Core_Model_Bundle_Product_Type</product_type>
-                    <sales_order_pdf_items_creditmemo>Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Creditmemo</sales_order_pdf_items_creditmemo>
-                    <sales_order_pdf_items_invoice>Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Invoice</sales_order_pdf_items_invoice>
-                    <sales_order_pdf_items_shipment>Unl_Core_Model_Bundle_Sales_Order_Pdf_Items_Shipment</sales_order_pdf_items_shipment>
-                </rewrite>
-            </bundle>
             <catalog>
                 <rewrite>
                     <!-- Fix upload exception logging when no upload occurs -->

@@ -899,23 +899,26 @@ f/********** Product Prices > */
 .product-options dt label.required em { color:#eb340a; margin-left:5px; }
 .product-options dt .qty-holder { float:right; margin-right:15px; }
 .product-options dt .qty-holder label { vertical-align:middle; }
-.product-options dt .qty-disabled { background:none; border:0; padding:3px; color:#444; }
-.product-options dd .qty-holder { float:right; }
+.product-options dt .qty-disabled,
+.product-options dd .qty-disabled { background:#eee; color:#444; }
+.product-options dd .qty-holder { float:right; margin-top:-20px; }
+.product-options dd .qty-holder { float:right; margin-top:-20px; }
 .product-options dd .qty-holder label { vertical-align:middle; font-weight: bold; }
 #maincontent .product-options dd { padding:5px 10px 15px; margin:0 0 5px; border-bottom:1px solid #ddd; }
 .product-options dl.last dd.last { border-bottom:0; padding-bottom:5px; margin-bottom:0; }
-.product-options dd input.input-text { width:98%; }
+.product-options dd input.input-text { width:86%; }
 .product-options dd input.datetime-picker { width:150px; }
 .product-options dd .time-picker { display:-moz-inline-box; display:inline-block; padding:2px 0; vertical-align:middle; }
-.product-options dd textarea { width:98%; height:8em; }
-.product-options dd select { width:99%; }
+.product-options dd textarea { width:86%; height:8em; }
+.product-options dd select { width:87%; }
 .product-options dd .multiselect option { border-bottom:1px dotted #d9e5ee; padding:2px 4px; }
 .product-options ul.options-list { margin-right:5px; }
 .product-options ul.options-list li { padding:2px 0; }
 .product-options ul.options-list input.radio { float:left; margin-top:3px; }
 .product-options ul.options-list input.checkbox { float:left; margin:2px 8px 0 0; }
 .product-options ul.options-list .label { display:block; margin-left:18px; }
-.product-options ul.options-list label { font-weight:normal; }
+.product-options ul.options-list .label label { font-weight:normal; }
+.product-options ul.options-list .qty-holder { margin-top:0; }
 .product-options ul.validation-failed { padding:0 7px; }
 .product-options p.required { margin-bottom:0; padding:15px 0 0; }
 

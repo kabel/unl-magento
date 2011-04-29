@@ -7,7 +7,6 @@
             <depends>
                 <Mage_Admin />
                 <Mage_Adminhtml />
-                <Mage_Bundle />
                 <Mage_Catalog />
                 <Mage_Cms />
                 <Mage_Customer />
@@ -16,6 +15,14 @@
                 <Mage_Tax />
             </depends>
         </Unl_Core>
+        <Unl_BundlePlus>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+                <Mage_Bundle />
+            </depends>
+        </Unl_BundlePlus>
         <Unl_Cas>
             <active>true</active>
             <codePool>local</codePool>
