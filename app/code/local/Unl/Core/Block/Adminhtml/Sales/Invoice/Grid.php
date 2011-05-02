@@ -29,6 +29,21 @@ class Unl_Core_Block_Adminhtml_Sales_Invoice_Grid extends Mage_Adminhtml_Block_S
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
 
+    /* Extends
+     * @see Mage_Adminhtml_Block_Sales_Invoice_Grid::_prepareColumns()
+     * by adding an additional column
+     */
+    protected function _prepareColumns()
+    {
+        $this->addColumnAfter('paid_at', array(
+            'header'    => Mage::helper('sales')->__('Paid Date'),
+            'index'     => 'paid_at',
+            'type'      => 'datetime',
+        ), 'created_at');
+
+        return parent::_prepareColumns();
+    }
+
     /* Overrides
      * @see Mage_Adminhtml_Block_Sales_Invoice_Grid::getRowUrl()
      * to fix an ACL error
