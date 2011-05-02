@@ -2,6 +2,8 @@
 
 class Unl_Core_Model_Sales_Order_Invoice extends Mage_Sales_Model_Order_Invoice
 {
+    const STATE_WRITEOFF = 4;
+
     /**
      * Check invoice force pay action availability
      *
@@ -12,6 +14,55 @@ class Unl_Core_Model_Sales_Order_Invoice extends Mage_Sales_Model_Order_Invoice
         return $this->getState() != self::STATE_CANCELED
             && $this->getState() != self::STATE_PAID
             && $this->getOrder()->getPayment()->getMethodInstance()->getAllowForcePay();
+    }
+
+    public function canWriteOff()
+    {
+        return $this->canCancel();
+    }
+
+    /* Overrides the logic of
+     * @see Mage_Sales_Model_order_Invoice::getStates()
+     * by adding a "write-off" state
+     */
+    public static function getStates()
+    {
+        if (is_null(self::$_states)) {
+            self::$_states = array(
+                self::STATE_OPEN       => Mage::helper('sales')->__('Pending'),
+                self::STATE_PAID       => Mage::helper('sales')->__('Paid'),
+                self::STATE_CANCELED   => Mage::helper('sales')->__('Canceled'),
+                self::STATE_WRITEOFF   => Mage::helper('sales')->__('Write-Off'),
+            );
+        }
+        return self::$_states;
+    }
+
+    /* Overrides
+     * @see Mage_Sales_Model_Order_Invoice::getStateName()
+     * to fix late static binding
+     */
+    public function getStateName($stateId = null)
+    {
+        if (is_null($stateId)) {
+            $stateId = $this->getState();
+        }
+
+        if (is_null(self::$_states)) {
+            self::getStates();
+        }
+        if (isset(self::$_states[$stateId])) {
+            return self::$_states[$stateId];
+        }
+        return Mage::helper('sales')->__('Unknown State');
+    }
+
+    public function writeOff()
+    {
+        $this->setState(self::STATE_WRITEOFF);
+        $this->getOrder()->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true);
+        Mage::dispatchEvent('sales_order_invoice_cancel', array($this->_eventObject=>$this));
+        return $this;
     }
 
     /* Overrides the logic of

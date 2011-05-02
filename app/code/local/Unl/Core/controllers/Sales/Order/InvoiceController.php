@@ -85,6 +85,26 @@ class Unl_Core_Sales_Order_InvoiceController extends Mage_Adminhtml_Controller_A
         }
     }
 
+    public function writeoffAction()
+    {
+        if ($invoice = $this->_initInvoice()) {
+            try {
+                if ($invoice->canWriteOff()) {
+                    $invoice->writeOff();
+                    $this->_saveInvoice($invoice);
+                    $this->_getSession()->addSuccess($this->__('The invoice has been written off.'));
+                }
+            } catch (Mage_Core_Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+            } catch (Exception $e) {
+                $this->_getSession()->addError($this->__('Invoice save error.'));
+            }
+            $this->_redirect('adminhtml/sales_order_invoice/view', array('invoice_id'=>$invoice->getId()));
+        } else {
+            $this->_forward('noRoute');
+        }
+    }
+
     protected function _isAllowed()
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/invoice');

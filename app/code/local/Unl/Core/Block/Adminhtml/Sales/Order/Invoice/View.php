@@ -67,6 +67,15 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View extends Mage_Adminhtml_B
             );
         }
 
+        if ($this->getInvoice()->canWriteOff()) {
+            $this->_addButton('writeoff', array(
+                'label'     => Mage::helper('sales')->__('Write-Off'),
+                'class'     => 'save',
+                'onclick'   => 'setLocation(\''.$this->getWriteOffUrl().'\')'
+                )
+            );
+        }
+
         if ($this->getInvoice()->canVoid()) {
             $this->_addButton('void', array(
                 'label'     => Mage::helper('sales')->__('Void'),
@@ -88,6 +97,11 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View extends Mage_Adminhtml_B
 
     public function getForcePayUrl()
     {
-        return $this->getUrl('unl_core/sales_order_invoice/forcepay', array('invoice_id'=>$this->getInvoice()->getId()));
+        return $this->getUrl('unl_core/sales_order_invoice/forcepay', array('invoice_id' => $this->getInvoice()->getId()));
+    }
+
+    public function getWriteOffUrl()
+    {
+        return $this->getUrl('unl_core/sales_order_invoice/writeoff', array('invoice_id' => $this->getInvoice()->getId()));
     }
 }
