@@ -124,14 +124,51 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    public function onCancelInvoice($observer)
+    {
+        /* @var $invoice Mage_Sales_Model_Order_Invoice */
+        $invoice = $observer->getEvent()->getInvoice();
+
+        $auditLogs = array();
+
+        foreach ($invoice->getAllItems() as $item) {
+            /* @var $item Mage_Sales_Model_Order_Invoice_Item */
+            $product = Mage::getModel('catalog/product')->load($item->getProductId());
+            if ($item->getOrderItem()->isDummy()
+                || !Mage::helper('unl_inventory')->getIsAuditInventory($product) ) {
+                continue;
+            }
+
+            $auditLog = Mage::getModel('unl_inventory/audit');
+            $auditLog->setData(array(
+                'product_id' => $item->getProductId(),
+                'type' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
+                'qty' => $item->getQty(),
+                'amount' => $item->getBaseCost() * $item->getQty()
+            ));
+            $auditLogs[] = $auditLog;
+        }
+
+        if ($auditLogs) {
+            $invoice->setAuditLogs($auditLogs);
+        }
+
+        return $this;
+    }
+
     public function onAfterSaveInvoice($observer)
     {
         $invoice = $observer->getEvent()->getInvoice();
         if ($auditLogs = $invoice->getAuditLogs()) {
+            $note = Mage::helper('unl_inventory')->__('Order # %s , Invoice # %s', $invoice->getOrder()->getRealOrderId(), $invoice->getIncrementId());
+            $now = now();
+            if ($invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
+                $note .= ' [' . Mage::helper('unl_inventory')->__('CANCELED') . ']';
+            }
             foreach ($auditLogs as $auditLog) {
                 $auditLog->setRegisterFlag(true)
-                    ->setNote(Mage::helper('unl_inventory')->__('Order # %s , Invoice # %s', $invoice->getOrder()->getRealOrderId(), $invoice->getIncrementId()))
-                    ->setCreatedAt(now())
+                    ->setNote($note)
+                    ->setCreatedAt($now)
                     ->save();
             }
         }
@@ -174,10 +211,12 @@ class Unl_Inventory_Model_Observer
     {
         $creditmemo = $observer->getEvent()->getCreditmemo();
         if ($auditLogs = $creditmemo->getAuditLogs()) {
+            $note = Mage::helper('unl_inventory')->__('Order # %s , Creditmemo # %s', $creditmemo->getOrder()->getRealOrderId(), $creditmemo->getIncrementId());
+            $now = now();
             foreach ($auditLogs as $auditLog) {
                 $auditLog->setRegisterFlag(true)
-                    ->setNote(Mage::helper('unl_inventory')->__('Order # %s , Creditmemo # %s', $creditmemo->getOrder()->getRealOrderId(), $creditmemo->getIncrementId()))
-                    ->setCreatedAt(now())
+                    ->setNote($note)
+                    ->setCreatedAt($now)
                     ->save();
             }
         }

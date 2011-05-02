@@ -85,6 +85,16 @@
                 </observers>
             </sales_model_service_order_prepare_invoice>
             
+            <sales_order_invoice_cancel>
+                <observers>
+                    <unl_audit_inventory>
+                        <type>singleton</type>
+                        <class>unl_inventory/observer</class>
+                        <method>onCancelInvoice</method>
+                    </unl_audit_inventory>
+                </observers>
+            </sales_order_invoice_cancel>
+            
             <sales_order_invoice_save_after>
                 <observers>
                     <unl_audit_inventory>
