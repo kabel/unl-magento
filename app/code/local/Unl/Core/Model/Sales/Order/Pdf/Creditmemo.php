@@ -22,10 +22,13 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
 
         $pdf = new Zend_Pdf();
         $this->_setPdf($pdf);
+        $style = new Zend_Pdf_Style();
+        $this->_setFontBold($style, 10);
 
         foreach ($creditmemos as $creditmemo) {
             if ($creditmemo->getStoreId()) {
                 Mage::app()->getLocale()->emulate($creditmemo->getStoreId());
+                Mage::app()->setCurrentStore($creditmemo->getStoreId());
             }
             $page = $pdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
             $pdf->pages[] = $page;

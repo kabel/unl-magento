@@ -16,12 +16,15 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
 
         $pdf = new Zend_Pdf();
         $this->_setPdf($pdf);
+        $style = new Zend_Pdf_Style();
+        $this->_setFontBold($style, 10);
 
         foreach ($invoices as $invoice) {
             if ($invoice->getStoreId()) {
                 Mage::app()->getLocale()->emulate($invoice->getStoreId());
+                Mage::app()->setCurrentStore($invoice->getStoreId());
             }
-            $page = $pdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
+            $page = $pdf->newPage(Zend_Pdf_Page::SIZE_A4);
             $pdf->pages[] = $page;
 
             $order = $invoice->getOrder();
@@ -38,28 +41,26 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(1));
             $this->_setFontRegular($page);
-            $text = Mage::helper('sales')->__('Invoice # ') . $invoice->getIncrementId();
-            $feed = self::DEFAULT_PAGE_MARGIN_RIGHT - self::DEFAULT_BOX_PAD - $this->widthForStringUsingFontSize($text, $page->getFont(), $page->getFontSize());
-            $page->drawText($text, $feed, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Invoice # ') . $invoice->getIncrementId(), 35, 780, 'UTF-8');
 
             /* Add table */
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
 
-            $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
-            $this->y -= self::DEFAULT_LINE_HEIGHT;
+            $page->drawRectangle(25, $this->y, 570, $this->y -15);
+            $this->y -=10;
 
             /* Add table head */
             $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
-            $page->drawText(Mage::helper('sales')->__('Product'), self::DEFAULT_OFFSET_PRODUCTS, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('SKU'), self::DEFAULT_OFFSET_SKU, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Price'), self::DEFAULT_OFFSET_PRICE, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Qty'), self::DEFAULT_OFFSET_QTY, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Tax'), self::DEFAULT_OFFSET_TAX, $this->y, 'UTF-8');
-            $page->drawText(Mage::helper('sales')->__('Subtotal'), self::DEFAULT_OFFSET_SUBTOTAL, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Products'), 35, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('SKU'), 255, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Price'), 380, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Qty'), 430, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Tax'), 480, $this->y, 'UTF-8');
+            $page->drawText(Mage::helper('sales')->__('Subtotal'), 535, $this->y, 'UTF-8');
 
-            $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
+            $this->y -=15;
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 
@@ -69,7 +70,7 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
                     continue;
                 }
 
-                if ($this->y < self::DEFAULT_LINE_SHIFT) {
+                if ($this->y < 15) {
                     $page = $this->newPage(array('table_header' => true));
                 }
 

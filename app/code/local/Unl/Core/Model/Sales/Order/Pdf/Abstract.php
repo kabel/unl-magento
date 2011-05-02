@@ -6,18 +6,18 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
     const DEFAULT_FONT_SIZE   = 10;
     const DEFAULT_LINE_SHIFT  = 18;
     const DEFAULT_BOX_PAD     = 5;
-    
+
     const FONT_SIZE_ADDRESS   = 8;
     const LINE_HEIGHT_ADDRESS = 10;
-    
+
     const FONT_SIZE_CARRIER   = 9;
     const LINE_HEIGHT_CARRIER = 12;
-    
+
     const DEFAULT_LOGO_WIDTH  = 100;
     const DEFAULT_LOGO_HEIGHT = 25;
     const DEFAULT_LOGO_MARGIN = 10;
     const DEFAULT_LOGO_TOP    = 775;
-    
+
     const DEFAULT_PAGE_MARGIN_TOP   = 775;
     const DEFAULT_PAGE_MARGIN_LEFT  = 25;
     const DEFAULT_PAGE_MARGIN_RIGHT = 587;
@@ -28,12 +28,12 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
     const DEFAULT_PAGE_COL2         = 290;
     const DEFAULT_PAGE_COL2_TLEFT   = 375;
     const DEFAULT_PAGE_COL2_TRIGHT  = 505;
-    
+
     const DEFAULT_TOTALS_OFFSET_LABEL = 475;
     const DEFAULT_TOTALS_OFFSET_VALUE = 575;
-    
+
     /**
-     * 
+     *
      * @param $page Zend_Pdf_Page
      * @param $store
      */
@@ -49,9 +49,9 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         }
         //return $page;
     }
-    
+
     /**
-     * 
+     *
      * @param $page Zend_Pdf_Page
      * @param $store
      */
@@ -75,17 +75,25 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         }
         //return $page;
     }
-    
+
     /**
-     * 
+     *
      * @param $page Zend_Pdf_Page
-     * @param $order Mage_Sales_Model_Order
+     * @param $obj Mage_Sales_Model_Order|Mage_Sales_Model_Order_Shipment
      * @param $putOrderId
      */
-    protected function insertOrder(&$page, $order, $putOrderId = true)
+    protected function insertOrder(&$page, $obj, $putOrderId = true)
     {
+        if ($obj instanceof Mage_Sales_Model_Order) {
+            $shipment = null;
+            $order = $obj;
+        } elseif ($obj instanceof Mage_Sales_Model_Order_Shipment) {
+            $shipment = $obj;
+            $order = $shipment->getOrder();
+        }
+
         $page->setFillColor(new Zend_Pdf_Color_GrayScale(0.5));
-        
+
         $y = self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN;
         $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $y, self::DEFAULT_PAGE_MARGIN_RIGHT, $y - 3 * self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
 
@@ -216,7 +224,11 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
 
             $page->drawText($totalShippingChargesText, self::DEFAULT_PAGE_COL2, $yShipments-self::DEFAULT_FONT_SIZE, 'UTF-8');
             $yShipments -= self::DEFAULT_LINE_HEIGHT;
-            $tracks = $order->getTracksCollection();
+
+            $tracks = array();
+            if ($shipment) {
+                $tracks = $shipment->getAllTracks();
+            }
             if (count($tracks)) {
                 $page->setFillColor(new Zend_Pdf_Color_Rgb(0.93, 0.92, 0.92));
                 $page->setLineWidth(0.5);
@@ -266,7 +278,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
             $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
         }
     }
-    
+
     protected function insertTotals($page, $source){
         $order = $source->getOrder();
         $totals = $this->_getTotalsList($source);
@@ -303,7 +315,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         $page = $this->drawLineBlocks($page, array($lineBlock));
         return $page;
     }
-    
+
     /**
      * Create new page and assign to PDF object
      *
@@ -319,7 +331,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
 
         return $page;
     }
-    
+
     protected function _setFontRegular($object, $size = self::DEFAULT_FONT_SIZE)
     {
         $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont/LinLibertineC_Re-2.8.0.ttf');
@@ -340,7 +352,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         $object->setFont($font, $size);
         return $font;
     }
-    
+
     /**
      * Draw lines
      *
@@ -403,10 +415,10 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
             foreach ($lines as $line) {
                 $maxHeight = 0;
                 foreach ($line as $column) {
-                    $fontSize  = empty($column['font_size']) ? self::DEFAULT_FONT_SIZE : $column['font_size'];
+                    $fontSize = empty($column['font_size']) ? self::DEFAULT_FONT_SIZE : $column['font_size'];
                     if (!empty($column['font_file'])) {
                         $font = Zend_Pdf_Font::fontWithPath($column['font_file']);
-                        $page->setFont($font);
+                        $page->setFont($font, $fontSize);
                     }
                     else {
                         $fontStyle = empty($column['font']) ? 'regular' : $column['font'];
