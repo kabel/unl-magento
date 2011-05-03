@@ -35,9 +35,10 @@ Default layout, loads most of the pages
     <default>
 
         <reference name="top.links">
-            <block type="wishlist/links" name="wishlist_link"/>
+            <block type="wishlist/links" name="wishlist_link">
+                <block type="wishlist/customer_sidebar" name="wishlist_sidebar" as="wishlist" template="wishlist/sidebar.phtml"/>
+            </block>
             <action method="addLinkBlock"><blockName>wishlist_link</blockName></action>
-            <block type="wishlist/customer_sidebar" name="wishlist_sidebar" as="wishlist" template="wishlist/sidebar.phtml"/>
         </reference>
     </default>
 

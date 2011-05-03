@@ -45,8 +45,6 @@
             </adminhtml>
             <catalog>
                 <rewrite>
-                    <!-- Disable Hover Events -->
-                    <navigation>Unl_Core_Block_Catalog_Navigation</navigation>
                     <!-- Customizes the order/display of breadcrumbs -->
                     <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
                 </rewrite>
