@@ -48,6 +48,32 @@ Shipment Packages Display (Ordership Module)
 	       <block type="unl_ship/shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml"></block>
 	   </reference>
 	</adminhtml_sales_order_shipment_view>
+    
+<!--
+Custom Product Reports
+-->
+    
+    <unl_core_report_product_orderdetails>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_product_orderdetails" template="report/grid/container.phtml" name="sales.report.grid.container">
+                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
+                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
+                </block>
+                <block type="unl_core/adminhtml_report_filter_form_products" name="grid.filter.form" />
+            </block>
+        </reference>
+    </unl_core_report_product_orderdetails>
+    
+    <unl_core_report_product_customized>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_product_customized" template="report/grid/container.phtml" name="sales.report.grid.container">
+                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
+                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
+                </block>
+                <block type="unl_core/adminhtml_report_filter_form_products" name="grid.filter.form" />
+            </block>
+        </reference>
+    </unl_core_report_product_customized>
 	
 <!--
 Bursar/Reconcile Reports

@@ -1,20 +1,9 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adminhtml_Block_Report_Grid
+class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adminhtml_Block_Report_Grid_Abstract
 {
-    protected $_defaultFilters = array(
-            'report_from' => '',
-            'report_to' => '',
-            'report_period' => 'day',
-            'sku' => ''
-        );
-
-    /**
-     * Sub report size
-     *
-     * @var int
-     */
-    protected $_subReportSize = 0;
+    protected $_resourceCollectionName  = 'unl_core/report_product_orderdetails_collection';
+    protected $_columnGroupBy = 'period';
 
     /**
      * Initialize Grid settings
@@ -23,8 +12,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
     public function __construct()
     {
         parent::__construct();
-        $this->setTemplate('unl/report/grid2.phtml');
-        $this->setId('gridProductsOrderDetails');
+        $this->setCountTotals(false);
+        $this->setCountSubTotals(false);
     }
 
     /**
@@ -34,16 +23,37 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
      */
     protected function _prepareCollection()
     {
-//        $this->setFilter('report_period', 'day');
-        parent::_prepareCollection();
+        $filterData = $this->getFilterData();
 
-        if ($this->getFilter('sku')) {
-            Mage::register('filter_sku', $this->getFilter('sku'));
+        if ($filterData->getData('from') == null || $filterData->getData('to') == null) {
+            return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
         }
 
-        $this->getCollection()
-            ->initReport('unl_core/report_product_orderdetails_collection');
-        return $this;
+        $resourceCollection = Mage::getResourceModel($this->getResourceCollectionName())
+            ->setPeriod($filterData->getData('period_type'))
+            ->setDateRange($filterData->getData('from', null), $filterData->getData('to', null))
+            ->addStoreFilter(explode(',', $filterData->getData('store_ids')))
+            ->addSkuFilter($filterData->getData('sku'))
+            ->setAggregatedColumns($this->_getAggregatedColumns());
+
+        if ($this->_isExport) {
+            $this->setCollection($resourceCollection);
+            return $this;
+        }
+
+        if ($filterData->getData('show_empty_rows', false)) {
+            Mage::helper('reports')->prepareIntervalsCollection(
+                $this->getCollection(),
+                $filterData->getData('from', null),
+                $filterData->getData('to', null),
+                $filterData->getData('period_type')
+            );
+        }
+
+        $this->getCollection()->setColumnGroupBy($this->_columnGroupBy);
+        $this->getCollection()->setResourceCollection($resourceCollection);
+
+        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
 
     /**
@@ -53,22 +63,37 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
      */
     protected function _prepareColumns()
     {
+        $this->addColumn('period', array(
+            'header'        => Mage::helper('sales')->__('Period'),
+            'index'         => 'period',
+            'width'         => 100,
+            'sortable'      => false,
+            'period_type'   => $this->getPeriodType(),
+            'renderer'      => 'adminhtml/report_sales_grid_column_renderer_date',
+            'totals_label'  => Mage::helper('sales')->__('Total'),
+            'html_decorators' => array('nobr'),
+        ));
+
         $this->addColumn('sku', array(
             'header'    =>Mage::helper('reports')->__('SKU'),
-            'index'     =>'sku'
+            'index'     =>'sku',
+            'sortable'  => false,
+            'filter'    => false,
         ));
 
         $this->addColumn('name', array(
             'header'    =>Mage::helper('reports')->__('Product Name'),
-            'index'     =>'name'
+            'index'     =>'name',
+            'sortable'  => false,
         ));
 
         $this->addColumn('ordered_qty', array(
-            'header'    =>Mage::helper('reports')->__('Quantity Ordered'),
+            'header'    =>Mage::helper('reports')->__('Qty Ordered'),
             'width'     =>'120px',
             'align'     =>'right',
-            'index'     =>'ordered_qty',
-            'type'      =>'number'
+            'index'     =>'qty_ordered',
+            'type'      =>'number',
+            'sortable'  => false,
         ));
 
         $currencyCode = $this->getCurrentCurrencyCode();
@@ -77,26 +102,38 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'type'          => 'currency',
             'currency_code' => $currencyCode,
             'index'         => 'base_price',
+            'sortable'  => false,
         ));
 
         $this->addColumn('customer_firstname', array(
             'header'    =>Mage::helper('reports')->__('Customer First Name'),
-            'index'     =>'customer_firstname'
+            'index'     =>'customer_firstname',
+            'sortable'  => false,
         ));
 
         $this->addColumn('customer_lastname', array(
             'header'    =>Mage::helper('reports')->__('Customer Last Name'),
-            'index'     =>'customer_lastname'
+            'index'     =>'customer_lastname',
+            'sortable'  => false,
         ));
 
         $this->addColumn('ordernum', array(
             'header'    =>Mage::helper('reports')->__('Order #'),
-            'index'     =>'ordernum'
+            'index'     =>'ordernum',
+            'sortable'  => false,
+            'renderer'  => 'unl_core/adminhtml_report_product_orderdetails_grid_renderer_action'
         ));
+
+
 
         $this->addExportType('*/*/exportOrderdetailsCsv', Mage::helper('reports')->__('CSV'));
         $this->addExportType('*/*/exportOrderdetailsExcel', Mage::helper('reports')->__('Excel'));
 
         return parent::_prepareColumns();
+    }
+
+    public function getRowUrl($item)
+    {
+        return false;
     }
 }

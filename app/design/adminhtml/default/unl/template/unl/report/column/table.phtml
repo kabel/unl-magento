@@ -1,0 +1,19 @@
+<?php $_item = $this->getItem(); ?>
+<?php $_options = $_item->getProductOptionByCode('options'); ?>
+<?php $optionCount = count($_options); ?>
+<table cellspacing="0" class="data">
+    <thead>
+        <tr class="headings">
+        <?php foreach($_options as $i => $option): ?>
+            <th<?php if ($i == $optionCount - 1) echo ' class="last"'; ?>><?php echo $this->escapeHtml($option['label']); ?></th>
+        <?php endforeach; ?>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <?php foreach($_options as $i => $option): ?>
+            <td<?php if ($i == $optionCount - 1) echo ' class="last"'; ?>><?php echo $this->escapeHtml($option['print_value']); ?></td>
+        <?php endforeach; ?>
+        </tr>
+    </tbody>
+</table>

@@ -1,12 +1,9 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Adminhtml_Block_Report_Grid
+class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Adminhtml_Block_Report_Grid_Abstract
 {
-    protected $_defaultFilters = array(
-            'report_from' => '',
-            'report_to' => '',
-            'sku' => ''
-        );
+    protected $_resourceCollectionName  = 'unl_core/report_product_customized_collection';
+    protected $_columnGroupBy = 'period';
 
     /**
      * Initialize Grid settings
@@ -15,8 +12,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
     public function __construct()
     {
         parent::__construct();
-        $this->setTemplate('unl/report/customizedgrid.phtml');
-        $this->setId('gridProductsCustomized');
+        $this->setCountTotals(false);
+        $this->setCountSubTotals(false);
     }
 
     /**
@@ -26,84 +23,37 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
      */
     protected function _prepareCollection()
     {
-        $filter = $this->getParam($this->getVarNameFilter(), null);
+        $filterData = $this->getFilterData();
 
-        if (is_null($filter)) {
-            $filter = $this->_defaultFilter;
+        if ($filterData->getData('from') == null || $filterData->getData('to') == null) {
+            return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
         }
 
-        if (is_string($filter)) {
-            $data = array();
-            $filter = base64_decode($filter);
-            parse_str(urldecode($filter), $data);
+        $resourceCollection = Mage::getResourceModel($this->getResourceCollectionName())
+            ->setPeriod($filterData->getData('period_type'))
+            ->setDateRange($filterData->getData('from', null), $filterData->getData('to', null))
+            ->addStoreFilter(explode(',', $filterData->getData('store_ids')))
+            ->addSkuFilter($filterData->getData('sku'))
+            ->setAggregatedColumns($this->_getAggregatedColumns());
 
-            if (!isset($data['report_from'])) {
-                // getting all reports from 2001 year
-                $date = new Zend_Date(mktime(0,0,0,1,1,2001));
-                $data['report_from'] = $date->toString($this->getLocale()->getDateFormat('short'));
-            }
-
-            if (!isset($data['report_to'])) {
-                // getting all reports from 2001 year
-                $date = new Zend_Date();
-                $data['report_to'] = $date->toString($this->getLocale()->getDateFormat('short'));
-            }
-
-            $this->_setFilterValues($data);
-        } else if ($filter && is_array($filter)) {
-            $this->_setFilterValues($filter);
-        } else if(0 !== sizeof($this->_defaultFilter)) {
-            $this->_setFilterValues($this->_defaultFilter);
+        if ($this->_isExport) {
+            $this->setCollection($resourceCollection);
+            return $this;
         }
 
-        $collection = Mage::getResourceModel('unl_core/report_product_customized_collection');
-        /* @var $collection Unl_Core_Model_Mysql4_Report_Product_Customized_Collection */
-
-        if ($this->getFilter('sku')) {
-            $collection->addFieldToFilter('sku', array('like' => $this->getFilter('sku') . '%'));
+        if ($filterData->getData('show_empty_rows', false)) {
+            Mage::helper('reports')->prepareIntervalsCollection(
+                $this->getCollection(),
+                $filterData->getData('from', null),
+                $filterData->getData('to', null),
+                $filterData->getData('period_type')
+            );
         }
 
+        $this->getCollection()->setColumnGroupBy($this->_columnGroupBy);
+        $this->getCollection()->setResourceCollection($resourceCollection);
 
-        if ($this->getFilter('report_from') && $this->getFilter('report_to')) {
-            /**
-             * Validate from and to date
-             */
-            try {
-                $from = $this->getLocale()->date($this->getFilter('report_from'), Zend_Date::DATE_SHORT, null, false);
-                $to   = $this->getLocale()->date($this->getFilter('report_to'), Zend_Date::DATE_SHORT, null, false);
-
-                $collection->setInterval($from, $to);
-            }
-            catch (Exception $e) {
-                $this->_errors[] = Mage::helper('reports')->__('Invalid date specified');
-            }
-        }
-
-        /**
-         * Getting and saving store ids for website & group
-         */
-        if ($this->getRequest()->getParam('store')) {
-            $storeIds = array($this->getParam('store'));
-        } else if ($this->getRequest()->getParam('website')){
-            $storeIds = Mage::app()->getWebsite($this->getRequest()->getParam('website'))->getStoreIds();
-        } else if ($this->getRequest()->getParam('group')){
-            $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
-        } else {
-            $storeIds = array('');
-        }
-
-        $storeId = array_pop($storeIds);
-        if ($storeId) {
-            $collection->addFieldToFilter('source_store_view', array('eq' => $storeId));
-        }
-
-        $this->setCollection($collection);
-
-        Mage::dispatchEvent('adminhtml_widget_grid_filter_collection',
-                array('collection' => $this->getCollection(), 'filter_values' => $this->_filterValues)
-        );
-
-        return $this;
+        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
     }
 
     /**
@@ -113,121 +63,121 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
      */
     protected function _prepareColumns()
     {
+        $this->addColumn('period', array(
+            'header'        => Mage::helper('sales')->__('Period'),
+            'index'         => 'period',
+            'width'         => 100,
+            'sortable'      => false,
+            'period_type'   => $this->getPeriodType(),
+            'renderer'      => 'adminhtml/report_sales_grid_column_renderer_date',
+            'totals_label'  => Mage::helper('sales')->__('Total'),
+            'html_decorators' => array('nobr'),
+        ));
+
+        $this->addColumn('sku', array(
+            'header'    => Mage::helper('reports')->__('SKU'),
+            'index'     => 'sku',
+            'sortable'  => false,
+            'filter'    => false
+        ));
+
+        $this->addColumn('name', array(
+            'header'    => Mage::helper('reports')->__('Product Name'),
+            'index'     => 'name',
+            'sortable'  => false,
+        ));
+
+        $this->addColumn('ordered_qty', array(
+            'header'    => Mage::helper('reports')->__('Qty Ordered'),
+            'width'     => '120px',
+            'align'     => 'right',
+            'index'     => 'qty_ordered',
+            'type'      => 'number',
+            'sortable'  => false,
+        ));
+
+        $currencyCode = $this->getCurrentCurrencyCode();
+        $this->addColumn('base_price', array(
+            'header'        => Mage::helper('reports')->__('Price'),
+            'type'          => 'currency',
+            'currency_code' => $currencyCode,
+            'index'         => 'base_price',
+            'sortable'  => false,
+        ));
+
+        $this->addColumn('customer_firstname', array(
+            'header'    => Mage::helper('reports')->__('Customer First Name'),
+            'index'     => 'customer_firstname',
+            'sortable'  => false,
+        ));
+
+        $this->addColumn('customer_lastname', array(
+            'header'    =>Mage::helper('reports')->__('Customer Last Name'),
+            'index'     =>'customer_lastname',
+            'sortable'  => false,
+        ));
+
+        $this->addColumn('ordernum', array(
+            'header'    => Mage::helper('reports')->__('Order #'),
+            'index'     => 'ordernum',
+            'sortable'  => false,
+            'renderer'  => 'unl_core/adminhtml_report_product_orderdetails_grid_renderer_action'
+        ));
+
+        $this->addColumn('product_options', array(
+            'header'    => Mage::helper('reports')->__('Options'),
+            'index'     => 'product_options',
+            'sortable'  => false,
+            'renderer'  => 'unl_core/adminhtml_report_product_customized_grid_renderer_table'
+        ));
+
         $this->addExportType('*/*/exportCustomizedCsv', Mage::helper('reports')->__('CSV'));
         $this->addExportType('*/*/exportCustomizedExcel', Mage::helper('reports')->__('Excel'));
 
         return parent::_prepareColumns();
     }
 
-    public function getEmptyText()
+    public function getRowUrl($item)
     {
-        return $this->__('No records found.');
+        return false;
     }
 
-    public function getCsv()
+    protected function _exportCsvItem(Varien_Object $item, Varien_Io_File $adapter)
     {
-        $csv = '';
-        $this->_prepareGrid();
-
-        $data = array(
-            '"' . $this->__('Period') . '"',
-            '"' . $this->__('SKU') . '"',
-            '"' . $this->__('Product Name') . '"',
-            '"' . $this->__('Qty Ordered') . '"',
-            '"' . $this->__('Order #') . '"',
-            '"' . $this->__('Customer First Name') . '"',
-            '"' . $this->__('Customer Last Name') . '"',
-            '"' . $this->__('Options') . '"'
-        );
-        $csv .= implode(',', $data) . "\n";
-
-        foreach ($this->getCollection() as $_item) {
-            $_order = $_item->getOrder();
-            if ($_order->getCustomerIsGuest()) {
-                $customerFirstname = $_order->getBillingAddress()->getFirstname();
-                $customerLastname  = $_order->getBillingAddress()->getLastname();
-            } else {
-                $customerFirstname = $_order->getCustomerFirstname();
-                $customerLastname  = $_order->getCustomerLastname();
+        $row = array();
+        foreach ($this->_columns as $column) {
+            if (!$column->getIsSystem()) {
+                $columnValue = $column->getRowFieldExport($item);
+                if (!is_array($columnValue)) {
+                    $columnValue = array($columnValue);
+                }
+                foreach ($columnValue as $field) {
+                    $row[] = $field;
+                }
             }
+        }
+        $adapter->streamWriteCsv($row);
+    }
 
-            $data = array(
-                $this->_cleanCsvValue($this->formatDate($_order->getCreatedAtDate())),
-                $this->_cleanCsvValue($_item->getSku()),
-                $this->_cleanCsvValue($_item->getName()),
-                $this->_cleanCsvValue($_item->getQtyOrdered()),
-                $this->_cleanCsvValue($_order->getIncrementId()),
-                $this->_cleanCsvValue($customerFirstname),
-                $this->_cleanCsvValue($customerLastname),
-            );
-
-            foreach ($_item->getProductOptionByCode('options') as $option) {
-                $data[] = $this->_cleanCsvValue($option['label']);
-                $data[] = $this->_cleanCsvValue($option['print_value']);
-            }
-
-            $csv .= implode(',', $data) . "\n";
+    protected function _exportExcelItem(Varien_Object $item, Varien_Io_File $adapter, $parser = null)
+    {
+        if (is_null($parser)) {
+            $parser = new Varien_Convert_Parser_Xml_Excel();
         }
 
-        return $csv;
-    }
-
-    protected function _cleanCsvValue($value)
-    {
-        return '"' . str_replace(array('"', '\\'), array('""', '\\\\'), $value) . '"';
-    }
-
-    public function getExcel($filename = '')
-    {
-        $this->_prepareGrid();
-
-        $data = array();
-        $row = array(
-            $this->__('Period'),
-            $this->__('SKU'),
-            $this->__('Product Name'),
-            $this->__('Qty Ordered'),
-            $this->__('Order #'),
-            $this->__('Customer First Name'),
-            $this->__('Customer Last Name'),
-            $this->__('Options')
-        );
-        $data[] = $row;
-
-        foreach ($this->getCollection() as $_item) {
-            $_order = $_item->getOrder();
-            if ($_order->getCustomerIsGuest()) {
-                $customerFirstname = $_order->getBillingAddress()->getFirstname();
-                $customerLastname  = $_order->getBillingAddress()->getLastname();
-            } else {
-                $customerFirstname = $_order->getCustomerFirstname();
-                $customerLastname  = $_order->getCustomerLastname();
+        $row = array();
+        foreach ($this->_columns as $column) {
+            if (!$column->getIsSystem()) {
+                $columnValue = $column->getRowFieldExport($item);
+                if (!is_array($columnValue)) {
+                    $columnValue = array($columnValue);
+                }
+                foreach ($columnValue as $field) {
+                    $row[] = $field;
+                }
             }
-
-
-            $row = array(
-                $this->formatDate($_order->getCreatedAtDate()),
-                $_item->getSku(),
-                $_item->getName(),
-                $_item->getQtyOrdered(),
-                $_order->getIncrementId(),
-                $customerFirstname,
-                $customerLastname
-            );
-
-            foreach ($_item->getProductOptionByCode('options') as $option) {
-                $row[] = $option['label'];
-                $row[] = $option['print_value'];
-            }
-
-            $data[] = $row;
         }
-
-        $xmlObj = new Varien_Convert_Parser_Xml_Excel();
-        $xmlObj->setVar('single_sheet', $filename);
-        $xmlObj->setData($data);
-        $xmlObj->unparse();
-
-        return $xmlObj->getData();
+        $data = $parser->getRowXml($row);
+        $adapter->streamWrite($data);
     }
 }

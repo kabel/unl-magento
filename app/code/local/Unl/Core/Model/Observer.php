@@ -70,8 +70,6 @@ class Unl_Core_Model_Observer
             'Mage_Adminhtml_Block_Report_Customer_Accounts_Grid',
             'Mage_Adminhtml_Block_Report_Customer_Totals_Grid',
             'Mage_Adminhtml_Block_Report_Customer_Orders_Grid',
-            'Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid',
-            'Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid'
         );
         foreach ($reportSwitchers as $type) {
             if ($block instanceof $type) {
@@ -83,7 +81,7 @@ class Unl_Core_Model_Observer
         $reportSwitchers = array(
             'Mage_Adminhtml_Block_Report_Sales_Bestsellers',
             'Mage_Adminhtml_Block_Report_Sales_Sales',
-            'Mage_Adminhtml_Block_Report_Sales_Coupons'
+            'Mage_Adminhtml_Block_Report_Sales_Coupons',
         );
         foreach ($reportSwitchers as $type) {
             if ($block instanceof $type) {
