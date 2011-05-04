@@ -1,9 +1,19 @@
 <!--@subject UNL Marketplace: Invoice # {{var invoice.increment_id}} update @-->
-<style>
- td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
-</style>
+<!--@vars
+{"store url=\"\"":"Store Url",
+"skin url=\"images/logo_email.gif\" _area='frontend'":"Email Logo Image",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+"var order.increment_id":"Order Id",
+"var order.getStatusLabel()":"Order Status",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var comment":"Invoice Comment",
+"var store.getFrontendName()":"Store Name"}
+@-->
+<!--@styles
+td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+@-->
 
-<div>
+<div style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;">
 <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; margin-bottom:10px;">
 <tr>
     <td align="center" valign="top">
@@ -28,10 +38,9 @@
                                 <strong>{{var order.getStatusLabel()}}</strong>.</p>
                               <p style="margin:1.1em 0;">You can check the status of your order by logging into <a href="{{store url='customer/account/'}}" style="color:#ba0000;">your account</a>.</p>
                                 <p style="margin:1.1em 0;">{{var comment}}</p>
-                                <p style="margin:1.1em 0;">If you have any questions, please feel free to contact us at <a href="mailto:strontfront@unl.edu" style="color:#ba0000;">storefront@unl.edu</a> or by phone at (402) 472-9964. </p>
+                                <p style="margin:1.1em 0;">If you have any questions, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#ba0000;">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
                               <p style="margin:1.1em 0;">Thank you again,</p>
-                              <p style="margin:1.1em 0;">&nbsp;</p>
-                              <p style="margin:1.1em 0;"><strong>UNL Marketplace</strong></p>
+                              <p style="margin:2.2em 0 1.1em;"><strong>UNL Marketplace</strong></p>
                           </td>
                         </tr>
                         <tr background="http://www.unl.edu/wdn/templates_3.0/images/email/insideFooter.png" style="background-image: url(http://www.unl.edu/wdn/templates_3.0/images/email/insideFooter.png)">

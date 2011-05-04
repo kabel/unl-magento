@@ -1,10 +1,16 @@
 <!--@subject Welcome, {{var customer.name}}! @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"skin url=\"images/logo_email.gif\" _area='frontend'":"Email Logo Image",
+"htmlescape var=$customer.name":"Customer Name",
+"store url=\"customer/account/\"":"Customer Account Url"}
+@-->
 
-<style>
- td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
-</style>
+<!--@styles
+td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+@-->
 
-<div>
+<div style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;">
 <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; margin-bottom:10px;">
 <tr>
     <td align="center" valign="top">
@@ -33,9 +39,9 @@
                                   <li>View past orders</li>
                                   <li> Make changes to your account information</li>
                                   <li>Change your password</li>
-                                  <li>Store alternative addresses (for shipping to multiple family members and friends!)                                </li>
+                                  <li>Store alternative addresses (for shipping to multiple family members and friends!)</li>
                                 </ul>
-                                <p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:storefront@unl.edu" style="color:#ba0000;">storefront@unl.edu</a> or by phone at (402) 472-9964.</p>
+                                <p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#ba0000;">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
                                 <p style="margin:1.1em 0;">Thanks,</p>
                                 <p style="margin:1.1em 0;">&nbsp;</p>
                                 <p style="margin:1.1em 0;"><strong>UNL Marketplace</strong></p>

@@ -1,10 +1,24 @@
-<!--@subject UNL Marketplace: New Order #{{var order.increment_id}} @-->
+<!--@subject {{var store.getFrontendName()}}: New Order # {{var order.increment_id}} @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"skin url=\"images/logo_email.gif\" _area='frontend'":"Email Logo Image",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+"var store.getFrontendName()":"Store Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var order.increment_id":"Order Id",
+"var order.getCreatedAtFormated('long')":"Order Created At (datetime)",
+"var order.getBillingAddress().format('html')":"Billing Address",
+"var payment_html":"Payment Details",
+"var order.getShippingAddress().format('html')":"Shipping Address",
+"var order.getShippingDescription()":"Shipping Description",
+"layout handle=\"sales_email_order_items\" order=$order":"Order Items Grid",
+"var order.getEmailCustomerNote()":"Email Order Note"}
+@-->
+<!--@styles
+td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+@-->
 
-<style>
- td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
-</style>
-
-<div>
+<div style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;">
 <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; margin-bottom:10px;">
 <tr>
     <td align="center" valign="top">
@@ -31,10 +45,10 @@
                                     Once your package ships we will send an email with a link to track your order.
                                     {{/depend}}
                                     You can check the status of your order by <a href="{{store url='customer/account/'}}" style="color:#ba0000;">logging into your account</a>.
-                                    If you have any questions about your order please contact us at <a href="mailto:storefront@unl.edu" style="color:#ba0000;">storefront@unl.edu</a> or call us at <span class="nobr">(402) 472-9964</span> Monday - Friday, 9am - 5pm CST.</p>
+                                    If you have any questions about your order please contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#ba0000;">{{config path='trans_email/ident_support/email'}}</a> or call us at <span class="nobr">{{config path='general/store_information/phone'}}</span> Monday - Friday, 9am - 5pm CST.</p>
                               <p style="margin:1.1em 0">Your order confirmation is below. Thank you again for your business.</p>
             
-                                <h3 style="border-bottom:2px solid #eee;color:#494949;font-size:1.05em;padding-bottom:1px;">Your Order #{{var order.increment_id}} <small>(placed on {{var order.getCreatedAtFormated('long')}})</small></h3>
+                                <h2 style="border-bottom:2px solid #eee;color:#494949;font-size:1.05em;padding-bottom:1px;">Your Order #{{var order.increment_id}} <small>(placed on {{var order.getCreatedAtFormated('long')}})</small></h2>
                                 <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                     <thead>
                                     <tr>
@@ -86,8 +100,7 @@
                                 <br/>
                                 {{var order.getEmailCustomerNote()}}
                                 <p style="margin:1.1em 0">Thank you again,</p>
-                                <p style="margin:1.1em 0">&nbsp;</p>
-                                <p style="margin:1.1em 0"><strong>UNL Marketplace</strong></p>
+                                <p style="margin:2.2em 0 1.1em"><strong>UNL Marketplace</strong></p>
                             </td>
                         </tr>
                         <tr background="http://www.unl.edu/wdn/templates_3.0/images/email/insideFooter.png" style="background-image: url(http://www.unl.edu/wdn/templates_3.0/images/email/insideFooter.png)">
