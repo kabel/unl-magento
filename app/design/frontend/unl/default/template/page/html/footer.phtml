@@ -14,7 +14,8 @@
         <h3>Contacting Us</h3>
         <div class="contact">
             <?php echo $this->getChildHtml('contact_link') ?>
-            <address><?php echo nl2br(Mage::getStoreConfig('contacts/contacts/address')) ?></address>
+            <address><?php echo nl2br(Mage::getStoreConfig('general/store_information/address')) ?></address>
+            <p><?php echo $this->__('Customer Support')?>: <?php echo Mage::getStoreConfig('general/store_information/phone') ?></p>
         </div></div>
     <div class="footer_col">
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/socialmediashare.html'); ?>

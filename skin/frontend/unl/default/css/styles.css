@@ -888,7 +888,7 @@ f/********** Product Prices > */
 .product-view .product-shop .price-box { margin:10px 0; }
 .product-view .product-shop .add-to-links { margin:0; }
 .product-view .product-shop .add-to-links { text-align:right; }
-.product-view .product-shop .add-to-links li { display:inline; margin-left:12px; }
+.product-view .product-shop .add-to-links li { display:inline; margin:0 0 0 12px; }
 .product-view .product-shop .add-to-links li .separator { display:none !important; }
 .product-view .product-shop .product-options-bottom .paypal-logo { float:left; }
 
@@ -929,7 +929,7 @@ f/********** Product Prices > */
 .product-options-bottom .price-tax { float:left; }
 .product-options-bottom .add-to-cart { float:right; margin:0; padding:0; border:0; background:0; }
 .product-options-bottom .add-to-links { clear:both; }
-.product-options-bottom .add-to-links li { display:inline; margin-right:12px; }
+.product-options-bottom .add-to-links li { display:inline; margin:0 12px 0 0; }
 
 .product-shop .product-options-bottom .price-box { float:none; margin:0; }
 .product-shop .product-options-bottom .price-label { float:none; padding-right:0; }
