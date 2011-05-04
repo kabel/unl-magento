@@ -55,6 +55,11 @@
                     <ga>Unl_Core_Block_GoogleAnalytics_Ga</ga>
                 </rewrite>
             </googleanalytics>
+            <page>
+                <rewrite>
+                    <template_links>Unl_Core_Block_Page_Template_Links</template_links>
+                </rewrite>
+            </page>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
@@ -70,6 +75,8 @@
                 <rewrite>
                     <!-- Upate Security Logic -->
                     <product>Unl_Core_Helper_Catalog_Product</product>
+                    <!-- Allow images to specify secure url pref -->
+                    <image>Unl_Core_Helper_Catalog_Image</image>
                 </rewrite>
             </catalog>
             <shipping>
@@ -110,6 +117,8 @@
                     <category_attribute_backend_image>Unl_Core_Model_Catalog_Category_Attribute_Backend_Image</category_attribute_backend_image>
                     <!-- Allow product import of configs/upsells/related -->
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
+                    <!-- Allow product images to specify secure url pref -->
+                    <product_image>Unl_Core_Model_Catalog_Product_Image</product_image>
                 </rewrite>
             </catalog>
             <cms>
