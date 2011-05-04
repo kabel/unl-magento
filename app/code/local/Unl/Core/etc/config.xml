@@ -675,16 +675,21 @@
         </layout>
     </adminhtml>
     
-    <!-- 
+    
     <crontab>
         <jobs>
+            <!-- 
             <unl_core_nightly_backup>
                 <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
                 <run><model>unl_core/observer::generateNightlyBackup</model></run>
             </unl_core_nightly_backup>
+            -->
+            <unl_core_block_cahce_autoclean>
+                <schedule><cron_expr>0 * * * *</cron_expr></schedule>
+                <run><model>unl_core/observer::autoCleanBlockHtmlCache</model></run>
+            </unl_core_block_cahce_autoclean>
         </jobs>
     </crontab>
-     -->
     
     <stores>
         <admin>

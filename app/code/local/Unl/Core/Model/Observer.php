@@ -307,6 +307,17 @@ class Unl_Core_Model_Observer
         return $this;
     }
 
+    public function autoCleanBlockHtmlCache($schedule)
+    {
+        $type = 'block_html';
+        if (Mage::app()->useCache($type)
+            && array_key_exists($type, Mage::app()->getCacheInstance()->getInvalidatedTypes())) {
+            Mage::app()->getCacheInstance()->cleanType($type);
+        }
+
+        return $this;
+    }
+
     public function isCustomerAllowedCategory($observer)
     {
         $_cat = $observer->getEvent()->getCategory();
