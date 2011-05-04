@@ -31,9 +31,9 @@
     <tr>
     <?php $i = 0; foreach ($this->getWishlistItems() as $item): $i++ ?>
         <td width="32%">
-            <p align="center" style="margin:1.1em 0;"><a href="<?php echo $this->getProductUrl($item) ?>"><img src="<?php echo $this->helper('catalog/image')->init($item->getProduct(), 'small_image')->resize(135); ?>" style="border:1px solid #ccc;" width="135" height="135" alt="" /></a></p>
+            <p align="center" style="margin:1.1em 0;"><a href="<?php echo $this->getProductUrl($item) ?>"><img src="<?php echo $this->helper('catalog/image')->init($item->getProduct(), 'small_image')->resize(135)->useSecureUrl(false); ?>" style="border:1px solid #ccc;" width="135" height="135" alt="" /></a></p>
             <p align="center" style="margin:1.1em 0;"><a href="<?php echo $this->getProductUrl($item) ?>" style="color:#ba0000;"><strong><?php echo $this->htmlEscape($item->getName()) ?></strong></a></p>
-            <?php if($this->hasDescription($item) && $item->getWishlistItemDescription() != $this->__('Please enter your comments...')): ?><p align="center"><?php echo $this->__('Comment') ?>:<br /><?php echo $this->getEscapedDescription($item) ?></p><?php endif; ?>
+            <?php if($this->hasDescription($item) && $item->getDescription() != $this->helper('wishlist')->defaultCommentString()): ?><p align="center"><?php echo $this->__('Comment') ?>:<br /><?php echo $this->getEscapedDescription($item) ?></p><?php endif; ?>
             <p align="center" style="margin:1.1em 0;"><a href="<?php echo $this->getProductUrl($item) ?>" style="color:#ba0000;"><?php echo $this->__('View Product') ?></a> <small>
             <?php if ($item->getIsSalable()): ?>|</small> <a href="<?php echo $this->getAddToCartUrl($item) ?>" style="color:#ba0000;"><strong><?php echo $this->__('Add to Cart') ?></strong></a><?php endif;?>
             </p></td>
