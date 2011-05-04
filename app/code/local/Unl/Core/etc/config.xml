@@ -60,6 +60,11 @@
                     <template_links>Unl_Core_Block_Page_Template_Links</template_links>
                 </rewrite>
             </page>
+            <wishlist>
+                <rewrite>
+                    <customer_sidebar>Unl_Core_Block_Wishlist_Customer_Sidebar</customer_sidebar>
+                </rewrite>
+            </wishlist>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
