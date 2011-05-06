@@ -38,6 +38,10 @@ Misc. Admin Updates
 	        <action method="unsetChild"><name>store.switcher</name></action>
 	    </reference>
 	</adminhtml_report_sales_tax>
+    
+    <adminhtml_system_config_edit>
+        <remove name="moneybookers_jsinit"/>
+    </adminhtml_system_config_edit>
 
 <!--
 Shipment Packages Display (Ordership Module)
