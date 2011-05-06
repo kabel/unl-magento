@@ -499,14 +499,14 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         $request['RequestedShipment']['PackageCount'] = '1';
         $request['RequestedShipment']['PackageDetail'] = 'PACKAGE_SUMMARY';
 
-        $response = $this->_getCachedQuotes($request);
+        $response = $this->_getCachedQuotes(Zend_Json::encode($request));
         if ($response === null) {
             $debugData = array('request' => $request);
             try {
                 $response = $client->getRates($request);
 
                 $debugData['result'] = $response;
-                $this->_setCachedQuotes($request, $response);
+                $this->_setCachedQuotes(Zend_Json::encode($request), $response);
                 if ($response->HighestSeverity == 'FAILURE') {
                     $response = null;
                 }
