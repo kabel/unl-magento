@@ -48,7 +48,7 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
         if (!$product = $this->_initProduct()) {
             return $this->_redirect('*/*/');
         }
-        if ($product == -1) {
+        if (is_int($product)) {
             return;
         }
 
@@ -67,7 +67,7 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
         if (!$product = $this->_initProduct()) {
             return $this->_redirect('*/*/');
         }
-        if ($product == -1) {
+        if (is_int($product)) {
             return;
         }
 
@@ -126,7 +126,7 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
             $this->_forward('noroute');
             return;
         }
-        if ($product == -1) {
+        if (is_int($product)) {
             return;
         }
 
@@ -143,7 +143,7 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
             $this->_forward('noroute');
             return;
         }
-        if ($product == -1) {
+        if (is_int($product)) {
             return;
         }
 
