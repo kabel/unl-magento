@@ -26,7 +26,7 @@ class Unl_Core_Model_Catalog_Category_Attribute_Backend_Image
         $path = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'category' . DS;
 
         try {
-            $uploader = Mage::getModel('core/file_uploader', array($this->getAttribute()->getName()));
+            $uploader = Mage::getModel('core/file_uploader', $this->getAttribute()->getName());
             $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
             $uploader->setAllowRenameFiles(true);
             $uploader->save($path);
