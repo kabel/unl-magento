@@ -1,0 +1,18 @@
+Index: lib/Varien/Image/Adapter/Gd2.php
+===================================================================
+--- lib/Varien/Image/Adapter/Gd2.php	(revision 106453)
++++ lib/Varien/Image/Adapter/Gd2.php	(working copy)
+@@ -106,8 +106,12 @@
+ 
+     public function display()
+     {
+-        header("Content-type: ".$this->getMimeType());
++        $resp = Mage::app()->getResponse();
++        $this->getMimeType();
++        $resp->setHeader('Content-type', $this->_fileMimeType);
++        ob_start();
+         call_user_func($this->_getCallback('output'), $this->_imageHandler);
++        $resp->setBody(ob_get_clean());
+     }
+ 
+     /**
