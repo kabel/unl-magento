@@ -2,7 +2,10 @@
 
 class Unl_Core_Model_Mysql4_Report_Product_Customized_Collection extends Mage_Sales_Model_Mysql4_Report_Collection_Abstract
 {
-/**
+    protected $_periodFormat;
+    protected $_periodColumn;
+
+	/**
      * Initialize custom resource model
      */
     public function __construct()
