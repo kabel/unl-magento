@@ -43,6 +43,9 @@ class Unl_Core_Model_Backup_Rsync
         $keyPath = $this->_getKeyPath();
         $user = Mage::getStoreConfig(self::XML_PATH_RSYNC_USER);
         $path = rtrim(Mage::getStoreConfig(self::XML_PATH_RSYNC_PATH), '/');
+        if (empty($path)) {
+            $path = '.';
+        }
         $today = date('l');
         $baseCmd = 'rsync --delete -aze "ssh -o StrictHostKeyChecking=no -i ' . $keyPath . '"';
 
