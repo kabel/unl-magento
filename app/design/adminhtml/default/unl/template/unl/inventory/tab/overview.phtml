@@ -58,15 +58,15 @@
         <div class="box-right">
             <div>
                 <strong><?php echo $this->__('Default Image') ?></strong><br/>
-                <?php if ($_product->getImage() == 'no_selection'): ?>
+                <?php if ($_product->getImage() == '' || $_product->getImage() == 'no_selection'): ?>
                     <?php echo $this->__('No image') ?>
                 <?php else: ?>
-                    <img src="<?php echo Mage::helper('catalog/image')->init($this->getProduct(), 'image')->resize(100) ?>" width="100" />
+                    <img src="<?php echo Mage::helper('catalog/image')->init($_product, 'image')->resize(100) ?>" width="100" />
                 <?php endif; ?>
             </div>
             <div class="std">
                 <strong><?php echo $this->__('Short Description') ?></strong><br/>
-                <?php echo $this->getProduct()->getShortDescription() ?>
+                <?php echo $_product->getShortDescription() ?>
             </div>
         </div>
     </fieldset>
