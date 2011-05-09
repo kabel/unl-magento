@@ -292,6 +292,14 @@ class Unl_Core_Model_Observer
     public function generateNightlyBackup($observer)
     {
         try {
+            // clear previous backups
+            $collection = Mage::getSingleton('backup/fs_collection');
+            foreach ($collection as $backupFile) {
+                $backup = Mage::getModel('backup/backup', $backupFile->getData());
+                $backup->setType($backupFile->getType());
+                $backup->deleteFile();
+            }
+
             $backupDb = Mage::getModel('backup/db');
             $backup   = Mage::getModel('backup/backup')
                 ->setTime(time())

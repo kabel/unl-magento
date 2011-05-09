@@ -382,6 +382,15 @@
                     </set_dummy>
                 </observers>
             </sales_shipment_item_save_before>
+            <admin_system_config_changed_section_system>
+                <observers>
+                    <check_rsync>
+                        <type>singleton</type>
+                        <class>unl_core/backup_rsync</class>
+                        <method>onSystemConfigSave</method>
+                    </check_rsync>
+                </observers>
+            </admin_system_config_changed_section_system>
         </events>
         
         <pdf>
@@ -678,12 +687,14 @@
     
     <crontab>
         <jobs>
-            <!-- 
             <unl_core_nightly_backup>
                 <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
                 <run><model>unl_core/observer::generateNightlyBackup</model></run>
             </unl_core_nightly_backup>
-            -->
+            <unl_core_nightly_rsync>
+                <schedule><cron_expr>0 3 * * *</cron_expr></schedule>
+                <run><model>unl_core/backup_rsync::doRsyncBackup</model></run>
+            </unl_core_nightly_rsync>
             <unl_core_block_cahce_autoclean>
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
                 <run><model>unl_core/observer::autoCleanBlockHtmlCache</model></run>
@@ -764,5 +775,10 @@
                 <output_script>0</output_script>
             </analytics>
         </google>
+        <system>
+            <rsync>
+                <user backend_model="adminhtml/system_config_backend_encrypted"></user>
+            </rsync>
+        </system>
     </default>
 </config>
