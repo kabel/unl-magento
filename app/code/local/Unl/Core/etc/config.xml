@@ -11,6 +11,7 @@
             <adminhtml>
                 <rewrite>
                     <!-- Adds scope filter -->
+                    <catalog_category_tree>Unl_Core_Block_Adminhtml_Catalog_Category_Tree</catalog_category_tree>
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                     <cms_page_grid>Unl_Core_Block_Adminhtml_Cms_Page_Grid</cms_page_grid>
                     <!-- Adv Filter -->

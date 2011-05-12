@@ -30,6 +30,52 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $options;
     }
 
+    public function getAdminUserScope($asGroups = false)
+    {
+        $user = Mage::getSingleton('admin/session')->getUser();
+        $scope = $user->getScope();
+        if (!$scope) {
+            return false;
+        }
+
+        if (!is_array($scope)) {
+            $scope = explode(',', $scope);
+        }
+
+        if (!$asGroups) {
+            return $scope;
+        }
+
+        $groupScope = array();
+        foreach ($scope as $storeId) {
+            try {
+                $group = Mage::app()->getStore($storeId)->getGroup();
+                if (!in_array($group->getId(), $groupScope)) {
+                    $groupScope[] = $group->getId();
+                }
+            } catch (Exception $e) {
+                // ignore
+            }
+        }
+
+        return $groupScope;
+    }
+
+    public function getAdminUserWarehouseScope($asArray = false)
+    {
+        $user = Mage::getSingleton('admin/session')->getUser();
+        $scope = $user->getWarehouseScope();
+        if (!$scope) {
+            return false;
+        }
+
+        if ($asArray) {
+            return explode(',', $scope);
+        }
+
+        return $scope;
+    }
+
     public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
     {
         $_cat = $category;
