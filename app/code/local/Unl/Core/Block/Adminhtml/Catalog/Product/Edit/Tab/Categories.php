@@ -1,12 +1,40 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Catalog_Category_Tree extends Mage_Adminhtml_Block_Catalog_Category_Tree
+class Unl_Core_Block_Adminhtml_Catalog_Product_Edit_Tab_Categories
+    extends Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Categories
 {
     /* Overrides
-     * @see Mage_Adminhtml_Block_Catalog_Category_Tree::_getNodeJson()
-     * by ignoring the children that aren't in scope
+     * @see Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Categories::_getNodeJson()
+     * by skipping nodes not in scope
      */
-    protected function _getNodeJson($node, $level = 0)
+    protected function _getNodeJson($node, $level=1)
+    {
+        $item = $this->_getNodeJson2($node, $level);
+
+        $isParent = $this->_isParentSelectedCategory($node);
+
+        if ($isParent) {
+            $item['expanded'] = true;
+        }
+
+//        if ($node->getLevel() > 1 && !$isParent && isset($item['children'])) {
+//            $item['children'] = array();
+//        }
+
+
+        if (in_array($node->getId(), $this->getCategoryIds())) {
+            $item['checked'] = true;
+        }
+
+        if ($this->isReadonly()) {
+            $item['disabled'] = true;
+        }
+        return $item;
+    }
+
+    // THE FOLLOWING ARE DUPLICATED IN: Unl_Core_Block_Adminhtml_Catalog_Category_Tree
+    // Horizontal Inheritence
+    protected function _getNodeJson2($node, $level = 0)
     {
         // create a node from data array
         if (is_array($node)) {
@@ -54,7 +82,8 @@ class Unl_Core_Block_Adminhtml_Catalog_Category_Tree extends Mage_Adminhtml_Bloc
         return $item;
     }
 
-    /**
+
+	/**
      * Checks if the given node is a store root and in scope
      *
      * @param Varien_Data_Tree_Node $node

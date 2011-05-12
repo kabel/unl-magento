@@ -112,7 +112,6 @@ class Unl_Core_Model_Admin_Observer
     public function controllerActionPredispatch($observer)
     {
         $storeIdActions = array(
-            'adminhtml_catalog_product_categories',
             'adminhtml_dashboard_index',
             'adminhtml_dashboard_productsViewed',
             'adminhtml_dashboard_customersNeweset',

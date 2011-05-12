@@ -13,6 +13,7 @@
                     <!-- Adds scope filter -->
                     <catalog_category_tree>Unl_Core_Block_Adminhtml_Catalog_Category_Tree</catalog_category_tree>
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
+                    <catalog_product_edit_tab_categories>Unl_Core_Block_Adminhtml_Catalog_Product_Edit_Tab_Categories</catalog_product_edit_tab_categories>
                     <cms_page_grid>Unl_Core_Block_Adminhtml_Cms_Page_Grid</cms_page_grid>
                     <!-- Adv Filter -->
                     <customer_grid>Unl_Core_Block_Adminhtml_Customer_Grid</customer_grid>
