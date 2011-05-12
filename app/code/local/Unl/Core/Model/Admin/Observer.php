@@ -94,9 +94,9 @@ class Unl_Core_Model_Admin_Observer
                 $page->setData('permissions', $scope);
             }
         } else {
-            $user = Mage::getSingleton('admin/session')->getUser();
-            if (!$page->getId() && $user->getScope()) {
-                $page->setData('permissions', $user->getScope());
+            $userScope = Mage::helper('unl_core')->getAdminUserScope();
+            if (!$page->getId() && $userScope) {
+                $page->setData('permissions', implode(',', $userScope));
             }
         }
     }
@@ -104,9 +104,7 @@ class Unl_Core_Model_Admin_Observer
     public function isAllowedAddRootCategory($observer)
     {
         $options = $observer->getEvent()->getOptions();
-        $user = Mage::getSingleton('admin/session')->getUser();
-
-        if ($user->getScope()) {
+        if (Mage::helper('unl_core')->getAdminUserScope()) {
             $options->setIsAllow(false);
         }
     }
@@ -114,7 +112,6 @@ class Unl_Core_Model_Admin_Observer
     public function controllerActionPredispatch($observer)
     {
         $storeIdActions = array(
-            'adminhtml_catalog_category_edit',
             'adminhtml_catalog_product_categories',
             'adminhtml_dashboard_index',
             'adminhtml_dashboard_productsViewed',
@@ -142,6 +139,10 @@ class Unl_Core_Model_Admin_Observer
             'unl_core_report_sales_reconcile_nocap',
             'shippingoverride_report_index'
         );
+        $categoryIdActions = array(
+            'adminhtml_catalog_category_edit',
+            'adminhtml_catalog_category_tree',
+        );
 
         $controller = $observer->getEvent()->getControllerAction();
         if (in_array($controller->getFullActionName(), $storeIdActions)) {
@@ -150,15 +151,36 @@ class Unl_Core_Model_Admin_Observer
         } elseif (in_array($controller->getFullActionName(), $storeIdsActions)) {
             $this->_setStoreParamFromUser('store_ids');
             return;
+        } elseif (in_array($controller->getFullActionName(), $categoryIdActions)) {
+            $checkParent = $controller->getFullActionName() == 'adminhtml_catalog_category_edit';
+            return $this->_forceCategoryId($controller, $checkParent);
         }
     }
 
+    /**
+     * Forces an id request param if a user is scoped and an id is missing
+     *
+     * @param Mage_Adminhtml_Catalog_CategoryController $controller
+     */
+    protected function _forceCategoryId($controller, $checkParent = false)
+    {
+        $categoryId = (int) $controller->getRequest()->getParam('id');
+        $parentId = (int) $controller->getRequest()->getParam('parent');
+        $scope = Mage::helper('unl_core')->getAdminUserScope(true);
+        if ($scope && !$categoryId) {
+            if ($checkParent && $parentId) {
+                return $this;
+            }
+            $controller->getRequest()->setParam('id', Mage::app()->getGroup(current($scope))->getRootCategoryId());
+        }
+
+        return $this;
+    }
+
     protected function _setStoreParamFromUser($param) {
-        $user  = Mage::getSingleton('admin/session')->getUser();
         $request = Mage::app()->getRequest();
 
-        if (!is_null($user->getScope())) {
-            $scope = explode(',', $user->getScope());
+        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             if ($store = $request->getParam($param)) {
                 if (!in_array($store, $scope)) {
                     $request->setParam($param, current($scope));
@@ -188,16 +210,15 @@ class Unl_Core_Model_Admin_Observer
     public function onAdminCmsPageEditPreDispatch($observer)
     {
         $request = Mage::app()->getRequest();
-        $user = Mage::getSingleton('admin/session')->getUser();
 
         $id = $request->getParam('page_id');
         $model = Mage::getModel('cms/page');
 
         if ($id) {
             $model->load($id);
-            if ($user->getScope() && $model->getPermissions()) {
+            $scope = Mage::helper('unl_core')->getAdminUserScope();
+            if ($scope && $model->getPermissions()) {
                 $perm = explode(',', $model->getPermissions());
-                $scope = explode(',', $user->getScope());
                 $allow = false;
                 foreach ($scope as $store_id) {
                     $allow = in_array($store_id, $perm);
@@ -238,7 +259,6 @@ class Unl_Core_Model_Admin_Observer
     protected function _onAdminSalesEntityViewPreDispatch($observer, $type)
     {
         $request = Mage::app()->getRequest();
-        $user = Mage::getSingleton('admin/session')->getUser();
         /* @var $action Mage_Adminhtml_Controller_Action */
         $action = $observer->getControllerAction();
 
@@ -271,16 +291,17 @@ class Unl_Core_Model_Admin_Observer
             }
         }
 
-        if (!is_null($user->getScope()) && $request->getParam($param)) {
-            $scope = explode(',', $user->getScope());
+        $scope = Mage::helper('unl_core')->getAdminUserScope();
+        if ($scope && $request->getParam($param)) {
             $order_items = Mage::getModel('sales/order_item')->getCollection();
             /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
             $order_items->getSelect()
                 ->where('source_store_view IN (?)', $scope)
                 ->where('order_id = ?', $orderId);
 
-            if ($user->getWarehouseScope()) {
-                $order_items->getSelect()->where('warehouse IN (?)', $user->getWarehouseScope());
+            $whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope();
+            if ($whScope) {
+                $order_items->getSelect()->where('warehouse IN (?)', $whScope);
             }
 
             if (!count($order_items)) {
@@ -294,10 +315,9 @@ class Unl_Core_Model_Admin_Observer
     public function onRssOrderNewCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
-        $user = Mage::getSingleton('admin/session')->getUser();
 
-        if (!is_null($user->getScope())) {
-            $scope = explode(',', $user->getScope());
+        $scope = Mage::helper('unl_core')->getAdminUserScope();
+        if ($scope) {
             $order_items = Mage::getModel('sales/order_item')->getCollection();
             /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
             $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
@@ -305,8 +325,9 @@ class Unl_Core_Model_Admin_Observer
                 ->where('source_store_view IN (?)', $scope)
                 ->group('order_id');
 
-            if ($user->getWarehouseScope()) {
-                $select->where('warehouse IN (?)', $user->getWarehouseScope());
+            $whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope();
+            if ($whScope) {
+                $select->where('warehouse IN (?)', $whScope);
             }
 
             $collection->getSelect()

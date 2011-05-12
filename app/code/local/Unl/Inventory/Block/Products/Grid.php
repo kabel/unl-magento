@@ -32,8 +32,7 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $collection->addAttributeToSelect('status');
 
         $user = Mage::getSingleton('admin/session')->getUser();
-        if ($scope = $user->getScope()) {
-            $scope = explode(',', $scope);
+        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
         }
 

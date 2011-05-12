@@ -19,8 +19,7 @@ class Unl_Inventory_Model_Admin_Observer
         $user  = Mage::getSingleton('admin/session')->getUser();
         $request = Mage::app()->getRequest();
 
-        if (!is_null($user->getScope())) {
-            $scope = explode(',', $user->getScope());
+        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             if ($store = $request->getParam($param)) {
                 if (!in_array($store, $scope)) {
                     $request->setParam($param, current($scope));

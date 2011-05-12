@@ -12,7 +12,7 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
     {
         if (is_null($this->_options)) {
             $options = array();
-            $scope   = $this->_getAdminUserScope();
+            $scope   = Mage::helper('unl_core')->getAdminUserScope();
 
             foreach ($this->getWebsiteCollection() as $_website) {
                 $showWebsite = false;
@@ -50,17 +50,6 @@ class Unl_Core_Model_Store_Source_Switcher extends Mage_Eav_Model_Entity_Attribu
         }
 
         return $options;
-    }
-
-    protected function _getAdminUserScope()
-    {
-        $scope = array();
-        $user = Mage::getSingleton('admin/session')->getUser();
-        if ($user->getScope()) {
-            $scope = explode(',', $user->getScope());
-        }
-
-        return $scope;
     }
 
     public function getOptionText($value)

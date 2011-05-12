@@ -11,9 +11,8 @@ class Unl_Core_Block_Adminhtml_Report_Review_Product_Grid extends Mage_Adminhtml
         $collection = Mage::getResourceModel('reports/review_product_collection')
             ->joinReview();
 
-        $user  = Mage::getSingleton('admin/session')->getUser();
-        if (!is_null($user->getScope())) {
-            $collection->addAttributeToFilter('source_store_view', array('in' => explode(',', $user->getScope())));
+        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
+            $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
         }
 
         $this->setCollection($collection);

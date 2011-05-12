@@ -14,10 +14,7 @@ class Unl_Core_Model_Store_Source_Filter
     {
         if (is_null($this->_options)) {
             $options = array();
-            $scope = array();
-            if (Mage::getSingleton('admin/session')->getUser()->getScope()) {
-                $scope = explode(',', Mage::getSingleton('admin/session')->getUser()->getScope());
-            }
+            $scope = Mage::helper('unl_core')->getAdminUserScope();
 
             foreach ($this->getWebsiteCollection() as $_website) {
                 foreach ($this->getGroupCollection($_website) as $_group) {

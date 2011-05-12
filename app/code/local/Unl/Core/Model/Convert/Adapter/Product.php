@@ -59,7 +59,7 @@ class Unl_Core_Model_Convert_Adapter_Product
             ));
         }
 
-        if ($scope = Mage::getSingleton('admin/session')->getUser()->getScope()) {
+        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             $this->_filter[] = array(
                 'attribute' => 'source_store_view',
                 'in' => $scope

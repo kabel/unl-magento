@@ -1,4 +1,4 @@
-<?php 
+<?php
 $_user = Mage::getSingleton('admin/session')->getUser();
 $_scope = array();
 if ($_user->getScope()) {
@@ -10,9 +10,7 @@ $_websiteCollection = $this->getWebsiteCollection()
 <div id="store_switcher_container">
 <p class="switcher"><label for="store_switcher"><?php echo $this->__('Choose Store View') ?>:</label>
 <select name="store_switcher" id="store_switcher" class="left-col-block">
-    <?php if (empty($_scope)): ?>
     <option value=""><?php echo $this->getDefaultStoreName() ?></option>
-    <?php endif; ?>
     <?php foreach ($_websiteCollection as $_website): ?>
         <?php $showWebsite=false; ?>
         <?php foreach ($this->getGroupCollection($_website) as $_group): ?>

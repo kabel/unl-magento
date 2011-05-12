@@ -214,8 +214,7 @@ class Unl_Core_Model_Observer
         $type = 'Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection';
         if ($request->getParam('_unlcore_std_product_grid') && $collection instanceof $type) {
             $user = Mage::getSingleton('admin/session')->getUser();
-            if ($scope = $user->getScope()) {
-                $scope = explode(',', $scope);
+            if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
                 $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
             }
         }

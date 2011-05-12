@@ -16,13 +16,12 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
                 array('external_id')
             );
 
-        $user  = Mage::getSingleton('admin/session')->getUser();
+
         $select = false;
-        if (!is_null($user->getScope())) {
-            $scope = explode(',', $user->getScope());
+        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             $select = $this->_getOrderItemSelect()->where('source_store_view IN (?)', $scope);
-            if ($user->getWarehouseScope()) {
-                $select->where('warehouse IN (?)', $user->getWarehouseScope());
+            if ($whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope()) {
+                $select->where('warehouse IN (?)', $whScope);
             }
 
             $collection->getSelect()
