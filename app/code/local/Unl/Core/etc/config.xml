@@ -49,6 +49,8 @@
                 <rewrite>
                     <!-- Customizes the order/display of breadcrumbs -->
                     <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
+                    <!-- Check category ACL -->
+                    <navigation>Unl_Core_Block_Catalog_Navigation</navigation>
                 </rewrite>
             </catalog>
             <googleanalytics>
@@ -124,6 +126,8 @@
                     <category_attribute_backend_image>Unl_Core_Model_Catalog_Category_Attribute_Backend_Image</category_attribute_backend_image>
                     <!-- Allow product import of configs/upsells/related -->
                     <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
+                    <!-- Add ACL checks to filter categories -->
+                    <layer_filter_category>Unl_Core_Model_Catalog_Layer_Filter_Category</layer_filter_category>
                     <!-- Allow product images to specify secure url pref -->
                     <product_image>Unl_Core_Model_Catalog_Product_Image</product_image>
                 </rewrite>

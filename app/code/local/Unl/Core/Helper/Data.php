@@ -119,6 +119,16 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+        $result = new Varien_Object(array('failure' => 0));
+        Mage::dispatchEvent('unl_category_acl_check', array(
+        	'category' => $category,
+            'result' => $result
+        ));
+
+        if ($result->getFailure()) {
+            return $result->getFailure();
+        }
+
         return self::CUSTOMER_ALLOWED_CATEGORY_SUCCESS;
     }
 
@@ -134,6 +144,16 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             if (!in_array($customer->getGroupId(), $acl)) {
                 return self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL;
             }
+        }
+
+        $result = new Varien_Object(array('failure' => 0));
+        Mage::dispatchEvent('unl_product_acl_check', array(
+        	'product' => $product,
+            'result' => $result
+        ));
+
+        if ($result->getFailure()) {
+            return $result->getFailure();
         }
 
         return self::CUSTOMER_ALLOWED_PRODUCT_SUCCESS;
