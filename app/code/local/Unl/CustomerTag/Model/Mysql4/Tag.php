@@ -144,8 +144,8 @@ class Unl_CustomerTag_Model_Mysql4_Tag extends Mage_Core_Model_Mysql4_Abstract
         $addedIds = $model->getAddedCustomerTagIds();
 
         $select = $this->_getWriteAdapter()->select()
-            ->from($this->getTable('unl_customertag/link'), 'customer_id')
-            ->where("tag_id = ?", $model->getId());
+            ->from($this->getTable('unl_customertag/link'), 'tag_id')
+            ->where("customer_id = ?", $model->getId());
         $oldLinkIds = $this->_getWriteAdapter()->fetchCol($select);
 
         $insert = array_diff($addedIds, $oldLinkIds);
@@ -155,8 +155,8 @@ class Unl_CustomerTag_Model_Mysql4_Tag extends Mage_Core_Model_Mysql4_Abstract
             $insertData = array();
             foreach ($insert as $value) {
                 $insertData[] = array(
-                    'tag_id'        => $model->getId(),
-                    'customer_id'   => $value,
+                    'tag_id'        => $value,
+                    'customer_id'   => $model->getId(),
                     'created_at'    => $this->formatDate(time())
                 );
             }
@@ -165,8 +165,8 @@ class Unl_CustomerTag_Model_Mysql4_Tag extends Mage_Core_Model_Mysql4_Abstract
 
         if (!empty($delete)) {
             $this->_getWriteAdapter()->delete($this->getTable('unl_customertag/link'), array(
-                $this->_getWriteAdapter()->quoteInto('customer_id IN (?)', $delete),
-                $this->_getWriteAdapter()->quoteInto('tag_id = ?', $model->getId())
+                $this->_getWriteAdapter()->quoteInto('tagIid IN (?)', $delete),
+                $this->_getWriteAdapter()->quoteInto('customer_id = ?', $model->getId())
             ));
         }
 

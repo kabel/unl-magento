@@ -71,18 +71,18 @@ class Unl_CustomerTag_Block_Tag_Assigned_Grid extends Mage_Adminhtml_Block_Widge
             'index'     => 'entity_id',
             'type'  => 'number',
         ));
-        /*$this->addColumn('firstname', array(
+        $this->addColumn('firstname', array(
             'header'    => Mage::helper('customer')->__('First Name'),
             'index'     => 'firstname'
         ));
         $this->addColumn('lastname', array(
             'header'    => Mage::helper('customer')->__('Last Name'),
             'index'     => 'lastname'
-        ));*/
-        $this->addColumn('name', array(
+        ));
+        /*$this->addColumn('name', array(
             'header'    => Mage::helper('customer')->__('Name'),
             'index'     => 'name'
-        ));
+        ));*/
         $this->addColumn('email', array(
             'header'    => Mage::helper('customer')->__('Email'),
             'width'     => '150',
