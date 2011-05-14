@@ -5,10 +5,25 @@ $installer = $this;
 
 $installer->startSetup();
 
+// FIX ISSUE WITH DEFAULT STORE LOAD
+$store = Mage::app()->getStore();
+$store->load(Mage_Core_Model_App::ADMIN_STORE_ID);
+
+/* @var $eavConfig Mage_Eav_Model_Config */
+$eavConfig = Mage::getSingleton('eav/config');
+$attribute = $eavConfig->getAttribute('customer', 'unl_cas_uid');
+$attribute->setWebsite($store->getWebsite());
+$attribute->addData(array(
+    'is_system' => 1,
+    'sort_order' => 85,
+    'used_in_forms' => array('adminhtml_customer')
+));
+$attribute->save();
+
 $exemptOrg = Mage::getModel('tax/class')->getCollection()
-                ->setClassTypeFilter('CUSTOMER')
-                ->addFieldToFilter('class_name', 'Exempt Org')
-                ->getFirstItem();
+    ->setClassTypeFilter('CUSTOMER')
+    ->addFieldToFilter('class_name', 'Exempt Org')
+    ->getFirstItem();
 
 $installer->run("
 INSERT INTO `{$installer->getTable('customer/group')}`
@@ -23,6 +38,8 @@ INSERT INTO `{$installer->getTable('unl_customertag/tag')}`
     ('" . Unl_Cas_Helper_Data::CUSTOMER_TAG_FACULTY_STAFF . "', 1)
 ;
 ");
+
+
 $specialTagNames = array(
     Unl_Cas_Helper_Data::CUSTOMER_TAG_STUDENT,
     Unl_Cas_Helper_Data::CUSTOMER_TAG_STUDENT_FEES,
@@ -47,10 +64,6 @@ $groups->addFieldToFilter('customer_group_code', array('in' => array(
 	'UNL Student - Fee Paying'
 )));
 $groupIds = $groups->getAllIds();
-
-// FIX ISSUE WITH DEFAULT STORE LOAD
-$store = Mage::app()->getStore();
-$store->load(0);
 
 /* @var $customers Mage_Customer_Model_Entity_Customer_Collection */
 $customers = Mage::getModel('customer/customer')->getCollection();
