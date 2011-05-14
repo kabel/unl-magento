@@ -14,25 +14,25 @@ fi
 
 cd $magePath
 
-symlinks=( \
-#	"app/code/community/Zenprint" \
-	"app/code/local/Unl" \
-	"app/code/local/AW" \
-	"app/code/local/Webshopapps" \
-	"app/design/frontend/unl" \
-	"app/design/adminhtml/default/unl" \
-	"app/etc/modules/Unl_All.xml" \
-#	"app/etc/modules/Zenprint_Xajax.xml" \
-#	"app/etc/modules/Zenprint_Ordership.xml" \
-	"errors/unl" \
-	"errors/local.xml" \
-#	"js/xajax_js" \
+symlinks=(
+#	"app/code/community/Zenprint"
+	"app/code/local/Unl"
+	"app/code/local/AW"
+	"app/code/local/Webshopapps"
+	"app/design/frontend/unl"
+	"app/design/adminhtml/default/unl"
+	"app/etc/modules/Unl_All.xml"
+#	"app/etc/modules/Zenprint_Xajax.xml"
+#	"app/etc/modules/Zenprint_Ordership.xml"
+	"errors/unl"
+	"errors/local.xml"
+#	"js/xajax_js"
 	"lib/SimpleCAS"
-	"lib/SimpleCAS.php" \
-	"lib/UNL" \
-#	"lib/Xajax" \
-	"skin/frontend/unl" \
-	"skin/adminhtml/default/unl" \
+	"lib/SimpleCAS.php"
+	"lib/UNL"
+#	"lib/Xajax"
+	"skin/frontend/unl"
+	"skin/adminhtml/default/unl"
 );
 #echo ${symlinks[@]}
 #exit
