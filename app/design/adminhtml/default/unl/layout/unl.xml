@@ -233,6 +233,61 @@ Unl_Comm Module
     </unl_comm_queue_edit>
 
 <!-- 
+Unl_CustomerTag Module
+-->
+
+    <unl_customertag_index_index>
+        <reference name="content">
+            <block type="unl_customertag/tag" name="tag_list" />
+        </reference>
+    </unl_customertag_index_index>
+    
+    <unl_customertag_index_edit>
+        <reference name="content">
+            <block type="unl_customertag/tag_edit" name="tag_edit" template="unl/customertag/edit/container.phtml" />
+        </reference>
+    </unl_customertag_index_edit>
+    <unl_customertag_index_assigned>
+            <remove name="root" />
+            <block type="unl_customertag/tag_assigned_grid" name="tag_assigned_grid" output="toHtml" />
+            <block type="adminhtml/widget_grid_serializer" name="tag_grid_serializer" output="toHtml">
+                <reference name="tag_grid_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>tag_assigned_grid</grid_block_name>
+                        <data_callback>getLinkedCustomers</data_callback>
+                        <hidden_input_name>tag_assigned_customers</hidden_input_name>
+                        <reload_param_name>assigned_customers</reload_param_name>
+                    </action>
+                </reference>
+            </block>
+    </unl_customertag_index_assigned>
+    <unl_customertag_index_assignedgridonly>
+        <remove name="root" />
+        <block type="unl_customertag/tag_assigned_grid" name="assigned_grid" output="toHtml" />
+    </unl_customertag_index_assignedgridonly>
+    
+    <unl_customertag_product_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>
+            <block type="adminhtml/widget_grid_serializer" name="customertag_grid_serializer">
+                <reference name="customertag_grid_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>product.customertag.grid</grid_block_name>
+                        <data_callback>getSelectedTags</data_callback>
+                        <hidden_input_name>access_tags</hidden_input_name>
+                        <reload_param_name>product_access</reload_param_name>
+                    </action>
+                </reference>
+            </block>
+        </block>
+    </unl_customertag_product_grid>
+    <unl_customertag_product_gridonly>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>
+        </block>
+    </unl_customertag_product_gridonly>
+
+<!-- 
 Unl_Inventory Module
 -->
 
