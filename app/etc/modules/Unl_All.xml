@@ -27,7 +27,7 @@
             <active>true</active>
             <codePool>local</codePool>
             <depends>
-                <Unl_Core />
+                <Unl_CustomerTag />
             </depends>
         </Unl_Cas>
         <Unl_Comm>
@@ -37,6 +37,13 @@
                 <Unl_Core />
             </depends>
         </Unl_Comm>
+        <Unl_CustomerTag>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+            </depends>
+        </Unl_CustomerTag>
         <Unl_Inventory>
             <active>true</active>
             <codePool>local</codePool>
