@@ -10,3 +10,7 @@
     font-size: 1.1em;
     margin: 1.3em 0.5em 0 0;
 }
+
+.head-customer-tag {
+	background-image: url("../default/images/fam_tag_orange.gif");
+}
