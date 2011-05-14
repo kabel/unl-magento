@@ -8,9 +8,9 @@ class Unl_Cas_Model_Observer
         /* @var $customer Mage_Customer_Model_Customer */
 
         if ($uid = $customer->getData('unl_cas_uid')) {
-            Mage::helper('unl_cas')->assignGroupId($customer, $uid);
+            Mage::helper('unl_cas')->assignCustomerTags($customer, $uid);
         } else {
-            Mage::helper('unl_cas')->revokeSpecialCustomerGroup($customer);
+            Mage::helper('unl_cas')->revokeSpecialCustomerTags($customer);
         }
     }
 
@@ -24,12 +24,6 @@ class Unl_Cas_Model_Observer
                 $auth->logout(Mage::getUrl());
             }
         }
-    }
-
-    public function onCustomerSave($observer)
-    {
-        $customer = $observer->getEvent()->getCustomer();
-        Mage::helper('unl_cas')->switchAffiliation($customer);
     }
 
     public function onPaymentMethodImport($observer)
@@ -54,7 +48,6 @@ class Unl_Cas_Model_Observer
         $quote  = $observer->getEvent()->getQuote();
 
         if ($method instanceof Mage_Payment_Model_Method_Purchaseorder) {
-            /* @var $customerSession Mage_Customer_Model_Session */
             $customer = $quote->getCustomer();
             if (!$customer->getId()) {
                 $result->isAvailable = false;

@@ -8,20 +8,20 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     const XML_PATH_CUSTOMER_UNL_LDAP_BINDDN = 'customer/unl_ldap/binddn';
     const XML_PATH_CUSTOMER_UNL_LDAP_BINDPW = 'customer/unl_ldap/bindpw';
 
+    const CUSTOMER_GROUP_TAX_EXEMPT = 'Tax Exempt Org';
+
+    const CUSTOMER_TAG_STUDENT       = 'UNL Student';
+    const CUSTOMER_TAG_STUDENT_FEES  = 'UNL Student - Fee Paying';
+    const CUSTOMER_TAG_FACULTY_STAFF = 'UNL Faculty/Staff';
+
     protected $_cache = array();
 
-    protected $_specialCustomerGroups = array(
-        'UNL Student',
-        'UNL Student - Fee Paying',
-        'UNL Faculty/Staff',
-        'UNL Cost Object Authorized'
+    protected $_specialCustomerTags = array(
+        self::CUSTOMER_TAG_STUDENT,
+        self::CUSTOMER_TAG_STUDENT_FEES,
+        self::CUSTOMER_TAG_FACULTY_STAFF,
     );
-    protected $_specialGroupsCollection;
-
-    protected $_affiliations = array(
-        'UNL Student' => 1,
-        'UNL Faculty/Staff' => 2
-    );
+    protected $_specialTagCollection;
 
     /**
      * Check customer is logged in
@@ -97,43 +97,8 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     public function isFacultyStaff($uid)
     {
         if ($r = $this->fetchPfUID($uid)) {
-            $affiliation = $r->eduPersonPrimaryAffiliation;
-            return (strpos($affiliation, 'staff') !== false || strpos($affiliation, 'faculty') !== false);
-        }
-
-        return false;
-    }
-
-    public function isStudent($uid)
-    {
-        if ($r = $this->fetchPfUID($uid)) {
-            $affiliation = $r->eduPersonPrimaryAffiliation;
-            return (strpos($affiliation, 'student') !== false);
-        }
-
-        return false;
-    }
-
-    public function isAllowedAffiliationSwitch($customer, $reload = false)
-    {
-        if ($reload) {
-            $_customer = Mage::getModel('customer/customer')->load($customer->getId());
-        } else {
-            $_customer = $customer;
-        }
-
-        if ($uid = $_customer->getUnlCasUid()) {
-            if ($r = $this->fetchPfUID($uid)) {
-                $affiliations = 0;
-                foreach ($r->eduPersonAffiliation as $aff) {
-                    if (strpos($aff, 'student') !== false) {
-                        $affiliations |= 1;
-                    } elseif (strpos($aff, 'staff') !== false || strpos($aff, 'faculty') !== false) {
-                        $affiliations |= 2;
-                    }
-                }
-
-                if (($affiliations & 3) == 3) {
+            foreach ($r->eduPersonAffiliation as $affil) {
+                if (strpos($affil, 'staff') !== false || strpos($affil, 'faculty') !== false) {
                     return true;
                 }
             }
@@ -142,24 +107,12 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
 
-    public function getAffiliations()
+    public function isStudent($uid)
     {
-        return $this->_affiliations;
-    }
-
-    public function getCustomerAffiliation($customer)
-    {
-        foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
-            if ($customer->getGroupId() == $group->getId()) {
-                switch ($group->getCustomerGroupCode()) {
-                    case 'UNL Student':
-                    case 'UNL Student - Fee Paying':
-                        return $this->_affiliations['UNL Student'];
-                        break;
-                    case 'UNL Faculty/Staff':
-                    case 'UNL Cost Object Authorized':
-                        return $this->_affiliations['UNL Faculty/Staff'];
-                        break;
+        if ($r = $this->fetchPfUID($uid)) {
+            foreach ($r->eduPersonAffiliation as $affil) {
+                if (strpos($affil, 'student') !== false) {
+                    return true;
                 }
             }
         }
@@ -199,29 +152,6 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    /**
-     * Assigns a group id based on peoplefinder results
-     *
-     * @param Mage_Customer_Model_Customer $customer
-     * @param string $uid
-     */
-    public function assignGroupId($customer, $uid)
-    {
-        if ($this->isValidPf($uid)) {
-            $specialGroups = $this->_getSpecialCustomerGroupsCollection();
-            if ($this->isStudent($uid)) {
-                //TODO: Add logic for checking/assigning Fee Paying status
-                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Student'));
-            } elseif ($this->isFacultyStaff($uid)) {
-                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'));
-            } else {
-                $this->revokeSpecialCustomerGroup($customer);
-            }
-        } else {
-            $this->revokeSpecialCustomerGroup($customer);
-        }
-    }
-
     public function getDisplayName($uid = false)
     {
         if ($uid === false) {
@@ -236,40 +166,88 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         return $uid;
     }
 
-    public function switchAffiliation($customer)
+    /**
+     * Assigns customer tags based on peoplefinder results
+     *
+     * @param Mage_Customer_Model_Customer $customer
+     * @param string $uid
+     */
+    public function assignCustomerTags($customer, $uid)
     {
-        if (!$this->isAllowedAffiliationSwitch($customer, true) || !Mage::app()->getRequest()->getPost('affiliation_switch')) {
-            return;
-        }
+        if ($this->isValidPf($uid)) {
+            $tagIds = Mage::helper('unl_customertag')->getTagIdsByCustomer($customer);
+            $initCount = count($tagIds);
+            $doSave = false;
 
-        $specialGroups = $this->_getSpecialCustomerGroupsCollection();
-        //should not trigger save becuase this should only be called on _beforeSave
-        switch (Mage::app()->getRequest()->getPost('affiliation_switch')) {
-            case $this->_affiliations['UNL Student']:
-                //TODO: Add logic for checking/assigning Fee Paying status
-                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Student'), false);
-                break;
-            case $this->_affiliations['UNL Faculty/Staff']:
-                $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'), false);
-                break;
+            foreach ($this->_specialCustomerTags as $tagName) {
+                $tagIds = $this->_adjustCustomersTags($uid, $tagName, $tagIds);
+                if (count($tagIds) != $initCount) {
+                    $doSave = true;
+                }
+            }
+
+            if ($doSave) {
+                $customer->setAddedCustomerTagIds($tagIds);
+                Mage::getResourceModel('unl_customertag/tag')->addTagLinks($customer);
+            }
+        } else {
+            $this->revokeSpecialCustomerTags($customer);
         }
     }
 
+    protected function _adjustCustomersTags($uid, $tagName, $tagIds)
+    {
+        $specialTags = $this->_getSpecialCustomerTagsCollection();
+        $tag = $specialTags->getItemByColumnValue('name', $tagName);
+        if (!$tag) {
+            return $tagIds;
+        }
+        $i = array_search($tag->getId(), $tagIds);
+
+        switch ($tagName) {
+            case self::CUSTOMER_TAG_STUDENT:
+                $condition = $this->isStudent($uid);
+                break;
+            case self::CUSTOMER_TAG_FACULTY_STAFF:
+                $condition = $this->isFacultyStaff($uid);
+                break;
+            case self::CUSTOMER_TAG_STUDENT_FEES:
+                //TODO: Needs logic for fees data store
+                //break;
+            default:
+                $condition = false;
+        }
+
+        if ($condition && $i === false) {
+            $tagIds[] = $tag->getId();
+        } elseif ($i !== false) {
+            unset($tagIds[$i]);
+        }
+
+        return $tagIds;
+    }
+
     /**
-     * Reverts a customer's group classification back to the default
-     * if it is a special group
+     * Removes all special tags
      *
      * @param Mage_Customer_Model_Customer $customer
      */
-    public function revokeSpecialCustomerGroup($customer)
+    public function revokeSpecialCustomerTags($customer)
     {
-        foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
-            if ($customer->getGroupId() == $group->getId()) {
-                $storeId = $customer->getStoreId() ? $customer->getStoreId() : Mage::app()->getStore()->getId();
-                $customer->setGroupId(Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $storeId));
-                $customer->save();
-                break;
+        $tagIds = Mage::helper('unl_customertag')->getCustomerTagIds($customer);
+        $doSave = false;
+
+        foreach ($this->_getSpecialCustomerTagsCollection() as $tag) {
+            $i = array_search($tag->getId(), $tagIds);
+            if ($i !== false) {
+                $doSave = true;
+                unset($tagIds[$i]);
             }
+        }
+
+        if ($doSave) {
+            $customer->setAddedCustomerTagIds($tagIds);
+            Mage::getResourceModel('unl_customertag/tag')->addTagLinks($customer);
         }
     }
 
@@ -280,28 +258,25 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function authorizeCostObject($customer)
     {
-        $coGroup = $this->_getSpecialCustomerGroupsCollection()->getItemByColumnValue('customer_group_code', 'UNL Cost Object Authorized');
-        $this->_assignCustomerGroup($customer, $coGroup);
+        $group = Mage::getModel('customer/group')->load(self::CUSTOMER_GROUP_TAX_EXEMPT, 'customer_group_code');
+        $this->_assignCustomerGroup($customer, $group);
     }
 
     public function revokeCostObjectAuth($customer)
     {
-        $specialGroups = $this->_getSpecialCustomerGroupsCollection();
-        if ($customer->getGroupId() == $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Cost Object Authorized')->getId()) {
-            $this->_assignCustomerGroup($customer, $specialGroups->getItemByColumnValue('customer_group_code', 'UNL Faculty/Staff'));
+        $group = Mage::getModel('customer/group')->load(self::CUSTOMER_GROUP_TAX_EXEMPT, 'customer_group_code');
+        if ($customer->getGroupId() == $group->getId()) {
+            $group->unsetData()
+                ->load(Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $customer->getStoreId()));
+            $this->_assignCustomerGroup($customer, $group);
         }
     }
 
     public function isCustomerCostObjectAuthorized($customer)
     {
-        foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
-            if ($customer->getGroupId() == $group->getId()) {
-                switch ($group->getCustomerGroupCode()) {
-                    case 'UNL Faculty/Staff':
-                    case 'UNL Cost Object Authorized':
-                        return true;
-                        break;
-                }
+        foreach (Mage::helper('unl_customertag')->getTagsByCustomer($customer) as $tag) {
+            if ($tag->getName() == self::CUSTOMER_TAG_FACULTY_STAFF) {
+                return true;
             }
         }
 
@@ -324,20 +299,20 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    /**
-     * Retieves a collection of the special customer groups
+	/**
+     * Retieves a collection of the special customer tags
      *
-     * @return Mage_Customer_Model_Entity_Group_Collection
+     * @return Unl_CustomerTag_Model_Mysql4_Tag_Collection
      */
-    protected function _getSpecialCustomerGroupsCollection()
+    protected function _getSpecialCustomerTagsCollection()
     {
-        if (null === $this->_specialGroupsCollection) {
-            /* @var $collection Mage_Customer_Model_Entity_Group_Collection */
-            $collection = Mage::getModel('customer/group')->getCollection();
-            $collection->addFieldToFilter('customer_group_code', array('in' => $this->_specialCustomerGroups));
-            $this->_specialGroupsCollection = $collection;
+        if (null === $this->_specialTagCollection) {
+            /* @var $collection Unl_CustomerTag_Model_Mysql4_Tag_Collection */
+            $collection = Mage::getModel('unl_customertag/tag')->getCollection();
+            $collection->addFieldToFilter('name', array('in' => $this->_specialCustomerTags));
+            $this->_specialTagCollection = $collection;
         }
 
-        return $this->_specialGroupsCollection;
+        return $this->_specialTagCollection;
     }
 }
