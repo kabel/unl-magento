@@ -181,7 +181,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 
             foreach ($this->_specialCustomerTags as $tagName) {
                 $tagIds = $this->_adjustCustomersTags($uid, $tagName, $tagIds);
-                if (count($tagIds) != $initCount) {
+                if (!$doSave && count($tagIds) != $initCount) {
                     $doSave = true;
                 }
             }
