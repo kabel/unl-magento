@@ -26,7 +26,7 @@ $exemptOrg = Mage::getModel('tax/class')->getCollection()
     ->getFirstItem();
 
 $installer->run("
-INSERT INTO `{$installer->getTable('customer/group')}`
+INSERT INTO `{$installer->getTable('customer_group')}`
     (`customer_group_code`, `tax_class_id`) VALUES
     ('" . Unl_Cas_Helper_Data::CUSTOMER_GROUP_TAX_EXEMPT . "', {$exemptOrg->getId()})
 ;
@@ -54,7 +54,7 @@ $configCollection = Mage::getModel('core/config_data')->getCollection()
 $defaultGroup = $configCollection->getFirstItem()->getValue();
 
 /* @var $groups Mage_Customer_Model_Entity_Group_Collection */
-$groups = $group->getCollection();
+$groups = Mage::getModel('customer/group')->getCollection();
 $groups->addFieldToFilter('customer_group_code', array('in' => array(
     'Allow Invoicing',
 	'Allow Invoicing - Exempt Org',
