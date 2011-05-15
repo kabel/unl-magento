@@ -234,7 +234,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function revokeSpecialCustomerTags($customer)
     {
-        $tagIds = Mage::helper('unl_customertag')->getCustomerTagIds($customer);
+        $tagIds = Mage::helper('unl_customertag')->getTagIdsByCustomer($customer);
         $doSave = false;
 
         foreach ($this->_getSpecialCustomerTagsCollection() as $tag) {
