@@ -79,6 +79,22 @@ foreach ($customers as $customer) {
 unset($customer);
 unset($customers);
 
+/* @var $orders Mage_Sales_Model_Mysql4_Order_Collection */
+$orders = Mage::getModel('sales/order')->getCollection();
+$orders->addFieldToFilter('customer_group_id', array('in' => $groupIds));
+foreach ($orders as $order) {
+    $groupId = $order->getCustomerGroupId();
+    $groupName = $groups->getItemById($groupId)->getCustomerGroupCode();
+    if (in_array($groupName, $specialTagNames)) {
+        $tag = $specialTags->getItemByColumnValue('name', $groupName);
+        $order->setCustomerTagIds($tag->getId());
+    }
+    $order->setCustomerGroupId($defaultGroup);
+    $order->save();
+}
+unset($order);
+unset($orders);
+
 /* @var $products Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
 $products = Mage::getModel('catalog/product')->getCollection();
 $products->addAttributeToFilter('product_group_acl', array('neq' => ''));

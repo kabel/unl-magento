@@ -6,7 +6,7 @@ $installer = $this;
 $installer->startSetup();
 
 $installer->run("
--- DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/tag')}`;
+DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/tag')}`;
 CREATE TABLE `{$this->getTable('unl_customertag/tag')}` (
     `tag_id` int(10) unsigned NOT NULL auto_increment,
     `name` varchar(255) NOT NULL default '',
@@ -15,7 +15,7 @@ CREATE TABLE `{$this->getTable('unl_customertag/tag')}` (
     UNIQUE KEY `IX_TAG_NAME_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/link')}`;
+DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/link')}`;
 CREATE TABLE `{$this->getTable('unl_customertag/link')}` (
     `link_id` int(10) unsigned NOT NULL auto_increment,
     `tag_id` int(10) unsigned NOT NULL default '0',
@@ -28,7 +28,7 @@ CREATE TABLE `{$this->getTable('unl_customertag/link')}` (
     CONSTRAINT `FK_UNL_CUSTOMERTAG_LINK_CUSTOMER` FOREIGN KEY (`customer_id`) REFERENCES `{$this->getTable('customer_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/product_link')}`;
+DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/product_link')}`;
 CREATE TABLE `{$this->getTable('unl_customertag/product_link')}` (
     `link_id` int(10) unsigned NOT NULL auto_increment,
     `tag_id` int(10) unsigned NOT NULL default '0',
@@ -40,7 +40,7 @@ CREATE TABLE `{$this->getTable('unl_customertag/product_link')}` (
     CONSTRAINT `FK_UNL_CUSTOMERTAG_PRODUCT_LINK_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `{$this->getTable('catalog_product_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/category_link')}`;
+DROP TABLE IF EXISTS `{$this->getTable('unl_customertag/category_link')}`;
 CREATE TABLE `{$this->getTable('unl_customertag/category_link')}` (
     `link_id` int(10) unsigned NOT NULL auto_increment,
     `tag_id` int(10) unsigned NOT NULL default '0',
@@ -57,5 +57,10 @@ INSERT INTO `{$installer->getTable('unl_customertag/tag')}`
     ('Allow Invoicing', 1)
 ;
 ");
+
+$installer->getConnection()->addColumn($installer->getTable('sales/quote'), 'customer_tag_ids',
+    "text not null default '' after `customer_group_id`");
+$installer->getConnection()->addColumn($installer->getTable('sales/order'), 'customer_tag_ids',
+    "text not null default '' after `customer_group_id`");
 
 $installer->endSetup();

@@ -109,6 +109,19 @@ class Unl_CustomerTag_Model_Observer
         return $this;
     }
 
+    public function onQuoteCopyCustomerFieldset($observer)
+    {
+        $customer = $observer->getEvent()->getSource();
+        $quote = $observer->getEvent()->getTarget();
+
+        if ($customer->getId()) {
+            $tagIds = Mage::helper('unl_customertag')->getTagIdsByCustomer($customer);
+            $quote->setCustomerTagIds(implode(',', $tagIds));
+        }
+
+        return $this;
+    }
+
     public function isCustomerAllowedProduct($observer)
     {
         $result = $observer->getEvent()->getResult();
