@@ -14,3 +14,10 @@
 .head-customer-tag {
 	background-image: url("../default/images/fam_tag_orange.gif");
 }
+
+.ctag {
+    white-space: nowrap;
+    border: 1px solid #ddd;
+    font-weight: bold;
+    padding: 0 3px;
+}

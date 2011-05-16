@@ -46,4 +46,24 @@ class Unl_CustomerTag_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $category->getCustomerTags();
     }
+
+    /**
+     * Gets a customer tag collection for an order
+     *
+     * @param Mage_Sales_Model_Order $order
+     */
+    public function getTagsByOrder($order)
+    {
+        if (null === $order->getCustomerTags()) {
+            $collection = Mage::getModel('unl_customertag/tag')->getCollection();
+            $tagIds = array();
+            if ($order->getCustomerTagIds()) {
+                $tagIds = explode(',', $order->getCustomerTagIds());
+            }
+            $collection->addFieldToFilter('tag_id', array('in' => $tagIds));
+            $order->setCustomerTags($collection);
+        }
+
+        return $order->getCustomerTags();
+    }
 }

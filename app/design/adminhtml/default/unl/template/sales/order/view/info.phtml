@@ -181,6 +181,16 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                     <td class="value"><strong><?php echo $_groupName ?></strong></td>
                 </tr>
                 <?php endif; ?>
+                <?php if ($_order->getCustomerTagIds()): ?>
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('unl_customertag')->__('Customer Tags')?></label></td>
+                    <td class="value">
+                    <?php foreach (Mage::helper('unl_customertag')->getTagsByOrder($_order) as $_tag): ?>
+                        <span class="ctag"><?php echo $this->htmlEscape($_tag->getName()) ?></span>
+                    <?php endforeach; ?>
+                    </td>
+                </tr>
+                <?php endif;?>
                 <?php foreach ($this->getCustomerAccountData() as $data):?>
                 <tr>
                     <td class="label"><label><?php echo $data['label'] ?></label></td>
