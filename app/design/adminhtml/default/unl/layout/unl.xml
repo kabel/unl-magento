@@ -5,6 +5,9 @@
 	<reference name="head">
 		<action method="addCss"><name>unl_boxes.css</name></action>
 	</reference>
+    <reference name="notifications">
+        <block type="unl_core/adminhtml_notification_maintenance" name="notification_maintenance" template="notification/maintenance.phtml" />
+    </reference>
 </default>
 
 <!--
