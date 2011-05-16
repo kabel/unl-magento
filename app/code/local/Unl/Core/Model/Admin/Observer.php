@@ -163,6 +163,7 @@ class Unl_Core_Model_Admin_Observer
      */
     protected function _forceCategoryId($controller, $checkParent = false)
     {
+        $this->_setStoreParamFromUser('store', false);
         $categoryId = (int) $controller->getRequest()->getParam('id');
         $parentId = (int) $controller->getRequest()->getParam('parent');
         $scope = Mage::helper('unl_core')->getAdminUserScope(true);
@@ -176,7 +177,7 @@ class Unl_Core_Model_Admin_Observer
         return $this;
     }
 
-    protected function _setStoreParamFromUser($param) {
+    protected function _setStoreParamFromUser($param, $forceSet = true) {
         $request = Mage::app()->getRequest();
 
         if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
@@ -184,7 +185,7 @@ class Unl_Core_Model_Admin_Observer
                 if (!in_array($store, $scope)) {
                     $request->setParam($param, current($scope));
                 }
-            } else {
+            } else if ($forceSet) {
                 $request->setParam($param, current($scope));
             }
         }
