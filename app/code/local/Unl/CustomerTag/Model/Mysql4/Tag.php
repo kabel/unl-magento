@@ -165,7 +165,7 @@ class Unl_CustomerTag_Model_Mysql4_Tag extends Mage_Core_Model_Mysql4_Abstract
 
         if (!empty($delete)) {
             $this->_getWriteAdapter()->delete($this->getTable('unl_customertag/link'), array(
-                $this->_getWriteAdapter()->quoteInto('tagIid IN (?)', $delete),
+                $this->_getWriteAdapter()->quoteInto('tag_id IN (?)', $delete),
                 $this->_getWriteAdapter()->quoteInto('customer_id = ?', $model->getId())
             ));
         }
