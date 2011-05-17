@@ -30,7 +30,7 @@ class Unl_CustomerTag_Block_Tag_Grid extends Mage_Adminhtml_Block_Widget_Grid
         ));
 
         $this->addColumn('name', array(
-            'header' => Mage::helper('unl_customertag')->__('Tax Class'),
+            'header' => Mage::helper('unl_customertag')->__('Name'),
             'index' => 'name',
             'width' => '200px'
         ));
