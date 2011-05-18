@@ -2,11 +2,10 @@
 
 class Unl_Core_Model_Payment_Method_Invoicelater extends Mage_Payment_Model_Method_Abstract
 {
-    protected $_specialCustomerGroups = array(
+    protected $_specialCustomerTags = array(
         'Allow Invoicing',
-    	'Allow Invoicing - Exempt Org'
     );
-    protected $_specialGroupsCollection;
+    protected $_specialTagsCollection;
 
     /**
      * Payment code name
@@ -29,10 +28,10 @@ class Unl_Core_Model_Payment_Method_Invoicelater extends Mage_Payment_Model_Meth
     public function isAvailable($quote = null)
     {
         if (parent::isAvailable($quote)) {
-            if (!empty($quote)) {
-                $customer = $quote->getCustomer();
-                foreach ($this->_getSpecialCustomerGroupsCollection() as $group) {
-                    if ($customer->getGroupId() == $group->getId()) {
+            if (!empty($quote) && $quote->getCustomer()->getId()) {
+                $tagIds = Mage::helper('unl_customertag')->getTagIdsByCustomer($quote->getCustomer());
+                foreach ($this->_getSpecialCustomerTagsCollection() as $tag) {
+                    if (in_array($tag->getId(), $tagIds)) {
                         return true;
                     }
                 }
@@ -44,19 +43,19 @@ class Unl_Core_Model_Payment_Method_Invoicelater extends Mage_Payment_Model_Meth
     }
 
     /**
-     * Retieves a collection of the special customer groups
+     * Retieves a collection of the special customer tags
      *
-     * @return Mage_Customer_Model_Entity_Group_Collection
+     * @return Unl_CustomerTag_Model_Mysql4_Tag_Collection
      */
-    protected function _getSpecialCustomerGroupsCollection()
+    protected function _getSpecialCustomerTagsCollection()
     {
-        if (null === $this->_specialGroupsCollection) {
+        if (null === $this->_specialTagsCollection) {
             /* @var $collection Mage_Customer_Model_Entity_Group_Collection */
-            $collection = Mage::getModel('customer/group')->getCollection();
-            $collection->addFieldToFilter('customer_group_code', array('in' => $this->_specialCustomerGroups));
-            $this->_specialGroupsCollection = $collection;
+            $collection = Mage::getModel('unl_customertag/tag')->getCollection();
+            $collection->addFieldToFilter('name', array('in' => $this->_specialCustomerTags));
+            $this->_specialTagsCollection = $collection;
         }
 
-        return $this->_specialGroupsCollection;
+        return $this->_specialTagsCollection;
     }
 }
