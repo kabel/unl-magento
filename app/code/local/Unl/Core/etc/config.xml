@@ -153,6 +153,12 @@
                     <convert_parser_xml_excel>Unl_Core_Model_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
                 </rewrite>
             </dataflow>
+            <importexport>
+                <rewrite>
+                    <export_entity_product>Unl_Core_Model_ImportExport_Export_Entity_Product</export_entity_product>
+                    <import_entity_product>Unl_Core_Model_ImportExport_Import_Entity_Product</import_entity_product>
+                </rewrite>
+            </importexport>
             <payment>
                 <rewrite>
                     <!-- Custom availability/display logic (single store) -->
