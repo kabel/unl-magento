@@ -18,7 +18,7 @@
 .footer .form-subscribe .input-box { display:inline; }
 
 /* inline-block fix */
-.cart-table .product-image { zoom:1; }
+.cart-table .product-image { float:none; }
 
 select { margin-bottom:1px; }
 input.radio { width:13px; height:13px; }
