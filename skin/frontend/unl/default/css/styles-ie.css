@@ -17,6 +17,8 @@
 .sp-methods select.month,
 .footer .form-subscribe .input-box { display:inline; }
 
+/* inline-block fix */
+.cart-table .product-image { zoom:1; }
 
 select { margin-bottom:1px; }
 input.radio { width:13px; height:13px; }
