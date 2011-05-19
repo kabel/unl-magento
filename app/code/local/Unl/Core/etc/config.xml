@@ -463,11 +463,6 @@
     <adminhtml>
     	<cms>
     		<browser>
-    			<dirs>
-    				<exclude>
-    					<sales>sales</sales>
-    				</exclude>
-    			</dirs>
     			<extensions>
 	    			<allowed>
 	    				<pdf>1</pdf>
