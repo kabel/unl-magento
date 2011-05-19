@@ -105,4 +105,26 @@ class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_I
 
         return $collection;
     }
+
+    public function deleteDirectory($path)
+    {
+        // prevent accidental root directory deleting
+        $rootCmp = rtrim($this->getHelper()->getStorageRoot(), DS);
+        $pathCmp = rtrim($path, DS);
+
+        if ($rootCmp == $pathCmp) {
+            Mage::throwException(Mage::helper('cms')->__('Cannot delete root directory %s.', $path));
+        }
+
+        $io = new Varien_Io_File();
+
+        Mage::helper('core/file_storage_database')->deleteFolder($path);
+        if (!$io->rmdir($path, true)) {
+            Mage::throwException(Mage::helper('cms')->__('Cannot delete directory %s.', $path));
+        }
+
+        if (strpos($pathCmp, $rootCmp) === 0) {
+            $io->rmdir($this->getThumbnailRoot() . DS . ltrim(substr($pathCmp, strlen($rootCmp)), '\\/'), true);
+        }
+    }
 }
