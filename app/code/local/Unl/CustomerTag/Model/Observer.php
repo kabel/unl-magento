@@ -4,6 +4,11 @@ class Unl_CustomerTag_Model_Observer
 {
     protected $_currentCustomerTags;
 
+    protected $_invoiceCustomerTags = array(
+        'Allow Invoicing',
+    );
+    protected $_invoiceTagsCollection;
+
     public function onBlockBeforeToHtml($observer)
     {
         $block = $observer->getEvent()->getBlock();
@@ -182,5 +187,44 @@ class Unl_CustomerTag_Model_Observer
         }
 
         return $this;
+    }
+
+    public function isPaymentMethodActive($observer)
+    {
+        $method = $observer->getEvent()->getMethodInstance();
+        $result = $observer->getEvent()->getResult();
+        $quote  = $observer->getEvent()->getQuote();
+
+        if ($method instanceof Unl_Core_Model_Payment_Method_Invoicelater) {
+            $result->isAvailable = false;
+            if ($quote && $quote->getCustomer()->getId()) {
+                $tagIds = Mage::helper('unl_customertag')->getTagIdsByCustomer($quote->getCustomer());
+                foreach ($this->_getInvoiceCustomerTagsCollection() as $tag) {
+                    if (in_array($tag->getId(), $tagIds)) {
+                        $result->isAvailable = true;
+                        return $this;
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retieves a collection of the special customer tags
+     *
+     * @return Unl_CustomerTag_Model_Mysql4_Tag_Collection
+     */
+    protected function _getInvoiceCustomerTagsCollection()
+    {
+        if (null === $this->_invoiceTagsCollection) {
+            /* @var $collection Unl_CustomerTag_Model_Mysql4_Tag_Collection */
+            $collection = Mage::getModel('unl_customertag/tag')->getCollection();
+            $collection->addFieldToFilter('name', array('in' => $this->_invoiceCustomerTags));
+            $this->_invoiceTagsCollection = $collection;
+        }
+
+        return $this->_invoiceTagsCollection;
     }
 }

@@ -109,6 +109,16 @@
                     </tag_acl_check>
                 </observers>
             </unl_category_acl_check>
+            
+            <payment_method_is_active>
+                <observers>
+                    <unlcusttag_is_payment_active>
+                        <type>singleton</type>
+                        <class>unl_customertag/observer</class>
+                        <method>isPaymentMethodActive</method>
+                    </unlcusttag_is_payment_active>
+                </observers>
+            </payment_method_is_active>
         </events>
     </global>
     
