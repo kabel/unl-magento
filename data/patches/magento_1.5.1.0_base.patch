@@ -9,6 +9,7 @@ Index: .htaccess
 +    php_value max_input_time 9000
 +    php_value upload_max_filesize 700M
 +    php_value post_max_size 700M
++    php_value auto_detect_line_endings 1
  
  ############################################
  ## disable magic quotes for php request vars
