@@ -14,13 +14,13 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('attribute_set_id')
             ->addAttributeToSelect('type_id')
-            ->addAttributeToSelect('source_store_view')
             ->joinField('qty',
                 'cataloginventory/stock_item',
                 'qty',
                 'product_id=entity_id',
                 '{{table}}.stock_id=1',
-                'left');
+                'left')
+            ->joinAttribute('source_store_view', 'catalog_product/source_store_view', 'entity_id');
 
         if ($store->getId()) {
             //$collection->setStoreId($store->getId());
