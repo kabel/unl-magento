@@ -660,6 +660,17 @@ tr.summary-details-excluded { font-style:italic; }
 .products-list .desc { clear:both; padding:6px 0 0; margin:0 0 13px; line-height:1.35; }
 .products-list .desc .link-more { font-size:11px; }
 .products-list .add-to-links { clear:both; }
+
+/* View Type: Text */
+.products-text li.item { border-bottom:1px solid #d9ddd3; padding:8px 10px; }
+.products-text li.item.last { border-bottom:0; }
+.products-text .product-shop {  }
+.products-text .product-shop .right-info { float:right; }
+/* .products-text .product-shop .right-info button.button span { height:23px; line-height:18px; background-image:url(../images/bkg_btn-small.png); } */
+#maincontent .products-text .product-name { font-size:16px; margin:0 0 2px; }
+.products-text .price-box { float:left; margin:4px 13px 0 0; }
+.products-text .availability { float:left; margin:3px 0 0; }
+.products-text .product-shop .ratings { margin:0; }
 /* ======================================================================================= */
 
 /* Featured Product ====================================================================== */
