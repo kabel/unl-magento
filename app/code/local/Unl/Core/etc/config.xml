@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.22</version>
+            <version>0.1.23</version>
         </Unl_Core>
     </modules>
     
@@ -49,8 +49,12 @@
                 <rewrite>
                     <!-- Customizes the order/display of breadcrumbs -->
                     <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
+                    <!-- Customized layed navigation -->
+                    <layer_view>Unl_Core_Block_Catalog_Layer_View</layer_view>
                     <!-- Check category ACL -->
                     <navigation>Unl_Core_Block_Catalog_Navigation</navigation>
+                    <!-- Add text list mode -->
+                    <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
                 </rewrite>
             </catalog>
             <googleanalytics>
@@ -114,6 +118,12 @@
                     </warehouse>
                 </entities>
             </unl_core_mysql4>
+            <adminhtml>
+                <rewrite>
+                    <!-- Add new catalog list modes -->
+                    <system_config_source_catalog_listMode>Unl_Core_Model_System_Config_Source_Catalog_ListMode</system_config_source_catalog_listMode>
+                </rewrite>
+            </adminhtml>
             <backup>
                 <rewrite>
                     <!-- Excludes certain backup tables -->
@@ -736,6 +746,12 @@
      -->
     
     <default>
+        <catalog>
+            <frontend>
+                <text_per_page_values>20,40,80</text_per_page_values>
+                <text_per_page>20</text_per_page>
+            </frontend>
+        </catalog>
         <payment>
             <cash>
                 <active>0</active>

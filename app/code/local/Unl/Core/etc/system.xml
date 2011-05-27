@@ -1,6 +1,38 @@
 <?xml version="1.0"?>
 <config>
     <sections>
+        <catalog>
+            <groups>
+                <frontend>
+                    <fields>
+                        <text_per_page_values translate="label comment">
+                            <label>Products per Page on Text Allowed Values</label>
+                            <comment>Comma-separated.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </text_per_page_values>
+                        <text_per_page translate="label comment">
+                            <label>Products per Page on Text Default Value</label>
+                            <comment>Must be in the allowed values list.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </text_per_page>
+                        <list_allow_all>
+                            <sort_order>10</sort_order>
+                        </list_allow_all>
+                        <default_sort_by>
+                            <sort_order>50</sort_order>
+                        </default_sort_by>
+                    </fields>
+                </frontend>
+            </groups>
+        </catalog>
 		<design>
 			<groups>
 				<contentnotice translate="label">
