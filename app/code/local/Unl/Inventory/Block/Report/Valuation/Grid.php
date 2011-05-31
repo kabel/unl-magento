@@ -21,6 +21,7 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
      */
     protected function _prepareCollection()
     {
+        /* @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
         $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
@@ -40,19 +41,28 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
 
         /* @var $indexSelect Varien_Db_Select */
         $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectValuation()->getSelect();
+        $collection->joinTable(array('iv' => $indexSelect),
+        	'product_id=entity_id',
+            array('qty' => 'qty', 'value' => 'value', 'avg_cost' => 'avg_cost'), null, 'left'
+        );
 
-        $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
-        $auditCondition = "IF(_table_qty_order.use_config_manage_stock, {$configStock}, _table_qty_order.manage_stock) && _table_audit_inventory.value";
-
-        /* @var $select Varien_Db_Select */
-        $select = $collection->getSelect();
-        $select->joinLeft(array('iv' => $indexSelect), 'e.entity_id = iv.product_id', array('qty', 'value', 'avg_cost'));
-
-        $select->where($auditCondition);
+        $collection->addExpressionAttributeToSelect('audit_active',
+            $this->_getSqlAuditCondition(),
+            array()
+        );
+        $collection->addFieldToFilter('audit_active', true);
 
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
+    }
+
+    protected function _getSqlAuditCondition()
+    {
+        $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
+        $auditCondition = "IF(_table_qty_order.use_config_manage_stock, {$configStock}, _table_qty_order.manage_stock) && _table_audit_inventory.value";
+
+        return $auditCondition;
     }
 
     /**
