@@ -65,7 +65,7 @@ class Unl_Ship_IndexController extends Mage_Adminhtml_Controller_Action
 	        }
 
 	        $collection = Mage::getModel('sales/order')->getResourceCollection();
-	        $collection->addFieldToFilter($collection->getIdFieldName(), array('in' => $orderIds));
+	        $collection->addFieldToFilter('entity_id', array('in' => $orderIds));
             foreach ($collection as $order) {
                 if ($order->canShip()) {
                     $count++;
