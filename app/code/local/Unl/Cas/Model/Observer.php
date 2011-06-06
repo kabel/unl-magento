@@ -32,13 +32,15 @@ class Unl_Cas_Model_Observer
         $quote    = $observer->getEvent()->getPayment()->getQuote();
         $customer = $quote->getCustomer();
 
-        if ($data->getMethod() == 'purchaseorder') {
-            Mage::helper('unl_cas')->authorizeCostObject($customer);
-        } else {
-            Mage::helper('unl_cas')->revokeCostObjectAuth($customer);
-        }
+        if ($customer->getId()) {
+            if ($data->getMethod() == 'purchaseorder') {
+                Mage::helper('unl_cas')->authorizeCostObject($customer);
+            } else {
+                Mage::helper('unl_cas')->revokeCostObjectAuth($customer);
+            }
 
-        $quote->setCustomer($customer);
+            $quote->setCustomer($customer);
+        }
     }
 
     public function isPaymentMethodActive($observer)
