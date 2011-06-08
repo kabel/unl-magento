@@ -3,25 +3,25 @@
     <div class="footer_col">
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/feedback.html'); ?>
     </div>
-    <div class="footer_col">
+    <div class="footer_col"><!-- TemplateBeginEditable name="leftcollinks" -->
         <h3>Related Links</h3>
         <ul>
             <li><a href="http://www.huskers.com/">Athletics</a></li>
             <li><a href="http://www.liedcenter.org/">Lied Center for Performing Arts</a></li>
         </ul>
-    </div>
-    <div class="footer_col">
+    <!-- TemplateEndEditable --></div>
+    <div class="footer_col"><!-- TemplateBeginEditable name="contactinfo" -->
         <h3>Contacting Us</h3>
         <div class="contact">
             <?php echo $this->getChildHtml('contact_link') ?>
             <address><?php echo nl2br(Mage::getStoreConfig('general/store_information/address')) ?></address>
             <p><?php echo $this->__('Customer Support')?>: <?php echo Mage::getStoreConfig('general/store_information/phone') ?></p>
-        </div></div>
+        </div><!-- TemplateEndEditable --></div>
     <div class="footer_col">
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/socialmediashare.html'); ?>
     </div>
-
-    <div id="wdn_copyright">
+    <!-- TemplateBeginEditable name="optionalfooter" --> <!-- TemplateEndEditable -->
+    <div id="wdn_copyright"><!-- TemplateBeginEditable name="footercontent" -->
         <div class="col-links left">
             <div class="link-col left">
                 <div><strong>Store Exclusive</strong></div>
@@ -38,6 +38,7 @@
         <div class="clearer"></div>
         <p>Powered By Magento <?php echo $this->__('(ver. %s)', Mage::getVersion()) ?></p><br />
         <?php echo $this->getCopyright() ?>
+        <!-- TemplateEndEditable -->
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/wdn.html'); ?>
         | <a href="http://validator.unl.edu/check/referer">W3C</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS</a> <a href="http://www.unl.edu/" title="UNL Home" id="wdn_unl_wordmark"><img src="/wdn/templates_3.0/css/footer/images/wordmark.png" alt="UNL's wordmark" /></a>
     </div>

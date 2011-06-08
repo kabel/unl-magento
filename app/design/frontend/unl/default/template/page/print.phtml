@@ -16,11 +16,13 @@
         <h1>University of Nebraska&ndash;Lincoln</h1>
     </div>
     <div id="wdn_content_wrapper">
-        <div id="titlegraphic">
+        <div id="titlegraphic"><!-- TemplateBeginEditable name="titlegraphic" -->
             <h1>Marketplace</h1>
-        </div>
-        <div id="pagetitle"> </div>
+        <!-- TemplateEndEditable --></div>
+        <div id="pagetitle"><!-- TemplateBeginEditable name="pagetitle" --> <!-- TemplateEndEditable --></div>
         <div id="maincontent">
+            <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
+            <!-- TemplateBeginEditable name="maincontentarea" -->
             <?php if ($this->getPrintLogoText()):?>
                 <address><?php echo nl2br($this->htmlEscape($this->getPrintLogoText())) ?></address>
             <?php endif;?>
@@ -28,14 +30,16 @@
             <div class="buttons-set">
                 <button type="button" title="<?php echo $this->__('Close Window') ?>" class="button" onclick="window.close();"><span><span><?php echo $this->__('Close Window') ?></span></span></button>
             </div>
+            <!-- TemplateEndEditable -->
             <div class="clear"></div>
-            
             <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/noscript.html'); ?>
+            <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
         </div>
         <div id="footer">
             <div id="footer_floater"></div>
             <div id="wdn_copyright"><!-- TemplateBeginEditable name="footercontent" -->
                 &copy; 2010 University of Nebraska&ndash;Lincoln | Lincoln, NE 68588
+                <!-- TemplateEndEditable -->
                 <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/wdn.html'); ?>
                 | <a href="http://validator.unl.edu/check/referer">W3C</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS</a> <a href="http://www.unl.edu/" title="UNL Home" id="wdn_unl_wordmark"><img src="/wdn/templates_3.0/css/footer/images/wordmark.png" alt="UNL's wordmark" /></a> </div>
         </div>

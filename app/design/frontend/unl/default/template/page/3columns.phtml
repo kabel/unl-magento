@@ -16,15 +16,17 @@
     <?php echo $this->getChildHtml('header') ?>
     <?php echo $this->getChildHtml('breadcrumbs') ?>
     <div id="wdn_content_wrapper">
-        <div id="titlegraphic">
+        <div id="titlegraphic"><!-- TemplateBeginEditable name="titlegraphic" -->
         <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
             <h1>Marketplace</h1>
         <?php else: ?>
             <h1><?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()); ?></h1>
         <?php endif; ?>
-        </div>
-        <div id="pagetitle"> </div>
+        <!-- TemplateEndEditable --></div>
+        <div id="pagetitle"><!-- TemplateBeginEditable name="pagetitle" --> <!-- TemplateEndEditable --></div>
         <div id="maincontent">
+            <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
+            <!-- TemplateBeginEditable name="maincontentarea" -->
             <div class="four_col left">
                 <div class="subnav">
                     <div class="subnav_wrapper">
@@ -50,8 +52,10 @@
             <div class="col right">
                 <?php echo $this->getChildHtml('right') ?>
             </div>
-
+            <!-- TemplateEndEditable -->
+            <div class="clear"></div>
             <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/noscript.html'); ?>
+            <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
         </div>
         <?php echo $this->getChildHtml('footer') ?>
     </div>

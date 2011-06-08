@@ -11,8 +11,14 @@
     create a derivative work.
     This message may not be removed from any pages based on the UNL site template.
 
-    $Id: php.fixed.dwt.php 536 2009-07-23 15:47:30Z bbieber2 $
+    $Id: php.fixed.dwt.php 1390 2010-11-18 15:24:33Z bbieber2 $
 -->
+<link rel="stylesheet" type="text/css" media="screen" href="/wdn/templates_3.0/css/all.css" />
+<link rel="stylesheet" type="text/css" media="print" href="/wdn/templates_3.0/css/print.css" />
+<script type="text/javascript" src="/wdn/templates_3.0/scripts/all.js"></script>
+<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/browserspecifics.html'); ?>
+<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/metanfavico.html'); ?>
+<!-- TemplateBeginEditable name="doctitle" -->
 <title>
 <?php if (substr($this->getTitle(), 0, 3) == 'UNL'): ?>
     <?php echo $this->getTitle() ?>
@@ -20,6 +26,8 @@
     UNL | Marketplace<?php if (Mage::app()->getStore()->getCode() != 'default'): ?> | <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?><?php endif; ?> | <?php echo $this->getTitle() ?>
 <?php endif; ?>
 </title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" -->
+<!-- Place optional header elements here -->
 <link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
 <?php if (Mage::helper('unl_cas')->getAuth()->isLoggedIn()): ?>
 <link rel="logout" href="<?php echo $this->getUrl('customer/account/logout') ?>" />
@@ -31,12 +39,6 @@
 //]]>
 </script>
 
-<link rel="stylesheet" type="text/css" media="screen" href="/wdn/templates_3.0/css/all.css" />
-<link rel="stylesheet" type="text/css" media="print" href="/wdn/templates_3.0/css/print.css" />
-<script type="text/javascript" src="/wdn/templates_3.0/scripts/all.js"></script>
-<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/browserspecifics.html'); ?>
-<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/metanfavico.html'); ?>
-
 <meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
 <meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
 <meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
@@ -45,3 +47,4 @@
 <?php echo $this->getChildHtml() ?>
 <?php echo $this->helper('core/js')->getTranslatorScript() ?>
 <?php echo $this->getIncludes() ?>
+<!-- TemplateEndEditable -->

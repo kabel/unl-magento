@@ -1,6 +1,8 @@
 <?php /* @var $this Mage_Page_Block_Html_Breadcrumbs */ ?>
 <div id="wdn_navigation_bar">
     <div id="breadcrumbs">
+        <!-- WDN: see glossary item 'breadcrumbs' -->
+        <!-- TemplateBeginEditable name="breadcrumbs" -->
         <ul>
             <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
             <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
@@ -34,14 +36,14 @@
             <?php endforeach; ?>
             <?php endif; ?>
         </ul>
-    </div>
+    <!-- TemplateEndEditable --></div>
     <div id="wdn_navigation_wrapper">
-        <div id="navigation">
+        <div id="navigation"><!-- TemplateBeginEditable name="navlinks" -->
         <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
             <?php echo $this->getChildHtml('store_switcher') ?>
         <?php else: ?>
             <?php echo $this->getChildHtml('topMenu') ?>
         <?php endif; ?>
-        </div>
+        <!-- TemplateEndEditable --></div>
     </div>
 </div>
