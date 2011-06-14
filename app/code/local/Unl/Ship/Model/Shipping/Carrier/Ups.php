@@ -759,6 +759,7 @@ XMLRequest;
                 'length' => $pkg->getLength(),
                 'reference_code' => 'TN',  //2 chars, optional - default 'TN' (Transaction Reference Number) - Order ID
                 'reference_value' => substr($order->getRealOrderId(), 0, 35), //35 chars, optional - order_id
+                'description' => ''
             );
 
             //reference codes can only be used in US domestic shipments

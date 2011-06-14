@@ -772,6 +772,11 @@
             <verisign>
             	<reference_txn>0</reference_txn>
             </verisign>
+            <!-- ensure GoogleCheckout is NOT active -->
+            <googlecheckout>
+                <active>0</active>
+                <model></model>
+            </googlecheckout>
         </payment>
         <carriers>
             <pickup>

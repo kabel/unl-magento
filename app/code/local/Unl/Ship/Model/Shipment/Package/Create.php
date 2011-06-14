@@ -102,7 +102,7 @@ class Unl_Ship_Model_Shipment_Package_Create
                 ->setOrder($order)
                 ->setPackages($packages);
 
-
+            $address = false;
             if (isset($post['shipping_address'])) {
                 $saveToOrder = isset($post['shipping_address']['save_to_order']);
                 $address = $order->getShippingAddress();

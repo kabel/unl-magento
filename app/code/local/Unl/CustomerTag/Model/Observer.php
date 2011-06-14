@@ -147,7 +147,7 @@ class Unl_CustomerTag_Model_Observer
                 $collection = Mage::getResourceModel('unl_customertag/tag_collection')->addCustomerFilter($session->getCustomer()->getId());
                 $this->_currentCustomerTags = $collection->getAllIds();
             }
-            foreach ($customerTags as $tagId) {
+            foreach ($this->_currentCustomerTags as $tagId) {
                 if (in_array($tagId, $acl)) {
                     return $this;
                 }
