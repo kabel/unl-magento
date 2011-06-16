@@ -208,33 +208,36 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         $productId = $item->getProduct()->getId();
         $product = Mage::getModel('catalog/product')->load($productId);
 
-        if ($acl = $product->getProductGroupAcl()) {
-            try {
-                $doRedirect = false;
-                switch ($this->_getCustomerAllowedProduct($product)) {
-                    case self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_LOGIN:
-                        $doRedirect = true;
-                        Mage::throwException($this->__('You must be logged in and authorized to order this product'));
-                        break;
-                    case self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL:
-                        Mage::throwException($this->__('You are not authorized to order this product'));
-                        break;
-                }
-            } catch (Mage_Core_Exception $e) {
-                $item->setMessage($e->getMessage())
-                    ->setHasError(true);
-                if ($item->getParentItem()) {
-                    $item->getParentItem()->setMessage($e->getMessage());
+        try {
+            $doRedirect = false;
+            switch ($this->_getCustomerAllowedProduct($product)) {
+                case self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_LOGIN:
+                    $doRedirect = true;
+                    Mage::throwException($this->__('You must be logged in and authorized to order this product'));
+                    break;
+                case self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL:
+                    Mage::throwException($this->__('You are not authorized to order this product'));
+                    break;
+            }
+        } catch (Mage_Core_Exception $e) {
+            $item->setMessage($e->getMessage())
+                ->setHasError(true);
+            if ($item->getParentItem()) {
+                $item->getParentItem()->setMessage($e->getMessage());
+            }
+
+            $item->getQuote()->setHasError(true)
+                ->addMessage($this->__('Some of the products cannot be ordered because you are not authorized'), 'security');
+
+            if ($doRedirect) {
+                $url = $this->_getUrl('customer/account/login');
+                if (Mage::app()->getRequest()->getActionName() == 'add') {
+                    throw $e;
                 }
 
-                $item->getQuote()->setHasError(true)
-                    ->addMessage($this->__('Some of the products cannot be ordered because you are not authorized'), 'security');
-
-                if ($doRedirect) {
-                    Mage::getSingleton('core/session')->addNotice($e->getMessage());
-                    $checkout = Mage::getSingleton('checkout/session');
-                    $checkout->setConsume(true);
-                    $checkout->setRedirectUrl(Mage::getUrl('customer/account/login'));
+                if (Mage::app()->getRequest()->getActionName() != 'login') {
+                    Mage::getSingleton('core/session')->addNotice($this->__('You must be logged in and authoried to order an item in your cart'));
+                    Mage::app()->getResponse()->setRedirect($url);
                 }
             }
         }
