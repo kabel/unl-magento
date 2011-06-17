@@ -92,6 +92,10 @@
                     <image>Unl_Core_Helper_Catalog_Image</image>
                 </rewrite>
             </catalog>
+            <payment>
+                <!-- Fix disabled model issue -->
+                <data>Unl_Core_Helper_Payment_Data</data>
+            </payment>
             <shipping>
                 <rewrite>
                     <!-- Fix missing store_id -->
