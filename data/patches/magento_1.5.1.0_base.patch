@@ -42,6 +42,14 @@ Index: .htaccess
  
  </IfModule>
  
+@@ -132,6 +136,7 @@
+ ## always send 404 on missing files in these folders
+ 
+     RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
++    RewriteCond %{REQUEST_URI} !^/(server-status)
+ 
+ ############################################
+ ## never rewrite for existing files, directories and links
 @@ -161,6 +164,7 @@
  ## Add default Expires header
  ## http://developer.yahoo.com/performance/rules.html#expires
