@@ -47,7 +47,7 @@ class Unl_Core_Model_Backup_Rsync
             $path = '.';
         }
         $today = date('l');
-        $baseCmd = 'rsync --delete -aze "ssh -o StrictHostKeyChecking=no -i ' . $keyPath . '"';
+        $baseCmd = 'rsync --delete -aze "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ' . $keyPath . '"';
 
         // clear last weeks incremental backup
         $this->_createEmptyDirIfNotExists();
