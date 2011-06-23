@@ -47,7 +47,9 @@ class Unl_Core_Model_Backup_Rsync
             $path = '.';
         }
         $today = date('l');
-        $baseCmd = 'rsync --delete -aze "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ' . $keyPath . '"';
+        $baseCmd = 'rsync --delete -aze "ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ' . $keyPath . '"';
+        $tmpErrorLog = Mage::getBaseDir('var') . DS . 'log' . DS . 'tmpCron.log';
+        $errorRedir = ' 2>>' . $tmpErrorLog;
 
         // clear last weeks incremental backup
         $this->_createEmptyDirIfNotExists();
@@ -55,13 +57,21 @@ class Unl_Core_Model_Backup_Rsync
         if ($user) {
             $remotePath = "$user@" . $remotePath;
         }
-        exec($baseCmd . ' ' . $this->_getEmptyDirPath() . DS . ' ' . escapeshellarg(rtrim($remotePath, '/')));
+        exec($baseCmd . ' ' . $this->_getEmptyDirPath() . DS . ' ' . escapeshellarg(rtrim($remotePath, '/')) . $errorRedir);
         $this->_removeEmptyDir();
 
         // copy DB backups
-        exec($baseCmd . ' ' . Mage::getBaseDir('var') . DS . 'backups ' . escapeshellarg($remotePath));
+        exec($baseCmd . ' ' . Mage::getBaseDir('var') . DS . 'backups ' . escapeshellarg($remotePath) . $errorRedir);
         // copy all media
-        exec($baseCmd . ' ' . Mage::getBaseDir('media') . ' ' . escapeshellarg($remotePath));
+        exec($baseCmd . ' ' . Mage::getBaseDir('media') . ' ' . escapeshellarg($remotePath) . $errorRedir);
+
+        if (file_exists($tmpErrorLog)) {
+            $errors = file_get_contents($tmpErrorLog);
+            if ($errors) {
+                Mage::log($errors, Zend_Log::WARN, 'cron.log');
+            }
+            unlink($tmpErrorLog);
+        }
 
         return $this;
     }
