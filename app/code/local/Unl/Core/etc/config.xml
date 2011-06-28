@@ -93,8 +93,10 @@
                 </rewrite>
             </catalog>
             <payment>
-                <!-- Fix disabled model issue -->
-                <data>Unl_Core_Helper_Payment_Data</data>
+                <rewrite>
+                    <!-- Fix disabled model issue -->
+                    <data>Unl_Core_Helper_Payment_Data</data>
+                </rewrite>
             </payment>
             <shipping>
                 <rewrite>
@@ -440,6 +442,7 @@
         
         <ignore_user_agents>
             <bing>Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)</bing>
+            <msnbot1>msnbot/1.1 (+http://search.msn.com/msnbot.htm)</msnbot1>
             <msnbot>msnbot/2.0b (+http://search.msn.com/msnbot.htm)._</msnbot>
             <yahoo>Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)</yahoo>
             <mj12>Mozilla/5.0 (compatible; MJ12bot/v1.3.3; http://www.majestic12.co.uk/bot.php?+)</mj12>
