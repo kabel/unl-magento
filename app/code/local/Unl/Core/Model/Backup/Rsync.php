@@ -61,9 +61,9 @@ class Unl_Core_Model_Backup_Rsync
         $this->_removeEmptyDir();
 
         // copy DB backups
-        exec($baseCmd . ' ' . Mage::getBaseDir('var') . DS . 'backups ' . escapeshellarg($remotePath) . $errorRedir);
+        exec($baseCmd . ' --exclude=".ht*" ' . Mage::getBaseDir('var') . DS . 'backups ' . escapeshellarg($remotePath) . $errorRedir);
         // copy all media
-        exec($baseCmd . ' ' . Mage::getBaseDir('media') . ' ' . escapeshellarg($remotePath) . $errorRedir);
+        exec($baseCmd . ' --exclude=".ht*" --exclude=.svn --exclude=.thumbs --exclude=tmp ' . Mage::getBaseDir('media') . ' ' . escapeshellarg($remotePath) . $errorRedir);
 
         if (file_exists($tmpErrorLog)) {
             $errors = file_get_contents($tmpErrorLog);
