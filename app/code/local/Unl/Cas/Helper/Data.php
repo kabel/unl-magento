@@ -74,17 +74,24 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
             $driver = null;
         }
 
-        $pf = new UNL_Peoplefinder($driver);
-        // The Pf Drivers now throw exceptions if a users isn't found
-        try {
-            $r = $pf->getUID($uid);
-            $this->cache($uid, $r);
-        } catch (Exception $e) {
-            if ($e->getCode() != 404) {
-                Mage::logException($e);
+        do {
+            $pf = new UNL_Peoplefinder($driver);
+            $retry = false;
+            // The Pf Drivers now throw exceptions if a users isn't found
+            try {
+                $r = $pf->getUID($uid);
+                $this->cache($uid, $r);
+            } catch (Exception $e) {
+                if ($e->getCode() != 404) {
+                    Mage::logException($e);
+                    if (null !== $driver) {
+                        $driver = null;
+                        $retry = true;
+                    }
+                }
+                $r = null;
             }
-            $r = null;
-        }
+        } while ($retry);
 
         return $r;
     }
