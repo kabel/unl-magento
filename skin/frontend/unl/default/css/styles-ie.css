@@ -1,16 +1,3 @@
-/* IE 6 only */
-* html .validation-advice { height:13px; }
-* html .main { height:350px; }
-* html .account-login .content { height:200px; }
-.block li.item,
-.block-poll li,
-.opc li.section { vertical-align:top; }
-
-* html button.button span { background-image:url(../images/bkg_btn.gif); }
-* html .form-search button.button span,
-* html .block button.button span,
-* html .product-view .box-tags .form-add button.button span { background-image:url(../images/bkg_btn-small.gif); }
-
 /* Doubled Margin Fixes */
 .product-view .product-img-box .more-views li,
 .product-view .box-tags .form-add .input-box,
