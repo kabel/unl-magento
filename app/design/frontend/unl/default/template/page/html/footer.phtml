@@ -20,23 +20,33 @@
     <div class="footer_col">
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/socialmediashare.html'); ?>
     </div>
-    <!-- TemplateBeginEditable name="optionalfooter" --> <!-- TemplateEndEditable -->
+    <!-- TemplateBeginEditable name="optionalfooter" -->
+    <div class="footer_sep"></div>
+    <div class="opfooter three_col left">
+        <div class="link-col left">
+            <div><strong>Store Exclusive</strong></div>
+            <?php echo $this->getChildHtml('footer_links') ?>
+        </div>
+        <div class="link-col">
+            <div><strong>UNL Marketplace</strong></div>
+            <?php echo $this->getChildHtml('marketplace_links') ?>
+        </div>
+    </div>
+    <div class="opfooter col right footer-payment">
+        <a href="<?php echo $this->getUrl('', array('_direct' => 'about-us', '_fragment' => 'payment')) ?>"><img src="<?php echo $this->getSkinUrl('images/payment_methods.gif')?>" alt="Accepted Credit Cards: Visa, MasterCard, Discover" /></a>
+    </div>
+    <div class="clear"></div>
+    <!-- TemplateEndEditable -->
     <div id="wdn_copyright"><!-- TemplateBeginEditable name="footercontent" -->
-        <div class="col-links left">
-            <div class="link-col left">
-                <div><strong>Store Exclusive</strong></div>
-                <?php echo $this->getChildHtml('footer_links') ?>
-            </div>
-            <div class="link-col">
-                <div><strong>UNL Marketplace</strong></div>
-                <?php echo $this->getChildHtml('marketplace_links') ?>
-            </div>
+        <!-- <div class="col-links left">
+
         </div>
         <div class="col-payment right">
-            <a href="<?php echo $this->getUrl('', array('_direct' => 'about-us', '_fragment' => 'payment')) ?>"><img src="<?php echo $this->getSkinUrl('images/payment_methods.gif')?>" alt="Accepted Credit Cards: Visa, MasterCard, Discover" /></a>
+
         </div>
         <div class="clearer"></div>
-        <p>Powered By Magento <?php echo $this->__('(ver. %s)', Mage::getVersion()) ?></p><br />
+        -->
+        <p>Powered By Magento</p><br />
         <?php echo $this->getCopyright() ?>
         <!-- TemplateEndEditable -->
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/wdn.html'); ?>
