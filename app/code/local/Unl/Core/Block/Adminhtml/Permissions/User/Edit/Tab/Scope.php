@@ -32,7 +32,10 @@ class Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Scope
 
         $scope = $model->getScope();
         if (!empty($scope)) {
-            $selStores = explode(',', $scope);
+            if (!is_array($scope)) {
+                $scope = explode(',', $scope);
+            }
+            $selStores = $scope;
         } else {
             $selStores = array();
         }
@@ -40,7 +43,10 @@ class Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Scope
 
         $scope = $model->getWarehouseScope();
         if (!empty($scope)) {
-            $selIds = explode(',', $scope);
+            if (!is_array($scope)) {
+                $scope = explode(',', $scope);
+            }
+            $selIds = $scope;
         } else {
             $selIds = array();
         }
@@ -77,10 +83,11 @@ class Unl_Core_Block_Adminhtml_Permissions_User_Edit_Tab_Scope
 
     public function isGroupSelected($group)
     {
-        $selStores = $this->getSelectedScope();
-        foreach ($group->getStoreCollection() as $store) {
-            if (in_array($store->getId(), $selStores)) {
-                return true;
+        if ($selStores = $this->getSelectedScope()) {
+            foreach ($group->getStoreCollection() as $store) {
+                if (in_array($store->getId(), $selStores)) {
+                    return true;
+                }
             }
         }
 
