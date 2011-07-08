@@ -52,7 +52,9 @@ class Unl_Core_Model_Observer
 
         $type = 'Mage_Adminhtml_Block_Catalog_Category_Tree';
         if ($block instanceof $type) {
-            $block->getChild('store_switcher')->setTemplate('unl/store/switcher/enhanced.phtml');
+            if ($child = $block->getChild('store_switcher')) {
+                $child->setTemplate('unl/store/switcher/enhanced.phtml');
+            }
             return;
         }
 
