@@ -144,15 +144,27 @@ class Unl_Core_Model_Admin_Observer
         );
 
         $controller = $observer->getEvent()->getControllerAction();
-        if (in_array($controller->getFullActionName(), $storeIdActions)) {
+        $actionName = $controller->getFullActionName();
+        if (in_array($actionName, $storeIdActions)) {
             $this->_setStoreParamFromUser('store');
             return;
-        } elseif (in_array($controller->getFullActionName(), $storeIdsActions)) {
+        } elseif (in_array($actionName, $storeIdsActions)) {
             $this->_setStoreParamFromUser('store_ids');
             return;
-        } elseif (in_array($controller->getFullActionName(), $categoryIdActions)) {
+        } elseif (in_array($actionName, $categoryIdActions)) {
             $checkParent = $controller->getFullActionName() == 'adminhtml_catalog_category_edit';
             return $this->_forceCategoryId($controller, $checkParent);
+        }
+
+        if ($actionName == 'adminhtml_system_account_save') {
+            $user = Mage::getModel('admin/user')
+                ->load(Mage::getSingleton('admin/session')->getUser()->getId());
+            if ($user->getIsCas()) {
+                $controller->getRequest()->setParam('username', $user->getUsername());
+                $controller->getRequest()->setParam('password', false);
+                $controller->getRequest()->setParam('confirmation', false);
+            }
+            return;
         }
     }
 

@@ -139,6 +139,19 @@ class Unl_Core_Model_Observer
                 ->addFieldDependence('password', 'cas_enabled', '0')
                 ->addFieldDependence('confirmation', 'cas_enabled', '0')
             );
+            return;
+        }
+
+        $type = 'Mage_Adminhtml_Block_System_Account_Edit_Form';
+        if ($block instanceof $type) {
+            $form = $block->getForm();
+            $model = Mage::getModel('admin/user')->load(Mage::getSingleton('admin/session')->getUser()->getId());
+            if ($model->getIsCas()) {
+                $fs = $form->getElement('base_fieldset');
+                $fs->removeField('username');
+                $fs->removeField('password');
+                $fs->removeField('confirmation');
+            }
         }
 
         $advFilterParents = array(
