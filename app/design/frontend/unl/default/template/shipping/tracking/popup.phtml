@@ -75,7 +75,7 @@
                         </tr>
                         <?php endif; ?>
 
-                        <?php if ($track->getShippedDate()): ?>
+                        <?php if ($track->getShippedDate() && strtotime($track->getShippedDate()) !== false): ?>
                         <tr>
                             <th class="label"><?php echo $this->__('Shipped or billed on:'); ?></th>
                             <td class="value"><?php echo $this->formatDeliveryDate($track->getShippedDate()); ?></td>
