@@ -255,10 +255,10 @@
                 </adminhtml_newsletter_template>
                 <adminhtml_notification translate="label">
                     <label>System Notifications</label>
-                    <view_actions>
+                    <save_actions>
                         <markasread />
                         <massmarkasread />
-                    </view_actions>
+                    </save_actions>
                     <delete_actions>
                         <remove />
                         <massremove />
