@@ -44,6 +44,7 @@ class Unl_AdminLog_Block_Log_Grid extends Mage_Adminhtml_Block_Widget_Grid
         foreach (Mage::getModel('admin/user')->getCollection() as $user) {
             $users[$user->getId()] = $user->getUsername();
         }
+        asort($users);
         $this->addColumn('user', array(
             'type' => 'options',
             'options' => $users,
