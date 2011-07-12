@@ -102,15 +102,19 @@ class Unl_AdminLog_Model_Observer
         $user = $observer->getEvent()->getUserName();
 //         $exception = $observer->getEvent()->getException();
 
-        $log = $this->_logFactory(array(
-            'event_module' => 'adminhtml_index',
-            'action' => Unl_AdminLog_Model_Source_Action::LOGIN,
-            'result' => Unl_AdminLog_Model_Source_Result::FAIL,
-            'action_path' => 'admin_login',
-            'action_info' => serialize($user)
-        ));
+        try {
+            $log = $this->_logFactory(array(
+                'event_module' => 'adminhtml_index',
+                'action' => Unl_AdminLog_Model_Source_Action::LOGIN,
+                'result' => Unl_AdminLog_Model_Source_Result::FAIL,
+                'action_path' => 'admin_login',
+                'action_info' => serialize($user)
+            ));
 
-        $log->save();
+            $log->save();
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
 
         return $this;
     }
@@ -124,15 +128,19 @@ class Unl_AdminLog_Model_Observer
 
         $user = $observer->getEvent()->getUser();
 
-        $log = $this->_logFactory(array(
-            'event_module' => 'adminhtml_index',
-            'action' => Unl_AdminLog_Model_Source_Action::LOGIN,
-            'result' => Unl_AdminLog_Model_Source_Result::SUCCESS,
-            'action_path' => 'admin_login',
-            'action_info' => serialize($user->getUsername())
-        ));
+        try {
+            $log = $this->_logFactory(array(
+                'event_module' => 'adminhtml_index',
+                'action' => Unl_AdminLog_Model_Source_Action::LOGIN,
+                'result' => Unl_AdminLog_Model_Source_Result::SUCCESS,
+                'action_path' => 'admin_login',
+                'action_info' => serialize($user->getUsername())
+            ));
 
-        $log->save();
+            $log->save();
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
 
         return $this;
     }
