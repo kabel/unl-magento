@@ -15,6 +15,14 @@
                 <Mage_Tax />
             </depends>
         </Unl_Core>
+        <Unl_AdminLog>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Admin />
+                <Mage_Adminhtml />
+            </depends>
+        </Unl_AdminLog>
         <Unl_BundlePlus>
             <active>true</active>
             <codePool>local</codePool>
