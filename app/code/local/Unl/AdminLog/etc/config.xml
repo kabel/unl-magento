@@ -1,0 +1,996 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_AdminLog>
+            <version>0.1.0</version>
+        </Unl_AdminLog>
+    </modules>
+    
+    <admin>
+    	<routers>
+    		<unl_adminlog>
+    			<use>admin</use>
+    			<args>
+    				<module>Unl_AdminLog</module>
+    				<frontName>unllog</frontName>
+    			</args>
+    		</unl_adminlog>
+    	</routers>
+    </admin>
+    
+    <global>
+    	<helpers>
+            <unl_adminlog>
+               <class>Unl_AdminLog_Helper</class>
+            </unl_adminlog>
+        </helpers>
+    
+        <models>
+        	<unl_adminlog>
+                <class>Unl_AdminLog_Model</class>
+                <resourceModel>unl_adminlog_mysql4</resourceModel>
+            </unl_adminlog>
+            <unl_adminlog_mysql4>
+                <class>Unl_AdminLog_Model_Mysql4</class>
+                <entities>
+                    <log>
+                        <table>unl_adminlog_log</table>
+                    </log>
+                </entities>
+            </unl_adminlog_mysql4>
+        </models>
+        
+        <resources>
+        	<unl_adminlog_setup>
+        		<setup>
+	               <module>Unl_AdminLog</module>
+	               <class>Mage_Core_Model_Resource_Setup</class>
+	            </setup>
+        	</unl_adminlog_setup>
+        </resources>
+        
+        <blocks>
+        	<unl_adminlog>
+                <class>Unl_AdminLog_Block</class>
+            </unl_adminlog>
+        </blocks>
+        
+        <events>
+            <log_log_clean_after>
+                <observers>
+                    <unl_adminlog_clean>
+                        <type>singleton</type>
+                        <class>unl_adminlog/observer</class>
+                        <method>onLogClean</method>
+                    </unl_adminlog_clean>
+                </observers>
+            </log_log_clean_after>
+        </events>
+    </global>
+    
+    <adminhtml>
+        <unl_adminlog>
+            <log_events module="unl_adminlog">
+                <adminhtml_api_role translate="label">
+                    <label>Web Services Roles</label>
+                    <id_param>rid</id_param>
+                    <view_actions>
+                        <editrole />
+                    </view_actions>
+                    <save_actions>
+                        <saverole />
+                    </save_actions>
+                    <alt_params>
+                        <role_id />
+                    </alt_params>
+                </adminhtml_api_role>
+                <adminhtml_api_user translate="label">
+                    <label>Web Services Users</label>
+                    <id_param>user_id</id_param>
+                </adminhtml_api_user>
+                <adminhtml_cache translate="label">
+                    <label>System Cache</label>
+                    <utility_actions>
+                        <cleanimages />
+                        <cleanmedia />
+                        <flushall />
+                        <flushsystem />
+                        <massenable />
+                        <massdisable />
+                        <massrefresh />
+                    </utility_actions>
+                    <alt_params>
+                        <types />
+                    </alt_params>
+                </adminhtml_cache>
+                <adminhtml_catalog_category translate="label">
+                    <label>Catalog Categories</label>
+                    <save_actions>
+                        <move />
+                    </save_actions>
+                </adminhtml_catalog_category>
+                <adminhtml_catalog_product translate="label">
+                    <label>Catalog Products</label>
+                    <save_actions>
+                        <duplicate />
+                        <massstatus />
+                        <quickcreate />
+                    </save_actions>
+                    <alt_params>
+                        <product />
+                    </alt_params>
+                </adminhtml_catalog_product>
+                <adminhtml_catalog_product_action_attribute translate="label">
+                    <label>Catalog Products Mass Update</label>
+                    <alt_params>
+                        <product />
+                    </alt_params>
+                </adminhtml_catalog_product_action_attribute>
+                <adminhtml_catalog_product_attribute translate="label">
+                    <label>Catalog Attributes</label>
+                    <id_param>attribute_id</id_param>
+                </adminhtml_catalog_product_attribute>
+                <adminhtml_catalog_product_set translate="label">
+                    <label>Catalog Attribute Sets</label>
+                </adminhtml_catalog_product_set>
+                <adminhtml_catalog_product_review translate="label">
+                    <label>Catalog Reviews</label>
+                    <view_actions>
+                        <pending />
+                    </view_actions>
+                    <save_actions>
+                        <post />
+                        <massupdatestatus />
+                        <massvisiblein />
+                    </save_actions>
+                    <alt_params>
+                        <reviews />
+                    </alt_params>
+                </adminhtml_catalog_product_review>
+                <adminhtml_catalog_search translate="label">
+                    <label>Catalog Search</label>
+                    <alt_params>
+                        <query_id />
+                        <search />
+                    </alt_params>
+                </adminhtml_catalog_search>
+                <adminhtml_cms_page translate="label">
+                    <label>CMS Pages</label>
+                    <id_param>page_id</id_param>
+                </adminhtml_cms_page>
+                <adminhtml_cms_block translate="label">
+                    <label>CMS Blocks</label>
+                    <id_param>block_id</id_param>
+                </adminhtml_cms_block>
+                <adminhtml_cms_wysiwyg_images translate="label">
+                    <label>CMS Media Gallery</label>
+                    <view_actions>
+                        <contents />
+                    </view_actions>
+                    <save_actions>
+                        <newfolder />
+                        <uploadfile />
+                    </save_actions>
+                    <delete_actions>
+                        <deletefolder />
+                        <deletefiles />
+                    </delete_actions>
+                    <alt_params>
+                        <node />
+                        <name />
+                        <files />
+                    </alt_params>
+                </adminhtml_cms_wysiwyg_images>
+                <adminhtml_customer translate="label">
+                    <label>Customers</label>
+                    <save_actions>
+                        <massassigngroup />
+                        <masssubscribe />
+                        <massunsubscribe />
+                        <wishlist condition="delete" />
+                        <cart condition="delete" />
+                    </save_actions>
+                    <alt_params>
+                        <customer_id />
+                        <customer />
+                    </alt_params>
+                </adminhtml_customer>
+                <adminhtml_customer_cart_product_composite_cart translate="label">
+                    <label>Customer Cart Item Configuration</label>
+                    <view_actions>
+                        <configure />
+                    </view_actions>
+                </adminhtml_customer_cart_product_composite_cart>
+                <adminhtml_customer_group translate="label">
+                    <label>Customer Groups</label>
+                </adminhtml_customer_group>
+                <adminhtml_customer_online translate="label">
+                    <label>Customers Online</label>
+                </adminhtml_customer_online>
+                <adminhtml_customer_wishlist_product_composite_wishlist translate="label">
+                    <label>Customer Wishlist Item Configuration</label>
+                    <view_actions>
+                        <configure />
+                    </view_actions>
+                </adminhtml_customer_wishlist_product_composite_wishlist>
+                <adminhtml_dashboard translate="label">
+                    <label>Admin Dashboard</label>
+                </adminhtml_dashboard>
+                <adminhtml_index translate="label">
+                    <label>Admin Global/Login</label>
+                    <view_actions>
+                        <forgotpassword />
+                        <logout />
+                    </view_actions>
+                </adminhtml_index>
+                <adminhtml_newsletter_problem translate="label">
+                    <label>Newsletter Problems</label>
+                </adminhtml_newsletter_problem>
+                <adminhtml_newsletter_queue translate="label">
+                    <label>Newsletter Queue</label>
+                    <view_actions>
+                        <drop />
+                        <preview />
+                    </view_actions>
+                    <utility_actions>
+                        <cancel />
+                        <pause />
+                        <resume />
+                        <sending />
+                        <start />
+                    </utility_actions>
+                </adminhtml_newsletter_queue>
+                <adminhtml_newsletter_subscriber translate="label">
+                    <label>Newsletter Subscribers</label>
+                    <save_actions>
+                        <massunsubscribe />
+                    </save_actions>
+                </adminhtml_newsletter_subscriber>
+                <adminhtml_newsletter_template translate="label">
+                    <label>Newsletter Templates</label>
+                    <view_actions>
+                        <drop />
+                        <preview />
+                    </view_actions>
+                </adminhtml_newsletter_template>
+                <adminhtml_notification translate="label">
+                    <label>System Notifications</label>
+                    <view_actions>
+                        <markasread />
+                        <massmarkasread />
+                    </view_actions>
+                    <delete_actions>
+                        <remove />
+                        <massremove />
+                    </delete_actions>
+                    <alt_params>
+                        <notification />
+                    </alt_params>
+                </adminhtml_notification>
+                <adminhtml_permissions_role translate="label">
+                    <label>System Roles</label>
+                    <id_param>rid</id_param>
+                    <view_actions>
+                        <editrole />
+                    </view_actions>
+                    <save_actions>
+                        <saverole />
+                    </save_actions>
+                    <alt_params>role_id</alt_params>
+                </adminhtml_permissions_role>
+                <adminhtml_permissions_user translate="label">
+                    <label>System Users</label>
+                    <id_param>user_id</id_param>
+                </adminhtml_permissions_user>
+                <adminhtml_poll translate="label">
+                    <label>CMS Polls</label>
+                </adminhtml_poll>
+                <adminhtml_poll_answer translate="label">
+                    <label>CMS Poll Answers</label>
+                </adminhtml_poll_answer>
+                <adminhtml_promo_catalog translate="label">
+                    <label>Catalog Promotions</label>
+                    <utility_actions>
+                        <applyrules />
+                    </utility_actions>
+                    <alt_params>
+                        <rule_id />
+                    </alt_params>
+                </adminhtml_promo_catalog>
+                <adminhtml_promo_quote translate="label">
+                    <label>Shopping Cart Promotions</label>
+                    <utility_actions>
+                        <applyrules />
+                    </utility_actions>
+                    <alt_params>
+                        <rule_id />
+                    </alt_params>
+                </adminhtml_promo_quote>
+                <adminhtml_rating translate="label">
+                    <label>Catalog Ratings</label>
+                </adminhtml_rating>
+                <adminhtml_report translate="label">
+                    <label>Reporting: Searches</label>
+                    <view_actions>
+                        <search />
+                    </view_actions>
+                </adminhtml_report>
+                <adminhtml_report_customer translate="label">
+                    <label>Reporting: Customers </label>
+                    <view_actions>
+                        <accounts />
+                        <orders />
+                        <totals />
+                    </view_actions>
+                </adminhtml_report_customer>
+                <adminhtml_report_product translate="label">
+                    <label>Reporting: Products</label>
+                    <view_actions>
+                        <downloads />
+                        <lowstock />
+                        <ordered />
+                        <sold />
+                        <viewed />
+                    </view_actions>
+                </adminhtml_report_product>
+                <adminhtml_report_review translate="label">
+                    <label>Reporting: Reviews</label>
+                    <view_actions>
+                        <customer />
+                        <product />
+                        <productdetail />
+                    </view_actions>
+                </adminhtml_report_review>
+                <adminhtml_report_sales translate="label">
+                    <label>Reporting: Sales</label>
+                    <view_actions>
+                        <bestsellers />
+                        <coupons />
+                        <invoiced />
+                        <refunded />
+                        <sales />
+                        <shipping />
+                        <tax />
+                    </view_actions>
+                </adminhtml_report_sales>
+                <adminhtml_report_shopcart translate="label">
+                    <label>Reporting: Shopping Cart</label>
+                    <view_actions>
+                        <customer />
+                        <product />
+                        <abandoned />
+                    </view_actions>
+                </adminhtml_report_shopcart>
+                <adminhtml_report_statistics translate="label">
+                    <label>Reporting: Refresh Statistics</label>
+                    <utility_actions>
+                        <refreshlifetime />
+                        <refreshrecent />
+                    </utility_actions>
+                    <alt_params>
+                        <code />
+                    </alt_params>
+                </adminhtml_report_statistics>
+                <adminhtml_report_tag translate="label">
+                    <label>Reporting: Tags</label>
+                    <view_actions>
+                        <customer />
+                        <customerdetail />
+                        <product />
+                        <productdetail />
+                        <tagdetail />
+                    </view_actions>
+                </adminhtml_report_tag>
+                <adminhtml_sales_billing_agreement translate="label">
+                    <label>Sales Billing Agreements</label>
+                    <id_param>agreement</id_param>
+                    <save_actions>
+                        <cancel />
+                    </save_actions>
+                </adminhtml_sales_billing_agreement>
+                <adminhtml_sales_creditmemo translate="label">
+                    <label>Sales Credit Memos</label>
+                    <id_param>creditmemo_id</id_param>
+                    <view_actions>
+                        <pdfcreditmemos />
+                        <print />
+                    </view_actions>
+                    <utility_acitons>
+                        <email />
+                    </utility_acitons>
+                    <alt_params>
+                        <creditmemo_ids />
+                        <invoice_id />
+                    </alt_params>
+                </adminhtml_sales_creditmemo>
+                <adminhtml_sales_invoice translate="label">
+                    <label>Sales Invoices</label>
+                    <id_param>invoice_id</id_param>
+                    <view_actions>
+                        <pdfinvoices />
+                        <print />
+                    </view_actions>
+                    <utility_actions>
+                        <email />
+                    </utility_actions>
+                    <alt_params>
+                        <invoice_ids />
+                    </alt_params>
+                </adminhtml_sales_invoice>
+                <adminhtml_sales_order translate="label">
+                    <label>Sales Orders</label>
+                    <id_param>order_id</id_param>
+                    <view_actions>
+                        <address />
+                        <massprint />
+                        <pdfcreditmemos />
+                        <pdfdocs />
+                        <pdfinvoices />
+                        <pdfshipments />
+                    </view_actions>
+                    <save_actions>
+                        <addcomment />
+                        <addresssave />
+                        <cancel />
+                        <hold />
+                        <masscancel />
+                        <masshold />
+                        <massstatus />
+                        <massunhold />
+                        <review_payment />
+                        <unhold />
+                        <voidpayment />
+                    </save_actions>
+                    <utility_actions>
+                        <email />
+                    </utility_actions>
+                    <alt_params>
+                        <address_id />
+                        <order_ids />
+                        <document />
+                    </alt_params>
+                </adminhtml_sales_order>
+                <adminhtml_sales_order_create translate="label">
+                    <label>Sales Order New</label>
+                    <view_actions>
+                        <start />
+                    </view_actions>
+                    <utility_actions>
+                        <addconfigured />
+                        <cancel />
+                        <reorder />
+                    </utility_actions>
+                    <alt_params>
+                        <customer_id />
+                    </alt_params>
+                </adminhtml_sales_order_create>
+                <adminhtml_sales_order_creditmemo translate="label">
+                    <label>Sales Order Credit Memos</label>
+                    <id_param>creditmemo_id</id_param>
+                    <view_actions>
+                        <pdfcreditmemos />
+                        <print />
+                        <start />
+                    </view_actions>
+                    <save_actions>
+                        <addcomment />
+                        <cancel />
+                        <void />
+                    </save_actions>
+                    <utility_acitons>
+                        <email />
+                    </utility_acitons>
+                    <alt_params>
+                        <id />
+                        <creditmemo_ids />
+                        <invoice_id />
+                    </alt_params>
+                </adminhtml_sales_order_creditmemo>
+                <adminhtml_sales_order_edit translate="label">
+                    <label>Sales Order Edit</label>
+                    <view_actions>
+                        <start />
+                    </view_actions>
+                    <utility_actions>
+                        <addconfigured />
+                        <cancel />
+                        <reorder />
+                    </utility_actions>
+                    <alt_params>
+                        <customer_id />
+                    </alt_params>
+                </adminhtml_sales_order_edit>
+                <adminhtml_sales_order_invoice translate="label">
+                    <label>Sales Order Invoices</label>
+                    <id_param>invoice_id</id_param>
+                    <view_actions>
+                        <pdfinvoices />
+                        <print />
+                        <start />
+                    </view_actions>
+                    <save_actions>
+                        <addcomment />
+                        <cancel />
+                        <capture />
+                        <void />
+                    </save_actions>
+                    <utility_actions>
+                        <email />
+                    </utility_actions>
+                    <alt_params>
+                        <id />
+                        <invoice_ids />
+                    </alt_params>
+                </adminhtml_sales_order_invoice>
+                <adminhtml_sales_order_shipment translate="label">
+                    <label>Sales Order Shipments</label>
+                    <id_param>shipment_id</id_param>
+                    <view_actions>
+                        <pdfshipments />
+                        <print />
+                        <start />
+                    </view_actions>
+                    <save_actions>
+                        <addcomment />
+                        <addtrack />
+                    </save_actions>
+                    <delete_actions>
+                        <removetrack />
+                    </delete_actions>
+                    <utility_actions>
+                        <email />
+                    </utility_actions>
+                    <alt_params>
+                        <id />
+                        <shipment_ids />
+                    </alt_params>
+                </adminhtml_sales_order_shipment>
+                <adminhtml_sales_order_status translate="label">
+                    <label>Sales Order Statuses</label>
+                    <id_param>status</id_param>
+                    <view_actions>
+                        <assign />
+                    </view_actions>
+                    <save_actions>
+                        <assignpost />
+                        <unassign />
+                    </save_actions>
+                </adminhtml_sales_order_status>
+                 translate="label"<adminhtml_sales_order_view_giftmessage>
+                    <label>Sales Order Gift Messages</label>
+                    <alt_params>
+                        <giftmessage />
+                    </alt_params>
+                </adminhtml_sales_order_view_giftmessage>
+                <adminhtml_sales_recurring_profile translate="label">
+                    <label>Sales Recurring Profiles</label>
+                    <id_param>profile</id_param>
+                    <save_actions>
+                        <updateprofile />
+                        <updatestate />
+                    </save_actions>
+                </adminhtml_sales_recurring_profile>
+                <adminhtml_sales_shipment translate="label">
+                    <label>Sales Shipments</label>
+                    <id_param>shipment_id</id_param>
+                    <view_actions>
+                        <pdfshipments />
+                        <print />
+                    </view_actions>
+                    <alt_params>
+                        <shipment_ids />
+                    </alt_params>
+                </adminhtml_sales_shipment>
+                <adminhtml_sales_transactions translate="label">
+                    <label>Sales Transactions</label>
+                    <id_param>txn_id</id_param>
+                    <save_actions>
+                        <fetch />
+                    </save_actions>
+                </adminhtml_sales_transactions>
+                <adminhtml_sitemap translate="label">
+                    <label>Google Sitemap</label>
+                    <id_param>sitemap_id</id_param>
+                    <utility_actions>
+                        <generate />
+                    </utility_actions>
+                </adminhtml_sitemap>
+                <adminhtml_system_account translate="label">
+                    <label>Admin My Account</label>
+                </adminhtml_system_account>
+                <adminhtml_system_backup translate="label">
+                    <label>System Backups</label>
+                    <id_param>time</id_param>
+                    <save_actions>
+                        <create />
+                    </save_actions>
+                    <view_actions>
+                        <download />
+                    </view_actions>
+                </adminhtml_system_backup>
+                <adminhtml_system_config translate="label">
+                    <label>System Configuration</label>
+                    <id_param>section</id_param>
+                </adminhtml_system_config>
+                <adminhtml_system_convent_gui translate="label">
+                    <label>System Dataflow GUI</label>
+                    <utility_actions>
+                        <run />
+                    </utility_actions>
+                    <alt_params>
+                        <profile_id />
+                    </alt_params>
+                </adminhtml_system_convent_gui>
+                <adminhtml_system_convent_profile translate="label">
+                    <label>System Dataflow GUI</label>
+                    <utility_actions>
+                        <run />
+                    </utility_actions>
+                    <alt_params>
+                        <profile_id />
+                    </alt_params>
+                </adminhtml_system_convent_profile>
+                <adminhtml_system_currency translate="label">
+                    <label>System Currency Rates</label>
+                    <save_actions>
+                        <saverates />
+                    </save_actions>
+                    <utility_actions>
+                        <fetchrates />
+                    </utility_actions>
+                    <alt_params>
+                        <rate />
+                    </alt_params>
+                </adminhtml_system_currency>
+                <adminhtml_system_design translate="label">
+                    <label>System Design Changes</label>
+                </adminhtml_system_design>
+                <adminhtml_system_email_template translate="label">
+                    <label>System Transactional Emails</label>
+                    <view_actions>
+                        <preview />
+                    </view_actions>
+                </adminhtml_system_email_template>
+                <adminhtml_system_store translate="label">
+                    <label>Manage Stores</label>
+                    <view_actions>
+                        <newstore />
+                        <newgroup />
+                        <newwebsite />
+                        <deletestore />
+                        <deletegroup />
+                        <deletewebsite />
+                        <editstore />
+                        <editgroup />
+                        <editwebsite />
+                    </view_actions>
+                    <delete_actions>
+                        <deletestorepost />
+                        <deletegrouppost />
+                        <deletewebsitepost />
+                    </delete_actions>
+                    <alt_params>
+                        <item_id />
+                        <store_id />
+                        <group_id />
+                        <website_id />
+                    </alt_params>
+                </adminhtml_system_store>
+                <adminhtml_system_variable translate="label">
+                    <label>System Variables</label>
+                    <id_param>variable_id</id_param>
+                </adminhtml_system_variable>
+                <adminhtml_tag translate="label">
+                    <label>Catalog Tags</label>
+                    <id_param>tag_id</id_param>
+                    <view_actions>
+                        <pending />
+                    </view_actions>
+                    <save_actions>
+                        <massstatus />
+                    </save_actions>
+                </adminhtml_tag>
+                <adminhtml_tax_class translate="label">
+                    <label>Tax Classes</label>
+                    <alt_params>
+                        <class_id />
+                    </alt_params>
+                </adminhtml_tax_class>
+                <adminhtml_tax_class_customer translate="label">
+                    <label>Customer Tax Classes</label>
+                </adminhtml_tax_class_customer>
+                <adminhtml_tax_class_product translate="label">
+                    <label>Catalog Product Tax Classes</label>
+                </adminhtml_tax_class_product>
+                <adminhtml_tax_rate translate="label">
+                    <label>Tax Rates</label>
+                    <id_param>rate</id_param>
+                    <view_actions>
+                        <importexport />
+                    </view_actions>
+                    <alt_params>
+                        <tax_calculation_rate_id />
+                    </alt_params>
+                </adminhtml_tax_rate>
+                <adminhtml_tax_rule translate="label">
+                    <label>Tax Rules</label>
+                    <id_param>rule</id_param>
+                    <alt_params>
+                        <rule_id />
+                    </alt_params>
+                </adminhtml_tax_rule>
+                <adminhtml_urlrewrite translate="label">
+                    <label>URL Rewrites</label>
+                </adminhtml_urlrewrite>
+                
+                <adminhtml_compiler_process translate="label">
+                    <label>System Compilation</label>
+                    <utility_actions>
+                        <run />
+                        <recompile />
+                        <disable />
+                        <enable />
+                    </utility_actions>
+                </adminhtml_compiler_process>
+                <adminhtml_extension_local translate="label">
+                    <label>Magento Connect</label>
+                </adminhtml_extension_local>
+                <adminhtml_extension_custom translate="label">
+                    <label>Magento Connect Packager</label>
+                    <utility_actions>
+                        <create />
+                    </utility_actions>
+                </adminhtml_extension_custom>
+                <adminhtml_export translate="label">
+                    <label>System Export</label>
+                    <utility_actions>
+                        <export />
+                    </utility_actions>
+                </adminhtml_export>
+                <adminhtml_import translate="label">
+                    <label>System Import</label>
+                    <utility_actions>
+                        <validate />
+                        <start />
+                    </utility_actions>
+                </adminhtml_import>
+                <adminhtml_process translate="label">
+                    <label>System Index Management</label>
+                    <id_param>process</id_param>
+                    <view_actions>
+                        <list />
+                    </view_actions>
+                    <save_actions>
+                        <masschangemode />
+                    </save_actions>
+                    <utility_actions>
+                        <massreindex />
+                        <reindexall />
+                        <reindexevent />
+                        <reindexprocess />
+                    </utility_actions>
+                </adminhtml_process>
+                <adminhtml_oscommerce_import translate="label">
+                    <label>osCommerce Import</label>
+                    <utility_actions>
+                        <run />
+                    </utility_actions>
+                    <alt_params>
+                        <import_id />
+                    </alt_params>
+                </adminhtml_oscommerce_import>
+                <adminhtml_oscommerce_order translate="label">
+                    <label>osCommerce Orders</label>
+                    <id_param>order_id</id_param>
+                </adminhtml_oscommerce_order>
+                <adminhtml_pagecache translate="label">
+                    <label>System Page Cache</label>
+                    <utility_actions>
+                        <clean />
+                    </utility_actions>
+                </adminhtml_pagecache>
+                <adminhtml_paypal_reports translate="label">
+                    <label>Reporting: PayPal Settlement Reports</label>
+                    <view_actions>
+                        <details />
+                    </view_actions>
+                    <utility_actions>
+                        <fetch />
+                    </utility_actions>
+                </adminhtml_paypal_reports>
+                <adminhtml_widget_instance translate="label">
+                    <label>CMS Widgets</label>
+                    <id_param>instance_id</id_param>
+                </adminhtml_widget_instance>
+                <adminhtml_mobile translate="label">
+                    <label>Mobile Apps</label>
+                    <view_actions>
+                        <editmessage />
+                        <editqueue />
+                        <edittemplate />
+                        <history />
+                        <newtemplate />
+                        <previewcatalog />
+                        <previewcataloghor />
+                        <previewhome />
+                        <previewhomehor />
+                        <previewproductinfo />
+                        <previewqueue />
+                        <previewtemplate />
+                        <queue />
+                        <queuemessage />
+                        <submission />
+                        <template />
+                    </view_actions>
+                    <save_actions>
+                        <cancelqueue />
+                        <masscancelqueue />
+                        <savemessage />
+                        <savetemplate />
+                        <savetheme />
+                        <submissionpost />
+                    </save_actions>
+                    <delete_actions>
+                        <deletequeue />
+                        <deletetemplate />
+                        <massdeletequeue />
+                    </delete_actions>
+                    <alt_params>
+                        <application_id />
+                        <key />
+                    </alt_params>
+                </adminhtml_mobile>
+                
+                <unl_adminlog_log translate="label">
+                    <label>Admin Action Log</label>
+                    <view_actions>
+                        <archive />
+                    </view_actions>
+                </unl_adminlog_log>
+                <unl_comm_queue translate="label">
+                    <label>Customer Communication Queue</label>
+                    <utility_actions>
+                        <cancel />
+                        <pause />
+                        <resume />
+                        <sending />
+                        <start />
+                    </utility_actions>
+                    <view_actions>
+                        <preview />
+                    </view_actions>
+                </unl_comm_queue>
+                <unl_core_report_sales_bursar translate="label">
+                    <label>Reporting: Sales - Bursar</label>
+                    <view_actions>
+                        <cc />
+                        <co />
+                        <nocap />
+                    </view_actions>
+                </unl_core_report_sales_bursar>
+                <unl_core_report_sales_reconcile translate="label">
+                    <label>Reporting: Sales - Reconcile</label>
+                    <view_actions>
+                        <cc />
+                        <co />
+                        <nocap />
+                    </view_actions>
+                </unl_core_report_sales_reconcile>
+                <unl_core_report_product translate="label">
+                    <label>Reporting: Sold Product Details</label>
+                    <view_actions>
+                        <customized />
+                        <orderdetails />
+                    </view_actions>
+                </unl_core_report_product>
+                <unl_core_sales_order_view_externalid translate="label">
+                    <label>Sales Order External Id</label>
+                </unl_core_sales_order_view_externalid>
+                <unl_core_sales_picklist translate="label">
+                    <label>Sales Picklists</label>
+                </unl_core_sales_picklist>
+                <unl_core_warehouse translate="label">
+                    <label>Manage Warehouses</label>
+                </unl_core_warehouse>
+                <unl_customertag_index translate="label">
+                    <label>Customer Tags</label>
+                </unl_customertag_index>
+                <unl_inventory_index translate="label">
+                    <label>Catalog Product Inventory</label>
+                </unl_inventory_index>
+                <unl_inventory_report translate="label">
+                    <label>Reporting: Inventory</label>
+                    <view_actions>
+                        <valuation />
+                    </view_actions>
+                </unl_inventory_report>
+                <unl_ship_index translate="label">
+                    <label>Sales Shipping Labels</label>
+                    <view_actions>
+                        <customs />
+                        <highvalue />
+                        <label />
+                        <labelpdf />
+                    </view_actions>
+                    <save_actions>
+                        <create />
+                    </save_actions>
+                    <alt_params>
+                        <order_id />
+                    </alt_params>
+                </unl_ship_index>
+                <shippingoverride_index translate="label">
+                    <label>Manage Shipping Overrides</label>
+                    <save_actions>
+                        <massstatus />
+                    </save_actions>
+                    <delete_actions>
+                        <massdelete />
+                    </delete_actions>
+                    <alt_params>
+                        <override />
+                    </alt_params>
+                </shippingoverride_index>
+                <shippingoverride_report translate="label">
+                    <label>Reporting: Shipping Overrides</label>
+                </shippingoverride_report>
+            </log_events>
+            <action_map>
+                <edit>2</edit>
+                <new>2</new>
+                <add>2</add>
+                <index>2</index>
+                <view>2</view>
+                <login>2</login>
+                <save>3</save>
+                <update>3</update>
+                <delete>4</delete>
+                <massdelete>4</massdelete>
+            </action_map>
+        </unl_adminlog>
+    
+        <events>
+        
+            <controller_action_predispatch>
+                <observers>
+                    <unl_adminlog_action_log>
+                        <type>singleton</type>
+                        <class>unl_adminlog/observer</class>
+                        <method>onActionPredispatch</method>
+                    </unl_adminlog_action_log>
+                </observers>
+            </controller_action_predispatch> 
+            <admin_session_user_login_success>
+                <observers>
+                    <unl_adminlog_action_log>
+                        <type>singleton</type>
+                        <class>unl_adminlog/observer</class>
+                        <method>onAdminLoginSucess</method>
+                    </unl_adminlog_action_log>
+                </observers>
+            </admin_session_user_login_success>
+            <admin_session_user_login_failed>
+                <observers>
+                    <unl_adminlog_action_log>
+                        <type>singleton</type>
+                        <class>unl_adminlog/observer</class>
+                        <method>onAdminLoginFail</method>
+                    </unl_adminlog_action_log>
+                </observers>
+            </admin_session_user_login_failed>
+           
+        </events>
+    </adminhtml>
+    
+    <default>
+        <system>
+            <adminlog>
+                <enabled>0</enabled>
+                <log_other>0</log_other>
+                <log_misc_events>0</log_misc_events>
+                <archive_days>30</archive_days>
+                <save_days>90</save_days>
+            </adminlog>
+        </system>
+    </default>
+</config>
