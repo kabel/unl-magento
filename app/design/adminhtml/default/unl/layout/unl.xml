@@ -158,6 +158,18 @@ Warehouse Stuff
         </reference>
     </unl_core_warehouse_edit>
 
+    <unl_adminlog_log_index>
+        <reference name="content">
+            <block type="unl_adminlog/log" name="adminlog"/>
+        </reference>
+    </unl_adminlog_log_index>
+    
+    <unl_adminlog_log_archive>
+        <reference name="content">
+            <block type="unl_adminlog/archive" name="adminlog"/>
+        </reference>
+    </unl_adminlog_log_archive>
+
 <!-- 
 Auto Ship Module
 -->
