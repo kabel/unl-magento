@@ -1,5 +1,6 @@
 /* Reset ================================================================================= */
 /* Lists */
+tbody { vertical-align: middle; }
 #maincontent ul, #maincontent ol         { list-style:none; padding:0; }
 #maincontent dd                          { padding: 0 }
 body.fixed #maincontent { overflow: visible; }
