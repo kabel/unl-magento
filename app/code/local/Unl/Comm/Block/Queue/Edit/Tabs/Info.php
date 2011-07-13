@@ -1,6 +1,7 @@
 <?php
 
-class Unl_Comm_Block_Queue_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
+class Unl_Comm_Block_Queue_Edit_Tabs_Info extends Mage_Adminhtml_Block_Widget_Form
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     protected function _prepareForm()
     {
@@ -9,7 +10,8 @@ class Unl_Comm_Block_Queue_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
         $form = new Varien_Data_Form();
 
         $fieldset = $form->addFieldset('base_fieldset', array(
-            'legend'    =>  Mage::helper('unl_comm')->__('Queue Information')
+            'legend'    =>  Mage::helper('unl_comm')->__('Queue Information'),
+            'class'     => 'fieldset-wide'
         ));
 
         $outputFormat = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
@@ -115,7 +117,7 @@ class Unl_Comm_Block_Queue_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
                 'state'     => 'html',
                 'required'  => true,
                 'value'     => $queue->getMessageText(),
-                'style'     => 'width:98%; height: 600px;',
+                'style'     => 'width:95%; height: 600px;',
                 'config'    => $wysiwygConfig
             ));
 
@@ -123,7 +125,7 @@ class Unl_Comm_Block_Queue_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
                 'name'          => 'styles',
                 'label'         => Mage::helper('unl_comm')->__('Message Styles'),
                 'value'         => $queue->getMessageStyles(),
-                'style'         => 'width:98%; height: 300px;',
+                'style'         => 'width:95%; height: 300px;',
             ));
         }
 
@@ -149,4 +151,26 @@ class Unl_Comm_Block_Queue_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
         ));
     }
 
+    /**
+    * ######################## TAB settings #################################
+    */
+    public function getTabLabel()
+    {
+        return Mage::helper('unl_comm')->__('Queue Information');
+    }
+
+    public function getTabTitle()
+    {
+        return Mage::helper('unl_comm')->__('Queue Information');
+    }
+
+    public function canShowTab()
+    {
+        return true;
+    }
+
+    public function isHidden()
+    {
+        return false;
+    }
 }

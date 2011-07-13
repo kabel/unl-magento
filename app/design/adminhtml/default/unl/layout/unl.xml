@@ -243,8 +243,14 @@ Unl_Comm Module
     <unl_comm_queue_edit>
     	<update handle="editor"/>
     	<reference name="content">
-    		<block type="unl_comm/queue_edit" name="queue_edit" template="unl/comm/queue/edit.phtml" />
+    		<block type="unl_comm/queue_edit" name="queue_edit" template="unl/comm/queue/edit.phtml"/>
     	</reference>
+        <reference name="left">
+            <block type="unl_comm/queue_edit_tabs" name="comm_queue_tabs">
+                <action method="addTab"><name>queue_info</name><block>unl_comm/queue_edit_tabs_info</block></action>
+                <action method="addTab"><name>queue_recipients</name><block>unl_comm/queue_edit_tabs_recipients</block></action>
+            </block>
+        </reference>
     </unl_comm_queue_edit>
 
 <!-- 

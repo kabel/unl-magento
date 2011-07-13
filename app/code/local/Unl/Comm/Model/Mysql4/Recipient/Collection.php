@@ -17,7 +17,7 @@ class Unl_Comm_Model_Mysql4_Recipient_Collection extends Mage_Customer_Model_Ent
 
     public function useQueue(Unl_Comm_Model_Queue $queue)
     {
-        $this->getSelect()->join(array('link' => $this->getTable('unl_comm/queue_link')), 'link.customer_id = e.entity_id', array())
+        $this->getSelect()->join(array('link' => $this->getTable('unl_comm/queue_link')), 'link.customer_id = e.entity_id', array('queue_sent_at' => 'sent_at'))
             ->where("link.queue_id = ?", $queue->getId());
         $this->_queueJoinedFlag = true;
         return $this;

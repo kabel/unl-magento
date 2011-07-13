@@ -17,17 +17,6 @@ class Unl_Comm_Block_Queue_Edit extends Mage_Adminhtml_Block_Template
         return $this->getQueue()->getCustomerIds();
     }
 
-    protected function _beforeToHtml() {
-
-        $this->setTemplate('unl/comm/queue/edit.phtml');
-
-        $this->setChild('form',
-            $this->getLayout()->createBlock('unl_comm/queue_edit_form','form')
-        );
-
-        return parent::_beforeToHtml();
-    }
-
     protected function _prepareLayout()
     {
         // Load Wysiwyg on demand and Prepare layout

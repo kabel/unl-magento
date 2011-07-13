@@ -162,26 +162,42 @@ class Unl_Comm_QueueController extends Mage_Adminhtml_Controller_Action
         $this->_redirect('*/*/edit');
     }
 
-    public function editAction()
+    protected function _initQueue()
     {
-        $this->_title($this->__('Customers'))->_title($this->__('Communication Queue'));
-
         $queue = Mage::getModel('unl_comm/queue');
         Mage::register('current_queue', $queue);
 
         $id = $this->getRequest()->getParam('id');
-        $customersIds = Mage::getSingleton('adminhtml/session')->getCommCustomerIds(true);
+        $customersIds = $this->_getSession()->getCommCustomerIds();
         if (is_string($customersIds)) {
             $customersIds = explode(',', $customersIds);
         }
 
         if ($id) {
+            $this->_getSession()->unsetData('comm_customer_ids');
             $queue = $queue->load($id);
+            if (!$queue->getId()) {
+                $this->_getSession()->addError($this->__('This queue no longer exists.'));
+                $this->_redirect('*/*/');
+                return false;
+            }
         } elseif (empty($customersIds)) {
             $this->_redirect('adminhtml/customer/');
-            return;
+            return false;
         } else {
             $queue->setCustomerIds($customersIds);
+        }
+
+        return $queue;
+    }
+
+    public function editAction()
+    {
+        $this->_title($this->__('Customers'))->_title($this->__('Communication Queue'));
+
+        $queue = $this->_initQueue();
+        if (!$queue) {
+            return;
         }
 
         $this->_title($this->__('Edit Queue'));
@@ -200,12 +216,18 @@ class Unl_Comm_QueueController extends Mage_Adminhtml_Controller_Action
         $this->renderLayout();
     }
 
+    public function recipientsAction()
+    {
+        $this->_initQueue();
+        $this->getResponse()->setBody($this->getLayout()->createBlock('unl_comm/queue_edit_tabs_recipients')->toHtml());
+    }
+
     public function saveAction()
     {
         try {
             /* @var $queue Unl_Comm_Model_Queue */
             $queue = Mage::getModel('unl_comm/queue');
-
+            $sessionIds = $this->_getSession()->getCommCustomerIds(true);
             $customer = $this->getRequest()->getParam('customer');
             if ($customer) {
                 $customerIds = explode(',', $customer);
