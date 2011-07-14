@@ -942,6 +942,7 @@
                 <index>2</index>
                 <view>2</view>
                 <login>2</login>
+                <denied>2</denied>
                 <save>3</save>
                 <update>3</update>
                 <delete>4</delete>

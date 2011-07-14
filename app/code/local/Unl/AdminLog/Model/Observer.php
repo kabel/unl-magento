@@ -15,7 +15,7 @@ class Unl_AdminLog_Model_Observer
             return $this;
         }
 
-        if (in_array($request->getActionName(), array('noroute', 'denied'))) {
+        if (in_array($request->getActionName(), array('noroute'))) {
             return $this;
         }
 
