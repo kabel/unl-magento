@@ -17,16 +17,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             );
 
 
-        $select = false;
-        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
-            $select = $this->_getOrderItemSelect()->where('source_store_view IN (?)', $scope);
-            if ($whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope()) {
-                $select->where('warehouse IN (?)', $whScope);
-            }
-
-            $collection->getSelect()
-                ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
-        }
+        $select = Mage::helper('unl_core')->addAdminScopeFilters($collection, true);
 
         $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('order');
         if (!empty($advfilter) && $advfilter->hasData()) {

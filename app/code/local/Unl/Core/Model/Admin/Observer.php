@@ -327,23 +327,6 @@ class Unl_Core_Model_Admin_Observer
     public function onRssOrderNewCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
-
-        $scope = Mage::helper('unl_core')->getAdminUserScope();
-        if ($scope) {
-            $order_items = Mage::getModel('sales/order_item')->getCollection();
-            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
-            $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
-                ->columns(array('order_id'))
-                ->where('source_store_view IN (?)', $scope)
-                ->group('order_id');
-
-            $whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope();
-            if ($whScope) {
-                $select->where('warehouse IN (?)', $whScope);
-            }
-
-            $collection->getSelect()
-                ->joinInner(array('scope' => $select), 'e.entity_id = scope.order_id', array());
-        }
+        Mage::helper('unl_core')->addAdminScopeFilters($collection, true);
     }
 }

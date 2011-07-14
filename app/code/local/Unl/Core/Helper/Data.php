@@ -76,6 +76,42 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $scope;
     }
 
+    /**
+     * Adds the admin user scope filters to a sales collection
+     *
+     * @param Varien_Data_Collection_Db $collection
+     * @param boolean $withState
+     *
+     * @return Varien_Db_Select
+     */
+    public function addAdminScopeFilters($collection, $withState = false)
+    {
+        $select = null;
+
+        if ($scope = $this->getAdminUserScope()) {
+            $order_items = Mage::getModel('sales/order_item')->getCollection();
+            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+            $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
+                ->columns(array('order_id'))
+                ->group('order_id')
+                ->where('source_store_view IN (?)', $scope);
+
+            if ($whScope = $this->getAdminUserWarehouseScope()) {
+                if ($withState) {
+                    $collection->addFieldToFilter('state', array(
+                    	'nin' => Mage::getModel('unl_core/warehouse')->getFilterStates()
+                    ));
+                }
+                $select->where('warehouse IN (?)', $whScope);
+            }
+
+            $collection->getSelect()
+                ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
+        }
+
+        return $select;
+    }
+
     public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
     {
         $_cat = $category;
