@@ -17,7 +17,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             );
 
 
-        $select = Mage::helper('unl_core')->addAdminScopeFilters($collection, true);
+        $select = Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true);
 
         $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('order');
         if (!empty($advfilter) && $advfilter->hasData()) {

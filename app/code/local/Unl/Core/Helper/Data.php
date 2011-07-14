@@ -80,11 +80,12 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
      * Adds the admin user scope filters to a sales collection
      *
      * @param Varien_Data_Collection_Db $collection
+     * @param string $joinColumn
      * @param boolean $withState
      *
      * @return Varien_Db_Select
      */
-    public function addAdminScopeFilters($collection, $withState = false)
+    public function addAdminScopeFilters($collection, $joinColumn = 'order_id', $withState = false)
     {
         $select = null;
 
@@ -106,7 +107,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             $collection->getSelect()
-                ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
+                ->join(array('scope' => $select), 'main_table.' . $joinColumn . ' = scope.order_id', array());
         }
 
         return $select;
