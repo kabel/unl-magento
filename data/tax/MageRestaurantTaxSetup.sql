@@ -7,4 +7,4 @@ VALUES
 INSERT INTO `tax_calculation_rule`
 	(`code`, `priority`, `position`)
 VALUES
-	('Retail-Restaurant-Rate 1',1,4);
+	('Retail-Restaurant-Rate 1',5,1);
