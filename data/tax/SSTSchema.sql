@@ -106,5 +106,97 @@ CREATE TABLE `boundaries` (
   `boundary_id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`boundary_id`),
   KEY `IX_BOUNDARY_RECORD_TYPE` (`record_type`),
-  KEY `IX_BOUNDARY_CITY_STREET` (`city_name`,`street_name`)
+  KEY `IX_BOUNDARY_CITY_STREET` (`city_name`,`street_name`),
+  KEY `IX_BOUNDARY_FIPS_PLACE` (`fips_place_number`)
 ) ENGINE=MyISAM;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE `fetch_city_plus_rates`(IN state_id int, IN city_fips char(5), IN plus_info VARCHAR(100), IN rate DECIMAL(6,5))
+BEGIN
+SELECT 
+
+  CONCAT('US-NE-', CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR), '-CityFips+-', b.fips_place_number, '-', plus_info) AS code,
+
+  'US' AS country,
+
+  state_id AS state,
+
+  CONCAT(CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR)) AS postal_code,
+
+  rate * 100 AS rate
+FROM boundaries b
+
+WHERE record_type = 'A'
+  AND NOW() BETWEEN b.begin_date AND b.end_date
+
+  AND b.fips_place_number = city_fips
+ORDER BY b.zip_code, b.plus_4;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE `fetch_city_rates`(IN state_id int)
+BEGIN
+SELECT 
+
+  CONCAT('US-NE-', CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR), '-CityFips-', b.fips_place_number) AS code,
+
+  'US' AS country,
+
+  state_id AS state,
+
+  CONCAT(CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR)) AS postal_code,
+
+  r.general_tax_rate_intra * 100 AS rate
+FROM boundaries b
+
+INNER JOIN rates r ON b.fips_place_number = r.jurisdiction_fips_code AND r.jurisdiction_type = 01
+WHERE record_type = 'A'
+  AND NOW() BETWEEN b.begin_date AND b.end_date
+
+  AND NOW() BETWEEN r.begin_date AND r.end_date
+  AND b.fips_place_number <> ''
+ORDER BY b.zip_code, b.plus_4, b.fips_place_number DESC;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE `fetch_county_rates`(IN state_id int)
+BEGIN
+SELECT 
+
+  CONCAT('US-NE-', CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR), '-CountyFips-', b.fips_county_code) AS code,
+
+  'US' AS country,
+
+  state_id AS state,
+
+  CONCAT(CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR)) AS postal_code,
+
+  r.general_tax_rate_intra * 100 AS rate
+FROM boundaries b
+
+INNER JOIN rates r ON b.fips_county_code = r.jurisdiction_fips_code AND r.jurisdiction_type = 00
+WHERE record_type = 'A'
+  AND NOW() BETWEEN b.begin_date AND b.end_date
+
+  AND NOW() BETWEEN r.begin_date AND r.end_date
+  AND b.fips_county_code <> ''
+ORDER BY b.zip_code, b.plus_4, b.fips_county_code DESC;
+END$$
+
+DELIMITER ;
