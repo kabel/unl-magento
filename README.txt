@@ -44,30 +44,15 @@ Once installation is complete you can remove write permissions from app/etc
     chmod o-w app/etc
     
 After "online" installation, there are a couple of MySQL data imports that need to occur (separated for install speed)
-NOTE: These MySQL queries/scripts will take A WHILE to run as they insert around half a million records. Be patient!
 
 cd /path/to/unl-magento/data/tax
 
-* Unzip NEB.txt.zip
 * Login to mysql client and use the magento database
 
-LOAD DATA LOCAL INFILE 'NEB.txt'
-INTO TABLE `unl_tax_boundary`
-FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\r\n';
+    SOURCE MageTaxSetup.sql;
+    SOURCE MageRestaurantTaxSetup.sql;
 
-TRUNCATE TABLE `tax_calculation_rate`;
-
-LOAD DATA LOCAL INFILE 'allRates.csv'
-REPLACE INTO TABLE `tax_calculation_rate`
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\r'
-(`code`, `tax_country_id`, `tax_region_id`, `tax_postcode`, `rate`);
-
-SOURCE MageTaxSetup.sql;
-
-SOURCE MageTaxCalculationInit.sql
-
+* Follow the instructions below for TAX RATE MAINTENANCE
 
 == CONFIGURATION ==
 
@@ -156,27 +141,13 @@ Once the maintenance is over run the command again to restore access
 
 Currently, there is no automated way to update the tax rates for magento. However, the SST Rate and Boundary Data provided by the NE Dept of Rev (http://salestaxrates.ne.gov/nedor/) can be normalized into something magento can use.
 
-NOTE: This normalization process requires the use of the latest version of Excel (due to the limitations on row count with other spreadsheet applications)
-
 1) Download the SST data from the above mentioned site
 2) Unzip the file and load the two files into some temporary MySQL database. (The schema for the SST tables is provided in data/tax/SSTSchema.sql)
    The NEB######.txt file loads into the `boundaries` table
+       LOAD DATA LOCAL INFILE 'NEB######.txt' INTO TABLE boundaries FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n';
    The NER######.txt file loads into the `rates` table
+       LOAD DATA LOCAL INFILE 'NER######.txt' INTO TABLE rates FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n';
 3) Export the results of the following queries into a simple format, like CSV
-
--- USED TO GET NEW CITY RATES LOOKUP TABLE
-SELECT jurisdiction_fips_code, general_tax_rate_intra
-FROM rates r
-WHERE jurisdiction_type = 01
-  AND NOW() BETWEEN begin_date AND end_date
-ORDER BY jurisdiction_fips_code
-
--- USED TO GET NEW COUNTY RATES LOOKUP TABLE
-SELECT jurisdiction_fips_code, general_tax_rate_intra
-FROM rates r
-WHERE jurisdiction_type = 00
-  AND NOW() BETWEEN begin_date AND end_date
-ORDER BY jurisdiction_fips_code
 
 -- USED TO GET NEW STATE RATE (NOTE: NE is fips 31)
 SELECT jurisdiction_fips_code, general_tax_rate_intra
@@ -185,42 +156,40 @@ WHERE jurisdiction_type = 45
   AND NOW() BETWEEN begin_date AND end_date
 ORDER BY jurisdiction_fips_code
 
--- USED TO GET ALL CURRENT ZIP+4 POSSIBILITIES FOR CITYS
-SELECT zip_code, plus_4, fips_place_number
-FROM boundaries b
-WHERE record_type = 'A'
-  AND NOW() BETWEEN begin_date AND end_date
-  AND fips_place_number <> ''
-ORDER BY zip_code, plus_4, fips_place_number DESC
+-- USED TO GET ALL MAGENTO PARSIBLE CITY RATES
+CALL fetch_city_rates(38);
 
--- USED TO GET ALL CURRENT ZIP+4 POSSIBILITIES FOR COUNTIES
-SELECT zip_code, plus_4, fips_county_code
-FROM boundaries b
-WHERE record_type = 'A'
-  AND NOW() BETWEEN begin_date AND end_date
-  AND fips_county_code <> ''
-ORDER BY zip_code, plus_4, fips_county_code DESC
+-- USED TO GET ALL MAGENTO PARSIBLE COUNTY RATES
+CALL fetch_county_rates(38);
 
-4) Open the tax data normalization spreadsheet at data/tax/taxes.xlsx (it may take a while to load, it's huge!)
-   Use the data from query 1 to populate the columns of the 'City FIPS' sheet (NOTE: The zero padding on FIPS is important and must be maintained)
-   Use the data from query 2 to populate the columns of the 'County FIPS' sheet (NOTE: The zero padding on FIPS is important and must be maintained)
-   Use the data from query 3 to populate the row labeled 'US-NE-*' of the 'State Tax' sheet (NOTE: The rate needs to be multipled by 100)
-   Use the data from query 4 to populate the first 3 columns of the 'City Tax' sheet
-   Use the data from query 5 to populate the first 3 columns of the 'County Tax' sheet
+3b) [OPTIONAL] If there are extra rates that need to be generated (ex: Restuarant tax for Lincoln) run the following query for the rate(s)
+
+-- USED TO GENERATE MAGENTO PARSIBLE RESTAURANT RATES
+CALL fetch_city_plus_rates(38, '28000', 'Restaurant', 0.02);
+
+4) Open the tax data normalization spreadsheet at data/tax/taxes.xlsx
+   Use the data from query 1 to populate the row labeled 'US-NE-*' of the 'State Tax' sheet (NOTE: The rate needs to be multipled by 100)
 5) Excel should have now calcuated all of the data that needs to be added to magento. Now all of the rates need to be saved into CSV format.
    The easiest way to accomplish this is to use a text editor (Like Notepad++ or TextWrangler).
-   Copy the first 5 columns of the 'State Tax' sheet, Paste into a new text file
-   Copy the last 5 columns of the 'City Tax' sheet, Paste into the text file
-   Copy the last 5 columns of the 'County Tax' sheet, Paste into the text file
    Copy the first 5 columns of the 'Special Tax' sheet, Paste into the text file
+   Copy the first 5 columns of the 'State Tax' sheet, Paste into a new text file
+   Combine the exported results of the remaining queries into the file
 6) You can now format the text file into a data format you can load into mysql.
    It's recommended to use CSV. To transform the pasted data from Tab Separated Values, use the text editor's find/replace capabilities to insert " at the beginning and end of every line and replace tabs with ","
 7) Log into MySQL and use the magento DB
-8) TRUNCATE the `unl_tax_boundary` table
-9) LOAD the boundary data from NEB######.txt
-10) TRUNCATE the `tax_calculation_rate` table
-11) LOAD the text file you created into `tax_calculation_rate` using (`code`, `tax_country_id`, `tax_region_id`, `tax_postcode`, `rate`) columns
+8) TRUNCATE TABLE `unl_tax_boundary`
+9) LOAD the boundary data from NEB######.txt (see command from step 2)
+10) TRUNCATE TABLE `tax_calculation_rate`
+11) LOAD the text file you created into `tax_calculation_rate`. Ex:
+
+LOAD DATA LOCAL INFILE 'rates.csv'
+INTO TABLE `tax_calculation_rate`
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+(`code`, `tax_country_id`, `tax_region_id`, `tax_postcode`, `rate`);
+
 12) SOURCE the sql file at data/tax/MageTaxCalculationInit.sql
+13) SOURCE the sql file at data/tax/MageRestaurantTaxInit.sql
 
 
 == HELP ==
