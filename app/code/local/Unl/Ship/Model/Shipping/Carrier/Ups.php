@@ -77,6 +77,63 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
         return $this->getConfigData('unit_of_measure');
     }
 
+    /* Overrides
+     * @see Mage_Shipping_Model_Carrier_Abstract::getTotalNumOfBoxes()
+     * by adding extra logic for multiple items
+     */
+    public function getTotalNumOfBoxes($weight, $items = null)
+    {
+        if (empty($items)) {
+            return parent::getTotalNumOfBoxes($weight);
+        }
+
+        /*
+        reset num box first before retrieve again
+        */
+        $defaultBox = false;
+        $this->_numBoxes = 0;
+        foreach ($items as $item) {
+            if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                continue;
+            }
+
+            $boxIncr = 1;
+            if ($item->getProduct()->getShipsSeparately()) {
+                if (!$item->getIsQtyDecimal() && $item->getQty() > 1) {
+                    $boxIncr = $item->getQty();
+                }
+                $this->_numBoxes += $boxIncr;
+            } elseif (!$defaultBox) {
+                $this->_numBoxes += $boxIncr;
+                $defaultBox = true;
+            }
+        }
+
+        $weight = $this->convertWeightToLbs($weight);
+        $maxPackageWeight = $this->getConfigData('max_package_weight');
+        if($weight > $maxPackageWeight && $maxPackageWeight != 0) {
+            $this->_numBoxes += ceil($weight/$maxPackageWeight) - 1;
+        }
+        $weight = $weight/$this->_numBoxes;
+        return $weight;
+    }
+
+    /* Overrides
+     * @see Mage_Usa_Model_Shipping_Carrier_Ups::setRequest()
+     * by changing the logic for calculating the rawRequest weight/boxes
+     */
+    public function setRequest(Mage_Shipping_Model_Rate_Request $request)
+    {
+        parent::setRequest($request);
+        $r = $this->_rawRequest;
+
+        $weight = $this->getTotalNumOfBoxes($request->getPackageWeight(), $request->getAllItems());
+        $weight = $this->_getCorrectWeight($weight);
+        $r->setWeight($weight);
+
+        return $this;
+    }
+
     /*
      * Overrides the default functionality of
      * @see Mage_Usa_Model_Shipping_Carrier_Ups::_getXmlQuotes()

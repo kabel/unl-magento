@@ -48,6 +48,47 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         return dirname(__FILE__) . '/Fedex/wsdl/';
     }
 
+    /* Overrides
+    * @see Mage_Shipping_Model_Carrier_Abstract::getTotalNumOfBoxes()
+    * by adding extra logic for multiple items
+    */
+    public function getTotalNumOfBoxes($weight, $items = null)
+    {
+        if (empty($items)) {
+            return parent::getTotalNumOfBoxes($weight);
+        }
+
+        /*
+         reset num box first before retrieve again
+        */
+        $defaultBox = false;
+        $this->_numBoxes = 0;
+        foreach ($items as $item) {
+            if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                continue;
+            }
+
+            $boxIncr = 1;
+            if ($item->getProduct()->getShipsSeparately()) {
+                if (!$item->getIsQtyDecimal() && $item->getQty() > 1) {
+                    $boxIncr = $item->getQty();
+                }
+                $this->_numBoxes += $boxIncr;
+            } elseif (!$defaultBox) {
+                $this->_numBoxes += $boxIncr;
+                $defaultBox = true;
+            }
+        }
+
+        $weight = $this->convertWeightToLbs($weight);
+        $maxPackageWeight = $this->getConfigData('max_package_weight');
+        if($weight > $maxPackageWeight && $maxPackageWeight != 0) {
+            $this->_numBoxes += ceil($weight/$maxPackageWeight) - 1;
+        }
+        $weight = $weight/$this->_numBoxes;
+        return $weight;
+    }
+
     /* Extends the logic of
      * @see Mage_Usa_Model_Shipping_Carrier_Fedex::setRequest()
      * by adding the origin region and city to the raw request
@@ -72,6 +113,9 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
         } else {
             $r->setOrigCity(Mage::getStoreConfig(Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY, $this->getStore()));
         }
+
+        $weight = $this->getTotalNumOfBoxes($request->getPackageWeight(), $request->getAllItems());
+        $r->setWeight($weight);
 
         return $this;
     }

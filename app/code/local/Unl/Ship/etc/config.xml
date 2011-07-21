@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Ship>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
         </Unl_Ship>
     </modules>
     
@@ -60,6 +60,16 @@
                 <class>Unl_Ship_Block</class>
             </unl_ship>
         </blocks>
+        
+        <sales>
+            <quote>
+                <item>
+                    <product_attributes>
+                        <ships_separately/>
+                    </product_attributes>
+                </item>
+            </quote>
+        </sales>
         
     </global>
     
