@@ -16,15 +16,6 @@ class Unl_AdminLog_LogController extends Mage_Adminhtml_Controller_Action
         return $this;
     }
 
-    public function testAction()
-    {
-        $config = Mage::getModel('unl_adminlog/config');
-        $request = $this->getRequest();
-        $event = $request->getRequestedRouteName() . '_' . $request->getRequestedControllerName();
-        $config->isEventRegistered($event);
-        $config->getEventAction($event, $request);
-    }
-
     public function indexAction()
     {
         if ($this->getRequest()->getQuery('ajax')) {
