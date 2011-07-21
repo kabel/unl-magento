@@ -69,8 +69,9 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
             }
 
             $boxIncr = 1;
+            $quoteItem = $item->getQuoteItem() ? $item->getQuoteItem() : $item;
             if ($item->getProduct()->getShipsSeparately()) {
-                if (!$item->getIsQtyDecimal() && $item->getQty() > 1) {
+                if (!$quoteItem->getIsQtyDecimal() && $item->getQty() > 1) {
                     $boxIncr = $item->getQty();
                 }
                 $this->_numBoxes += $boxIncr;
