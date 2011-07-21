@@ -421,6 +421,17 @@
             </admin_system_config_changed_section_system>
         </events>
         
+        <sales>
+            <quote>
+                <item>
+                    <product_attributes>
+                        <source_store_view/>
+                        <warehouse/>
+                    </product_attributes>
+                </item>
+            </quote>
+        </sales>
+        
         <pdf>
             <totals>
                 <subtotal><font_size>10</font_size></subtotal>

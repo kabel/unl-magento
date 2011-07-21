@@ -20,9 +20,7 @@ class Unl_Core_Model_Sales_Observer
             $quote_item->setSourceStoreView($sourceStore);
         }
 
-        if (null !== $warehouse) {
-            $quote_item->setWarehouse($warehouse);
-        }
+        $quote_item->setWarehouse($warehouse);
     }
 
     public function onShippingMethodSet($observer)
