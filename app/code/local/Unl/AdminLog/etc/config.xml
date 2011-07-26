@@ -689,6 +689,9 @@
                     <save_actions>
                         <massstatus />
                     </save_actions>
+                    <alt_params>
+                        <tag />
+                    </alt_params>
                 </adminhtml_tag>
                 <adminhtml_tax_class translate="label">
                     <label>Tax Classes</label>
