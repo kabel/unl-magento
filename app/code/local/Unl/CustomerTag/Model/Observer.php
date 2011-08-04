@@ -195,6 +195,10 @@ class Unl_CustomerTag_Model_Observer
         $result = $observer->getEvent()->getResult();
         $quote  = $observer->getEvent()->getQuote();
 
+        if (!$result->isAvailable) {
+            return $this;
+        }
+
         if ($method instanceof Unl_Core_Model_Payment_Method_Invoicelater) {
             $result->isAvailable = false;
             if ($quote && $quote->getCustomer()->getId()) {
