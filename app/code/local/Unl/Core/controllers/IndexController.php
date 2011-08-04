@@ -19,7 +19,7 @@ class Unl_Core_IndexController extends Mage_Adminhtml_Controller_Action
 
         $referer = $this->getRequest()->getServer('HTTP_REFERER');
         $baseUrl = $this->getUrl();
-        if (strpos($referer, $baseUrl) === 0) {
+        if (strpos($referer, 'login') === false && strpos($referer, $baseUrl) === 0) {
             $session->setBeforeCasUrl(substr($referer, strlen($baseUrl)));
         }
 
