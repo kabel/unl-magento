@@ -6,7 +6,7 @@
     <?php if($this->getRemitTo()): ?>
         <?php echo Mage::helper('unl_core')->__('Remit to:') ?>
         {{pdf_row_separator}}
-        <?php echo nl2br($this->htmlEscape($this->getRemitTo())) ?>
+        <?php echo str_replace(array("\r", "\n"), '{{pdf_row_separator}}', $this->stripTags($this->getRemitTo())) ?>
         {{pdf_row_separator}}
     <?php endif; ?>
 <?php endif; ?>
