@@ -1,0 +1,8 @@
+<?php $_order = $this->getOrder() ?>
+<?php if ($_order->getPayment()->getMethod() == 'invoicelater'): ?>
+    <?php $info = Mage::helper('payment')->getInfoBlock($_order->getPayment()); ?>
+    <?php if ($info->getRemitTo()): ?>
+        <p><?php echo $this->__('Remit to'); ?>:<br />
+        <?php echo nl2br($this->htmlEscape($info->getRemitTo())) ?></p>
+    <?php endif; ?>
+<?php endif; ?>

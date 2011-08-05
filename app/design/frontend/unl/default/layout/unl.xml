@@ -18,4 +18,8 @@
 	       <action method="addLink"><label>Return Policy</label><url></url><title>Return Policy</title><prepare>true</prepare><url_params><_direct>cs-return-policy</_direct></url_params></action>
 	   </reference>
 	</STORE_computershop>
+    
+    <sales_email_invoice_payment_extra>
+        <block type="core/template" template="email/order/invoice/payment/extra.phtml" />
+    </sales_email_invoice_payment_extra>
 </layout>
