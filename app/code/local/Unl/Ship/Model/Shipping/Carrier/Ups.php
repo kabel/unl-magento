@@ -10,7 +10,8 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
     protected $_retryErrors = array(
         120203,
         120213,
-        120217
+        120217,
+        120201,
     );
 
     protected $_errorCodes = array();
@@ -38,11 +39,11 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
      * Gets a value for an ship xml requeset based on code and returned errors
      *
      * @param string $code
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     protected function _getCleanXmlValue($code, $value)
-    {
+    {   
         if ($code == 'shipto_addr2') {
             if ($this->isErrorRetried(120203)) {
                 $value = '';
@@ -51,6 +52,12 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
             $value = preg_replace('/[^\d]/', '', $value);
             if ($this->isErrorRetried(120213) || $this->isErrorRetried(120217)) {
                 $value = '';
+            }
+        } else if ($code == 'shipto_attention') {
+            $shipaddress = $value;
+            $value = '';
+            if ($shipaddress->getCompany() || $this->isErrorRetried(120201)) {
+                $value = substr($shipaddress->getName(), 0, 35);
             }
         }
 
@@ -849,7 +856,7 @@ XMLRequest;
 
             //if verbal confirmation requested
             if ($pkg->getVerballyConfirm()) {
-                $p['verbal_name'] = substr($store->getConfig('shipping/origin/attension'), 0, 35);  //35 char, contact name to notify on delivery
+                $p['verbal_name'] = substr($store->getConfig('shipping/origin/attention'), 0, 35);  //35 char, contact name to notify on delivery
                 $p['verbal_phone'] = substr($store->getConfig('shipping/origin/phone'), 0, 15);  //required for international destinations
             }
             $pkgs[] = $p;
@@ -881,7 +888,7 @@ XMLRequest;
             'shipper_country' => $store->getConfig('shipping/origin/country_id'),  //2 digit ISO code
 
             'shipto_name' => $shipaddress->getCompany() ? substr($shipaddress->getCompany(), 0, 35) : substr($shipaddress->getName(), 0, 35),  //35 chars
-            'shipto_attention' => $shipaddress->getCompany() ? substr($shipaddress->getName(), 0, 35) : '',  //35 chars, required for international and next day AM
+            'shipto_attention' => $this->_getCleanXmlValue('shipto_attention', $shipaddress), //35 chars, required for international and next day AM
             'shipto_phone' => $this->_getCleanXmlValue('shipto_phone', $shipaddress->getTelephone()),  //15 chars, digits only, required for international, optional
             'shipto_addr1' => $shipaddress->getStreet(1),  //35 chars
             'shipto_addr2' => $this->_getCleanXmlValue('shipto_addr2', $shipaddress->getStreet(2)),  //35 chars
