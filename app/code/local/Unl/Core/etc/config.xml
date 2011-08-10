@@ -148,6 +148,11 @@
                     <product_image>Unl_Core_Model_Catalog_Product_Image</product_image>
                 </rewrite>
             </catalog>
+            <catalog_resource_eav_mysql4>
+                <rewrite>
+                    <product_link_product_collection>Unl_Core_Model_Catalog_Resource_Eav_Mysql4_Product_Link_Product_Collection</product_link_product_collection>
+                </rewrite>
+            </catalog_resource_eav_mysql4>
             <cms>
             	<rewrite>
             		<!-- Fix skin URL -->
