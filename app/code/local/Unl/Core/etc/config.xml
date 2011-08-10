@@ -833,6 +833,7 @@
         <google>
             <analytics>
                 <output_script>0</output_script>
+                <track_page_load>1</track_page_load>
             </analytics>
         </google>
         <system>
