@@ -21,6 +21,7 @@ class Unl_Core_Block_GoogleAnalytics_Ga extends Mage_GoogleAnalytics_Block_Ga
 //<![CDATA[' . $this->_getAnalyticsScriptCode() . '
     var _gaq = _gaq || [];
 ' . $this->_getPageTrackingCode($accountId) . '
+' . $this->_getPageLoadTrackingCode() . '
 ' . $this->_getOrdersTrackingCode() . '
 //]]>
 </script>
