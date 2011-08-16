@@ -22,6 +22,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         ),
         self::CUSTOMER_TAG_FACULTY_STAFF => array(
             'faculty',
+            'emeriti',
             'staff',
             'continue services',
             'affiliate',
