@@ -16,6 +16,19 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 
     protected $_cache = array();
 
+    protected $_affiliationMap = array(
+        self::CUSTOMER_TAG_STUDENT => array(
+            'student'
+        ),
+        self::CUSTOMER_TAG_FACULTY_STAFF => array(
+            'faculty',
+            'staff',
+            'continue services',
+            'affiliate',
+            'volunteer',
+        ),
+    );
+
     protected $_specialCustomerTags = array(
         self::CUSTOMER_TAG_STUDENT,
         self::CUSTOMER_TAG_STUDENT_FEES,
@@ -105,7 +118,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     {
         if ($r = $this->fetchPfUID($uid)) {
             foreach ($r->eduPersonAffiliation as $affil) {
-                if (strpos($affil, 'staff') !== false || strpos($affil, 'faculty') !== false) {
+                if (in_array($affil, $this->_affiliationMap[self::CUSTOMER_TAG_FACULTY_STAFF])) {
                     return true;
                 }
             }
@@ -118,7 +131,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     {
         if ($r = $this->fetchPfUID($uid)) {
             foreach ($r->eduPersonAffiliation as $affil) {
-                if (strpos($affil, 'student') !== false) {
+                if (in_array($affil, $this->_affiliationMap[self::CUSTOMER_TAG_STUDENT])) {
                     return true;
                 }
             }
