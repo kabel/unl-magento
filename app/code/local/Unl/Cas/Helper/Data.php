@@ -225,8 +225,10 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
                 $condition = false;
         }
 
-        if ($condition && $i === false) {
-            $tagIds[] = $tag->getId();
+        if ($condition) {
+            if ($i === false) {
+                $tagIds[] = $tag->getId();
+            }
         } elseif ($i !== false) {
             unset($tagIds[$i]);
         }
