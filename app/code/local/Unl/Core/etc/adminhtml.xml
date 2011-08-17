@@ -132,6 +132,15 @@
                     </report>
                     <sales>
                         <children>
+                            <order>
+                                <children>
+                                    <actions>
+                                        <children>
+                                            <submit_gateway translate="title"><title>Submit Gateway Payments</title></submit_gateway>
+                                        </children>
+                                    </actions>
+                                </children>
+                            </order>
                             <picklist translate="title">
                                 <title>Pick Lists</title>
                                 <sort_order>41</sort_order>

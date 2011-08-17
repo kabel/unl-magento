@@ -36,6 +36,8 @@
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
                     <!-- Fix Order Item Renderer (giftmessage border) -->
                     <sales_order_view_items_renderer_default>Unl_Core_Block_Adminhtml_Sales_Order_View_Items_Renderer_Default</sales_order_view_items_renderer_default>
+                    <!-- Adds an ACL check to the Payment Method Form -->
+                    <sales_order_create_billing_method_form>Unl_Core_Block_Adminhtml_Sales_Order_Create_Billing_Method_Form</sales_order_create_billing_method_form>
                     <!-- Adds a force pay button to invoice -->
                     <sales_order_invoice_view>Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View</sales_order_invoice_view>
                     <!-- No empty optgroups -->
