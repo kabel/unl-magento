@@ -127,16 +127,16 @@ class Unl_Core_Model_Admin_Observer
             'adminhtml_report_product_lowstock',
             'adminhtml_report_product_downloads',
             'unl_core_sales_picklist_index',
-            'unl_core_report_product_orderdetails',
-            'unl_core_report_product_customized'
         );
         $storeIdsActions = array(
             'adminhtml_report_sales_sales',
             'adminhtml_report_sales_coupons',
+            'unl_core_report_product_orderdetails',
+            'unl_core_report_product_customized',
         	'unl_core_report_sales_reconcile_cc',
         	'unl_core_report_sales_reconcile_co',
             'unl_core_report_sales_reconcile_nocap',
-            'shippingoverride_report_index'
+            'shippingoverride_report_index',
         );
         $categoryIdActions = array(
             'adminhtml_catalog_category_edit',
