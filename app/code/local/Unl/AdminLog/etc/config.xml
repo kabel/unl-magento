@@ -276,7 +276,9 @@
                     <save_actions>
                         <saverole />
                     </save_actions>
-                    <alt_params>role_id</alt_params>
+                    <alt_params>
+                        <role_id />
+                    </alt_params>
                 </adminhtml_permissions_role>
                 <adminhtml_permissions_user translate="label">
                     <label>System Users</label>
