@@ -35,6 +35,15 @@ abstract class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Shipping
             'sortable'      => false
         ));
 
+        $this->addColumn('total_shipping', array(
+            'header'        => Mage::helper('sales')->__('Shipping'),
+            'type'          => 'currency',
+            'currency_code' => $currencyCode,
+            'index'         => 'total_shipping',
+            'total'         => 'sum',
+            'sortable'      => false
+        ));
+
         $this->addColumn('total_revenue', array(
             'header'        => Mage::helper('sales')->__('Revenue'),
             'type'          => 'currency',
