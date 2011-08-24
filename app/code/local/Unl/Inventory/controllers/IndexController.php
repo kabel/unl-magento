@@ -156,6 +156,13 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('catalog/inventory');
+        switch ($this->getRequest()->getActionName()) {
+            case 'save':
+                return Mage::getSingleton('admin/session')->isAllowed('catalog/inventory/edit');
+                break;
+            default:
+                return Mage::getSingleton('admin/session')->isAllowed('catalog/inventory');
+                break;
+        }
     }
 }

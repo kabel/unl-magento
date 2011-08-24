@@ -11,7 +11,8 @@ class Unl_Inventory_Block_Inventory_Edit extends Mage_Adminhtml_Block_Widget_For
         parent::__construct();
 
         $this->_removeButton('delete');
-        if (Mage::helper('unl_inventory')->getIsAuditInventory(Mage::registry('current_product'))) {
+        if (Mage::helper('unl_inventory')->isAllowedInventoryEdit()
+            && Mage::helper('unl_inventory')->getIsAuditInventory(Mage::registry('current_product'))) {
             $this->_addButton('save_and_continue', array(
                 'label'     => Mage::helper('unl_inventory')->__('Save and Continue Edit'),
                 'onclick'   => 'saveAndContinueEdit(\''.$this->_getSaveAndContinueUrl().'\')',

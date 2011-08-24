@@ -31,6 +31,11 @@
                         <children>
                             <inventory translate="title" module="unl_inventory">
                                 <title>Manage Inventory</title>
+                                <children>
+                                    <edit translate="title">
+                                        <title>Edit</title>
+                                    </edit>
+                                </children>
                             </inventory>
                         </children>
                     </catalog>

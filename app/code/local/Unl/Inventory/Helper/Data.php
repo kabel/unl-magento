@@ -30,6 +30,11 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
         return 0;
     }
 
+    public function isAllowedInventoryEdit()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/inventory/edit');
+    }
+
     public function getIsAuditInventory($product, $fromOriginal = false, $fromStockData = false)
     {
         if ($fromOriginal && !$product->getId()) {

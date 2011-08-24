@@ -35,6 +35,9 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $user = Mage::getSingleton('admin/session')->getUser();
         if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
+            if ($whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope()) {
+                $collection->addAttributeToFilter('warehouse', array('in' => $whScope));
+            }
         }
 
         $collection->joinAttribute('audit_inventory', 'catalog_product/audit_inventory', 'entity_id');
@@ -159,7 +162,7 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
                 'getter'     => 'getId',
                 'actions'   => array(
                     array(
-                        'caption' => Mage::helper('catalog')->__('Edit'),
+                        'caption' => Mage::helper('catalog')->__('View'),
                         'url'     => array(
                             'base'=>'*/*/edit'
                         ),
