@@ -1,8 +1,11 @@
 <?php $_product = $this->getProduct(); ?>
 <div class="entry-edit">
-    <div class="entry-edit-head"><h4 class="icon-head head-inventory-view"><?php echo Mage::helper('unl_inventory')->__('Product Information') ?> (<a href="<?php echo $this->getUrl('adminhtml/catalog_product/edit', array('id' => $_product->getId())) ?>"><?php echo $this->__('edit') ?></a>)</h4></div>
+    <div class="entry-edit-head"><h4 class="icon-head head-inventory-view"><?php echo Mage::helper('unl_inventory')->__('Product Information') ?>
+    <?php if ($this->canEditProduct()): ?>
+        (<a href="<?php echo $this->getUrl('adminhtml/catalog_product/edit', array('id' => $_product->getId())) ?>"><?php echo $this->__('edit') ?></a>)</h4></div>
+    <?php endif; ?>
     <fieldset>
-        <table cellspacing="2" class="box-left">
+        <table class="box-left">
             <tr>
                 <td><strong><?php echo $this->__('Name:') ?></strong></td>
                 <td><?php echo $_product->getName() ?></td>

@@ -32,6 +32,11 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Overview
         return $value;
     }
 
+    public function canEditProduct()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/products');
+    }
+
     public function getTabLabel()
     {
         return Mage::helper('unl_inventory')->__('Product Overview');
