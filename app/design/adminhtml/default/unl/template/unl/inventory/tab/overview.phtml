@@ -2,8 +2,9 @@
 <div class="entry-edit">
     <div class="entry-edit-head"><h4 class="icon-head head-inventory-view"><?php echo Mage::helper('unl_inventory')->__('Product Information') ?>
     <?php if ($this->canEditProduct()): ?>
-        (<a href="<?php echo $this->getUrl('adminhtml/catalog_product/edit', array('id' => $_product->getId())) ?>"><?php echo $this->__('edit') ?></a>)</h4></div>
+        (<a href="<?php echo $this->getUrl('adminhtml/catalog_product/edit', array('id' => $_product->getId())) ?>"><?php echo $this->__('edit') ?></a>)
     <?php endif; ?>
+    </h4></div>
     <fieldset>
         <table class="box-left">
             <tr>
