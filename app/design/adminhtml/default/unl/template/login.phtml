@@ -37,7 +37,7 @@
                         <input type="submit" class="form-button" value="<?php echo Mage::helper('adminhtml')->__('Login') ?>" title="<?php echo Mage::helper('adminhtml')->__('Login') ?>" /></div>
                     <div class="form-buttons" style="padding-top:10px; border-top:1px dotted #444;">
                     	<div class="input-box input-left"><label for="unllogin_button"><?php echo Mage::helper('adminhtml')->__('UNL Users:') ?></label></div>
-                    	<input id="unllogin_button" type="button" onclick="window.location.href = '<?php echo Mage::helper('adminhtml')->getUrl('unl/index/logincas', array('_nosecret' => true)) ?>';" class="form-button" value="<?php echo Mage::helper('adminhtml')->__('UNL Login') ?>" title="<?php echo Mage::helper('adminhtml')->__(' UNL Login') ?>" />
+                    	<input id="unllogin_button" type="button" onclick="window.location.href = '<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/cas/logincas', array('_nosecret' => true)) ?>';" class="form-button" value="<?php echo Mage::helper('adminhtml')->__('UNL Login') ?>" title="<?php echo Mage::helper('adminhtml')->__(' UNL Login') ?>" />
                     </div>
                 </div>
                 <p class="legal"><?php echo Mage::helper('adminhtml')->__('Magento is a trademark of Magento Inc. Copyright &copy; %s Magento Inc.', date('Y')) ?></p>

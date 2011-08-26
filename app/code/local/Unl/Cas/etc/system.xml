@@ -20,31 +20,69 @@
                         <server translate="label">
                             <label>Server</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>14</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </server>
-                        <binddn translate="label">
-                            <label>Bind DN</label>
-                            <frontend_type>text</frontend_type>
                             <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
-                        </binddn>
-	                    <bindpw translate="label">
-	                         <label>Password</label>
-	                         <frontend_type>obscure</frontend_type>
-	                         <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
-	                         <sort_order>11</sort_order>
-	                         <show_in_default>1</show_in_default>
-	                     </bindpw>
+                        </server>
                         <basedn>
                             <label>Base DN</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                         </basedn>
+                        <binddn translate="label">
+                            <label>Bind DN</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </binddn>
+	                    <bindpw translate="label">
+	                         <label>Password</label>
+	                         <frontend_type>obscure</frontend_type>
+	                         <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+	                         <sort_order>30</sort_order>
+	                         <show_in_default>1</show_in_default>
+	                     </bindpw>
 	                </fields>
                 </unl_ldap>
             </groups>
         </customer>
+        <admin>
+            <groups>
+                <unl_ldap translate="label">
+                <label>UNL LDAP Options</label>
+                    <sort_order>40</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <server translate="label">
+                            <label>Server</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </server>
+                        <basedn>
+                            <label>Base DN</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </basedn>
+                        <binddn translate="label">
+                            <label>Bind DN</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </binddn>
+                        <bindpw translate="label">
+                             <label>Password</label>
+                             <frontend_type>obscure</frontend_type>
+                             <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                             <sort_order>30</sort_order>
+                             <show_in_default>1</show_in_default>
+                         </bindpw>
+                    </fields>
+                </unl_ldap>
+            </groups>
+        </admin>
     </sections>
 </config>

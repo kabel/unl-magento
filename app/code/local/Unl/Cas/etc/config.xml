@@ -16,6 +16,11 @@
             <unl_cas>
                 <class>Unl_Cas_Helper</class>
             </unl_cas>
+            <rss>
+                <rewrite>
+                    <data>Unl_Cas_Helper_Rss</data>
+                </rewrite>
+            </rss>
         </helpers>
         <models>
             <unl_cas>
@@ -116,6 +121,18 @@
         </layout>
     </frontend>
     
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Unl_Cas before="Mage_Adminhtml">Unl_Cas_Adminhtml</Unl_Cas>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    
     <default>
         <customer>
             <unl_ldap>
@@ -124,5 +141,12 @@
                 <bindpw backend_model="adminhtml/system_config_backend_encrypted"/>
             </unl_ldap>
         </customer>
+        <admin>
+            <unl_ldap>
+                <server>ldap.unl.edu ldap-backup.unl.edu</server>
+                <basedn>dc=unl,dc=edu</basedn>
+                <bindpw backend_model="adminhtml/system_config_backend_encrypted"/>
+            </unl_ldap>
+        </admin>
     </default>
 </config>
