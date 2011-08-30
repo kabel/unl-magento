@@ -3,6 +3,30 @@
 class Unl_Cas_Helper_Rss extends Mage_Rss_Helper_Data
 {
     /**
+     * Authenticate customer on frontend
+     *
+     */
+    public function authFrontend()
+    {
+        $session = Mage::getSingleton('rss/session');
+        if ($session->isCustomerLoggedIn()) {
+            return;
+        }
+        $customerSession = Mage::getSingleton('customer/session');
+        if ($customerSession->isLoggedIn()) {
+            $session->setCustomer($customerSession->getCustomer());
+            return;
+        }
+        list($username, $password) = $this->authValidate();
+        $customer = Mage::getModel('customer/customer')->authenticate($username, $password);
+        if ($customer && $customer->getId()) {
+            $session->setCustomer($customer);
+        } else {
+            $this->authFailed();
+        }
+    }
+
+    /**
      * Authenticate admin and check ACL
      *
      * @param string $path
@@ -14,7 +38,6 @@ class Unl_Cas_Helper_Rss extends Mage_Rss_Helper_Data
         if ($session->isAdminLoggedIn()) {
             if (!$adminSession->isAllowed($path)) {
                 $this->authFailed();
-                return;
             }
             return;
         }
