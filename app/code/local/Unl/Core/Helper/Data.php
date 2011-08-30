@@ -130,6 +130,8 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             if ($whScope = $this->getAdminUserWarehouseScope()) {
                 $collection->addAttributeToFilter('warehouse', array('in' => $whScope));
             }
+        } elseif ($storeId) {
+            $collection->addAttributeToFilter('source_store_view', array('eq' => $storeId));
         }
 
         return $this;
