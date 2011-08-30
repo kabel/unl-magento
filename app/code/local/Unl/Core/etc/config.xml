@@ -715,6 +715,16 @@
                 </observers>
             </eav_collection_abstract_load_before>
             
+            <rss_catalog_notify_stock_collection_select>
+                <observers>
+                    <filter_scope>
+                        <type>singleton</type>
+                        <class>unl_core/admin_observer</class>
+                        <method>onRssCatalogStockCollectionSelect</method>
+                    </filter_scope>
+                </observers>
+            </rss_catalog_notify_stock_collection_select>
+            
             <rss_order_new_collection_select>
                 <observers>
                     <filter_scope>

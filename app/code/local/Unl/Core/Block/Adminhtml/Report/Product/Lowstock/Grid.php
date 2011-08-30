@@ -31,10 +31,27 @@ class Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid extends Mage_Adminht
 
         if( $storeId ) {
             $collection->addStoreFilter($storeId);
-            $collection->addAttributeToFilter('source_store_view', array('eq' => $storeId));
+            Mage::helper('unl_core')->addProductAdminScopeFilters($collection, $storeId);
         }
 
         $this->setCollection($collection);
         return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+    }
+
+    /* Extends
+     * @see Mage_Adminhtml_Block_Report_Product_Lowstock_Grid::_prepareColumns()
+     * by adding an additional column
+     */
+    protected function _prepareColumns()
+    {
+        $this->addColumnAfter('status', array(
+            'header'=> Mage::helper('catalog')->__('Status'),
+            'width' => '70px',
+            'index' => 'status',
+            'type'  => 'options',
+            'options' => Mage::getSingleton('catalog/product_status')->getOptionArray(),
+        ), 'qty');
+
+        parent::_prepareColumns();
     }
 }

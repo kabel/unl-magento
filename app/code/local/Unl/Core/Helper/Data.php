@@ -113,6 +113,28 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $select;
     }
 
+    /**
+     * Add the admin user scope filters to a product collection
+     *
+     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+     * @param int $storeId
+     */
+    public function addProductAdminScopeFilters($collection, $storeId = null)
+    {
+        if ($scope = $this->getAdminUserScope()) {
+            if ($storeId && in_array($storeId, $scope)) {
+                $collection->addAttributeToFilter('source_store_view', array('eq' => $storeId));
+            } else {
+                $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
+            }
+            if ($whScope = $this->getAdminUserWarehouseScope()) {
+                $collection->addAttributeToFilter('warehouse', array('in' => $whScope));
+            }
+        }
+
+        return $this;
+    }
+
     public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
     {
         $_cat = $category;

@@ -327,6 +327,12 @@ class Unl_Core_Model_Admin_Observer
     public function onRssOrderNewCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
-        Mage::helper('unl_core')->addAdminScopeFilters($collection, true);
+        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'order_id', true);
+    }
+
+    public function onRssCatalogStockCollectionSelect($observer)
+    {
+        $collection = $observer->getEvent()->getCollection();
+        Mage::helper('unl_core')->addProductAdminScopeFilters($collection);
     }
 }
