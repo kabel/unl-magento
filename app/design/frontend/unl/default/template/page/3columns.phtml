@@ -27,7 +27,6 @@
         <div id="maincontent">
             <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
             <!-- TemplateBeginEditable name="maincontentarea" -->
-            <div class="four_col left">
                 <div class="subnav">
                     <div class="subnav_wrapper">
                         <?php echo $this->getChildHtml('topLinks') ?>
@@ -39,17 +38,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="clear"></div>
-            <div class="col left">
+            <div class="grid3 first">
                 <?php echo $this->getChildHtml('left') ?>
             </div>
-            <div class="two_col left">
+            <div class="grid6">
                 <?php echo $this->getChildHtml('global_messages') ?>
                 <?php echo $this->getChildHtml('content_notices') ?>
                 <?php echo $this->getChildHtml('content') ?>
             </div>
-            <div class="col right">
+            <div class="grid3">
                 <?php echo $this->getChildHtml('right') ?>
             </div>
             <!-- TemplateEndEditable -->

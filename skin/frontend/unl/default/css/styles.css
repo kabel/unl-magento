@@ -400,7 +400,7 @@ tr.summary-details-excluded { font-style:italic; }
     height:35px;
     padding-left: 8px;
     position:relative;
-    margin: 11px 0 1.1em;
+    margin: 0 0 1.1em;
 }
 .subnav .subnav_wrapper { 
     background:transparent url(../images/breadcrumbBarSprite3.png) no-repeat scroll 100% -72px;

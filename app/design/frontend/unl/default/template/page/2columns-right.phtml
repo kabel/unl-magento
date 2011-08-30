@@ -27,26 +27,23 @@
         <div id="maincontent">
             <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
             <!-- TemplateBeginEditable name="maincontentarea" -->
-            <div class="four_col left">
-                <div class="subnav">
-                    <div class="subnav_wrapper">
-                        <?php echo $this->getChildHtml('topLinks') ?>
-                        <div class="search_wrapper">
-                        <?php if (Mage::app()->getStore()->getCode() != 'default'): ?>
-                            <?php echo $this->getChildHtml('topSearchLinks') ?>
-                            <?php echo $this->getChildHtml('topSearch') ?>
-                        <?php endif; ?>
-                        </div>
+            <div class="subnav">
+                <div class="subnav_wrapper">
+                    <?php echo $this->getChildHtml('topLinks') ?>
+                    <div class="search_wrapper">
+                    <?php if (Mage::app()->getStore()->getCode() != 'default'): ?>
+                        <?php echo $this->getChildHtml('topSearchLinks') ?>
+                        <?php echo $this->getChildHtml('topSearch') ?>
+                    <?php endif; ?>
                     </div>
                 </div>
             </div>
-            <div class="clear"></div>
-            <div class="three_col left">
+            <div class="grid9 first">
                 <?php echo $this->getChildHtml('global_messages') ?>
                 <?php echo $this->getChildHtml('content_notices') ?>
                 <?php echo $this->getChildHtml('content') ?>
             </div>
-            <div class="col right">
+            <div class="grid3">
                 <?php echo $this->getChildHtml('right') ?>
             </div>
             <!-- TemplateEndEditable -->
