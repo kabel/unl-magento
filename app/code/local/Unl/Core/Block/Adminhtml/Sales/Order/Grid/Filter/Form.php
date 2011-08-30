@@ -22,9 +22,14 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
         $fieldset->setAdvFiltersUrl($this->getUrl('unl/sales_order/currentfilters'));
         $fieldset->setGridJsObject('sales_order_gridJsObject');
 
+        $paymentOptions = array('' => '');
+        $methods = Mage::getSingleton('payment/config')->getActiveMethods();
+        foreach ($methods as $code => $method) {
+            $paymentOptions[$code] = $method->getTitle() ? $method->getTitle() : $code;
+        }
         $fieldset->addField('payment_method', 'select', array(
             'name'    => 'payment_method',
-            'options' => (array('' => '') + Mage::helper('payment')->getPaymentMethodList()),
+            'options' => $paymentOptions,
             'label'     => Mage::helper('adminhtml')->__('Payment Method'),
         ));
 
