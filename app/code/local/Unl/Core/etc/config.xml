@@ -525,16 +525,6 @@
                 </observers>
         	</admin_user_authenticate_after>
         	
-        	<admin_session_user_login_success>
-        		<observers>
-                    <filter_cas>
-                        <type>singleton</type>
-                        <class>unl_core/admin_observer</class>
-                        <method>tryAdminPfUpdate</method>
-                    </filter_cas>
-                </observers>
-        	</admin_session_user_login_success>
-        	
             <admin_user_save_before>
                 <observers>
                     <save_store>

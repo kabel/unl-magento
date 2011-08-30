@@ -28,30 +28,6 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
-    public function tryAdminPfUpdate($observer)
-    {
-        $user = $observer->getEvent()->getUser();
-        $user->reload();
-        if ($user->getIsCas()) {
-            try {
-                $pfData = new Varien_Object();
-                Mage::helper('unl_cas')->loadPfData($pfData);
-                $changed = false;
-                foreach (array('email', 'firstname', 'lastname') as $data) {
-                    if ($pfData->hasData($data) && $pfData->getData($data) != $user->getData($data)) {
-                        $user->setDataUsingMethod($data, $pfData->getData($data));
-                        $changed = true;
-                    }
-                }
-                if ($changed && !$user->userExists()) {
-                    $user->save();
-                }
-            } catch (Exception $e) {
-                Mage::logException($e);
-            }
-        }
-    }
-
     public function preventNonCasLogin($observer)
     {
         /* @var $user Mage_Admin_Model_User */

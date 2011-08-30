@@ -28,7 +28,7 @@ class Unl_Cas_Block_Form_Register extends Mage_Directory_Block_Data
         $data = $this->getData('form_data');
         if (is_null($data)) {
             $data = new Varien_Object(Mage::getSingleton('customer/session')->getCustomerFormData(true));
-            Mage::helper('unl_cas')->loadPfData($data);
+            Mage::helper('unl_cas/ldap')->populateLdapData($data);
             $this->setData('form_data', $data);
         }
         return $data;
@@ -65,7 +65,7 @@ class Unl_Cas_Block_Form_Register extends Mage_Directory_Block_Data
 
     public function getDisplayName()
     {
-        return Mage::helper('unl_cas')->getDisplayName();
+        return Mage::helper('unl_cas/ldap')->getDisplayName();
     }
 
     /**

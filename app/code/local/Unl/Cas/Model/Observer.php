@@ -71,4 +71,29 @@ class Unl_Cas_Model_Observer
             Mage::helper('unl_cas')->revokeCostObjectAuth($customer);
         }
     }
+
+
+    public function tryAdminLdapUpdate($observer)
+    {
+        $user = $observer->getEvent()->getUser();
+        $user->reload();
+        if ($user->getIsCas()) {
+            try {
+                $pfData = new Varien_Object();
+                Mage::helper('unl_cas/ldap')->populateLdapData($pfData);
+                $changed = false;
+                foreach (array('email', 'firstname', 'lastname') as $data) {
+                    if ($pfData->hasData($data) && $pfData->getData($data) != $user->getData($data)) {
+                        $user->setDataUsingMethod($data, $pfData->getData($data));
+                        $changed = true;
+                    }
+                }
+                if ($changed && !$user->userExists()) {
+                    $user->save();
+                }
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
 }

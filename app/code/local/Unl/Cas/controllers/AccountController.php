@@ -22,7 +22,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             return;
         }
 
-        $auth = Mage::helper('unl_cas')->getAuth();
+        $auth = $this->_getCasAuth();
         if ($auth->isLoggedIn()) {
             if ($customer = $this->_checkUidExists($auth->getUser())) {
                 $this->_getSession()->setCustomerAsLoggedIn($customer);
@@ -30,10 +30,10 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
                 return;
             } else {
                 $pfData = new Varien_Object();
-                Mage::helper('unl_cas')->loadPfData($pfData);
+                Mage::helper('unl_cas/ldap')->populateLdapData($pfData);
 
                 if (!empty($pfData['email'])) {
-                    $this->_createCustomerFromPfData($pfData);
+                    $this->_createCustomerFromLdapData($pfData);
                     return;
                 }
                 $this->_redirect('*/*/create', array('_secure' => true));
@@ -115,13 +115,13 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
      *
      * @param Varien_Object $data
      */
-    protected function _createCustomerFromPfData($data)
+    protected function _createCustomerFromLdapData($data)
     {
         /* @var $customer Mage_Customer_Model_Customer */
         $customer = Mage::getModel('customer/customer')->setId(null);
 
         $customer->addData($data->toArray());
-        $uid = Mage::helper('unl_cas')->getAuth()->getUser();
+        $uid = $this->_getCasAuth()->getUser();
         $customer->setData('unl_cas_uid', $uid);
         $customer->setPassword($customer->generatePassword());
 
@@ -160,7 +160,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             return false;
         }
 
-        $auth = Mage::helper('unl_cas')->getAuth();
+        $auth = $this->_getCasAuth();
         if (!$auth->isLoggedIn()) {
             $this->_redirect('*/*/cas', array('_secure' => true));
             return false;
@@ -210,7 +210,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
              */
             $customer->getGroupId();
 
-            $uid = Mage::helper('unl_cas')->getAuth()->getUser();
+            $uid = $this->_getCasAuth()->getUser();
             $customer->setData('unl_cas_uid', $uid);
 
             if ($this->getRequest()->getPost('create_address')) {
@@ -337,5 +337,10 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             $successUrl = $this->_getSession()->getBeforeAuthUrl(true);
         }
         return $successUrl;
+    }
+
+    protected function _getCasAuth()
+    {
+        return Mage::helper('unl_cas')->getAuth();
     }
 }

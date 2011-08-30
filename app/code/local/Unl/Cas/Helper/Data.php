@@ -2,33 +2,11 @@
 
 class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    const XML_PATH_CUSTOMER_UNL_LDAP_ACTIVE = 'customer/unl_ldap/active';
-    const XML_PATH_CUSTOMER_UNL_LDAP_SERVER = 'customer/unl_ldap/server';
-    const XML_PATH_CUSTOMER_UNL_LDAP_BASEDN = 'customer/unl_ldap/basedn';
-    const XML_PATH_CUSTOMER_UNL_LDAP_BINDDN = 'customer/unl_ldap/binddn';
-    const XML_PATH_CUSTOMER_UNL_LDAP_BINDPW = 'customer/unl_ldap/bindpw';
-
     const CUSTOMER_GROUP_TAX_EXEMPT = 'Tax Exempt Org';
 
     const CUSTOMER_TAG_STUDENT       = 'UNL Student';
     const CUSTOMER_TAG_STUDENT_FEES  = 'UNL Student - Fee Paying';
     const CUSTOMER_TAG_FACULTY_STAFF = 'UNL Faculty/Staff';
-
-    protected $_cache = array();
-
-    protected $_affiliationMap = array(
-        self::CUSTOMER_TAG_STUDENT => array(
-            'student'
-        ),
-        self::CUSTOMER_TAG_FACULTY_STAFF => array(
-            'faculty',
-            'emeriti',
-            'staff',
-            'continue services',
-            'affiliate',
-            'volunteer',
-        ),
-    );
 
     protected $_specialCustomerTags = array(
         self::CUSTOMER_TAG_STUDENT,
@@ -67,126 +45,6 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->_getUrl('unlcas/account/createpost');
     }
 
-    public function cache($key, $value)
-    {
-        $this->_cache[$key] = $value;
-    }
-
-    public function fetchPfUID($uid)
-    {
-        if (isset($this->_cache[$uid])) {
-            return $this->_cache[$uid];
-        }
-
-        if (Mage::getStoreConfigFlag(self::XML_PATH_CUSTOMER_UNL_LDAP_ACTIVE)) {
-            UNL_Peoplefinder_Driver_LDAP::$ldapServer = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_SERVER);
-            UNL_Peoplefinder_Driver_LDAP::$baseDN = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BASEDN);
-            UNL_Peoplefinder_Driver_LDAP::$bindDN = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BINDDN);
-            UNL_Peoplefinder_Driver_LDAP::$bindPW = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BINDPW);
-            $driver = new UNL_Peoplefinder_Driver_LDAP();
-        } else {
-            $driver = null;
-        }
-
-        do {
-            $pf = new UNL_Peoplefinder($driver);
-            $retry = false;
-            // The Pf Drivers now throw exceptions if a users isn't found
-            try {
-                $r = $pf->getUID($uid);
-                $this->cache($uid, $r);
-            } catch (Exception $e) {
-                if ($e->getCode() != 404) {
-                    Mage::logException($e);
-                    if (null !== $driver) {
-                        $driver = null;
-                        $retry = true;
-                    }
-                }
-                $r = null;
-            }
-        } while ($retry);
-
-        return $r;
-    }
-
-    public function isValidPf($uid)
-    {
-        return ($this->fetchPfUID($uid) !== null);
-    }
-
-    public function isFacultyStaff($uid)
-    {
-        if ($r = $this->fetchPfUID($uid)) {
-            foreach ($r->eduPersonAffiliation as $affil) {
-                if (in_array($affil, $this->_affiliationMap[self::CUSTOMER_TAG_FACULTY_STAFF])) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public function isStudent($uid)
-    {
-        if ($r = $this->fetchPfUID($uid)) {
-            foreach ($r->eduPersonAffiliation as $affil) {
-                if (in_array($affil, $this->_affiliationMap[self::CUSTOMER_TAG_STUDENT])) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Add peoplefinder data to Varian Object
-     *
-     * @param $data Varien_Object
-     */
-    public function loadPfData($data)
-    {
-        $user = $this->getAuth()->getUser();
-        if ($r = $this->fetchPfUID($user)) {
-
-            if (empty($data['email']) && isset($r->mail) && $r->mail->valid()) {
-                if (isset($r->unlEmailAlias)) {
-                    $data['email'] = $r->unlEmailAlias . '@unl.edu';
-                } else {
-                    $data['email'] = (string)$r->mail;
-                }
-            }
-
-            if (empty($data['firstname'])) {
-                if (isset($r->eduPersonNickname)) {
-                    $data['firstname'] = (string)$r->eduPersonNickname;
-                } else {
-                    $data['firstname'] = (string)$r->givenName;
-                }
-            }
-
-            if (empty($data['lastname'])) {
-                $data['lastname'] = (string)$r->sn;
-            }
-        }
-    }
-
-    public function getDisplayName($uid = false)
-    {
-        if ($uid === false) {
-            $uid = $this->getAuth()->getUser();
-        }
-
-        if ($r = $this->fetchPfUID($uid)) {
-            if (isset($r->displayName)) {
-                return (string)$r->displayName;
-            }
-        }
-        return $uid;
-    }
-
     /**
      * Assigns customer tags based on peoplefinder results
      *
@@ -195,7 +53,7 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function assignCustomerTags($customer, $uid)
     {
-        if ($this->isValidPf($uid)) {
+        if (Mage::helper('unl_cas/ldap')->isInLdap($uid)) {
             $tagIds = Mage::helper('unl_customertag')->getTagIdsByCustomer($customer);
             $initCount = count($tagIds);
             $doSave = false;
@@ -227,10 +85,10 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 
         switch ($tagName) {
             case self::CUSTOMER_TAG_STUDENT:
-                $condition = $this->isStudent($uid);
+                $condition = Mage::helper('unl_cas/ldap')->isStudent($uid);
                 break;
             case self::CUSTOMER_TAG_FACULTY_STAFF:
-                $condition = $this->isFacultyStaff($uid);
+                $condition = Mage::helper('unl_cas/ldap')->isFacultyStaff($uid);
                 break;
             case self::CUSTOMER_TAG_STUDENT_FEES:
                 //TODO: Needs logic for fees data store

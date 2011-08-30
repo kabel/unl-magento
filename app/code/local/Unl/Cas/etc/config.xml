@@ -121,6 +121,20 @@
         </layout>
     </frontend>
     
+    <adminhtml>
+        <events>
+            <admin_session_user_login_success>
+                <observers>
+                    <filter_cas>
+                        <type>singleton</type>
+                        <class>unl_cas/observer</class>
+                        <method>tryAdminLdapUpdate</method>
+                    </filter_cas>
+                </observers>
+            </admin_session_user_login_success>
+        </events>
+    </adminhtml>
+    
     <admin>
         <routers>
             <adminhtml>
