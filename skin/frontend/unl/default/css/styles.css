@@ -253,6 +253,7 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 
 /* Pager */
 .pager { color:#fff; font-size:11px; background:#557BB7 url("/wdn/templates_3.0/css/images/bottom_shadow_medium.png") repeat-x scroll center bottom; padding:4px 8px; text-align:center; border-radius:5px 5px 0 0; -moz-border-radius:5px 5px 0 0; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; }
+#wdn_Carousel .pager { background: none; border-radius:0; -moz-border-radius:0; -webkit-border-radius:0; }
 #maincontent .pager .amount { float:left; margin:0; }
 .pager .limiter { float:right; }
 .pager .limiter label { vertical-align:middle; }
