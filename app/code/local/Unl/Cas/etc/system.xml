@@ -10,6 +10,13 @@
                     <show_in_website>0</show_in_website>
                     <show_in_store>0</show_in_store>
                     <fields>
+                        <error_email translate="label">
+                            <label>Error Email Address</label>
+                            <frontent_type>text</frontent_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </error_email>
+                        
                         <cache translate="label comment">
                             <label>Cache Lifetime (minutes)</label>
                             <comment>Values less than 60 are ignored.</comment>

@@ -44,6 +44,39 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         }
     }
 
+    public function caslinkAction()
+    {
+        if (!$this->_getSession()->isLoggedIn()) {
+            $this->_redirect('unl_cas/account/cas');
+            return;
+        }
+
+        $auth = $this->_getCasAuth();
+        if ($auth->isLoggedIn()) {
+            if ($customer = $this->_checkUidExists($auth->getUser())) {
+                if ($customer->getId() != $this->_getSession()->getCustomerId()) {
+                    $this->_getSession()->setFailedLink(true);
+                    $this->_getSession()->addError(
+                        $this->__('Account linking failed. The UNL account %s is already linked with another customer. If you believe this is an error please contact us at <a href="%s">%s</a>. Please logout to try again.',
+                            $auth->getUser(),
+                            'mailto:' . Mage::getStoreConfig('customer/unl_ldap/error_email'),
+                            Mage::getStoreConfig('customer/unl_ldap/error_email')
+                        )
+                    );
+                }
+                $this->_redirect('customer/account/');
+            } else {
+                $customer = $this->_getSession()->getCustomer();
+                $customer->setUnlCasUid($auth->getUser());
+                $customer->save();
+                Mage::helper('unl_cas')->assignCustomerTags($customer, $auth->getUser());
+                $this->_redirect('customer/account/');
+            }
+        } else {
+            $auth->login();
+        }
+    }
+
     /**
      * Define target URL and redirect customer after logging in
      */

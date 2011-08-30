@@ -1,0 +1,26 @@
+<div class="dashboard">
+    <div class="page-title">
+        <h1><?php echo $this->__('My Dashboard') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php if (Mage::helper('unl_cas')->canShowCasLinkNotice()): ?>
+    <div class="zenbox">
+        <h2 style="font-style: italic;">Are you a UNL Student, Faculty, or Staff?</h2>
+        <div class="f-right" style="margin-left: 10px">
+            <button class="button" onclick="setLocation('<?php echo $this->getUrl('unl_cas/account/caslink') ?>')"><span><span>Link UNL Account</span></span></button>
+        </div>
+        <p>Link your UNL account to your shopping account to gain access to many of the products and features only available to members of the UNL community.</p>
+    </div>
+    <?php endif; ?>
+    <?php echo $this->getChildHtml('hello') ?>
+    <?php echo $this->getChildHtml('top') ?>
+    <div class="box-account box-info">
+        <div class="box-head">
+            <h2><?php echo $this->__('Account Information') ?></h2>
+        </div>
+        <?php echo $this->getChildHtml('info') ?>
+        <?php echo $this->getChildHtml('address') ?>
+    </div>
+    <?php echo $this->getChildHtml('info1') ?>
+    <?php echo $this->getChildHtml('info2') ?>
+</div>

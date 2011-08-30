@@ -21,6 +21,12 @@
                 <?php endif; ?>
             </p>
         </div>
+        <?php if (Mage::helper('unl_cas')->isCustomerCasUser()): ?>
+        <div class="sec_main primary">
+            <h3><?php echo $this->__('Linked UNL Account') ?></h3>
+            <p><?php echo $this->getCustomer()->getUnlCasUid() ?></p>
+        </div>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
 </div>

@@ -26,6 +26,30 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Checks if the currently logged in customer is a CAS user
+     *
+     * @return boolean
+     */
+    public function isCustomerCasUser()
+    {
+        if ($this->isLoggedIn()) {
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
+            return $customer->getUnlCasUid() != '';
+        }
+
+        return false;
+    }
+
+    public function canShowCasLinkNotice()
+    {
+        if (!$this->isCustomerCasUser()) {
+            return Mage::getSingleton('customer/session')->getFailedLink() !== true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get UNL_Auth object
      *
      * @return UNL_Auth_SimpleCAS
