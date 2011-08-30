@@ -124,6 +124,9 @@
         <Mage_Protx>
             <active>false</active>
         </Mage_Protx>
+        <Mage_XmlConnect>
+            <active>false</active>
+        </Mage_XmlConnect>
         
         <Find_Feed>
             <active>false</active>
