@@ -289,7 +289,12 @@ class Unl_Cas_Helper_Ldap extends Mage_Core_Helper_Abstract
             return $this->_fastCache[$id];
         }
 
-        return parent::_loadCache($id);
+        $data = parent::_loadCache($id);
+        if ($data) {
+            $data = unserialize($data);
+        }
+
+        return $data;
     }
 
     /**
@@ -307,7 +312,7 @@ class Unl_Cas_Helper_Ldap extends Mage_Core_Helper_Abstract
             $lifeTime = $this->_getCacheLifetime();
         }
         $tags = array_merge($tags, array(self::CACHE_TAG));
-        parent::_saveCache($data, $id, $tags, $lifeTime);
+        parent::_saveCache(serialize($data), $id, $tags, $lifeTime);
 
         return $this;
     }
