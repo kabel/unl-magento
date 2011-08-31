@@ -465,6 +465,10 @@
             <yahoo>Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)</yahoo>
             <mj12>Mozilla/5.0 (compatible; MJ12bot/v1.3.3; http://www.majestic12.co.uk/bot.php?+)</mj12>
             <yandex>Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)</yandex>
+            <discobot>Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html)</discobot>
+            <baidu>Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)</baidu>
+            <ezooms>Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)</ezooms>
+            <daumoa>Mozilla/5.0 (compatible; MSIE or Firefox mutant; not on Windows server; +http://ws.daum.net/aboutWebSearch.html) Daumoa/2.0</daumoa>
             <collectd>collectd/4.10.2</collectd>
         </ignore_user_agents>
         
