@@ -86,7 +86,7 @@ class Unl_AdminLog_Model_Observer
         $log = Mage::getModel('unl_adminlog/log');
         $log->addData($data);
         $log->setCreatedAt(now());
-        $log->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr(true));
+        $log->setRemoteAddr(sprintf('%u', Mage::helper('core/http')->getRemoteAddr(true)));
         $log->setUserId($userId);
 
         return $log;
