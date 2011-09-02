@@ -107,6 +107,7 @@ class Unl_Core_Model_Admin_Observer
         $storeIdsActions = array(
             'adminhtml_report_sales_sales',
             'adminhtml_report_sales_coupons',
+            'unl_core_report_customer_orderaddress',
             'unl_core_report_product_orderdetails',
             'unl_core_report_product_customized',
         	'unl_core_report_sales_reconcile_cc',

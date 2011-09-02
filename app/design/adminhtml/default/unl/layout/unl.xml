@@ -83,6 +83,21 @@ Custom Product Reports
     </unl_core_report_product_customized>
 	
 <!--
+Custom Customer Reports
+-->
+    
+    <unl_core_report_customer_orderaddress>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_customer_orderaddress" template="report/grid/container.phtml" name="sales.report.grid.container">
+                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
+                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
+                </block>
+                <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
+            </block>
+        </reference>
+    </unl_core_report_customer_orderaddress>
+
+<!--
 Bursar/Reconcile Reports
 -->
 

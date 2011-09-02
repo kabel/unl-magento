@@ -54,6 +54,14 @@
                         </customized>
                     </children>
                 </products>
+                <customers>
+                    <children>
+                        <orderaddress translate="title" module="unl_core">
+                            <title>Order Address</title>
+                            <action>unl/report_customer/orderaddress</action>
+                        </orderaddress>
+                    </children>
+                </customers>
             </children>
         </report>
         <sales>
@@ -128,6 +136,13 @@
                                     </customized>
                                 </children>
                             </products>
+                            <customers>
+                                <children>
+                                    <oderaddress translate="title">
+                                        <title>Order Address</title>
+                                    </oderaddress>
+                                </children>
+                            </customers>
                         </children>
                     </report>
                     <sales>
