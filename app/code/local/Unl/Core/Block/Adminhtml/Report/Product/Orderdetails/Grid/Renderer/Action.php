@@ -25,7 +25,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid_Renderer_Action
 
     public function renderExport(Varien_Object $row)
     {
-        return $row->getOrdernum();
+        return $row->getData($this->getColumn()->getIndex());
     }
 
     protected function _actionsToHtml(array $actions)
