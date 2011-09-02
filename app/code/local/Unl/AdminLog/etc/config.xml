@@ -881,6 +881,12 @@
                         <nocap />
                     </view_actions>
                 </unl_core_report_sales_reconcile>
+                <unl_core_report_customer translate="label">
+                    <label>Reporting: Customer Info</label>
+                    <view_actions>
+                        <orderaddress />
+                    </view_actions>
+                </unl_core_report_customer>
                 <unl_core_report_product translate="label">
                     <label>Reporting: Sold Product Details</label>
                     <view_actions>
