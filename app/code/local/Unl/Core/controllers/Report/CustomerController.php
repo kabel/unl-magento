@@ -79,14 +79,14 @@ class Unl_Core_Report_CustomerController extends Mage_Adminhtml_Controller_Actio
         $act = $this->getRequest()->getActionName();
         switch ($act) {
             case 'orderaddress':
-                return Mage::getSingleton('admin/session')->isAllowed('report/customer/' . $act);
+                return Mage::getSingleton('admin/session')->isAllowed('report/customers/' . $act);
                 break;
             case 'exportOrderdetailsCsv':
             case 'exportOrderdetailsExcel':
-                return Mage::getSingleton('admin/session')->isAllowed('report/customer/orderaddress');
+                return Mage::getSingleton('admin/session')->isAllowed('report/customers/orderaddress');
                 break;
             default:
-                return Mage::getSingleton('admin/session')->isAllowed('report/customer');
+                return Mage::getSingleton('admin/session')->isAllowed('report/customers');
             break;
         }
     }
