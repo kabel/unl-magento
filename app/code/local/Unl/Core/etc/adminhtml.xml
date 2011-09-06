@@ -138,9 +138,9 @@
                             </products>
                             <customers>
                                 <children>
-                                    <oderaddress translate="title">
+                                    <orderaddress translate="title">
                                         <title>Order Address</title>
-                                    </oderaddress>
+                                    </orderaddress>
                                 </children>
                             </customers>
                         </children>
