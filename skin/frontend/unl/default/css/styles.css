@@ -1610,6 +1610,7 @@ f/********** Product Prices > */
 .send-friend .form-list li p:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
 /* ======================================================================================= */
 
-.mceContentBody { float: none !important; width: 940px; margin: auto; background: none; }
+.mceContentBody { float: none !important; margin: auto; background: none; }
+.mceContentBody .first { margin-left: 0; clear: left; }
 .calendar { line-height: 18px; }
 .calendar table { border-collapse: separate; }
