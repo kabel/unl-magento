@@ -14,8 +14,18 @@
         <h3>Contacting Us</h3>
         <div class="contact">
             <?php echo $this->getChildHtml('contact_link') ?>
+            <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+            <p style="margin:10px 0">
+                <em>Please note:</em> The following customer support number is <b>NOT</b> for any specific store, rather, it is for all stores in the UNL Marketplace. To contact a specific store, please visit that store's page by using one of the links above.
+            </p>
+            <?php endif;?>
             <address><?php echo nl2br(Mage::getStoreConfig('general/store_information/address')) ?></address>
             <p><?php echo $this->__('Customer Support')?>: <?php echo Mage::getStoreConfig('general/store_information/phone') ?></p>
+            <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+            <p style="margin:10px 0">
+                Again, this number does <b>NOT</b> ring the Computer Shop.
+            </p>
+            <?php endif;?>
         </div><!-- TemplateEndEditable --></div>
     <div class="footer_col">
         <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/socialmediashare.html'); ?>
