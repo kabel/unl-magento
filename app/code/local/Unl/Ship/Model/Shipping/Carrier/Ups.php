@@ -43,7 +43,7 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
      * @return string
      */
     protected function _getCleanXmlValue($code, $value)
-    {   
+    {
         if ($code == 'shipto_addr2') {
             if ($this->isErrorRetried(120203)) {
                 $value = '';
@@ -82,6 +82,18 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
     public function getWeightUnits()
     {
         return $this->getConfigData('unit_of_measure');
+    }
+
+    /* Overrides
+     * @see Mage_Usa_Model_Shipping_Carrier_Ups::_getCorrectWeight()
+     * by using new UPS recommedation to use next whole pound
+     */
+    protected function _getCorrectWeight($weight)
+    {
+        $weight = parent::_getCorrectWeight($weight);
+        $weight = ceil($weight);
+
+        return $weight;
     }
 
     /* Overrides
