@@ -82,7 +82,7 @@
                                                     (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                                                 <?php endif; ?>
                                                 </label>
-                                                <?php if (strpos($_rate->getCode(), 'pickup_store') === 0): ?>
+                                                <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_rate->getCode())): ?>
                                                 <div class="pickup-address">
                                                     <label><?php echo $this->__('Pickup Location:') ?></label><br />
                                                     <?php echo nl2br($this->escapeHtml($_rate->getMethodDescription())) ?>

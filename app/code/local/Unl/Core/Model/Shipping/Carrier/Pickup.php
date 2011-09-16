@@ -66,6 +66,27 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         return $locations;
     }
 
+    public function getLocationFromMethod($method, $store=false)
+    {
+        $arr = explode('_', $method, 2);
+        if (empty($arr[1]) || substr($arr[1], 0, 5) != 'store') {
+            return false;
+        }
+
+        $i = intval(substr($arr[1], 5));
+
+        if ($store) {
+            $this->setStore($store);
+        }
+
+        $locations = $this->_getPickupLocations();
+        if (isset($locations[$i])) {
+            return $locations[$i];
+        }
+
+        return false;
+    }
+
     /**
      * Get allowed shipping methods
      *

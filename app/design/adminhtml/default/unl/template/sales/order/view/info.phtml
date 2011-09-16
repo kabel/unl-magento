@@ -222,10 +222,16 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
     <div class="entry-edit">
         <div class="entry-edit-head">
             <h4 class="icon-head head-shipping-address"><?php echo Mage::helper('sales')->__('Shipping Address') ?></h4>
+            <?php if (!Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
             <div class="tools"><?php echo $this->getAddressEditLink($_order->getShippingAddress())?></div>
+            <?php endif;?>
         </div>
         <fieldset>
+            <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+            <?php echo Mage::helper('unl_core')->__('Pickup order, disregard shipping address.') ?>
+            <?php else: ?>
             <address><?php echo $_order->getShippingAddress()->getFormated(true) ?></address>
+            <?php endif; ?>
         </fieldset>
     </div>
 </div>

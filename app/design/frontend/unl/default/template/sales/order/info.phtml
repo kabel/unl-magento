@@ -39,7 +39,11 @@
                 <h2><?php echo $this->__('Shipping Address') ?></h2>
             </div>
             <div class="box-content">
+            <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+                <?php echo $this->__('Pickup order') ?>
+            <?php else: ?>
                 <address><?php echo $_order->getShippingAddress()->format('html') ?></address>
+            <?php endif; ?>
             </div>
         </div>
     </div>
@@ -54,14 +58,20 @@
                 <?php else: ?>
                     <p><?php echo $this->helper('sales')->__('No shipping information available'); ?></p>
                 <?php endif; ?>
-                
+
+                <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+                    <?php $_pickupStore = current($_order->getAllVisibleItems())->getSourceStoreView(); ?>
+                    <p><strong><?php echo $this->__('Pickup Location:') ?></strong><br />
+                    <?php echo nl2br(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($_order->getShippingMethod(), $_pickupStore)) ?></p>
+                <?php endif; ?>
+
                 <?php if ($_order->getAwDeliverydateDate()): ?>
                 <br/>
-                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong> 
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>
                 &nbsp;
                 <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
-                <?php endif; ?>         
-                
+                <?php endif; ?>
+
                 <?php if ($_order->getAwDeliverydateNotice()): ?>
                 <br/>
                 <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong><br/>

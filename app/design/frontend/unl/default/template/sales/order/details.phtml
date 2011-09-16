@@ -12,14 +12,18 @@
 <div class="col2-set">
     <div class="col-1">
         <h4><?php echo $this->__('Shipping Address') ?></h4>
-        <?php $_shipping = $_invoice->getShippingAddress() ?>
-        <address><?php echo $_shipping->getFirstname() ?> <?php echo $_shipping->getLastname() ?><br />
-        <?php echo $_shipping->getCompany() ?><br />
-        <?php echo $_shipping->getStreet() ?><br />
-        <?php echo $_shipping->getCity() ?>, <?php echo $_shipping->getRegion() ?> <?php echo $_shipping->getPostcode() ?><br />
-        <strong>T</strong> | <?php echo $_shipping->getTelephone();
-        if($_shipping->getFax()): ?>
-            <br /><strong>F</strong> | <?php echo $_shipping->getFax() ?>
+        <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+            <p><?php echo $this->__('Pickup order') ?></p>
+        <?php else: ?>
+            <?php $_shipping = $_invoice->getShippingAddress() ?>
+            <address><?php echo $_shipping->getFirstname() ?> <?php echo $_shipping->getLastname() ?><br />
+            <?php echo $_shipping->getCompany() ?><br />
+            <?php echo $_shipping->getStreet() ?><br />
+            <?php echo $_shipping->getCity() ?>, <?php echo $_shipping->getRegion() ?> <?php echo $_shipping->getPostcode() ?><br />
+            <strong>T</strong> | <?php echo $_shipping->getTelephone();
+            if($_shipping->getFax()): ?>
+                <br /><strong>F</strong> | <?php echo $_shipping->getFax() ?>
+            <?php endif; ?>
         <?php endif; ?>
         </address>
     </div>
