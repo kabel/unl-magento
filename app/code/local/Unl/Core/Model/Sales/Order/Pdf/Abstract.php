@@ -133,7 +133,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         /* Shipping Address and Method */
         if (!$order->getIsVirtual()) {
             /* Shipping Address */
-            if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())) {
+            if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($order->getShippingMethod())) {
                 $shippingAddress = $this->_formatAddress(Mage::helper('unl_core')->__('Pickup Order'));
             } else {
                 $shippingAddress = $this->_formatAddress($order->getShippingAddress()->format('pdf'));
