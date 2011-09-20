@@ -2,6 +2,22 @@ Index: get.php
 ===================================================================
 --- get.php	(revision 110161)
 +++ get.php	(working copy)
+@@ -32,7 +32,6 @@
+         . 'target="">Find out</a> how to install</a> Magento using PHP-CGI as a work-around.</p></div>';
+     exit;
+ }
+-$start = microtime(true);
+ /**
+  * Error reporting
+  */
+@@ -64,6 +63,7 @@
+ 
+ $configCacheFile = $varDirectory . $ds . 'resource_config.json';
+ 
++$tryDb = true;
+ $mediaDirectory = null;
+ $allowedResources = array();
+ 
 @@ -84,7 +84,7 @@
  $filePath = str_replace('/', $ds, rtrim($bp, $ds) . $ds . $pathInfo);
  
@@ -11,18 +27,59 @@ Index: get.php
          sendNotFoundPage();
      }
  
-@@ -137,9 +137,11 @@
+@@ -133,29 +133,32 @@
+     checkResource($relativeFilename, $allowedResources);
+ }
+ 
+-if (0 !== stripos($pathInfo, $mediaDirectory . '/')) {
++if (0 !== stripos($pathInfo, $mediaDirectory . '/') || is_dir($filePath)) {
      sendNotFoundPage();
  }
  
 -$databaseFileSotrage = Mage::getModel('core/file_storage_database');
 -$databaseFileSotrage->loadByFilename($relativeFilename);
--
-+try {
++if (Mage::helper('core/file_storage_database')->checkDbUsage()) {
 +    $databaseFileSotrage = Mage::getModel('core/file_storage_database');
 +    $databaseFileSotrage->loadByFilename($relativeFilename);
-+} catch (Exception $e) {
-+}
- if ($databaseFileSotrage->getId()) {
-     $directory = dirname($filePath);
-     if (!is_dir($directory)) {
+ 
+-if ($databaseFileSotrage->getId()) {
+-    $directory = dirname($filePath);
+-    if (!is_dir($directory)) {
+-        mkdir($directory, 0777, true);
++    if ($databaseFileSotrage->getId()) {
++        $directory = dirname($filePath);
++        if (!is_dir($directory)) {
++            mkdir($directory, 0777, true);
++        }
++
++        $fp = fopen($filePath, 'w');
++        if (flock($fp, LOCK_EX | LOCK_NB)) {
++            ftruncate($fp, 0);
++            fwrite($fp, $databaseFileSotrage->getContent());
++        }
++        flock($fp, LOCK_UN);
++        fclose($fp);
+     }
+ 
+-    $fp = fopen($filePath, 'w');
+-    if (flock($fp, LOCK_EX | LOCK_NB)) {
+-        ftruncate($fp, 0);
+-        fwrite($fp, $databaseFileSotrage->getContent());
+-    }
+-    flock($fp, LOCK_UN);
+-    fclose($fp);
++    sendFile($filePath);
+ }
+ 
+-sendFile($filePath);
+ sendNotFoundPage();
+ 
+ /**
+@@ -179,6 +182,7 @@
+     foreach ($allowedResources as $allowedResource) {
+         if (0 === stripos($resource, $allowedResource)) {
+             $isResourceAllowed = true;
++            break;
+         }
+     }
+ 
