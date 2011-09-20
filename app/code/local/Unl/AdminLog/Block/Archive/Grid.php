@@ -5,6 +5,7 @@ class Unl_AdminLog_Block_Archive_Grid extends Unl_AdminLog_Block_Log_Grid
     public function __construct()
     {
         $this->_archiveFilter = true;
+        parent::__construct();
     }
 
     protected function _getCsvUrl()
