@@ -1,0 +1,28 @@
+Index: get.php
+===================================================================
+--- get.php	(revision 110161)
++++ get.php	(working copy)
+@@ -84,7 +84,7 @@
+ $filePath = str_replace('/', $ds, rtrim($bp, $ds) . $ds . $pathInfo);
+ 
+ if ($mediaDirectory) {
+-    if (0 !== stripos($pathInfo, $mediaDirectory . '/')) {
++    if (0 !== stripos($pathInfo, $mediaDirectory . '/') || is_dir($filePath)) {
+         sendNotFoundPage();
+     }
+ 
+@@ -137,9 +137,11 @@
+     sendNotFoundPage();
+ }
+ 
+-$databaseFileSotrage = Mage::getModel('core/file_storage_database');
+-$databaseFileSotrage->loadByFilename($relativeFilename);
+-
++try {
++    $databaseFileSotrage = Mage::getModel('core/file_storage_database');
++    $databaseFileSotrage->loadByFilename($relativeFilename);
++} catch (Exception $e) {
++}
+ if ($databaseFileSotrage->getId()) {
+     $directory = dirname($filePath);
+     if (!is_dir($directory)) {
