@@ -158,7 +158,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
             $y2 = $y - self::DEFAULT_LINE_HEIGHT - (max(count($billingAddress), count($shippingAddress)) * self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD);
         }
         else {
-            $y2 = $y - self::DEFAULT_LINE_HEIGHT - (count($billingAddress) * self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD);
+            $y2 = $y - self::DEFAULT_LINE_HEIGHT - (max(count($billingAddress), count($payment)) * self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD);
         }
 
         $page->setFillColor(new Zend_Pdf_Color_GrayScale(1));
@@ -184,6 +184,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
 
             }
 
+            $this->y = $y2 - self::DEFAULT_BOX_PAD;
             $page->setFillColor(new Zend_Pdf_Color_Rgb(0.93, 0.92, 0.92));
             $page->setLineWidth(0.5);
             $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_COL2_MARGIN, $this->y - 2 * self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
