@@ -253,7 +253,6 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 
 /* Pager */
 .pager { color:#fff; font-size:11px; background:#557BB7 url("/wdn/templates_3.0/css/images/bottom_shadow_medium.png") repeat-x scroll center bottom; padding:4px 8px; text-align:center; border-radius:5px 5px 0 0; -moz-border-radius:5px 5px 0 0; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; }
-#wdn_Carousel .pager { background: none; border-radius:0; -moz-border-radius:0; -webkit-border-radius:0; }
 #maincontent .pager .amount { float:left; margin:0; }
 .pager .limiter { float:right; }
 .pager .limiter label { vertical-align:middle; }
@@ -364,6 +363,11 @@ tr.summary-details-excluded { font-style:italic; }
 #maincontent .std dd, #maincontent.mceContentBody dd { padding-left:25px; }
 #maincontent .std blockquote, #maincontent.mceContentBody blockquote { font-style:italic; padding:0 0 0 1.5em; }
 #maincontent .std address, #maincontent.mceContentBody address { font-style:normal; }
+
+/* CMS UNL_Template fixes */
+#wdn_Carousel ul.slides { padding:0; margin:0; }
+#wdn_Carousel ul.pager { padding:0; margin: -1px auto 10px; }
+
 
 /* Misc */
 
