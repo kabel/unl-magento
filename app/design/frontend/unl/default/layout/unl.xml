@@ -22,4 +22,11 @@
     <sales_email_invoice_payment_extra>
         <block type="core/template" template="email/order/invoice/payment/extra.phtml" />
     </sales_email_invoice_payment_extra>
+    
+    <sales_email_order_notify_item>
+        <block type="sales/order_email_items" name="item" template="email/order/notify/item.phtml">
+            <action method="addItemRender"><type>default</type><block>sales/order_email_items_order_default</block><template>email/order/notify/items/default.phtml</template></action>
+        </block>
+        <block type="core/text_list" name="additional.product.info" />
+    </sales_email_order_notify_item>
 </layout>

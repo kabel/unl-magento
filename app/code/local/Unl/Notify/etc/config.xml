@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Notify>
+            <version>0.1.0</version>
+        </Unl_Notify>
+    </modules>
+    
+    <global>
+        <models>
+            <unl_notify>
+                <class>Unl_Notify_Model</class>
+                <resourceModel>unl_notify_mysql4</resourceModel>
+            </unl_notify>
+            <unl_notify_mysql4>
+                <class>Unl_Notify_Model_Mysql4</class>
+                <entities>
+                    <order_queue>
+                        <table>unl_notify_order_queue</table>
+                    </order_queue>
+                </entities>
+            </unl_notify_mysql4>
+        </models>
+        
+        <template>
+            <email>
+               <notify_email_order_template translate="label" module="unl_notify">
+                   <label>Order Notification</label>
+                   <file>notify_order_new.html</file>
+                   <type>html</type>
+               </notify_email_order_template>
+           </email>
+       </template>
+        
+        <resources>
+            <unl_notify_setup>
+                <setup>
+                    <module>Unl_Notify</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+            </unl_notify_setup>
+        </resources>
+        
+        <events>
+            <sales_order_place_after>
+                <observers>
+                    <unl_notify_queue>
+                        <type>singleton</type>
+                        <class>unl_notify/observer</class>
+                        <method>queueOrderNotify</method>
+                    </unl_notify_queue>
+                </observers>
+            </sales_order_place_after>
+        </events>
+
+    </global>
+    
+    <crontab>
+        <jobs>
+            <unl_notify_send>
+                <schedule><cron_expr>*/15 * * * *</cron_expr></schedule>
+                <run><model>unl_notify/observer::sendNotifications</model></run>
+            </unl_notify_send>
+        </jobs>
+    </crontab>
+    
+    <default>
+        <sales_email>
+            <order_notify>
+                <enabled>1</enabled>
+                <count>50</count>
+                <template>notify_email_order_template</template>
+                <identity>custom2</identity>
+            </order_notify>
+        </sales_email>
+    </default>
+</config>

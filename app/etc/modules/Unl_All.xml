@@ -69,6 +69,14 @@
                 <Mage_Usa />
             </depends>
         </Unl_Ship>
+        <Unl_Notify>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Catalog />
+                <Mage_Sales />
+            </depends>
+        </Unl_Notify>
         
         <AW_Deliverydate>
             <active>true</active>
