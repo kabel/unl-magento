@@ -5,8 +5,6 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
     protected $_periodFormat;
     protected $_periodColumn;
 
-    protected $_isInit = false;
-
 	/**
      * Initialize custom resource model
      */
@@ -25,7 +23,8 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
      */
     protected function _initSelect()
     {
-        if ($this->_isInit) {
+        if ($this->getSelect()->getPart(Zend_Db_Select::FROM)) {
+            $this->_applyFilters = false;
             return $this;
         }
 
@@ -52,8 +51,6 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
                 	'customer_lastname' => new Zend_Db_Expr('CASE WHEN order.customer_id IS NULL THEN _table_billing_address.lastname ELSE order.customer_lastname END')
                 )
             );
-
-        $this->_isInit = true;
 
         return $this;
     }
@@ -118,7 +115,9 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
 
     public function addSkuFilter($sku)
     {
-        $this->getSelect()->where('main_table.sku LIKE ?', $sku . '%');
+        if ($sku) {
+            $this->getSelect()->where('main_table.sku LIKE ?', $sku . '%');
+        }
 
         return $this;
     }
