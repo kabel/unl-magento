@@ -5,6 +5,8 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
     protected $_periodFormat;
     protected $_periodColumn;
 
+    protected $_isInit = false;
+
 	/**
      * Initialize custom resource model
      */
@@ -23,6 +25,10 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
      */
     protected function _initSelect()
     {
+        if ($this->_isInit) {
+            return $this;
+        }
+
         $compositeTypeIds = Mage::getSingleton('catalog/product_type')->getCompositeTypes();
         $productTypes = $this->getConnection()->quoteInto(' AND (main_table.product_type NOT IN (?))', $compositeTypeIds);
 
@@ -46,6 +52,8 @@ class Unl_Core_Model_Mysql4_Report_Product_Orderdetails_Collection extends Mage_
                 	'customer_lastname' => new Zend_Db_Expr('CASE WHEN order.customer_id IS NULL THEN _table_billing_address.lastname ELSE order.customer_lastname END')
                 )
             );
+
+        $this->_isInit = true;
 
         return $this;
     }
