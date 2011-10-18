@@ -262,7 +262,7 @@ class Unl_Comm_QueueController extends Mage_Adminhtml_Controller_Action
 
             $queue->save();
 
-            if ($queue->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_NEVER && $customerIds) {
+            if ($queue->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_NEVER && isset($customerIds)) {
                 $queue->addRecipientsToQueue($customerIds);
             }
 
