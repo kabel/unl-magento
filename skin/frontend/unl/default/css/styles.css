@@ -1042,6 +1042,9 @@ f/********** Product Prices > */
 .advanced-search-summary strong { color:#E17C24; }
 .advanced-search-summary li { margin:2px 0; }
 #maincontent .advanced-search-summary p { clear:both; font-weight:bold; margin:0; }
+.search-suggestion,
+.search-feedback { font-size: 10px; }
+.search-feedback { margin-top: 1.1em; }
 
 /* CMS Home Page */
 .cms-home .main { padding:8px; }
