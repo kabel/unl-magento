@@ -169,11 +169,19 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function revokeCostObjectAuth($customer)
     {
-        $group = Mage::getModel('customer/group')->load(self::CUSTOMER_GROUP_TAX_EXEMPT, 'customer_group_code');
-        if ($customer->getGroupId() == $group->getId()) {
-            $group->unsetData()
-                ->load(Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $customer->getStoreId()));
-            $this->_assignCustomerGroup($customer, $group);
+        if ($customer->getPreviousGroupId()) {
+            $group = Mage::getModel('customer/group')->load(self::CUSTOMER_GROUP_TAX_EXEMPT, 'customer_group_code');
+            if ($customer->getGroupId() == $group->getId()) {
+                $group->unsetData()
+                    ->load($customer->getPreviousGroupId());
+
+                if (!$group->getId()) {
+                    $group->unsetData()
+                        ->load(Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, $customer->getStoreId()));
+                }
+
+                $this->_assignCustomerGroup($customer, $group, false);
+            }
         }
     }
 
@@ -194,9 +202,14 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      * @param Mage_Customer_Model_Customer $customer
      * @param Mage_Customer_Model_Group $group
      */
-    protected function _assignCustomerGroup($customer, $group, $triggerSave = true)
+    protected function _assignCustomerGroup($customer, $group, $savePrevious = true, $triggerSave = true)
     {
         if ($customer->getGroupId() != $group->getId()) {
+            if ($savePrevious) {
+                $customer->setPreviousGroupId($customer->getGroupId());
+            } else {
+                $customer->setPreviousGroupId(null);
+            }
             $customer->setGroupId($group->getId());
             if ($triggerSave) {
                 $customer->save();
