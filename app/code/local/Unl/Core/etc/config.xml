@@ -472,6 +472,14 @@
             <collectd>collectd/4.10.2</collectd>
         </ignore_user_agents>
         
+        <session>
+            <validation>
+                <http_user_agent_skip>
+                    <flash_11_mac>Adobe Flash Player 11</flash_11_mac>
+                </http_user_agent_skip>
+            </validation>
+        </session>
+        
     </global>
     
     <frontend>
