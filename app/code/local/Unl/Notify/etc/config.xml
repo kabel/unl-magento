@@ -29,11 +29,11 @@
         
         <template>
             <email>
-               <notify_email_order_template translate="label" module="unl_notify">
+               <sales_email_order_notify_template translate="label" module="unl_notify">
                    <label>Order Notification</label>
                    <file>notify_order_new.html</file>
                    <type>html</type>
-               </notify_email_order_template>
+               </sales_email_order_notify_template>
            </email>
        </template>
         
@@ -74,7 +74,7 @@
             <order_notify>
                 <enabled>1</enabled>
                 <count>50</count>
-                <template>notify_email_order_template</template>
+                <template>sales_email_order_notify_template</template>
                 <identity>custom2</identity>
             </order_notify>
         </sales_email>
