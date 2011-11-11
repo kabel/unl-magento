@@ -82,7 +82,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
      * @param $obj Mage_Sales_Model_Order|Mage_Sales_Model_Order_Shipment
      * @param $putOrderId
      */
-    protected function insertOrder(&$page, $obj, $putOrderId = true)
+    protected function insertOrder(&$page, $obj, $putOrderId = true, $showTotals = true)
     {
         if ($obj instanceof Mage_Sales_Model_Order) {
             $shipment = null;
@@ -121,6 +121,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         /* Payment */
         $paymentInfo = Mage::helper('payment')->getInfoBlock($order->getPayment())
             ->setIsSecureMode(true)
+            ->setShowTotals($showTotals)
             ->toPdf();
         $payment = explode('{{pdf_row_separator}}', $paymentInfo);
         foreach ($payment as $key=>$value){
@@ -203,12 +204,21 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 
             $paymentLeft = self::DEFAULT_PAGE_LEFT;
+            $paymentRight = self::DEFAULT_PAGE_COL2_MARGIN -  2 * self::DEFAULT_BOX_PAD;
             $yPayments   = $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD;
         }
         else {
             $yPayments   = $y - (2 * self::DEFAULT_LINE_HEIGHT);
             $paymentLeft = self::DEFAULT_PAGE_COL2;
+            $paymentRight = self::DEFAULT_PAGE_MARGIN_RIGHT - 2 * self::DEFAULT_BOX_PAD;
         }
+
+        // Highlight?
+//         if ($showTotals) {
+//             $page->setFillColor(new Zend_Pdf_Color_Cmyk(0, 0, 1, 0));
+//             $page->drawRectangle($paymentLeft, $yPayments + self::DEFAULT_LINE_HEIGHT, $paymentRight, $yPayments - (count($payment) - 1) * self::DEFAULT_LINE_HEIGHT, Zend_Pdf_Page::SHAPE_DRAW_FILL);
+//             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
+//         }
 
         foreach ($payment as $value){
             if (trim($value)!=='') {
@@ -224,11 +234,12 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
 
             $yShipments = $this->y;
 
+            if ($showTotals) {
+                $totalShippingChargesText = "(" . Mage::helper('sales')->__('Total Shipping Charges') . " " . $order->formatPriceTxt($order->getShippingAmount()) . ")";
 
-            $totalShippingChargesText = "(" . Mage::helper('sales')->__('Total Shipping Charges') . " " . $order->formatPriceTxt($order->getShippingAmount()) . ")";
-
-            $page->drawText($totalShippingChargesText, self::DEFAULT_PAGE_COL2, $yShipments-self::DEFAULT_FONT_SIZE, 'UTF-8');
-            $yShipments -= self::DEFAULT_LINE_HEIGHT;
+                $page->drawText($totalShippingChargesText, self::DEFAULT_PAGE_COL2, $yShipments-self::DEFAULT_FONT_SIZE, 'UTF-8');
+                $yShipments -= self::DEFAULT_LINE_HEIGHT;
+            }
 
             $tracks = array();
             if ($shipment) {

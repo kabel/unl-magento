@@ -1,0 +1,6 @@
+<?php if ($this->getShowTotals()) {
+    echo Mage::helper('payment')->__('Purchase Order Number: %s', $this->htmlEscape($this->getInfo()->getPoNumber()));
+} else {
+    echo Mage::helper('payment')->__('Purchase Order Number');
+} ?>
+{{pdf_row_separator}}

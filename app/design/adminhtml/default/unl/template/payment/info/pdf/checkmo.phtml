@@ -1,6 +1,5 @@
 <?php echo $this->getMethod()->getTitle() ?>
-    {{pdf_row_separator}}
-<?php if($this->getInfo()->getAdditionalData()): ?>
+<?php if($this->getShowTotals() && $this->getInfo()->getAdditionalData()): ?>
     {{pdf_row_separator}}
     <?php if($this->getPayableTo()): ?>
         <?php echo Mage::helper('payment')->__('Make Check payable to: %s', $this->htmlEscape($this->getPayableTo())) ?>
@@ -10,6 +9,6 @@
         <?php echo Mage::helper('payment')->__('Send Check to:') ?>
         {{pdf_row_separator}}
         <?php echo str_replace("\n", '{{pdf_row_separator}}', $this->htmlEscape($this->getMailingAddress())) ?>
-        {{pdf_row_separator}}
     <?php endif; ?>
 <?php endif; ?>
+{{pdf_row_separator}}
