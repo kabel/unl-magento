@@ -8,9 +8,12 @@ class Unl_Core_Block_Adminhtml_Sales_Invoice_Grid extends Mage_Adminhtml_Block_S
      */
     protected function _prepareCollection()
     {
+        /* @var $collection Mage_Sales_Model_Mysql4_Order_Invoice_Grid_Collection */
         $collection = Mage::getResourceModel($this->_getCollectionClass());
 
         Mage::helper('unl_core')->addAdminScopeFilters($collection);
+
+        $collection->join('sales/order_payment', 'main_table.order_id = `sales/order_payment`.parent_id', array('method'));
 
         $this->setCollection($collection);
 
@@ -28,6 +31,13 @@ class Unl_Core_Block_Adminhtml_Sales_Invoice_Grid extends Mage_Adminhtml_Block_S
             'index'     => 'paid_at',
             'type'      => 'datetime',
         ), 'created_at');
+
+        $this->addColumnAfter('payment_method', array(
+            'header'    => Mage::helper('sales')->__('Payment Method'),
+            'index'     => 'method',
+            'type'      => 'options',
+            'options'   => Mage::helper('unl_core')->getActivePaymentMethodOptions(false),
+        ), 'billing_name');
 
         return parent::_prepareColumns();
     }

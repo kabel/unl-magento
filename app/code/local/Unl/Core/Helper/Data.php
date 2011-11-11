@@ -30,6 +30,22 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $options;
     }
 
+    public function getActivePaymentMethodOptions($withEmpty = true)
+    {
+        if ($withEmpty) {
+            $options = array('' => '');
+        } else {
+            $options = array();
+        }
+
+        $methods = Mage::getSingleton('payment/config')->getActiveMethods();
+        foreach ($methods as $code => $method) {
+            $options[$code] = $method->getTitle() ? $method->getTitle() : $code;
+        }
+
+        return $options;
+    }
+
     public function getAdminUserScope($asGroups = false)
     {
         $user = Mage::getSingleton('admin/session')->getUser();
