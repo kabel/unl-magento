@@ -106,7 +106,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'index' => 'created_at',
             'filter_index' => 'main_table.created_at',
             'type' => 'datetime',
-            'width' => '150px',
+            'width' => '160px',
         ));
 
         $this->addColumn('billing_name', array(
@@ -143,7 +143,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
             'index' => 'status',
             'filter_index' => 'main_table.status',
             'type'  => 'options',
-            'width' => '70px',
+            'width' => '110px',
             'options' => Mage::getSingleton('sales/order_config')->getStatuses(),
         ));
 
