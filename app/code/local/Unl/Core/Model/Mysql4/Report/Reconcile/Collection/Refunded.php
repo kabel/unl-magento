@@ -15,45 +15,18 @@ class Unl_Core_Model_Mysql4_Report_Reconcile_Collection_Refunded extends Unl_Cor
 
         $this->_selectedColumns += $aggregatedColumns;
 
+        if (!$this->isTotals() && !$this->isSubTotals()) {
+            $this->_selectedColumns += array(
+                'order_num' => 'o.increment_id'
+            );
+        }
+
         return $this->_selectedColumns;
     }
 
     protected  function _initSelect()
     {
-        return $this->_initSelectForProducts();
-    }
-
-    protected function _initSelectForProducts($groupOrder = true)
-    {
-        $this->_initSelectForShipping($groupOrder);
-
-        $this->getSelect()
-            ->join(array('ci' => $this->getTable('sales/creditmemo_item')), 'c.entity_id = ci.parent_id', array())
-            ->join(array('oi' => $this->getTable('sales/order_item')), 'ci.order_item_id = oi.item_id AND oi.parent_item_id IS NULL', array());
-
-        return $this;
-    }
-
-    protected function _initSelectForShipping($groupOrder = true)
-    {
-        $this->getSelect()
-            ->from(array('c' => $this->getResource()->getMainTable()) , $this->_getSelectedColumns())
-            ->join(array('p' => $this->getTable('sales/order_payment')), 'c.order_id = p.parent_id', array())
-            ->where('p.method IN (?)', $this->_paymentMethodCodes);
-
-        if (!$this->isTotals()) {
-            $this->getSelect()->group($this->_periodFormat);
-
-            if (!$this->isSubTotals() && $groupOrder) {
-                $this->getSelect()
-                    ->join(array('o' => $this->getTable('sales/order')), 'c.order_id = o.entity_id', array('order_num' => 'increment_id'))
-                    ->group('o.entity_id');
-            }
-        } else {
-            $this->getSelect()->having('COUNT(*) > 0');
-        }
-
-        return $this;
+        return $this->_initSelectForProducts(true);
     }
 
     protected function _applyStoresFilter()

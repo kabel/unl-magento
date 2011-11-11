@@ -16,11 +16,19 @@ abstract class Unl_Core_Block_Adminhtml_Report_Sales_Reconcile_Grid_Abstract
             'html_decorators' => array('nobr'),
         ));
 
+        $this->addColumn('merchant', array(
+            'header'          => Mage::helper('sales')->__('Merchant'),
+            'index'           => 'merchant',
+            'totals_label'    => '',
+            'subtotals_label' => Mage::helper('sales')->__('SubTotal'),
+            'sortable'        => false
+        ));
+
         $this->addColumn('order_num', array(
             'header'          => Mage::helper('sales')->__('Order #'),
             'index'           => 'order_num',
             'totals_label'    => '',
-            'subtotals_label' => Mage::helper('sales')->__('SubTotal'),
+            'subtotals_label' => '',
             'sortable'        => false
         ));
 
