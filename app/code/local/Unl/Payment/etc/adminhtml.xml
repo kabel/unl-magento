@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <catalog>
+            <children>
+                <accounts>
+                    <title>Manage Payment Accounts</title>
+                    <action>adminhtml/catalog_account/</action>
+                    <sort_order>25</sort_order>
+                </accounts>
+            </children>
+        </catalog>
+    </menu>
+    
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <catalog>
+                        <children>
+                            <accounts module="unl_payment" translate="title">
+                                <title>Manage Payment Accounts</title>
+                            </accounts>
+                        </children>
+                    </catalog>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

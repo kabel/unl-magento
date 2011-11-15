@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Payment>
+            <version>0.1.0</version>
+        </Unl_Payment>
+    </modules>
+    
+    <global>
+        <blocks>
+            <unl_payment>
+                <class>Unl_Payment_Block</class>
+            </unl_payment>
+        </blocks>
+        <helpers>
+            <unl_payment>
+                <class>Unl_Payment_Helper</class>
+            </unl_payment>
+        </helpers>
+        <models>
+            <unl_payment>
+                <class>Unl_Payment_Model</class>
+                <resourceModel>unl_payment_mysql4</resourceModel>
+            </unl_payment>
+            <unl_payment_mysql4>
+                <class>Unl_Payment_Model_Mysql4</class>
+                <entities>
+                    <account>
+                        <table>unl_payment_account</table>
+                    </account>
+                </entities>
+            </unl_payment_mysql4>
+        </models>
+        
+        <resources>
+            <unl_payment_setup>
+                <setup>
+                    <module>Unl_Payment</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+            </unl_payment_setup>
+        </resources>
+        
+        <fieldsets>
+            <sales_convert_quote_item>
+                <unl_payment_account><to_order_item>*</to_order_item></unl_payment_account>
+            </sales_convert_quote_item>
+        </fieldsets>
+        
+        <events>
+            <sales_quote_item_set_product>
+                <observers>
+                    <payment_account_set>
+                        <type>singleton</type>
+                        <class>unl_payment/observer</class>
+                        <method>setQuoteItemPaymentAccount</method>
+                    </payment_account_set>
+                </observers>
+            </sales_quote_item_set_product>
+        </events>
+        
+        <sales>
+            <quote>
+                <item>
+                    <product_attributes>
+                        <unl_payment_account/>
+                    </product_attributes>
+                </item>
+            </quote>
+        </sales>
+
+    </global>
+    
+    <adminhtml>
+        <unl_adminlog>
+            <log_events>
+                <adminhtml_catalog_account translate="label">
+                    <label>Payment Accounts</label>
+                </adminhtml_catalog_account>
+            </log_events>
+        </unl_adminlog>
+        
+        <events>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <payment_correct_admin>
+                        <type>singleton</type>
+                        <class>unl_payment/observer</class>
+                        <method>onBlockBeforeToHtml</method>
+                    </payment_correct_admin>
+                </observers>
+            </core_block_abstract_to_html_before>
+            <adminhtml_block_html_before>
+                <observers>
+                    <payment_correct_admin>
+                        <type>singleton</type>
+                        <class>unl_payment/observer</class>
+                        <method>correctAdminBlocks</method>
+                    </payment_correct_admin>
+                </observers>
+            </adminhtml_block_html_before>
+        </events>
+    </adminhtml>
+    
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Unl_Payment before="Mage_Adminhtml">Unl_Payment</Unl_Payment>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>
