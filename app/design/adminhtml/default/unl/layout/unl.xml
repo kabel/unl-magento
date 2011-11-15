@@ -347,5 +347,20 @@ Unl_Inventory Module
             <block type="adminhtml/template" template="unl/inventory/edit/js.phtml" name="inventory.edit.js" as="inventory_edit_js"></block>
         </reference>
     </unl_inventory_index_edit>
+    
+<!-- 
+Unl_Payment Module
+-->
+
+    <adminhtml_catalog_account_index>
+        <reference name="content">
+            <block type="unl_payment/account" name="account_list"/>
+        </reference>
+    </adminhtml_catalog_account_index>
+    <adminhtml_catalog_account_edit>
+        <reference name="content">
+            <block type="unl_payment/account_edit" name="account_edit"/>
+        </reference>
+    </adminhtml_catalog_account_edit>
 
 </layout>
