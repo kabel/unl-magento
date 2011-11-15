@@ -5,7 +5,7 @@ class Unl_Payment_Model_Observer
     public function setQuoteItemPaymentAccount($observer)
     {
         $product = $observer->getEvent()->getProduct();
-        $item = $observer->getEvent()->getItem();
+        $item = $observer->getEvent()->getQuoteItem();
 
         $item->setUnlPaymentAccount($product->getUnlPaymentAccount());
     }
