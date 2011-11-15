@@ -77,6 +77,13 @@
                 <Mage_Sales />
             </depends>
         </Unl_Notify>
+        <Unl_Payment>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Unl_Core/>
+            </depends>
+        </Unl_Payment>
         
         <AW_Deliverydate>
             <active>true</active>
