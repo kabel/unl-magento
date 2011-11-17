@@ -28,6 +28,21 @@ class Unl_Core_Block_Page_Template_Links extends Mage_Page_Block_Template_Links
     }
 
     /* Overrides
+     * @see Mage_Page_Block_Template_Links::removeLinkByUrl()
+     * does interact with block links
+     */
+    public function removeLinkByUrl($url)
+    {
+        foreach ($this->_links as $k => $v) {
+            if (!$v instanceof Mage_Core_Block_Abstract && $v->getUrl() == $url) {
+                unset($this->_links[$k]);
+            }
+        }
+
+        return $this;
+    }
+
+    /* Overrides
      * @see Mage_Page_Block_Template_Links::_beforeToHtml()
      * to add sorting
      */
