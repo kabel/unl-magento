@@ -29,7 +29,8 @@ class Unl_Core_Model_Sales_Observer
         $address = $observer->getEvent()->getQuoteAddress();
         $method = $address->getShippingMethod();
 
-        if (!empty($method) && strpos($method, 'pickup_store') === 0) {
+        if (!empty($method) && strpos($method, 'pickup_store') === 0
+            && $address->getShippingRateByCode($method)) {
             $address->getShippingRateByCode($method)->getCarrierInstance()->updateAddress($address);
             $address->save();
         }
