@@ -205,7 +205,7 @@ class Unl_Ship_Model_Shipment_Package_Create
     	        if (is_string($pkg)) {
     	            $jsonObj['messages'][] = array(
     	                'type' => 'error',
-    	                'message' => Mage::helper()->__('Package # %d: ', $packageIndex) . $pkg
+    	                'message' => Mage::helper('unl_ship')->__('Package # %d: ', $packageIndex) . $pkg
     	            );
     	            $jsonObj['packages'][$packageIndex] = false;
     	            continue;
