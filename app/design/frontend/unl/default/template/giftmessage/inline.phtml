@@ -183,8 +183,12 @@ billing.onSave = function(evt){
     <script type="text/javascript">
     //<![CDATA[
         toogleVisibilityOnObjects('allow_gift_messages', ['allow-gift-message-container']);
+        <?php if ($this->isMessagesAvailable()): ?>
         toogleVisibilityOnObjects('allow_gift_messages_for_order', ['allow-gift-messages-for-order-container']);
+        <?php endif;?>
+        <?php if($this->isItemsAvailable()): ?>
         toogleVisibilityOnObjects('allow_gift_messages_for_items', ['allow-gift-messages-for-items-container']);
+        <?php endif; ?>
     //]]>
     </script>
 <?php break; ?>
@@ -299,8 +303,12 @@ billing.onSave = function(evt){
     <script type="text/javascript">
     //<![CDATA[
         toogleVisibilityOnObjects('allow_gift_messages_<?php echo $this->getEntity()->getId() ?>', ['allow-gift-message-container-<?php echo $this->getEntity()->getId() ?>']);
+        <?php if ($this->isMessagesAvailable()): ?>
         toogleVisibilityOnObjects('allow_gift_messages_for_order_<?php echo $this->getEntity()->getId() ?>', ['allow-gift-messages-for-order-container-<?php echo $this->getEntity()->getId() ?>']);
+        <?php endif; ?>
+        <?php if($this->isItemsAvailable()): ?>
         toogleVisibilityOnObjects('allow_gift_messages_for_items_<?php echo $this->getEntity()->getId() ?>', ['allow-gift-messages-for-items-container-<?php echo $this->getEntity()->getId() ?>']);
+        <?php endif; ?>
     //]]>
     </script>
     <?php break; ?>
