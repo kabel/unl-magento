@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Block_Wishlist_Customer_Sidebar extends Mage_Wishlist_Block_Customer_Sidebar
+class Unl_Core_Block_Wishlist_Customer_Wishlist extends Mage_Wishlist_Block_Customer_Wishlist
 {
     /* Overrides
      * @see Mage_Wishlist_Block_Abstract::getWishlistItems()

@@ -73,6 +73,7 @@
             <wishlist>
                 <rewrite>
                     <customer_sidebar>Unl_Core_Block_Wishlist_Customer_Sidebar</customer_sidebar>
+                    <customer_wishlist>Unl_Core_Block_Wishlist_Customer_Wishlist</customer_wishlist>
                 </rewrite>
             </wishlist>
             <unl_core>

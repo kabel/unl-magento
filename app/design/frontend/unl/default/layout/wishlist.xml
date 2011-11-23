@@ -75,7 +75,7 @@ Wishlist pages
         <reference name="my.account.wrapper">
             <block type="wishlist/customer_wishlist" name="customer.wishlist" template="wishlist/view.phtml"/>
         </reference>
-        <reference name="top.links">
+        <reference name="wishlist_link">
             <action method="unsetChild"><name>wishlist</name></action>
         </reference>
     </wishlist_index_index>
@@ -87,7 +87,7 @@ Wishlist pages
         <reference name="my.account.wrapper">
             <block type="wishlist/customer_sharing" name="wishlist.sharing" template="wishlist/sharing.phtml"/>
         </reference>
-        <reference name="top.links">
+        <reference name="wishlist_link">
             <action method="unsetChild"><name>wishlist</name></action>
         </reference>
     </wishlist_index_share>
