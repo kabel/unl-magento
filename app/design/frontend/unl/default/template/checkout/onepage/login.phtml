@@ -5,7 +5,7 @@
         <h3><?php echo $this->__('Login') ?></h3>
         <div class="checkout-buttons">
             <p class="hint">Are you UNL Student, Faculty, or Staff?</p>
-            <button type="button" class="button" title="<?php echo $this->__('UNL Login') ?>" onclick="window.location='<?php echo Mage::helper('unl_cas')->getCasUrl() ?>';"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
+            <button type="button" class="button" title="<?php echo $this->__('UNL Login') ?>" onclick="setLocation('<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
         </div>
         <div class="checkout-buttons">
             <p class="hint">Not UNL Student, Faculty, or Staff, but <strong>previously registered</strong>?</p>
@@ -56,9 +56,9 @@
         </div>
         <?php endif; ?>
         <?php if($this->getQuote()->getCheckoutMethod()==Mage_Checkout_Model_Type_Onepage::METHOD_REGISTER || !$this->getQuote()->isAllowedGuestCheckout()): ?>
-            <input type="hidden" name="checkout_method" id="login:register" value="register" checked="checked" />
+            <input type="hidden" name="checkout_method" id="login:register" value="register" />
         <?php else: ?>
-            <input type="hidden" name="checkout_method" id="login:register" value="guest" checked="checked" />
+            <input type="hidden" name="checkout_method" id="login:register" value="guest" />
         <?php endif; ?>
     </div>
     <div class="col-2">
