@@ -102,7 +102,13 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
                 $this->_getSession()->addError(Mage::helper('adminhtml')->__('You do not have permission to add an account for the selected merchant.'));
                 $this->_getSession()->setPaymentAccountData($data);
                 return $this->_redirect('*/*/edit', array('id' => $model->getId()));
-            }
+            } else if (empty($postData['group_id'])) {
+                $this->_getSession()->addError(Mage::helper('adminhtml')->__('Missing merchant data'));
+                $this->_getSession()->setPaymentAccountData($data);
+				return $this->_redirect('*/*/edit', array('id' => $model->getId()));
+			}
+
+			$data['group_id'] = $postData['group_id'];
 
             $data['name'] = trim($postData['name']);
 
