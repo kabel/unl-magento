@@ -7,7 +7,7 @@
 <div id="delivery-date-container-<?php echo $this->getEntity()->getId() ?>" class="delivery-date-form">
     <dl>
     	<dt class="input-box">
-    		<strong><?php echo $this->__("Delivery Date");?></strong>
+    		<label for="<?php echo $this->getInputId() ?>"><?php echo $this->__("Delivery Date");?></label>
     	</dt>
     	<dd><div><?php echo $this->getCalendarHtml()?></div>
     	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_TIME_NOTICE_ENABLED)): ?>
@@ -17,9 +17,9 @@
 
     	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_NOTICE_ENABLED)): ?>
     	<dt class="input-box">
-    		<strong><?php echo $this->__("Delivery Notice");?></strong>
+    		<label for="aw_deliverydate_notice-<?php echo $this->getEntity()->getId() ?>"><?php echo $this->__("Delivery Notice");?></label>
     	</dt>
-    	<dd><textarea name="aw_deliverydate_notice[<?php echo $this->getEntity()->getId() ?>]" cols="64" rows="5" class="input-text"><?php echo $this->getAwDeliverydateNotice() ?></textarea></dd>
+    	<dd><textarea id="aw_deliverydate_notice-<?php echo $this->getEntity()->getId() ?>" name="aw_deliverydate_notice[<?php echo $this->getEntity()->getId() ?>]" cols="64" rows="5" class="input-text"><?php echo $this->getAwDeliverydateNotice() ?></textarea></dd>
     	<?php endif; ?>
     </dl>
 </div>
