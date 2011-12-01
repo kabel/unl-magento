@@ -56,7 +56,7 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
         if (!$currentAccount) {
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('unl_payment')->__('Wrong account was specified.'));
             return $this->_redirect('*/*/');
-        } else if ($currentAccount == -1) {
+        } else if ($currentAccount === -1) {
             return $this->_forward('denied');
         }
 
@@ -86,7 +86,7 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
     {
         if ($postData = $this->getRequest()->getPost()) {
             $model = $this->_initAccount();
-            if ($model == -1) {
+            if ($model === -1) {
                 return $this->_forward('denied');
             }
 
@@ -135,7 +135,7 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
         $model   = $this->_initAccount();
         $session = Mage::getSingleton('adminhtml/session');
 
-        if ($model == -1) {
+        if ($model === -1) {
             return $this->_forward('denied');
         }
 
