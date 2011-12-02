@@ -13,7 +13,7 @@ class Unl_AdminLog_Model_Mysql4_Log extends Mage_Core_Model_Mysql4_Abstract
             $this->_getWriteAdapter()->update($this->getTable('unl_adminlog/log'),
                 array('is_archived' => 1),
                 array(
-                	'created_at < ?' => gmdate('Y-m-d H:i:s', time() - $archiveTime),
+                	'created_at < ?' => gmdate('Y-m-d H-i-s', time() - $archiveTime),
                 	'is_archived = ?' => 0
                 )
             );
@@ -21,7 +21,7 @@ class Unl_AdminLog_Model_Mysql4_Log extends Mage_Core_Model_Mysql4_Abstract
 
         if ($cleanTime > 0) {
             $this->_getWriteAdapter()->delete($this->getTable('unl_adminlog/log'),
-                array('created_at < ?' => gmdate('Y-m-d H:i:s', time() - $cleanTime))
+                array('created_at < ?' => gmdate('Y-m-d H-i-s', time() - $cleanTime))
             );
         }
 
