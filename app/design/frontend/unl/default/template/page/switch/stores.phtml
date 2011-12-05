@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Store switcher template
  *
@@ -8,7 +8,7 @@
 <?php if(count($this->getGroups())>1): ?>
 <ul>
     <?php foreach ($this->getGroups() as $_group): ?>
-    <?php if (!in_array('default', $_group->getStoreCodes())): ?>
+    <?php if (!$_group->getIsHidden() && !in_array('default', $_group->getStoreCodes())): ?>
         <li><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->htmlEscape($_group->getName()) ?></a></li>
     <?php endif; ?>
     <?php endforeach; ?>

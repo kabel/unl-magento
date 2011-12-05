@@ -103,15 +103,18 @@ class Unl_Core_Model_Observer
         if ($block instanceof $type) {
             /* @var $form Varien_Data_Form */
             $form = $block->getForm();
-            if ($fs = $form->getElement('store_fieldset')) {
+            if ($fs = $form->getElement('group_fieldset')) {
                 $storeModel = Mage::registry('store_data');
-                $fs->addField('store_unl_rate', 'text', array(
-                    'name'      => 'store[unl_rate]',
-                    'label'     => Mage::helper('core')->__('Marketplace Fee'),
-                    'value'     => $storeModel->getUnlRate(),
-                    'required'  => false,
-                    'disabled'  => $storeModel->isReadOnly(),
-                    'class'     => 'validate-percents'
+                $fs->addField('group_is_hidden', 'select', array(
+                        'name'      => 'group[is_hidden]',
+                        'label'     => Mage::helper('core')->__('Hidden'),
+                        'value'     => $storeModel->getIsHidden(),
+                        'options'   => array(
+                            0 => Mage::helper('adminhtml')->__('Disabled'),
+                            1 => Mage::helper('adminhtml')->__('Enabled')
+                        ),
+                        'required'  => true,
+                        'disabled'  => $storeModel->isReadOnly(),
                 ));
             }
             return;
