@@ -1051,18 +1051,6 @@ f/********** Product Prices > */
 .cms-home .subtitle {}
 .cms-index-index .subtitle {}
 
-#store-directory { height:390px; overflow:hidden; position:relative; }
-.zenbox_store div {
-    border:1px solid #ccc;
-    border-radius:6px;
-    padding:5px;
-    margin-bottom: 15px;
-    line-height:1.3em;
-    background-color:#fff; 
-    -moz-border-radius:6px;
-    -webkit-border-radius:6px;  
-}
-
 /* Sitemap */
 .page-sitemap .links { text-align:right; margin:0 8px -22px 0; }
 .page-sitemap .links a { text-decoration:none; position:relative; }
