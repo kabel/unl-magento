@@ -12,11 +12,26 @@
 }
 .zenbox_store div {
     border:1px solid #ccc;
-    border-radius:6px;
     padding:5px;
     margin-bottom: 15px;
     line-height:1.3em;
     background-color:#fff; 
+    border-radius:6px;
     -moz-border-radius:6px;
-    -webkit-border-radius:6px;  
+    -webkit-border-radius:6px;
+}
+#maincontent .zenbox_store div h4 {
+	color: #333;
+	padding: 0;
+	margin-bottom: 4px;
+	border-bottom: 1px solid #ccc;
+}
+.zenbox_store div img {
+	margin: 0;
+	float: right;
+	width: 220px;
+}
+.zenbox_store div p {
+	font-size: 14px;
+	width: 226px;
 }
