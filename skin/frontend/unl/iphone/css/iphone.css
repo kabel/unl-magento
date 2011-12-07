@@ -311,7 +311,7 @@ body.mobile #wdn_wrapper { -moz-border-radius:0; -webkit-border-radius:0; border
 /* Pager */
 .pager { font-size:13px; color:#444; }
 .pager .pages strong { display:none; }
-.pager ol { float:right; margin-top:-30px; }
+.pager ol { float:right; }
 .pager ol li { float:left; padding-left:8px; }
 .pager ol li.current { padding:2px 4px 2px 12px; font-weight:bold; font-size: 23px; }
 .pager ol li a, .pager ol li span.on { display:block; padding:1px 4px; border:1px solid #ccc; color:#CECECE; }
