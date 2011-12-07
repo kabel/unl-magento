@@ -1,0 +1,11 @@
+<div class="search-form">
+    <div class="search-form-cont">
+        <form id="search_mini_form" name="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
+            <fieldset>
+                <label for="search"><?php echo $this->__('Search Marketplace') ?></label>
+                <input id="search" type="text" class="input-text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>" value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" placeholder="<?php echo $this->__('Search Marketplace') ?>" />
+                <input class="search" type="submit" value="Go" />
+            </fieldset>
+        </form>
+    </div>
+</div>

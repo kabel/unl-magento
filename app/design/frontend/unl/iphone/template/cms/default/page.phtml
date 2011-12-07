@@ -1,0 +1,9 @@
+<div class="page-nav">
+<?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+    <h3><?php echo $this->__('Store Directory') ?></h3>
+    <?php echo $this->getChildHtml('store_switcher') ?>
+<?php else: ?>
+    <h3><?php echo $this->__('Browse by category') ?></h3>
+    <?php echo $this->getChildHtml('cms_nav') ?>
+<?php endif; ?>
+</div>

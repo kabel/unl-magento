@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="top.links">
+            <block type="unl_core/page_directory_links" name="directory_link">
+                <action method="addStoreLink" translate="label title"><label>Store Directory</label><title>Store Directory</title><position>200</position></action>
+            </block>
+        </reference>
+    </default>
+    <STORE_default>
+	    <reference name="directory_link">
+	        <action method="removeStoreLink"/>
+	    </reference>
+	</STORE_default>
+	
+    <sales_email_invoice_payment_extra>
+        <block type="core/template" template="email/order/invoice/payment/extra.phtml" />
+    </sales_email_invoice_payment_extra>
+    
+    <sales_email_order_notify_item>
+        <block type="sales/order_email_items" name="item" template="email/order/notify/item.phtml">
+            <action method="addItemRender"><type>default</type><block>sales/order_email_items_order_default</block><template>email/order/notify/items/default.phtml</template></action>
+        </block>
+        <block type="core/text_list" name="additional.product.info" />
+    </sales_email_order_notify_item>
+    
+    <sales_order_view>
+        <reference name="order_totals">
+            <action method="setLabelProperties"><value>colspan="3" class="a-right"</value></action>
+        </reference>
+    </sales_order_view>
+    
+    <sales_order_invoice>
+        <reference name="invoice_totals">
+            <action method="setLabelProperties"><value>colspan="3" class="a-right"</value></action>
+        </reference>
+    </sales_order_invoice>
+</layout>

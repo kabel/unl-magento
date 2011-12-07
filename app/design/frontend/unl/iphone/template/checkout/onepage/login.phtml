@@ -1,0 +1,81 @@
+<?php echo $this->getChildHtml('login_before')?>
+<p><?php echo $this->__('Please select one of the following checkout methods.') ?></p>
+
+<div class="login-set">
+    <h3><?php echo $this->__('Login') ?></h3>
+    <div class="checkout-buttons">
+        <p class="hint">Are you UNL Student, Faculty, or Staff?</p>
+        <button type="button" class="button" title="<?php echo $this->__('UNL Login') ?>" onclick="setLocation('<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
+    </div>
+    <div class="checkout-buttons">
+        <p class="hint">Not UNL Student, Faculty, or Staff, but <strong>previously registered</strong>?</p>
+        <button type="button" class="button" onclick="$('login-form-wrapper').toggleClassName('hidden');"><span><span><?php echo $this->__('Customer Login') ?></span></span></button>
+    </div>
+</div>
+
+<?php $errors = $this->getMessagesBlock()->getGroupedHtml(); ?>
+<div id="login-form-wrapper" class="<?php echo empty($errors) ? 'hidden' : '' ?>">
+    <?php echo $errors ?>
+    <form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post">
+    <fieldset>
+        <p><?php echo $this->__('Please log in below:') ?></p>
+        <p class="hint">Do <strong>not</strong> use the form below if you are logging in as UNL Student, Faculty, or Staff.</p>
+        <ul class="form-list">
+            <li>
+                <label for="login-email" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+                <div class="input-box">
+                    <input type="text" class="input-text required-entry validate-email" id="login-email" name="login[username]" value="<?php echo $this->htmlEscape($this->getUsername()) ?>" />
+                </div>
+            </li>
+            <li>
+                <label for="login-password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+                <div class="input-box">
+                    <input type="password" class="input-text required-entry" id="login-password" name="login[password]" />
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+    </form>
+    <div class="buttons-set">
+        <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+        <a href="<?php echo $this->getUrl('customer/account/forgotpassword') ?>" class="f-left"><?php echo $this->__('Forgot your password?') ?></a>
+        <button type="submit" class="button" onclick="onepageLogin(this)"><span><span><?php echo $this->__('Login') ?></span></span></button>
+    </div>
+</div>
+
+<div>
+    <h3><?php if( $this->getQuote()->isAllowedGuestCheckout() ): ?><?php echo $this->__('Checkout as a Guest or Register') ?><?php else: ?><?php echo $this->__('Register to Create an Account') ?><?php endif; ?></h3>
+    <p><?php echo $this->__('Register with us for future convenience:') ?></p>
+    <div class="checkout-buttons">
+        <button type="button" class="button" onclick="$('login:register').value = 'register';checkout.setMethod();"><span><span><?php echo $this->__('Continue and Register') ?></span></span></button>
+    </div>
+    <?php if ( $this->getQuote()->isAllowedGuestCheckout() ): ?>
+    <div class="checkout-buttons">
+        <button type="button" class="button" onclick="$('login:register').value = 'guest';checkout.setMethod();"><span><span><?php echo $this->__('Continue as Guest') ?></span></span></button>
+    </div>
+    <?php endif; ?>
+    <?php if($this->getQuote()->getCheckoutMethod()==Mage_Checkout_Model_Type_Onepage::METHOD_REGISTER || !$this->getQuote()->isAllowedGuestCheckout()): ?>
+        <input type="hidden" name="checkout_method" id="login:register" value="register" />
+    <?php else: ?>
+        <input type="hidden" name="checkout_method" id="login:register" value="guest" />
+    <?php endif; ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var loginForm = new VarienForm('login-form', true);
+    $('login-email').observe('keypress', bindLoginPost);
+    $('login-password').observe('keypress', bindLoginPost);
+    function bindLoginPost(evt){
+        if (evt.keyCode == Event.KEY_RETURN) {
+            loginForm.submit();
+        }
+    }
+    function onepageLogin(button)
+    {
+        if(loginForm.validator && loginForm.validator.validate()){
+            button.disabled = true;
+            loginForm.submit();
+        }
+    }
+//]]>
+</script>

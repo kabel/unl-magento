@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+<!--
+Default layout, loads most of the pages
+-->
+
+    <cms_index_index>
+        <reference name="cms.wrapper">
+            <block type="core/template" name="cms_page" template="cms/default/page.phtml">
+                <block type="page/switch" name="cms.store_switcher" as="store_switcher" template="page/switch/stores.phtml"/>
+                <block type="catalog/navigation" name="cms.navigation" as="cms_nav" template="catalog/navigation/top.phtml" />
+            </block>
+        </reference>
+    </cms_index_index>
+
+    <cms_page>
+        <reference name="content">
+            <block type="page/html_wrapper" name="cms.wrapper" translate="label">
+                <label>Mobile CMS Wrapper</label>
+                <action method="setElementClass"><value>cms-page</value></action>
+                <block type="core/template" name="page_content_heading" template="cms/content_heading.phtml"/>
+                <block type="cms/page" name="cms_page"/>
+            </block>
+        </reference>
+    </cms_page>
+
+    <cms_index_defaultindex>
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="default_home_page" template="cms/default/home.phtml"/>
+        </reference>
+    </cms_index_defaultindex>
+
+    <cms_index_defaultnoroute>
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="default_no_route" template="cms/default/no-route.phtml"/>
+        </reference>
+    </cms_index_defaultnoroute>
+
+</layout>
