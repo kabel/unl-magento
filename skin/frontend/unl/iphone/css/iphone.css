@@ -234,7 +234,7 @@ body.mobile #wdn_wrapper { -moz-border-radius:0; -webkit-border-radius:0; border
 
 #mobile_help {
     background: url('/wdn/templates_3.0/css/images/bg.jpg');
-    padding:20px 5px 0;
+    padding:20px 5px 5px;
     margin:0 -3px 0 ;
     text-align:center;  
     font-size:0.8em;
