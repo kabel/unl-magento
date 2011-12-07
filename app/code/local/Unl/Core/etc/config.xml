@@ -164,6 +164,8 @@
             </cms>
             <core>
                 <rewrite>
+                    <!-- Add an event to package exception check -->
+                    <design_package>Unl_Core_Model_Core_Design_Package</design_package>
                 	<!-- Allow locale templates in Design -->
                     <email_template>Unl_Core_Model_Core_Email_Template</email_template>
                     <translate>Unl_Core_Model_Core_Translate</translate>
@@ -485,6 +487,15 @@
     
     <frontend>
         <events>
+            <core_design_check_useragent_exps_before>
+                <observers>
+                    <no_mobile>
+                        <class>unl_core/observer</class>
+                        <method>checkNoMobile</method>
+                    </no_mobile>
+                </observers>
+            </core_design_check_useragent_exps_before>
+        
             <sales_quote_item_qty_set_after>
                 <observers>
                     <product_limit>

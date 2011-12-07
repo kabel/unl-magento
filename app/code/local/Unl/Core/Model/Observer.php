@@ -252,6 +252,24 @@ class Unl_Core_Model_Observer
         }
     }
 
+    public function checkNoMobile($observer)
+    {
+        $result = $observer->getEvent()->getResult();
+        $session = Mage::getSingleton('core/session');
+
+        if (Mage::app()->getRequest()->getParam('mobile') == 'no' && !$session->getDesignNoExps()) {
+            $session->setDesignNoExps(true);
+        } elseif (Mage::app()->getRequest()->getParam('mobile', 'no') != 'no' && $session->getDesignNoExps()) {
+            $session->unsDesignNoExps();
+        }
+
+        if ($session->getDesignNoExps()) {
+            $result->setPreventDefault(true);
+        }
+
+        return $this;
+    }
+
     /**
      * Save order tax information
      *
