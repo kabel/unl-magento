@@ -248,7 +248,9 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                 }
                 break;
             case self::CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL:
-                Mage::getSingleton('core/session')->addNotice('You are not authorized to access this product');
+                if (!Mage::getSingleton('core/session')->getSilenceNextAcl(true)) {
+                    Mage::getSingleton('core/session')->addError('You are not authorized to access this product');
+                }
                 break;
         }
         return ($result == self::CUSTOMER_ALLOWED_PRODUCT_SUCCESS);
@@ -308,6 +310,8 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
             if ($doRedirect) {
                 $url = $this->_getUrl('customer/account/login');
+                $checkout = Mage::getSingleton('checkout/session');
+                $checkout->setConsume(true);
                 if (Mage::app()->getRequest()->getActionName() == 'add') {
                     throw $e;
                 }
@@ -316,6 +320,8 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
                     Mage::getSingleton('core/session')->addNotice($this->__('You must be logged in and authoried to order an item in your cart'));
                     Mage::app()->getResponse()->setRedirect($url);
                 }
+            } else {
+                Mage::getSingleton('core/session')->setSilenceNextAcl(true);
             }
         }
     }
