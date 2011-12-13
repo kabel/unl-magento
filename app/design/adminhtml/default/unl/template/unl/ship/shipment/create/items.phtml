@@ -13,8 +13,8 @@
                 <th class="last"><?php echo $this->helper('sales')->__('Package(s)') ?></th>
             </tr>
         </thead>
-        <?php $_items = $this->getOrder()->getAllItems() ?>
-        <?php $_i=0;foreach ($_items as $_item): if ($_item->getIsVirtual() || $_item->isDummy(true)): continue; endif; $_i++ ?>
+        <?php $_items = $this->getShipment()->getAllItems() ?>
+        <?php $_i=0;foreach ($_items as $_item): if ($_item->getOrderItem()->getIsVirtual() || $_item->getOrderItem()->isDummy(true)): continue; endif; $_i++ ?>
         <tbody class="<?php echo $_i%2?'odd':'even' ?>">
             <?php echo $this->getItemHtml($_item) ?>
         </tbody>
@@ -106,14 +106,9 @@ var packageItemControl = {
 	}
 };
 packageItemControl.initialize();
+packageControl.add();
 //]]>
 </script>
-<br />
-
-<div class="entry-edit">
-	<div class="entry-edit-head"><h4><?php echo $this->__('Packages') ?></h4></div>
-    <?php echo $this->getChildHtml('packages') ?>
-</div>
 <br />
 
 <div class="box-left entry-edit" id="shipment_comments">
@@ -214,6 +209,7 @@ var editFormPreSubmit = function() {
                     if (response.result == 0 || response.result == 2) {
 						packageSuccess();
 						if (response.result == 0) {
+							$$('.head-shipment')[0].update(Translator.translate('Shipment #') + response.shipment.increment);
 							$$('.form-buttons')[0].insert(response.button);
 							$H(response.packages).each(function(pair) {
 								var trackingTd = $('package_index_' + pair.key).up('tr').select('td.last')[0];

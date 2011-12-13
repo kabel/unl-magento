@@ -1,6 +1,84 @@
 <form id="edit_form" method="post" action="<?php echo $this->getSaveUrl() ?>">
     <?php echo $this->getBlockHtml('formkey')?>
+    <?php  $_order = $this->getShipment()->getOrder() ?>
     <?php echo $this->getChildHtml('order_info') ?>
+
+
+    <div class="box-left">
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-payment-method"><?php echo Mage::helper('sales')->__('Payment Information') ?></h4>
+            </div>
+            <fieldset>
+                <div><?php echo $this->getPaymentHtml() ?></div>
+                <div><?php echo Mage::helper('sales')->__('The order was placed using %s', $_order->getOrderCurrencyCode()) ?></div>
+                <?php $_wfHelper = Mage::helper('unl_core/adminhtml_sales_workflow'); /* @var $_wfHelper Unl_Core_Helper_Adminhtml_Sales_Workflow */ ?>
+                <?php if ($_wfHelper->isCaptureAllowed()): ?>
+                    <?php if ($_wfHelper->canInvoice($_order) || $_wfHelper->hasInvoiceNeedsCapture($_order)): ?>
+                        <div class="shipment-invoice">
+                            <p class="nm">
+                                <label for="shipment_do_invoice" class="normal"><?php echo Mage::helper('sales')->__($_wfHelper->hasInvoiceNeedsCapture($_order) ? 'Capture Existing Invoices' : 'Create Invoice') ?></label>
+                                <input type="checkbox" name="shipment[do_invoice]" id="shipment_do_invoice" value="1" checked="checked" onclick="document.getElementById('capture_case').style.display = this.checked ? 'block' : 'none';" />
+                            </p>
+                            <div id="capture_case">
+                                <label for="shipment_do_capture" class="normal"><?php echo Mage::helper('sales')->__('Amount') ?></label>
+                                <select name="shipment[capture_case]">
+                                    <option value="online"><?php echo Mage::helper('sales')->__('Capture Online') ?></option>
+                                    <option value="offline"><?php echo Mage::helper('sales')->__('Capture Offline') ?></option>
+                                    <option value="not_capture"><?php echo Mage::helper('sales')->__('Not Capture') ?></option>
+                                </select>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </fieldset>
+        </div>
+    </div>
+    <div class="box-right">
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-shipping-method"><?php echo Mage::helper('sales')->__('Shipping Information') ?></h4>
+            </div>
+            <fieldset>
+                <div>
+                    <strong><?php echo $_order->getShippingDescription() ?></strong>
+                    <?php echo $this->helper('sales')->__('Total Shipping Charges'); ?>:
+
+                    <?php if ($this->helper('tax')->displayShippingPriceIncludingTax()): ?>
+                        <?php $_excl = $this->displayShippingPriceInclTax($_order); ?>
+                    <?php else: ?>
+                        <?php $_excl = $this->displayPriceAttribute('shipping_amount', false, ' '); ?>
+                    <?php endif; ?>
+                    <?php $_incl = $this->displayShippingPriceInclTax($_order); ?>
+
+                    <?php echo $_excl; ?>
+                    <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                        (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                    <?php endif; ?>
+
+                    <?php if ($_order->getAwDeliverydateDate()): ?>
+                    <br/>
+                    <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>:
+                    <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
+                    <?php endif; ?>
+
+                    <?php if ($_order->getAwDeliverydateNotice()): ?>
+                    <br/>
+                    <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong>:
+                    <?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?>
+                    <?php endif; ?>
+                </div>
+                <div><?php echo $this->getChildHtml('shipment_tracking') ?></div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="clear"></div>
+
+    <div class="entry-edit">
+    	<div class="entry-edit-head"><h4><?php echo $this->__('Packages') ?></h4></div>
+        <?php echo $this->getChildHtml('packages') ?>
+    </div>
+    <br />
 
     <div class="entry-edit">
         <div class="entry-edit-head">
