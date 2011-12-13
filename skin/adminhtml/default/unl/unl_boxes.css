@@ -48,3 +48,10 @@
 #adminlogGrid .hor-scroll {
 	overflow: visible;
 }
+
+.shipment-invoice {
+	background: #fcfac9;
+	border: 1px solid #d7c699;
+	margin: 10px -16px -11px;
+	padding: 12px 20px;
+}
