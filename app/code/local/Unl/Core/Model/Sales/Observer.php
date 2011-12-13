@@ -84,6 +84,95 @@ class Unl_Core_Model_Sales_Observer
             );
     }
 
+    public function onBeforeOrderShipmentSave($observer)
+    {
+        $shipment = $observer->getEvent()->getShipment();
+        if ($shipment->isObjectNew()) {
+            $shipment->setObjectWasNew(true);
+        }
+    }
+
+    protected function _getShipmentItemByOrderItemId($items, $orderItemId)
+    {
+        foreach ($items as $item) {
+            if ($item->getOrderItemId() == $orderItemId) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    public function onAfterOrderShipmentSave($observer)
+    {
+        $shipment = $observer->getEvent()->getShipment();
+        /* @var $shipment Mage_Sales_Model_Order_Shipment */
+
+        if ($shipment->getObjectWasNew()) {
+            $shipment->unsObjectWasNew();
+            $request = Mage::app()->getRequest();
+            $order = $shipment->getOrder();
+            $data = $request->getParam('shipment');
+            $captureCase = isset($data['capture_case']) ? $data['capture_case'] : null;
+            $helper = Mage::helper('unl_core/adminhtml_sales_workflow');
+
+            if (!empty($data['do_invoice'])) {
+
+                if ($helper->canInvoice($order)) {
+                    $savedQtys = array();
+                    if ($order->getPayment()->canCapturePartial()) {
+                        foreach ($shipment->getAllItems() as $item) {
+                            if (!$item->getOrderItem()->isDummy()) {
+                                if ($item->getOrderItem()->isDummy(true)) {
+                                    $parentOrderItem = $item->getOrderItem()->getParentItem();
+                                    $savedQtys[$item->getOrderItemId()] = $item->getOrderItem()->getQtyOrdered()
+                                        / $parentOrderItem->getQtyOrdered()
+                                        * $this->_getShipmentItemByOrderItemId($shipment->getAllItems(), $parentOrderItem->getId());
+                                } else {
+                                    $savedQtys[$item->getOrderItemId()] = $item->getQty();
+                                }
+                            }
+                        }
+                    }
+
+                    /* @var $invoice Mage_Sales_Model_Order_Invoice */
+                    $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice($savedQtys);
+
+                    if (!empty($captureCase)) {
+                        $invoice->setRequestedCaptureCase($captureCase);
+                    }
+
+                    $invoice->register();
+
+                    if (!empty($data['send_email'])) {
+                        $invoice->setEmailSent(true);
+                    }
+
+                    $invoice->save();
+
+                    try {
+                        $invoice->sendEmail(!empty($data['send_email']));
+                    } catch (Exception $e) {
+                        Mage::logException($e);
+                    }
+                } elseif ($helper->hasInvoiceNeedsCapture($order)) {
+                    foreach ($order->getInvoiceCollection() as $invoice) {
+                        if ($invoice->canCapture()) {
+                            if ($captureCase == Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE) {
+                                $invoice->capture()->save();
+                            } elseif ($captureCase == Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE) {
+                                $invoice->setCanVoidFlag(false);
+                                $invoice->pay()->save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
     public function onSalesOrderCreditmemoRefund($observer)
     {
         $creditmemo = $observer->getEvent()->getCreditmemo();
