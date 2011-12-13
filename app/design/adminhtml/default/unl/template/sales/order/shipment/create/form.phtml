@@ -13,6 +13,25 @@
             <fieldset>
                 <div><?php echo $this->getPaymentHtml() ?></div>
                 <div><?php echo Mage::helper('sales')->__('The order was placed using %s', $_order->getOrderCurrencyCode()) ?></div>
+                <?php $_wfHelper = Mage::helper('unl_core/adminhtml_sales_workflow'); /* @var $_wfHelper Unl_Core_Helper_Adminhtml_Sales_Workflow */ ?>
+                <?php if ($_wfHelper->isCaptureAllowed()): ?>
+                    <?php if ($_wfHelper->canInvoice($_order) || $_wfHelper->hasInvoiceNeedsCapture($_order)): ?>
+                        <div class="shipment-invoice">
+                            <p class="nm">
+                                <label for="shipment_do_invoice" class="normal"><?php echo Mage::helper('sales')->__($_wfHelper->hasInvoiceNeedsCapture($_order) ? 'Capture Existing Invoices' : 'Create Invoice') ?></label>
+                                <input type="checkbox" name="shipment[do_invoice]" id="shipment_do_invoice" value="1" checked="checked" onclick="document.getElementById('capture_case').style.display = this.checked ? 'block' : 'none';" />
+                            </p>
+                            <div id="capture_case">
+                                <label for="shipment_do_capture" class="normal"><?php echo Mage::helper('sales')->__('Amount') ?></label>
+                                <select name="shipment[capture_case]">
+                                    <option value="online"><?php echo Mage::helper('sales')->__('Capture Online') ?></option>
+                                    <option value="offline"><?php echo Mage::helper('sales')->__('Capture Offline') ?></option>
+                                    <option value="not_capture"><?php echo Mage::helper('sales')->__('Not Capture') ?></option>
+                                </select>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
             </fieldset>
         </div>
     </div>
@@ -38,13 +57,13 @@
                     <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
                         (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                     <?php endif; ?>
-                    
+
                     <?php if ($_order->getAwDeliverydateDate()): ?>
                     <br/>
                     <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>:
                     <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
-                    <?php endif; ?>         
-                    
+                    <?php endif; ?>
+
                     <?php if ($_order->getAwDeliverydateNotice()): ?>
                     <br/>
                     <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong>:
