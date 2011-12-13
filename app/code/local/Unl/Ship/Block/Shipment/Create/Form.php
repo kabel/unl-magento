@@ -4,7 +4,17 @@ class Unl_Ship_Block_Shipment_Create_Form extends Mage_Adminhtml_Block_Sales_Ord
 {
     public function getOrder()
     {
-        return Mage::registry('current_order');
+        return Mage::registry('current_shipment')->getOrder();
+    }
+
+    public function getShipment()
+    {
+        return Mage::registry('current_shipment');
+    }
+
+    public function getPaymentHtml()
+    {
+        return $this->getChildHtml('order_payment');
     }
 
     public function getItemsHtml()

@@ -9,7 +9,17 @@ class Unl_Ship_Block_Shipment_Create_Items extends Mage_Adminhtml_Block_Sales_It
      */
     public function getOrder()
     {
-        return Mage::registry('current_order');
+        return Mage::registry('current_shipment')->getOrder();
+    }
+
+    /**
+     * Retrieve shipment model instance
+     *
+     * @return Mage_Sales_Model_Order_Shipment
+     */
+    public function getShipment()
+    {
+        return Mage::registry('current_shipment');
     }
 
     /**

@@ -13,6 +13,10 @@ class Unl_Ship_IndexController extends Mage_Adminhtml_Controller_Action
         }
         Mage::register('sales_order', $order);
         Mage::register('current_order', $order);
+
+        $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
+        Mage::register('current_shipment', $shipment);
+
         return $order;
     }
 

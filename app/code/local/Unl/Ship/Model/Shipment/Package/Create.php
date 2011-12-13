@@ -102,13 +102,6 @@ class Unl_Ship_Model_Shipment_Package_Create
                 ->setOrder($order)
                 ->setPackages($packages);
 
-            $address = false;
-            if (isset($post['shipping_address'])) {
-                $saveToOrder = isset($post['shipping_address']['save_to_order']);
-                $address = $order->getShippingAddress();
-                $address->addData($post['shipping_address']);
-            }
-
             $carrier = $order->getShippingCarrier();
             $numRetrys = 0;
             do {
@@ -146,11 +139,6 @@ class Unl_Ship_Model_Shipment_Package_Create
                         $resitems[$itemId] += $qty;
                     }
                 }
-            }
-
-            if ($address && $saveToOrder) {
-                $address->implodeStreetAddress();
-                $address->save();
             }
 
             //create an order shipment
@@ -230,6 +218,11 @@ class Unl_Ship_Model_Shipment_Package_Create
                 'class' => 'print-button',
                 'onclick' => "printAllLabels(event, '{$url}')"
             ))->toHtml();
+
+            $jsonObj['shipment'] = array(
+                'id' => $shipment->getId(),
+                'increment' => $shipment->getIncrementId(),
+            );
 
         } catch (Unl_Ship_Exception $e) {
             $jsonObj['result'] = $e->getCode();
