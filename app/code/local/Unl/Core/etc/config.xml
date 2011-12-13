@@ -34,8 +34,6 @@
                     <sales_invoice_grid>Unl_Core_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
                     <sales_order_grid>Unl_Core_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
-                    <!-- Fix Order Item Renderer (giftmessage border) -->
-                    <sales_order_view_items_renderer_default>Unl_Core_Block_Adminhtml_Sales_Order_View_Items_Renderer_Default</sales_order_view_items_renderer_default>
                     <!-- Adds an ACL check to the Payment Method Form -->
                     <sales_order_create_billing_method_form>Unl_Core_Block_Adminhtml_Sales_Order_Create_Billing_Method_Form</sales_order_create_billing_method_form>
                     <!-- Adds a force pay button to invoice -->
@@ -59,6 +57,12 @@
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
                 </rewrite>
             </catalog>
+            <giftmessage>
+                <rewrite>
+                    <adminhtml_sales_order_view_form>Unl_Core_Block_GiftMessage_Adminhtml_Sales_Order_View_Form</adminhtml_sales_order_view_form>
+                    <adminhtml_sales_order_view_items>Unl_Core_Block_GiftMessage_Adminhtml_Sales_Order_View_Items</adminhtml_sales_order_view_items>
+                </rewrite>
+            </giftmessage>
             <googleanalytics>
                 <rewrite>
                     <!-- Check config option to export GA lib -->
@@ -748,6 +752,23 @@
                     </filter_scope>
                 </observers>
             </rss_order_new_collection_select>
+            
+            <sales_order_shipment_save_before>
+                <observers>
+                    <was_new>
+                        <class>unl_core/sales_observer</class>
+                        <method>onBeforeOrderShipmentSave</method>
+                    </was_new>
+                </observers>
+            </sales_order_shipment_save_before>
+            <sales_order_shipment_save_after>
+                <observers>
+                    <capture_case>
+                        <class>unl_core/sales_observer</class>
+                        <method>onAfterOrderShipmentSave</method>
+                    </capture_case>
+                </observers>
+            </sales_order_shipment_save_after>
         </events>
         
         <layout>
