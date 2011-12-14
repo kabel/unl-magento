@@ -6,7 +6,6 @@
  */
 ?>
 
-<ul>
 <?php
 /**
  * $this->renderCategoriesMenuHtml() supports optional arguments:
@@ -17,9 +16,7 @@
 ?>
 <?php $_menu = $this->renderCategoriesMenuHtml(0,'level-top') ?>
 <?php if($_menu): ?>
+<ul>
     <?php echo $_menu ?>
-<?php else: ?>
-    <li>&nbsp;</li>
-<?php endif; ?>
 </ul>
-
+<?php endif; ?>
