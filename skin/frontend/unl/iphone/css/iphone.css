@@ -448,7 +448,7 @@ body.mobile #wdn_wrapper { -moz-border-radius:0; -webkit-border-radius:0; border
 .cart .cart-table td { padding:4px; }
 .cart .cart-table th { background:#E1E2DC; border: 1px solid #BEBFB9; padding: 0 4px; }
 #maincontent .cart .cart-table h2 { margin:0; font-weight:normal; font-size:12px; }
-#maincontent .cart .cart-table a img { width: auto; }
+.cart .cart-table .btn-remove { background: url("../images/btn_remove.gif") no-repeat scroll 0 0 transparent; display: block; font-size: 0; height: 12px; line-height: 0; overflow: hidden; text-indent: -999em; width: 12px; }
 .cart .checkout-types li:last-child { display:none; /*margin:10px 0 15px 0; font-size:14px;*/ }
 .cart .checkout-types li { clear:both; text-align:center; }
 .cart .checkout-types .paypal-or { clear:both; display:block; }
