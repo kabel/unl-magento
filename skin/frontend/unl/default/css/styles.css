@@ -691,14 +691,11 @@ tr.summary-details-excluded { font-style:italic; }
 #maincontent div.featured2 ul { padding:0; }
 #maincontent div.featured2 ul li { border:none; padding:0 0 0 12px; display:inline; margin-left:12px; }
 #maincontent .featured2 .product-name { font-size: 16px; }
-.featured2 .add-to-links { text-align:right; }
+.featured2 .add-to-links { text-align: right; }
 .featured2 .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
 .featured2 .product-shop { float:left; padding-left: 20px; width: 290px; }
 .featured2 .price-box { float:left; margin: 4px 13px 0 0; }
-
-/* Dairy Store Overrides */
-#maincontent .dairystore div.featured2 { border:none; background:none; }
-#maincontent .dairystore .featured2 .sec_main { border-color: #79BDE8; background-color: #CC0000; color: #FFF; }
+.featured2 .price-box { text-align: right; }
 
 .featured-global {}
 #maincontent .featured-global .product-name { font-size:16px; margin-bottom:8px;}
