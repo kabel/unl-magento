@@ -695,7 +695,7 @@ tr.summary-details-excluded { font-style:italic; }
 .featured2 .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
 .featured2 .product-shop { float:left; padding-left: 20px; width: 290px; }
 .featured2 .price-box { float:left; margin: 4px 13px 0 0; }
-.featured2 .price-box { text-align: right; }
+.featured2 .learn-more { text-align: right; }
 
 .featured-global {}
 #maincontent .featured-global .product-name { font-size:16px; margin-bottom:8px;}
