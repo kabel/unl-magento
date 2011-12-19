@@ -3,6 +3,7 @@
     <default>
         <reference name="top.links">
             <block type="unl_core/page_directory_links" name="directory_link">
+                <action method="addHomeLink" translate="label title"><label>Home</label><title>Store Home</title><position>199</position></action>
                 <action method="addStoreLink" translate="label title"><label>Store Directory</label><title>Store Directory</title><position>200</position></action>
             </block>
         </reference>
@@ -10,8 +11,14 @@
     <STORE_default>
 	    <reference name="directory_link">
 	        <action method="removeStoreLink"/>
+            <action method="removeHomeLink"/>
 	    </reference>
 	</STORE_default>
+    <cms_index_index>
+        <reference name="directory_link">
+            <action method="removeHomeLink"/>
+        </reference>
+    </cms_index_index>
 	
     <sales_email_invoice_payment_extra>
         <block type="core/template" template="email/order/invoice/payment/extra.phtml" />

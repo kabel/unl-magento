@@ -2,9 +2,16 @@
 
 class Unl_Core_Block_Page_Directory_Links extends Mage_Core_Block_Template
 {
+    protected $_urlCache = array();
+
     public function addStoreLink($label, $title = '', $position = null, $store = 'default')
     {
         $url = $this->getUrl('/', array('_store' => $store));
+        if (isset($this->_urlCache[$url])) {
+            return $this;
+        }
+        $this->_urlCache[$url] = true;
+
         $parentBlock = $this->getParentBlock();
 
         if ($parentBlock && Mage::helper('core')->isModuleOutputEnabled('Unl_Core')) {
@@ -17,10 +24,22 @@ class Unl_Core_Block_Page_Directory_Links extends Mage_Core_Block_Template
     public function removeStoreLink($store = 'default')
     {
         $url = $this->getUrl('/', array('_store' => $store));
+        unset($this->_urlCache[$url]);
+
         $parentBlock = $this->getParentBlock();
 
         $parentBlock->removeLinkByUrl($url);
 
         return $this;
+    }
+
+    public function addHomeLink($label, $title = '', $position = null)
+    {
+        return $this->addStoreLink($label, $title, $position, Mage::app()->getStore());
+    }
+
+    public function removeHomeLink()
+    {
+        return $this->removeStoreLink(Mage::app()->getStore());
     }
 }
