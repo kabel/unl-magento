@@ -399,49 +399,48 @@ tr.summary-details-excluded { font-style:italic; }
 
 /* Subnav ================================================================================ */
 .subnav {
-    background:transparent url(../images/breadcrumbBarSprite3.png) no-repeat scroll 0 0;
+    background: #f1f1f1; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f1f1f1 60%, #d0d0d0 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(60%,#f1f1f1), color-stop(100%,#d0d0d0)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f1f1f1 60%,#d0d0d0 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f1f1f1 60%,#d0d0d0 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f1f1f1 60%,#d0d0d0 100%); /* IE10+ */
+	background: linear-gradient(top,  #f1f1f1 60%,#d0d0d0 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1f1f1', endColorstr='#d0d0d0',GradientType=0 ); /* IE6-9 */
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px
     font-family:arial;
-    height:35px;
-    padding-left: 8px;
     position:relative;
+    padding: 0 8px;
     margin: 0 0 1.1em;
-}
-.subnav .subnav_wrapper { 
-    background:transparent url(../images/breadcrumbBarSprite3.png) no-repeat scroll 100% -72px;
-    padding-right: 8px;
+    height: 33px;
 }
 
 #maincontent .subnav ul.toplinks {
-    background:transparent url(../images/breadcrumbBarSprite3.png) repeat scroll 0 -36px;
-    height: 32px;
     padding: 0 8px 0 0;
     float: left;
-    border-right: 3px solid #d7d7d7
+    border-right: 1px solid #c2c2c2
 }
 .subnav ul.toplinks > li {
     float: left;
 }
 .subnav ul.toplinks > li > a {
     display: inline-block;
-    height: 24px;
-    padding: 8px 10px 0;
+    padding: 8px 10px;
 }
 .subnav ul.toplinks > li.menu > a {
     padding-left: 21px; 
     background: transparent url(../images/breadcrumbArrow.png) no-repeat scroll 8px 9px;
 }
+.subnav ul.toplinks > li.menu.over {
+	background: #B70302;
+}
 .subnav ul.toplinks > li.menu.over > a {
-    background:transparent url(../images/tabBGRight.png) no-repeat scroll right top;
-    margin:-11px -11px 0 8px;
-    padding: 19px 21px 0 0;
+    background-position: 7px -29px;
+    color: white !important;
 }
-.subnav ul.toplinks > li.menu.over > a span {
-    background:transparent url(../images/tabBGLeft.png) no-repeat scroll 0 0;
-    height:25px;
-    display: inline-block;
-    margin:-19px 0 0 -14px;
-    padding:19px 0 0 27px;
-}
+.subnav ul.toplinks > li.menu.over > a span {}
 .subnav ul.toplinks > li > .hover-menu {
     display: none;  
 }
@@ -449,8 +448,6 @@ tr.summary-details-excluded { font-style:italic; }
     display: block;
 }
 .subnav .search_wrapper {
-    background:transparent url(../images/breadcrumbBarSprite3.png) repeat scroll 0 -36px;
-    height: 25px;
     padding-top: 7px;
 }
 .subnav .search_wrapper ul.links { margin: 0 10px 0 20px; float: right; }
@@ -467,16 +464,14 @@ tr.summary-details-excluded { font-style:italic; }
 .form-search .search-autocomplete li.selected { background-color:#ecf9ea; }
 
 .hover-menu {
-    background:#d9d9d9 none repeat scroll 0 0;
-    border-width: 0 3px 3px;
-    border-style: solid;
-    border-color: #ededed;
+    background:#f1f1f1;
+    border: 1px solid#c2c2c2;
+    border-top: none;
     margin-bottom:1em;
     padding:5px;
     width: 340px;
-    margin-left: -3px;
     position: absolute;
-    top: 32px;
+    top: 33px;
     z-index: 50;
     border-radius: 0 0 5px 5px;
     box-shadow: 0 5px 5px #777;
@@ -1556,6 +1551,7 @@ f/********** Product Prices > */
 
 /* Clears ================================================================================ */
 .clearer:after,
+.subnav:after,
 .form-search:after,
 .col2-set:after,
 .col3-set:after,
