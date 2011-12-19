@@ -71,8 +71,9 @@ Default layout, loads most of the pages
             
             <block type="page/html_header" name="header" as="header"/>
             
-            <block type="page/template_links" name="top.links" as="topLinks" template="page/html/top.links.phtml"/>
-            
+            <block type="core/template" name="subnav" template="page/html/subnav.phtml">
+                <block type="page/template_links" name="top.links" as="topLinks" template="page/html/top.links.phtml"/>
+            </block>
 
             <block type="page/html_breadcrumbs" name="breadcrumbs" as="breadcrumbs">
                 <block type="page/switch" name="store_switcher" as="store_switcher" template="page/switch/stores.phtml"/>

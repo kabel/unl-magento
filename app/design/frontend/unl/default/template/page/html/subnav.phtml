@@ -1,0 +1,9 @@
+<div class="subnav">
+    <?php echo $this->getChildHtml('topLinks') ?>
+    <?php if (Mage::app()->getStore()->getCode() != 'default'): ?>
+    <div class="search_wrapper">
+        <?php echo $this->getChildHtml('topSearchLinks') ?>
+        <?php echo $this->getChildHtml('topSearch') ?>
+    </div>
+    <?php endif; ?>
+</div>
