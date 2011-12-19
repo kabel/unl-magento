@@ -4,6 +4,16 @@ class Unl_Core_Block_Page_Directory_Links extends Mage_Core_Block_Template
 {
     protected $_urlCache = array();
 
+    public function getCacheKeyInfo()
+    {
+        $info = parent::getCacheKeyInfo();
+        if (in_array('cms_index_index', $this->getLayout()->getUpdate()->getHandles())) {
+            $info[] = 'CMS_HOME';
+        }
+
+        return $info;
+    }
+
     public function addStoreLink($label, $title = '', $position = null, $store = 'default')
     {
         $url = $this->getUrl('/', array('_store' => $store));
