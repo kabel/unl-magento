@@ -374,7 +374,7 @@ body.mobile #wdn_wrapper { -moz-border-radius:0; -webkit-border-radius:0; border
 .product-shop .add-to-box .or,
 /* .product-shop .add-to-box .add-to-links,  */
 .product-shop .add-to-links li:last-child { display:none; }
-.product-shop .add-to-links { font-size:12px; text-align:right; }
+.product-shop .add-to-links { font-size:12px; text-align:right; margin-top: -3em; }
 .product-shop .ratings { margin-bottom:10px; font-size:12px; }
 .product-shop .availability,
 .product-shop .availability-only,
