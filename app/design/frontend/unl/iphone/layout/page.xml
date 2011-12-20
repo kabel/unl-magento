@@ -73,6 +73,7 @@ Default layout, loads most of the pages
             </block>
 
             <block type="page/html_footer" name="footer" as="footer" template="page/html/footer.phtml">
+                <action method="unsetData"><key>cache_lifetime</key></action>
                 <block type="page/template_links" name="top.links" as="topLinks"/>
                 <block type="page/template_links" name="account.links" as="accountLinks"/>
                 <block type="page/template_links" name="footer_links" as="footer_links" template="page/template/links.phtml"/>
