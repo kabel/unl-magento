@@ -54,7 +54,7 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
             ->where("(ia.product_id IS NOT NULL OR {$auditCondition})")
             ->joinLeft(array('ii' => $indexSelect), 'ii.product_id=e.entity_id', array());
 
-        $collection->addExpressionAttributeToSelect('qty_on_hand', "IF({$auditCondition}, ii.qty, _table_qty.qty)", array());
+        $collection->addExpressionAttributeToSelect('qty_on_hand', "IF({$auditCondition}, IFNULL(ii.qty, 0), _table_qty.qty)", array());
         $collection->addExpressionAttributeToSelect('audit_active', "IF({$auditCondition}, 1, 2)", array());
 
         $this->setCollection($collection);
