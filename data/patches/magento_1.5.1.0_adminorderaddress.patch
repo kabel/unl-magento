@@ -1,0 +1,17 @@
+Index: app/code/core/Mage/Adminhtml/controllers/Sales/OrderController.php
+===================================================================
+--- app/code/core/Mage/Adminhtml/controllers/Sales/OrderController.php	(revision )
++++ app/code/core/Mage/Adminhtml/controllers/Sales/OrderController.php	(revision )
+@@ -710,10 +710,8 @@
+     public function addressAction()
+     {
+         $addressId = $this->getRequest()->getParam('address_id');
+-        $address = Mage::getModel('sales/order_address')
+-            ->getCollection()
+-            ->getItemById($addressId);
+-        if ($address) {
++        $address = Mage::getModel('sales/order_address')->load($addressId);
++        if ($address->getId()) {
+             Mage::register('order_address', $address);
+             $this->loadLayout();
+             $this->renderLayout();
