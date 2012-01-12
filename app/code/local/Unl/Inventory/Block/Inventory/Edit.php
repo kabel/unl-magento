@@ -28,6 +28,11 @@ class Unl_Inventory_Block_Inventory_Edit extends Mage_Adminhtml_Block_Widget_For
         return Mage::helper('unl_inventory')->__('Product Inventory');
     }
 
+    public function getSaveUrl()
+    {
+        return $this->getUrl('*/*/save');
+    }
+
     protected function _getSaveAndContinueUrl()
     {
         return $this->getUrl('*/*/save', array(
