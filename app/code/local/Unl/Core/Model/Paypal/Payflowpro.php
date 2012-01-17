@@ -32,7 +32,8 @@ class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
             ->setOrderFilter($payment->getOrder())
             ->addPaymentIdFilter($payment->getId())
             ->addTxnTypeFilter(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
-        if ($collection->getSize()) {
+
+        if ($collection->count()) {
             return true;
         }
 
