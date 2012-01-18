@@ -81,15 +81,15 @@
         </unl_adminlog>
         
         <events>
-            <core_block_abstract_to_html_before>
+            <adminhtml_block_widget_grid_prepare_grid>
                 <observers>
                     <payment_correct_admin>
                         <type>singleton</type>
                         <class>unl_payment/observer</class>
-                        <method>onBlockBeforeToHtml</method>
+                        <method>onPrepareGrid</method>
                     </payment_correct_admin>
                 </observers>
-            </core_block_abstract_to_html_before>
+            </adminhtml_block_widget_grid_prepare_grid>
             <adminhtml_block_html_before>
                 <observers>
                     <payment_correct_admin>
