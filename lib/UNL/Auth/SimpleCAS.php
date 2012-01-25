@@ -111,5 +111,18 @@ class UNL_Auth_SimpleCAS extends UNL_Auth
     {
         return $this->client->logout($url);
     }
+
+    /**
+     * Pass through unknown function calls to the SimpleCAS client
+     *
+     * @param string $name      Method to call
+     * @param array  $arguments Arguments to the method
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array(array($this->client, $name), $arguments);
+    }
+    
 }
-?>
