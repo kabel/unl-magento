@@ -46,8 +46,8 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Paid extends Unl_Core_Model
         $this->_initSelectForShipping($groupOrder);
 
         $this->getSelect()
-            ->join(array('ii' => $this->getTable('sales/invoice_item')), 'i.entity_id = ii.parent_id', array())
-            ->join(array('oi' => $this->getTable('sales/order_item')), 'ii.order_item_id = oi.item_id AND oi.parent_item_id IS NULL', array());
+            ->join(array('ii' => $this->getTable('sales/invoice_item')), 'i.entity_id = ii.parent_id AND ii.is_dummy = 0', array())
+            ->join(array('oi' => $this->getTable('sales/order_item')), 'ii.order_item_id = oi.item_id', array());
 
         if (!$this->isTotals() && !$this->isSubTotals()) {
             $this->getSelect()

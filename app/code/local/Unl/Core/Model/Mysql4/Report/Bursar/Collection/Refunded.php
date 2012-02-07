@@ -46,8 +46,8 @@ class Unl_Core_Model_Mysql4_Report_Bursar_Collection_Refunded extends Unl_Core_M
         $this->_initSelectForShipping($groupOrder);
 
         $this->getSelect()
-            ->join(array('ci' => $this->getTable('sales/creditmemo_item')), 'c.entity_id = ci.parent_id', array())
-            ->join(array('oi' => $this->getTable('sales/order_item')), 'ci.order_item_id = oi.item_id AND oi.parent_item_id IS NULL', array());
+            ->join(array('ci' => $this->getTable('sales/creditmemo_item')), 'c.entity_id = ci.parent_id AND ci.is_dummy = 0', array())
+            ->join(array('oi' => $this->getTable('sales/order_item')), 'ci.order_item_id = oi.item_id', array());
 
         if (!$this->isTotals() && !$this->isSubTotals()) {
             $this->getSelect()
