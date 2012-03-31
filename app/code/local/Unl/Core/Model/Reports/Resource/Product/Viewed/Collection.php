@@ -1,8 +1,8 @@
 <?php
 
-class Unl_Core_Model_Reports_Mysql4_Product_Viewed_Collection extends Mage_Reports_Model_Mysql4_Product_Viewed_Collection
+class Unl_Core_Model_Reports_Resource_Product_Viewed_Collection extends Mage_Reports_Model_Resource_Product_Viewed_Collection
 {
-    /* Extends the logic of
+    /* Extends
      * @see Mage_Reports_Model_Mysql4_Product_Viewed_Collection::setStoreIds()
      * by adding a source_store filter
      */
