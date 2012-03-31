@@ -2,10 +2,9 @@
 
 class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 {
-
-    /* Overrides logic of
+    /* Overrides
      * @see Mage_Sales_Model_Service_Order::prepareCreditmemo()
-     * by changing the dummy Qty and adding an event before total collection
+     * by adding an event before total collection
      */
     public function prepareCreditmemo($data = array())
     {
@@ -20,7 +19,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 
             $item = $this->_convertor->itemToCreditmemoItem($orderItem);
             if ($orderItem->isDummy()) {
-                $qty = $orderItem->getQtyOrdered() ? $orderItem->getQtyOrdered() : 1;
+                $qty = 1;
             } else {
                 if (isset($qtys[$orderItem->getId()])) {
                     $qty = (float) $qtys[$orderItem->getId()];
@@ -38,16 +37,19 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 
         $this->_initCreditmemoData($creditmemo, $data);
 
-        Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array('order'=>$this->_order, 'creditmemo'=>$creditmemo));
+        Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array(
+            'order' => $this->_order,
+            'creditmemo' => $creditmemo
+        ));
 
         $creditmemo->collectTotals();
         return $creditmemo;
     }
 
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Sales_Model_Service_Order::prepareInvoiceCreditmemo()
-     * by changing the dummy Qty and adding an event before total collection
+     * by adding an event before total collection
      */
     public function prepareInvoiceCreditmemo($invoice, $data = array())
     {
@@ -91,7 +93,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
 
             $item = $this->_convertor->itemToCreditmemoItem($orderItem);
             if ($orderItem->isDummy()) {
-                $qty = $orderItem->getQtyOrdered();
+                $qty = 1;
             } else {
                 if (isset($qtys[$orderItem->getId()])) {
                     $qty = (float) $qtys[$orderItem->getId()];
@@ -126,13 +128,16 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
             $creditmemo->setBaseShippingAmount($baseAllowedAmount);
         }
 
-        Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array('order'=>$this->_order, 'creditmemo'=>$creditmemo));
+        Mage::dispatchEvent('sales_model_service_order_prepare_creditmemo', array(
+            'order' => $this->_order,
+            'creditmemo' => $creditmemo
+        ));
 
         $creditmemo->collectTotals();
         return $creditmemo;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Sales_Model_Service_Order::prepareInvoice()
      * by adding an event before total collection
      */
@@ -141,7 +146,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         $invoice = $this->_convertor->toInvoice($this->_order);
         $totalQty = 0;
         foreach ($this->_order->getAllItems() as $orderItem) {
-            if (!$this->_canInvoiceItem($orderItem, $qtys)) {
+            if (!$this->_canInvoiceItem($orderItem, array())) {
                 continue;
             }
             $item = $this->_convertor->itemToInvoiceItem($orderItem);
@@ -162,7 +167,10 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         }
         $invoice->setTotalQty($totalQty);
 
-        Mage::dispatchEvent('sales_model_service_order_prepare_invoice', array('order'=>$this->_order, 'invoice'=>$invoice));
+        Mage::dispatchEvent('sales_model_service_order_prepare_invoice', array(
+            'order' => $this->_order,
+            'invoice' => $invoice
+        ));
 
         $invoice->collectTotals();
         $this->_order->getInvoiceCollection()->addItem($invoice);

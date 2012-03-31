@@ -2,20 +2,21 @@
 
 class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
 {
-    /* Overrides the logic of
-     * @see Mage_Sales_Model_Order_Payment::_isCaptureFinal()
-     * by fixing a rounding oversight
+    /* Overrides
+     * @see Mage_Sales_Model_Order_Payment::canVoid()
+     * by also checking for a capture transaction
      */
-    protected function _isCaptureFinal($amountToCapture)
+    public function canVoid(Varien_Object $document)
     {
-        $orderGrandTotal = sprintf('%.2F', $this->getOrder()->getBaseGrandTotal());
-        if ($orderGrandTotal == sprintf('%.2F', ($this->getBaseAmountPaidOnline() + $amountToCapture))) {
-            if (false !== $this->getShouldCloseParentTransaction()) {
-                $this->setShouldCloseParentTransaction(true);
+        if (null === $this->_canVoidLookup) {
+            $this->_canVoidLookup = (bool)$this->getMethodInstance()->canVoid($document);
+            if ($this->_canVoidLookup) {
+                $authTransaction = $this->getAuthorizationTransaction();
+                $captureTransaction = $this->_lookupTransaction(false, Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
+                $this->_canVoidLookup = (bool)$authTransaction && !(int)$authTransaction->getIsClosed() && !$captureTransaction;
             }
-            return true;
         }
-        return false;
+        return $this->_canVoidLookup;
     }
 
 	/**
@@ -26,8 +27,9 @@ class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
      */
     protected function _isRefundFinal($amountToRefund)
     {
-        $orderGrandTotal = sprintf('%.2F', $this->getOrder()->getBaseGrandTotal());
-        if ($orderGrandTotal == sprintf('%.2F', ($this->getBaseAmountRefundedOnline() + $amountToRefund))) {
+        $amountToRefund = $this->_formatAmount($amountToRefund, true);
+        $orderGrandTotal = $this->_formatAmount($this->getOrder()->getBaseGrandTotal(), true);
+        if ($orderGrandTotal == $this->_formatAmount($this->getBaseAmountRefunded(), true) + $amountToRefund) {
             if (false !== $this->getShouldCloseParentTransaction()) {
                 $this->setShouldCloseParentTransaction(true);
             }
@@ -36,7 +38,7 @@ class Unl_Core_Model_Sales_Order_Payment extends Mage_Sales_Model_Order_Payment
         return false;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Sales_Model_Order_Payment::refund()
      * by implementing multiple refunds per capture
      */

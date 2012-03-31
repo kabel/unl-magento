@@ -41,7 +41,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
     {
         $image = Mage::getStoreConfig('sales/identity/logo', $store);
         if ($image) {
-            $image = Mage::getStoreConfig('system/filesystem/media', $store) . '/sales/store/logo/' . $image;
+            $image = Mage::getBaseDir('media') . '/sales/store/logo/' . $image;
             if (is_file($image)) {
                 $image = Zend_Pdf_Image::imageWithPath($image);
                 $page->drawImage($image, self::DEFAULT_PAGE_MARGIN_LEFT, self::DEFAULT_PAGE_MARGIN_TOP - self::DEFAULT_LOGO_HEIGHT, self::DEFAULT_PAGE_MARGIN_LEFT + self::DEFAULT_LOGO_WIDTH, self::DEFAULT_PAGE_MARGIN_TOP);
@@ -81,6 +81,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
      * @param $page Zend_Pdf_Page
      * @param $obj Mage_Sales_Model_Order|Mage_Sales_Model_Order_Shipment
      * @param $putOrderId
+     * @param $showTotals
      */
     protected function insertOrder(&$page, $obj, $putOrderId = true, $showTotals = true)
     {
@@ -92,6 +93,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
             $order = $shipment->getOrder();
         }
 
+        /* @var $order Mage_Sales_Model_Order */
         $page->setFillColor(new Zend_Pdf_Color_GrayScale(0.5));
 
         $y = self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN;
@@ -104,6 +106,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         if ($putOrderId) {
             $page->drawText(Mage::helper('sales')->__('Order # ').$order->getRealOrderId(), self::DEFAULT_PAGE_LEFT, $y - 2 * self::DEFAULT_LINE_HEIGHT, 'UTF-8');
         }
+        //$page->drawText(Mage::helper('sales')->__('Order Date: ') . date( 'D M j Y', strtotime( $order->getCreatedAt() ) ), 35, 760, 'UTF-8');
         $page->drawText(Mage::helper('sales')->__('Order Date: ') . Mage::helper('core')->formatDate($order->getCreatedAtStoreDate(), 'medium', false), self::DEFAULT_PAGE_LEFT, $y - 3 * self::DEFAULT_LINE_HEIGHT, 'UTF-8');
 
         $y -= 3 * self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
@@ -254,7 +257,7 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
                 $this->_setFontRegular($page);
                 $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
                 $page->drawText(Mage::helper('sales')->__('Carrier'), self::DEFAULT_PAGE_COL2 + self::DEFAULT_BOX_PAD, $yShipments - self::DEFAULT_FONT_SIZE , 'UTF-8');
-//                $page->drawText(Mage::helper('sales')->__('Title'), 290, $yShipments - 7, 'UTF-8');
+                //$page->drawText(Mage::helper('sales')->__('Title'), 290, $yShipments - 7, 'UTF-8');
                 $page->drawText(Mage::helper('sales')->__('Number'), self::DEFAULT_PAGE_COL2_TLEFT + self::DEFAULT_BOX_PAD, $yShipments - self::DEFAULT_FONT_SIZE, 'UTF-8');
 
                 $yShipments -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_FONT_SIZE;
@@ -273,7 +276,9 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
                     }
 
                     //$truncatedCarrierTitle = substr($carrierTitle, 0, 35) . (strlen($carrierTitle) > 35 ? '...' : '');
-                    $truncatedTitle = substr($track->getTitle(), 0, 45) . (strlen($track->getTitle()) > 45 ? '...' : '');
+                    $maxTitleLen = 45;
+                    $endOfTitle = strlen($track->getTitle()) > $maxTitleLen ? '...' : '';
+                    $truncatedTitle = substr($track->getTitle(), 0, $maxTitleLen) . $endOfTitle;
                     //$page->drawText($truncatedCarrierTitle, 285, $yShipments , 'UTF-8');
                     $page->drawText($truncatedTitle, self::DEFAULT_PAGE_COL2 + 3 * self::DEFAULT_BOX_PAD, $yShipments , 'UTF-8');
                     $page->drawText($track->getNumber(), self::DEFAULT_PAGE_COL2_TLEFT + 3 * self::DEFAULT_BOX_PAD, $yShipments , 'UTF-8');

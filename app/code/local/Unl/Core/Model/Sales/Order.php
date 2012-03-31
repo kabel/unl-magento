@@ -36,7 +36,9 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
                  * Order can be closed just in case when we have refunded amount.
                  * In case of "0" grand total order checking ForcedCanCreditmemo flag
                  */
-                elseif(floatval($this->getTotalRefunded()) || (!$this->getTotalRefunded() && $this->hasForcedCanCreditmemo())) {
+                elseif(floatval($this->getTotalRefunded()) || (!$this->getTotalRefunded()
+                    && $this->hasForcedCanCreditmemo())
+                ) {
                     if ($this->getState() !== self::STATE_CLOSED) {
                         $this->_setState(self::STATE_CLOSED, true, '', $userNotification);
                     }
@@ -50,16 +52,14 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
         return $this;
     }
 
+    /* Overrides
+     * @see Mage_Sales_Model_Order::_getEmails()
+     * by using the source store attribute to get config emails
+     */
     protected function _getEmails($configPath)
     {
-        $storeIds = array();
-
         $items = $this->getAllVisibleItems();
-        foreach ($items as $item) {
-            if (($store = $item->getSourceStoreView()) && !in_array($store, $storeIds)) {
-                $storeIds[] = $store;
-            }
-        }
+        $storeIds = Mage::helper('unl_core')->getStoresFromItems($items);
 
         if (empty($storeIds)) {
             $storeIds[] = $this->getStoreId();
@@ -99,5 +99,27 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
         }
 
         return false;
+    }
+
+    /* Overrides
+     * @see Mage_Sales_Model_Order::getTotalDue()
+     * by also subtracting total_canceled
+     */
+    public function getTotalDue()
+    {
+        $total = $this->getGrandTotal()-$this->getTotalPaid()-$this->getTotalCanceled();
+        $total = Mage::app()->getStore($this->getStoreId())->roundPrice($total);
+        return max($total, 0);
+    }
+
+    /* Overrides
+     * @see Mage_Sales_Model_Order::getBaseTotalDue()
+     * by also subtracting base_total_canceled
+     */
+    public function getBaseTotalDue()
+    {
+        $total = $this->getBaseGrandTotal()-$this->getBaseTotalPaid()-$this->getBaseTotalCanceled();
+        $total = Mage::app()->getStore($this->getStoreId())->roundPrice($total);
+        return max($total, 0);
     }
 }
