@@ -4,8 +4,6 @@ class Unl_Core_Model_ImportExport_Import_Entity_Product extends Mage_ImportExpor
 {
     const ERROR_ACCESS_DENIED = 'accessDenied';
 
-    const COL_SOURCE_STORE = 'source_store_view';
-
     public function __construct()
     {
         parent::__construct();
@@ -19,17 +17,17 @@ class Unl_Core_Model_ImportExport_Import_Entity_Product extends Mage_ImportExpor
      */
     protected function _initSkus()
     {
-        $collection = Mage::getResourceModel('catalog/product_collection')
-            ->addAttributeToSelect('source_store_view');
-        foreach ($collection as $product) {
-            $typeId = $product->getTypeId();
-            $sku = $product->getSku();
+        $columns = array('entity_id', 'type_id', 'attribute_set_id', 'sku');
+        $attributes = array('source_store_view');
+        foreach (Mage::getResourceModel('unl_core/import_product_collection')->getExtendedInfo($columns, $attributes) as $info) {
+            $typeId = $info['type_id'];
+            $sku = $info['sku'];
             $this->_oldSku[$sku] = array(
-                'type_id'           => $typeId,
-                'attr_set_id'       => $product->getAttributeSetId(),
-                'entity_id'         => $product->getId(),
-                'supported_type'    => isset($this->_productTypeModels[$typeId]),
-                'source_store_view' => $product->getSouceStoreView(),
+                'type_id'        => $typeId,
+                'attr_set_id'    => $info['attribute_set_id'],
+                'entity_id'      => $info['entity_id'],
+                'supported_type' => isset($this->_productTypeModels[$typeId]),
+                'source_store_view' => $info['source_store_view'],
             );
         }
         return $this;
@@ -58,10 +56,11 @@ class Unl_Core_Model_ImportExport_Import_Entity_Product extends Mage_ImportExpor
         // BEHAVIOR_DELETE use specific validation logic
         if (Mage_ImportExport_Model_Import::BEHAVIOR_DELETE == $this->getBehavior()) {
             if (self::SCOPE_DEFAULT == $rowScope) {
+                // check for permissions
                 if (!isset($this->_oldSku[$rowData[self::COL_SKU]])) {
                     $this->addRowError(self::ERROR_SKU_NOT_FOUND_FOR_DELETE, $rowNum);
                     return false;
-                } elseif ($userScope && !in_array($this->_oldSku[$rowData[self::COL_SKU]][self::COL_SOURCE_STORE], $userScope)) {
+                } elseif ($userScope && !in_array($this->_oldSku[$rowData[self::COL_SKU]]['source_store_view'], $userScope)) {
                     $this->addRowError(self::ERROR_ACCESS_DENIED, $rowNum);
                     return false;
                 }
@@ -82,7 +81,7 @@ class Unl_Core_Model_ImportExport_Import_Entity_Product extends Mage_ImportExpor
                 // check for supported type of existing product
                 if (isset($this->_productTypeModels[$this->_oldSku[$sku]['type_id']])) {
                     // check for permissions
-                    if ($userScope && !in_array($this->_oldSku[$sku][self::COL_SOURCE_STORE], $userScope)) {
+                    if ($userScope && !in_array($this->_oldSku[$sku]['source_store_view'], $userScope)) {
                         $this->addRowError(self::ERROR_ACCESS_DENIED, $rowNum);
                         $sku = false;
                     } else {
