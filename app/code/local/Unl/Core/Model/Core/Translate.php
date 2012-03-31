@@ -2,20 +2,17 @@
 
 class Unl_Core_Model_Core_Translate extends Mage_Core_Model_Translate
 {
-    /* Extended the logic of
+    /* Extends
      * @see Mage_Core_Model_Translate::getTemplateFile()
-     * by checking the design if the locale is null
+     * by first checking the design package for locale files
      */
     public function getTemplateFile($file, $type, $localeCode=null)
     {
-        if (!is_null($localeCode)) {
-            return parent::getTemplateFile($file, $type, $localeCode);
-        }
-
         $designPackage = Mage::getDesign();
         $filePath = $designPackage->getLocaleFileName('template' . DS . $type . DS . $file);
 
-        if (!file_exists($filePath)) {  // If no template for current design package, use original logic
+        if (!file_exists($filePath)) {
+            // If no template for current design package, use original logic
             return parent::getTemplateFile($file, $type, $localeCode);
         }
 

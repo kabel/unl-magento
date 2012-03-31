@@ -16,6 +16,7 @@ class Unl_Core_Model_Core_Email_Template extends Mage_Core_Model_Email_Template
         if (is_numeric($templateId)) {
             $this->load($templateId);
         } else {
+            $localeCode = Mage::getStoreConfig('general/locale/code', $storeId);
             // emulate the design to get design locale files
             $this->_applyDesignConfig();
             $this->loadDefault($templateId);
