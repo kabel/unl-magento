@@ -106,7 +106,7 @@ class Unl_CustomerTag_Block_Product_Edit_Tab_Access extends Mage_Adminhtml_Block
      */
     public function getGridUrl()
     {
-        return $this->getUrl('unl_customertag/product/gridOnly', array('_current'=>true));
+        return $this->getUrl('*/customerTag_product/gridOnly', array('_current'=>true));
     }
 
     /**

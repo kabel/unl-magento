@@ -106,7 +106,7 @@ class Unl_CustomerTag_Block_Category_Tab_Access extends Mage_Adminhtml_Block_Wid
      */
     public function getGridUrl()
     {
-        return $this->getUrl('unl_customertag/category/grid', array('_current'=>true));
+        return $this->getUrl('*/customerTag_category/grid', array('_current'=>true));
     }
 
     /**
@@ -124,12 +124,34 @@ class Unl_CustomerTag_Block_Category_Tab_Access extends Mage_Adminhtml_Block_Wid
     }
 
     /**
+     * Appends a grid serializer for this grid to a specified block
+     *
+     * @param Mage_Core_Block_Abstract $block [OPTIONAL] The block to append to, defaults to the parent block
+     * @return Unl_CustomerTag_Block_Category_Tab_Access
+     */
+    public function appendSerializer($block = null)
+    {
+        if (null === $block) {
+            $block = $this->getParentBlock();
+        }
+
+        if ($block) {
+            $serializer = $this->getLayout()->createBlock('adminhtml/widget_grid_serializer');
+            $block->append($serializer);
+            $serializer->initSerializerBlock($this, 'getSelectedTags',
+                    Mage::helper('unl_customertag')->getAccessStorageName(), 'category_access');
+        }
+
+        return $this;
+    }
+
+    /**
      * Retrieve category access tags
      *
      * @return array
      */
     public function getSelectedTags()
     {
-        return Mage::getResourceModel('unl_customertag/tag')->getCAtegoryAccess($this->_getCategory());
+        return Mage::getResourceModel('unl_customertag/tag')->getCategoryAccess($this->_getCategory());
     }
 }

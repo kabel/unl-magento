@@ -44,14 +44,14 @@ class Unl_CustomerTag_Block_Customer_Edit_Tab_Tag extends Mage_Adminhtml_Block_W
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('unlcusttag/index/edit', array(
+        return $this->getUrl('*/customerTag/edit', array(
             'id' => $row->getTagId()
         ));
     }
 
     public function getGridUrl()
     {
-        return $this->getUrl('unlcusttag/index/gridCustomer', array(
+        return $this->getUrl('*/customerTag_customer/grid', array(
             '_current' => true,
             'id'       => $this->getCustomerId()
         ));

@@ -1,6 +1,6 @@
 <?php
 
-class Unl_CustomerTag_Block_Catalog_Navigation extends Unl_Core_Block_Catalog_Navigation
+class Unl_CustomerTag_Block_Catalog_Navigation extends Mage_Catalog_Block_Navigation
 {
     /* Overrides
      * @see Mage_Catalog_Block_Navigation::getCacheKeyInfo()
