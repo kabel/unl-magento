@@ -22,13 +22,13 @@ $attribute->save();
 
 $exemptOrg = Mage::getModel('tax/class')->getCollection()
     ->setClassTypeFilter('CUSTOMER')
-    ->addFieldToFilter('class_name', 'Exempt Org')
+    ->addFieldToFilter('class_name', Unl_Core_Helper_Data::TAX_EXEMPT_ORG)
     ->getFirstItem();
 
 $installer->run("
 INSERT INTO `{$installer->getTable('customer_group')}`
     (`customer_group_code`, `tax_class_id`) VALUES
-    ('" . Unl_Cas_Helper_Data::CUSTOMER_GROUP_TAX_EXEMPT . "', {$exemptOrg->getId()})
+    ('" . Unl_Core_Helper_Data::TAX_GROUP_EXEMPT_ORG . "', {$exemptOrg->getId()})
 ;
 
 INSERT INTO `{$installer->getTable('unl_customertag/tag')}`
@@ -53,7 +53,6 @@ $configCollection = Mage::getModel('core/config_data')->getCollection()
     ->addFieldToFilter('scope', 'default');
 $defaultGroup = $configCollection->getFirstItem()->getValue();
 
-/* @var $groups Mage_Customer_Model_Entity_Group_Collection */
 $groups = Mage::getModel('customer/group')->getCollection();
 $groups->addFieldToFilter('customer_group_code', array('in' => array(
     'Allow Invoicing',
@@ -65,7 +64,6 @@ $groups->addFieldToFilter('customer_group_code', array('in' => array(
 )));
 $groupIds = $groups->getAllIds();
 
-/* @var $customers Mage_Customer_Model_Entity_Customer_Collection */
 $customers = Mage::getModel('customer/customer')->getCollection();
 $customers->addFieldToFilter('group_id', array('in' => $groupIds))
     ->addAttributeToSelect('unl_cas_uid');
@@ -79,7 +77,6 @@ foreach ($customers as $customer) {
 unset($customer);
 unset($customers);
 
-/* @var $orders Mage_Sales_Model_Mysql4_Order_Collection */
 $orders = Mage::getModel('sales/order')->getCollection();
 $orders->addFieldToFilter('customer_group_id', array('in' => $groupIds));
 foreach ($orders as $order) {
@@ -95,7 +92,6 @@ foreach ($orders as $order) {
 unset($order);
 unset($orders);
 
-/* @var $products Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
 $products = Mage::getModel('catalog/product')->getCollection();
 $products->addAttributeToFilter('product_group_acl', array('neq' => ''));
 foreach ($products as $product) {
@@ -128,7 +124,6 @@ foreach ($products as $product) {
 unset($product);
 unset($products);
 
-/* @var $categories Mage_Catalog_Model_Resource_Eav_Mysql4_Category_Collection */
 $categories = Mage::getModel('catalog/category')->getCollection();
 $categories->addAttributeToFilter('group_acl', array('neq' => ''));
 foreach ($categories as $category) {
