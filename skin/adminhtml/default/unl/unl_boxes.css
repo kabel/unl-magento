@@ -1,10 +1,10 @@
-.content-subheader {
+.multigrid .content-header {
 	border-bottom: 4px double #DFDFDF;
     margin-bottom: 5px;
     padding-bottom: 0.25em;
 }
 
-.content-subheader h4 {
+.multigrid .content-header h2 {
 	color: #6F8992;
     float: left;
     font-size: 1.1em;
@@ -47,6 +47,10 @@
 
 #adminlogGrid .hor-scroll {
 	overflow: visible;
+}
+
+.webiste-groups {
+	display: none;
 }
 
 .shipment-invoice {
