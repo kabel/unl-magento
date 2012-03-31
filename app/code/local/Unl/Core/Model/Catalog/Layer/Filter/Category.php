@@ -21,8 +21,9 @@ class Unl_Core_Model_Catalog_Layer_Filter_Category extends Mage_Catalog_Model_La
 
             $data = array();
             foreach ($categories as $category) {
-                if ($category->getIsActive()
-                    && Mage::helper('unl_core')->isCustomerAllowedCategory($category) && $category->getProductCount()) {
+                if ($category->getIsActive() && Mage::helper('unl_core')->isCustomerAllowedCategory($category) &&
+                    $category->getProductCount()
+                ) {
                     $data[] = array(
                         'label' => Mage::helper('core')->htmlEscape($category->getName()),
                         'value' => $category->getId(),

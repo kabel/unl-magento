@@ -1,7 +1,6 @@
 ﻿<?php
 
-class Unl_Core_Model_Convert_Adapter_Product
-    extends Mage_Catalog_Model_Convert_Adapter_Product
+class Unl_Core_Model_Catalog_Convert_Adapter_Product extends Mage_Catalog_Model_Convert_Adapter_Product
 {
     /* Overrides the logic of
      * @see Mage_Catalog_Model_Convert_Adapter_Product::load()
@@ -88,8 +87,7 @@ class Unl_Core_Model_Convert_Adapter_Product
                 );
                 Mage::throwException($message);
             }
-        }
-        else {
+        } else {
             $store = $this->getStoreByCode($importData['store']);
         }
 
@@ -115,8 +113,7 @@ class Unl_Core_Model_Convert_Adapter_Product
                 $message = Mage::helper('catalog')->__('Skipping import row, permission denied');
                 Mage::throwException($message);
             }
-        }
-        else {
+        } else {
             $productTypes = $this->getProductTypes();
             $productAttributeSets = $this->getProductAttributeSets();
 
@@ -252,8 +249,7 @@ class Unl_Core_Model_Convert_Adapter_Product
                     if (!in_array($website->getId(), $websiteIds)) {
                         $websiteIds[] = $website->getId();
                     }
-                }
-                catch (Exception $e) {}
+                } catch (Exception $e) {}
             }
             $product->setWebsiteIds($websiteIds);
             unset($websiteIds);
@@ -297,10 +293,8 @@ class Unl_Core_Model_Convert_Adapter_Product
                                     $setValue[] = $subitem['value'];
                                 }
                             }
-                        } else {
-                            if (in_array($item['label'], $value) || in_array($item['value'], $value)) {
-                                $setValue[] = $item['value'];
-                            }
+                        } else if (in_array($item['label'], $value) || in_array($item['value'], $value)) {
+                            $setValue[] = $item['value'];
                         }
                     }
                 } else {
@@ -308,15 +302,15 @@ class Unl_Core_Model_Convert_Adapter_Product
                     foreach ($options as $item) {
                         // adds support for optgroups and value matching
                         if (is_array($item['value'])) {
-                            foreach ($item['value'] as $subitem) {
-                                if ($subitem['label'] == $value || $subitem['value'] == $value) {
-                                    $setValue = $subitem['value'];
+                            foreach ($item['value'] as $subValue) {
+                                if ((isset($subValue['value']) && $subValue['value'] == $value) ||
+                                    (isset($subValue['label']) && $subValue['label'] == $value)
+                                ) {
+                                    $setValue = $value;
                                 }
                             }
-                        } else {
-                            if ($item['label'] == $value || $item['value'] == $value) {
-                                $setValue = $item['value'];
-                            }
+                        } else if ($item['label'] == $value || $item['value'] == $value) {
+                            $setValue = $item['value'];
                         }
                     }
                 }
@@ -337,8 +331,7 @@ class Unl_Core_Model_Convert_Adapter_Product
             if (isset($importData[$field])) {
                 if (in_array($field, $this->_toNumber)) {
                     $stockData[$field] = $this->getNumber($importData[$field]);
-                }
-                else {
+                } else {
                     $stockData[$field] = $importData[$field];
                 }
             }
@@ -390,6 +383,9 @@ class Unl_Core_Model_Convert_Adapter_Product
         $product->setExcludeUrlRewrite(true);
 
         $product->save();
+
+        // Store affected products ids
+        $this->_addAffectedEntityIds($product->getId());
 
         return true;
     }

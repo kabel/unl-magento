@@ -128,11 +128,15 @@ class Unl_Core_Model_Catalog_Layer_Filter_Alpha extends Mage_Catalog_Model_Layer
     /**
      * Gets the count for each starting letter of product name
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection
      * @return array
      */
     protected function _getItemCountCollection($collection)
     {
+        $collectionHelper = Mage::getResourceModel('unl_core/catalog_layer_filter_alpha_collection');
+        $attributeAlias = $collectionHelper->getFilterAttributeAlias();
+        $letterExpr = "UPPER(LEFT({$attributeAlias}, 1))";
+
         $collection->addAttributeToSelect('name', 'left');
         $select = clone $collection->getSelect();
         $select->reset(Zend_Db_Select::COLUMNS)
@@ -140,10 +144,10 @@ class Unl_Core_Model_Catalog_Layer_Filter_Alpha extends Mage_Catalog_Model_Layer
             ->reset(Zend_Db_Select::ORDER)
             ->distinct(false)
             ->columns(array(
-                'letter' => new Zend_Db_Expr('UPPER(LEFT(IF(_table_name.value_id > 0, _table_name.value, _table_name_default.value), 1))'),
+                'letter' => new Zend_Db_Expr($letterExpr),
                 'product_count' => new Zend_Db_Expr('COUNT(DISTINCT e.entity_id)')
             ))
-            ->group('UPPER(LEFT(IF(_table_name.value_id > 0, _table_name.value, _table_name_default.value), 1))');
+            ->group($letterExpr);
 
         $letters = $collection->getConnection()->fetchPairs($select);
         return $letters;
