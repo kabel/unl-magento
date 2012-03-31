@@ -1,0 +1,229 @@
+Index: .htaccess
+===================================================================
+--- .htaccess	(revision 142292)
++++ .htaccess	(working copy)
+@@ -34,6 +34,10 @@
+ #    php_value memory_limit 64M
+     php_value memory_limit 256M
+     php_value max_execution_time 18000
++    php_value max_input_time 9000
++    php_value upload_max_filesize 700M
++    php_value post_max_size 700M
++	php_value auto_detect_line_endings 1
+ 
+ ############################################
+ ## disable magic quotes for php request vars
+@@ -80,22 +84,22 @@
+     # Insert filter on all content
+     ###SetOutputFilter DEFLATE
+     # Insert filter on selected content types only
+-    #AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
++    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+ 
+     # Netscape 4.x has some problems...
+-    #BrowserMatch ^Mozilla/4 gzip-only-text/html
++    BrowserMatch ^Mozilla/4 gzip-only-text/html
+ 
+     # Netscape 4.06-4.08 have some more problems
+-    #BrowserMatch ^Mozilla/4\.0[678] no-gzip
++    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+ 
+     # MSIE masquerades as Netscape, but it is fine
+-    #BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
++    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+ 
+     # Don't compress images
+-    #SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
++    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+ 
+     # Make sure proxies don't deliver the wrong content
+-    #Header append Vary User-Agent env=!dont-vary
++    Header append Vary User-Agent env=!dont-vary
+ 
+ </IfModule>
+ 
+@@ -132,6 +136,7 @@
+ ## always send 404 on missing files in these folders
+ 
+     RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
++    RewriteCond %{REQUEST_URI} !^/(server-status)
+ 
+ ############################################
+ ## never rewrite for existing files, directories and links
+@@ -161,6 +166,7 @@
+ ## Add default Expires header
+ ## http://developer.yahoo.com/performance/rules.html#expires
+ 
++    ExpiresActive On
+     ExpiresDefault "access plus 1 year"
+ 
+ </IfModule>
+Index: get.php
+===================================================================
+--- get.php	(revision 142292)
++++ get.php	(working copy)
+@@ -32,7 +32,6 @@
+         . 'target="">Find out</a> how to install</a> Magento using PHP-CGI as a work-around.</p></div>';
+     exit;
+ }
+-$start = microtime(true);
+ /**
+  * Error reporting
+  */
+@@ -138,31 +137,32 @@
+     checkResource($relativeFilename, $allowedResources);
+ }
+ 
+-if (0 !== stripos($pathInfo, $mediaDirectory . '/')) {
++if (0 !== stripos($pathInfo, $mediaDirectory . '/') || is_dir($filePath)) {
+     sendNotFoundPage();
+ }
+ 
+-try {
++if (Mage::helper('core/file_storage_database')->checkDbUsage()) {
+     $databaseFileSotrage = Mage::getModel('core/file_storage_database');
+     $databaseFileSotrage->loadByFilename($relativeFilename);
+-} catch (Exception $e) {
+-}
+-if ($databaseFileSotrage->getId()) {
+-    $directory = dirname($filePath);
+-    if (!is_dir($directory)) {
+-        mkdir($directory, 0777, true);
++
++    if ($databaseFileSotrage->getId()) {
++        $directory = dirname($filePath);
++        if (!is_dir($directory)) {
++            mkdir($directory, 0777, true);
++        }
++
++        $fp = fopen($filePath, 'w');
++        if (flock($fp, LOCK_EX | LOCK_NB)) {
++            ftruncate($fp, 0);
++            fwrite($fp, $databaseFileSotrage->getContent());
++        }
++        flock($fp, LOCK_UN);
++        fclose($fp);
+     }
+ 
+-    $fp = fopen($filePath, 'w');
+-    if (flock($fp, LOCK_EX | LOCK_NB)) {
+-        ftruncate($fp, 0);
+-        fwrite($fp, $databaseFileSotrage->getContent());
+-    }
+-    flock($fp, LOCK_UN);
+-    fclose($fp);
++    sendFile($filePath);
+ }
+ 
+-sendFile($filePath);
+ sendNotFoundPage();
+ 
+ /**
+@@ -186,6 +186,7 @@
+     foreach ($allowedResources as $allowedResource) {
+         if (0 === stripos($resource, $allowedResource)) {
+             $isResourceAllowed = true;
++            break;
+         }
+     }
+ 
+Index: index.php
+===================================================================
+--- index.php	(revision 142292)
++++ index.php	(working copy)
+@@ -43,7 +43,7 @@
+ }
+ 
+ $mageFilename = 'app/Mage.php';
+-$maintenanceFile = 'maintenance.flag';
++$maintenanceFile = '.htmaint';
+ 
+ if (!file_exists($mageFilename)) {
+     if (is_dir('downloader')) {
+@@ -55,8 +55,13 @@
+ }
+ 
+ if (file_exists($maintenanceFile)) {
+-    include_once dirname(__FILE__) . '/errors/503.php';
+-    exit;
++    ob_start();
++    $maintenanceDevIps = include $maintenanceFile;
++    ob_end_clean();
++    if (!is_array($maintenanceDevIps) || !in_array($_SERVER['REMOTE_ADDR'], $maintenanceDevIps)) {
++        include_once dirname(__FILE__) . '/errors/503.php';
++        exit;
++    }
+ }
+ 
+ require_once $mageFilename;
+Index: app/code/core/Mage/XmlConnect/Model/Preview/Abstract.php
+===================================================================
+--- app/code/core/Mage/XmlConnect/Model/Preview/Abstract.php	(revision 142292)
++++ app/code/core/Mage/XmlConnect/Model/Preview/Abstract.php	(working copy)
+@@ -226,7 +226,7 @@
+ 
+             $hex    = str_replace('#', '', $this->getData('conf/categoryItem/tintColor'));
+             $hex2   = '';
+-            $_rgb   = array();
++            $_rgb   = array(0, 0, 0);
+ 
+             $hexChars = '[a-fA-F0-9]';
+ 
+Index: js/mage/adminhtml/wysiwyg/tiny_mce/setup.js
+===================================================================
+--- js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(revision 142292)
++++ js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(working copy)
+@@ -163,6 +163,18 @@
+         if (this.config.height) {
+             settings.height = this.config.height;
+         }
++        
++        if (this.config.extended_valid_elements) {
++        	settings.extended_valid_elements = this.config.extended_valid_elements;
++        }
++        
++        if (this.config.body_id) {
++        	settings.body_id = this.config.body_id;
++        }
++        
++        if (this.config.body_class) {
++        	settings.body_class = this.config.body_class;
++        }
+ 
+         return settings;
+     },
+Index: lib/Varien/Http/Adapter/Curl.php
+===================================================================
+--- lib/Varien/Http/Adapter/Curl.php	(revision 142292)
++++ lib/Varien/Http/Adapter/Curl.php	(working copy)
+@@ -122,9 +122,10 @@
+         if ($method == Zend_Http_Client::POST) {
+             curl_setopt($this->_getResource(), CURLOPT_POST, true);
+             curl_setopt($this->_getResource(), CURLOPT_POSTFIELDS, $body);
+-        }
+-        elseif ($method == Zend_Http_Client::GET) {
++        } elseif ($method == Zend_Http_Client::GET) {
+             curl_setopt($this->_getResource(), CURLOPT_HTTPGET, true);
++        } elseif ($method == Zend_Http_Client::HEAD) {
++            curl_setopt($this->_getResource(), CURLOPT_NOBODY, true);
+         }
+ 
+         if( is_array($headers) ) {
+Index: lib/Varien/Image/Adapter/Gd2.php
+===================================================================
+--- lib/Varien/Image/Adapter/Gd2.php	(revision 142292)
++++ lib/Varien/Image/Adapter/Gd2.php	(working copy)
+@@ -129,8 +129,12 @@
+ 
+     public function display()
+     {
+-        header("Content-type: ".$this->getMimeType());
++        $resp = Mage::app()->getResponse();
++        $this->getMimeType();
++        $resp->setHeader('Content-type', $this->_fileMimeType);
++        ob_start();
+         call_user_func($this->_getCallback('output'), $this->_imageHandler);
++        $resp->setBody(ob_get_clean());
+     }
+ 
+     /**
