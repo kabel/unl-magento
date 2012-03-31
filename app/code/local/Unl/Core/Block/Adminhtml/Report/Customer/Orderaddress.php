@@ -6,19 +6,12 @@ class Unl_Core_Block_Adminhtml_Report_Customer_Orderaddress extends Mage_Adminht
     {
         $this->_blockGroup = 'unl_core';
         $this->_controller = 'adminhtml_report_customer_orderaddress';
-        $this->_headerText = Mage::helper('reports')->__('Order Address');
+        $this->_headerText = Mage::helper('sales')->__('Order Address');
         parent::__construct();
-        $this->setTemplate('report/grid/container.phtml');
         $this->_removeButton('add');
-        $this->addButton('filter_form_submit', array(
-            'label'     => Mage::helper('reports')->__('Show Report'),
-            'onclick'   => 'filterFormSubmit()'
-        ));
     }
 
-    public function getFilterUrl()
-    {
-        $this->getRequest()->setParam('filter', null);
-        return $this->getUrl('*/*/orderaddress', array('_current' => true));
+    public function getHeaderCssClass() {
+        return 'icon-head head-sales-order-address';
     }
 }

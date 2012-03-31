@@ -2,22 +2,18 @@
 
 class Unl_Core_Block_Adminhtml_Sales_Invoice_Grid extends Mage_Adminhtml_Block_Sales_Invoice_Grid
 {
-    /* Overrides
-     * @see Mage_Adminhtml_Block_Sales_Invoice_Grid::_prepareCollection()
-     * by adding scope filter
+    /* Extends
+     * @see Mage_Adminhtml_Block_Sales_Invoice_Grid::setCollection()
+     * by adding scope filter and payment method
      */
-    protected function _prepareCollection()
+    public function setCollection($collection)
     {
-        /* @var $collection Mage_Sales_Model_Mysql4_Order_Invoice_Grid_Collection */
-        $collection = Mage::getResourceModel($this->_getCollectionClass());
-
         Mage::helper('unl_core')->addAdminScopeFilters($collection);
 
-        $collection->join('sales/order_payment', 'main_table.order_id = `sales/order_payment`.parent_id', array('method'));
+        // we assume that there is only one payment per order!
+        $collection->join(array('p' => 'sales/order_payment'), 'main_table.order_id = p.parent_id', array('method'));
 
-        $this->setCollection($collection);
-
-        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+        return parent::setCollection($collection);
     }
 
     /* Extends

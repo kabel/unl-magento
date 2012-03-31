@@ -2,80 +2,42 @@
 
 class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Grid extends Mage_Adminhtml_Block_Report_Sales_Tax_Grid
 {
-    /* Overrides
+    /* Extends
      * @see Mage_Adminhtml_Block_Report_Sales_Tax_Grid::_prepareColumns()
      * by adding extra columns
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('period', array(
-            'header'            => Mage::helper('sales')->__('Period'),
-            'index'             => 'period',
-            'width'             => '100',
-            'sortable'          => false,
-            'period_type'       => $this->getPeriodType(),
-            'renderer'          => 'adminhtml/report_sales_grid_column_renderer_date',
-            'totals_label'      => Mage::helper('adminhtml')->__('Total'),
-            'subtotals_label'   => Mage::helper('adminhtml')->__('SubTotal')
-        ));
-
-        $this->addColumn('code', array(
-            'header'    => Mage::helper('sales')->__('Tax Code'),
-            'index'     => 'code',
-            'type'      => 'string',
-            'sortable'  => false
-        ));
-
-        $this->addColumn('city', array(
+        $this->addColumnAfter('city', array(
             'header'    => Mage::helper('sales')->__('City'),
             'index'     => 'city',
             'type'      => 'string',
             'sortable'  => false
-        ));
+        ), 'code');
 
-        $this->addColumn('county', array(
+        $this->addColumnAfter('county', array(
             'header'    => Mage::helper('sales')->__('County'),
             'index'     => 'county',
             'type'      => 'string',
             'sortable'  => false
-        ));
+        ), 'city');
 
-        $this->addColumn('base_sales_amount_sum', array(
+        if ($this->getFilterData()->getStoreIds()) {
+            $this->setStoreIds(explode(',', $this->getFilterData()->getStoreIds()));
+        }
+
+        $this->addColumnAfter('base_sales_amount_sum', array(
             'header'        => Mage::helper('sales')->__('Sales Amount'),
             'index'         => 'base_sales_amount_sum',
             'type'          => 'currency',
             'currency_code' => $this->getCurrentCurrencyCode(),
             'sortable'      => false
-        ));
+        ), 'county');
 
-        $this->addColumn('percent', array(
-            'header'    => Mage::helper('sales')->__('Rate'),
-            'index'     => 'percent',
-            'type'      => 'number',
-            'width'     => '100',
-            'sortable'  => false
-        ));
+        parent::_prepareColumns();
 
-        $this->addColumn('orders_count', array(
-            'header'    => Mage::helper('sales')->__('Number of Orders'),
-            'index'     => 'orders_count',
-            'type'      => 'number',
-            'width'     => '100',
-            'sortable'  => false
-        ));
+        $this->getColumn('orders_count')->setTotal(false);
 
-        $this->addColumn('tax_base_amount_sum', array(
-            'header'        => Mage::helper('sales')->__('Tax Amount'),
-            'type'          => 'currency',
-            'currency_code' => $this->getCurrentCurrencyCode(),
-            'index'         => 'tax_base_amount_sum',
-            'total'         => 'sum',
-            'sortable'      => false
-        ));
-
-        $this->addExportType('*/*/exportTaxCsv', Mage::helper('adminhtml')->__('CSV'));
-        $this->addExportType('*/*/exportTaxExcel', Mage::helper('adminhtml')->__('Excel XML'));
-
-        return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
+        return $this;
     }
 }

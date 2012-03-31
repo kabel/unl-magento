@@ -20,8 +20,8 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
         $dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
 
         $fieldset->getRenderer()->setTemplate('widget/grid/advanced/renderer/fieldset.phtml');
-        $fieldset->setFilterUrl($this->getUrl('unl/customer/applyfilter'));
-        $fieldset->setAdvFiltersUrl($this->getUrl('unl/customer/currentfilters'));
+        $fieldset->setFilterUrl($this->getUrl('*/customer_filter/apply'));
+        $fieldset->setAdvFiltersUrl($this->getUrl('*/customer_filter/current'));
         $fieldset->setGridJsObject('customerGridJsObject');
 
         $fieldset->addField('from_store', 'select', array(

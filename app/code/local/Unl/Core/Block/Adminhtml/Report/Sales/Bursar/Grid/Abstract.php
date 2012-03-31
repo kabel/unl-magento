@@ -24,7 +24,7 @@ abstract class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Abstract
     protected function _prepareExportTypes()
     {
         $this->addExportType($this->_getExportCsvUrl(), Mage::helper('reports')->__('CSV'));
-        $this->addExportType($this->_getExportExcelUrl(), Mage::helper('reports')->__('Excel'));
+        $this->addExportType($this->_getExportExcelUrl(), Mage::helper('reports')->__('Excel XML'));
 
         return $this;
     }

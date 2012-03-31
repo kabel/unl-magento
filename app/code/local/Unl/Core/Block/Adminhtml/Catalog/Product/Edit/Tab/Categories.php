@@ -32,8 +32,9 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Edit_Tab_Categories
         return $item;
     }
 
-    // THE FOLLOWING ARE DUPLICATED IN: Unl_Core_Block_Adminhtml_Catalog_Category_Tree
+    // BEGIN DUPLICATED IN: Unl_Core_Block_Adminhtml_Catalog_Category_Tree
     // Horizontal Inheritence
+
     protected function _getNodeJson2($node, $level = 0)
     {
         // create a node from data array
@@ -82,8 +83,7 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Edit_Tab_Categories
         return $item;
     }
 
-
-	/**
+    /**
      * Checks if the given node is a store root and in scope
      *
      * @param Varien_Data_Tree_Node $node
@@ -128,4 +128,6 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Edit_Tab_Categories
         }
         return $scope;
     }
+
+    // END DUPLICATION
 }

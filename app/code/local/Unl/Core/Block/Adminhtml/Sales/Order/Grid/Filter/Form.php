@@ -18,14 +18,14 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
         $fieldset = $form->addFieldset('base_fieldset', array('legend'=>Mage::helper('adminhtml')->__('Advanced Filters')));
 
         $fieldset->getRenderer()->setTemplate('widget/grid/advanced/renderer/fieldset.phtml');
-        $fieldset->setFilterUrl($this->getUrl('unl/sales_order/applyfilter'));
-        $fieldset->setAdvFiltersUrl($this->getUrl('unl/sales_order/currentfilters'));
+        $fieldset->setFilterUrl($this->getUrl('*/sales_order_filter/apply'));
+        $fieldset->setAdvFiltersUrl($this->getUrl('*/sales_order_filter/current'));
         $fieldset->setGridJsObject('sales_order_gridJsObject');
 
         $paymentOptions = Mage::helper('unl_core')->getActivePaymentMethodOptions();
         $fieldset->addField('payment_method', 'select', array(
-            'name'    => 'payment_method',
-            'options' => $paymentOptions,
+            'name'      => 'payment_method',
+            'options'   => $paymentOptions,
             'label'     => Mage::helper('adminhtml')->__('Payment Method'),
         ));
 
@@ -34,9 +34,35 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
             'label'     => Mage::helper('adminhtml')->__('Shipping Method'),
         ));
 
+        $fieldset->addField('can_ship', 'select', array(
+            'name'      => 'can_ship',
+            'options'   => array(
+                ''  => '',
+                '0' => Mage::helper('unl_core')->__('No'),
+                '1' => Mage::helper('unl_core')->__('Yes')
+            ),
+            'label'     => Mage::helper('unl_core')->__('Can Ship')
+        ));
+
         $fieldset->addField('item_sku', 'text', array(
             'name'      => 'item_sku',
             'label'     => Mage::helper('adminhtml')->__('Contains Item SKU'),
+        ));
+
+        $fieldset->addField('source_store', 'select', array(
+            'name'      => 'source_store',
+            'options'   => Mage::getModel('unl_core/store_source_filter')->getAllOptions(),
+            'label'     => Mage::helper('unl_core')->__('For Store')
+        ));
+
+        $fieldset->addField('has_tax', 'select', array(
+            'name'      => 'has_tax',
+            'options'   => array(
+                ''  => '',
+                '0' => Mage::helper('unl_core')->__('No'),
+                '1' => Mage::helper('unl_core')->__('Yes')
+            ),
+            'label'     => Mage::helper('unl_core')->__('Has Tax')
         ));
 
         $fieldset->addField('apply', 'button', array(

@@ -2,176 +2,139 @@
 
 class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sales_Order_Grid
 {
-    /* Overrides
-     * @see Mage_Adminhtml_Block_Sales_Order_Grid::_prepareCollection()
+    /* Extends
+     * @see Mage_Adminhtml_Block_Sales_Order_Grid::setCollection()
      * by adding extra cols and filters
      */
-    protected function _prepareCollection()
+    public function setCollection($collection)
     {
-        /* @var $collection Mage_Sales_Model_Mysql4_Order_Grid_Collection */
-        $collection = Mage::getResourceModel($this->_getCollectionClass());
-        $collection->getSelect()
-            ->join(array('o' => $collection->getTable('sales/order')),
-                'main_table.entity_id = o.entity_id',
-                array('external_id')
-            );
+        /* @var $collection Mage_Sales_Model_Resource_Order_Grid_Collection */
+        $helper = Mage::getResourceHelper('core');
+        $adapter = $collection->getConnection();
 
+        $collection
+            ->addFilterToMap('increment_id', 'main_table.increment_id')
+            ->addFilterToMap('created_at', 'main_table.increment_id')
+            ->addFilterToMap('billing_name', 'main_table.billing_name')
+            ->addFilterToMap('shipping_name', 'main_table.shipping_name')
+            ->addFilterToMap('base_grand_total', 'main_table.base_grand_total')
+            ->addFilterToMap('status', 'main_table.status')
+            ->addFilterToMap('external_id', 'o.external_id');
 
-        $select = Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true);
+        $collection->join(
+            array('o' => 'sales/order'),
+            'main_table.entity_id = o.entity_id',
+            array('external_id')
+        );
 
+        /* @var $advfilter Varien_Object */
         $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('order');
+
         if (!empty($advfilter) && $advfilter->hasData()) {
-            if ($advfilter->getData('shipping_method')) {
-                $collection->getSelect()->where('o.shipping_description LIKE ?', '%' . $advfilter->getData('shipping_method') . '%');
+            $storeIds = null;
+            if ($advfilter->getData('source_store')) {
+                $storeIds = $advfilter->getData('source_store');
             }
 
-            if ($advfilter->getData('item_sku')) {
+            $select = Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true, $storeIds);
+
+            if ($advfilter->getData('shipping_method')) {
+                $collection->addFieldToFilter('o.shipping_description',
+                    array('like' => $helper->addLikeEscape($advfilter->getData('shipping_method')))
+                );
+            }
+
+            if ($advfilter->getData('item_sku') ||
+                ($advfilter->hasData('can_ship') && $advfilter->getData('can_ship') !== '')
+            ) {
                 if (!$select) {
-                    $select = $this->_getOrderItemSelect();
-                    $collection->getSelect()
-                        ->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
+                    /* @var $select Varien_Db_Select */
+                    $select = Mage::getModel('sales/order_item')->getCollection()->getSelect()
+                        ->reset(Zend_Db_Select::COLUMNS)
+                        ->columns(array('order_id'))
+                        ->group('order_id');
+                    $collection->getSelect()->join(array('scope' => $select), 'main_table.entity_id = scope.order_id', array());
                 }
 
-                $select->where('sku LIKE ?', $advfilter->getData('item_sku') . '%');
+                if ($advfilter->getData('item_sku')) {
+                    $select->where($adapter->prepareSqlCondition('sku',
+                        array('like' => $helper->addLikeEscape($advfilter->getData('item_sku')))
+                    ));
+                }
+
+                if ($advfilter->hasData('can_ship') && $advfilter->getData('can_ship') !== '') {
+                    if ($advfilter->getData('can_ship')) {
+                        $collection->addFieldToFilter('o.state', array('nin' => array(
+                            Mage_Sales_Model_Order::STATE_CANCELED,
+                            Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW,
+                            Mage_Sales_Model_Order::STATE_HOLDED,
+                            Mage_Sales_Model_Order::STATE_CLOSED,
+                            Mage_Sales_Model_Order::STATE_COMPLETE,
+                        )));
+                        $collection->addFieldToFilter('is_virtual', false);
+
+                        $cond = '>';
+                    } else {
+                        $cond = '=';
+                    }
+
+                    $check = $adapter->getGreatestSql(array(
+                        'qty_ordered - qty_shipped - qty_refunded - qty_canceled',
+                        0
+                    ));
+                    $cond = sprintf('SUM(%s) %s 0', $adapter->getCheckSql('is_virtual', '0', $check), $cond);
+                    $select->having($cond);
+                }
             }
 
             if ($advfilter->getData('payment_method')) {
-                /* @var $payment Mage_Sales_Model_Mysql4_Order_Payment_Collection */
-                $payment = Mage::getModel('sales/order_payment')->getCollection();
-                $payment->addFieldToFilter('method', array('eq' => $advfilter->getData('payment_method')));
-                $payment->getSelect()
-                    ->reset(Zend_Db_Select::COLUMNS)
-                    ->columns(array('parent_id'))
-                    ->group('parent_id');
-
+                // we assume there is only one payment for an order!
                 $collection->getSelect()
-                    ->join(array('p' => $payment->getSelect()), 'main_table.entity_id = p.parent_id', array());
+                    ->join(
+                        array('p' => $collection->getTable('sales/order_payment')),
+                        'main_table.entity_id = p.parent_id',
+                        array()
+                    );
+
+                $collection->addFieldToFilter('p.method', $advfilter->getData('payment_method'));
             }
+
+            if ($advfilter->hasData('has_tax') && $advfilter->getData('has_tax') !== '') {
+                if ($advfilter->getData('has_tax')) {
+                    $cond = 'gt';
+                } else {
+                    $cond = 'eq';
+                }
+                $collection->addFieldToFilter('o.base_tax_amount', array($cond => 0));
+            }
+        }  else {
+            Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true);
         }
 
-        $this->setCollection($collection);
-
-        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+        return parent::setCollection($collection);
     }
 
-    /**
-     * Gets a sales/order_item select for joining with an order collection
-     *
-     * @return Zend_Db_Select
-     */
-    protected function _getOrderItemSelect()
-    {
-        $order_items = Mage::getModel('sales/order_item')->getCollection();
-        /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
-        $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array('order_id'))
-            ->group('order_id');
-
-        return $select;
-    }
-
-    /* Overrides
+    /* Extends
      * @see Mage_Adminhtml_Block_Sales_Order_Grid::_prepareColumns()
      * by changing displayed columns
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('real_order_id', array(
-            'header'=> Mage::helper('sales')->__('Order #'),
-            'width' => '80px',
-            'type'  => 'text',
-            'index' => 'increment_id',
-            'filter_index' => 'main_table.increment_id',
-        ));
-
-        $this->addColumn('external_id', array(
+        $this->addColumnAfter('external_id', array(
             'header' => Mage::helper('sales')->__('External #'),
             'width'  => '80px',
             'type'   => 'text',
             'index'  => 'external_id'
-        ));
+        ), 'real_order_id');
 
-        /*if (!Mage::app()->isSingleStoreMode()) {
-            $this->addColumn('store_id', array(
-                'header'    => Mage::helper('sales')->__('Purchased from (store)'),
-                'index'     => 'store_id',
-                'type'      => 'store',
-                'store_view'=> true,
-                'display_deleted' => true,
-            ));
-        }*/
+        parent::_prepareColumns();
 
-        $this->addColumn('created_at', array(
-            'header' => Mage::helper('sales')->__('Purchased On'),
-            'index' => 'created_at',
-            'filter_index' => 'main_table.created_at',
-            'type' => 'datetime',
-            'width' => '160px',
-        ));
+		$this->removeColumn('store_id');
+		$this->getColumn('status')->setWidth('110px');
+		$this->getColumn('created_at')->setWidth('160px');
+		$this->getColumn('base_grand_total')->setHeader(Mage::helper('sales')->__('G.T.'));
+        $this->removeColumn('grand_total');
 
-        $this->addColumn('billing_name', array(
-            'header' => Mage::helper('sales')->__('Bill to Name'),
-            'index' => 'billing_name',
-            'filter_index' => 'main_table.billing_name',
-        ));
-
-        $this->addColumn('shipping_name', array(
-            'header' => Mage::helper('sales')->__('Ship to Name'),
-            'index' => 'shipping_name',
-            'filter_index' => 'main_table.shipping_name',
-        ));
-
-        $this->addColumn('base_grand_total', array(
-            'header' => Mage::helper('sales')->__('G.T. (Base)'),
-            'index' => 'base_grand_total',
-            'filter_index' => 'main_table.base_grand_total',
-            'type'  => 'currency',
-            'currency' => 'base_currency_code',
-        ));
-
-        /* THIS IS POINTLESS BECAUSE WE ONLY SUPPORT USD
-        $this->addColumn('grand_total', array(
-            'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
-            'index' => 'grand_total',
-            'type'  => 'currency',
-            'currency' => 'order_currency_code',
-        ));
-        */
-
-        $this->addColumn('status', array(
-            'header' => Mage::helper('sales')->__('Status'),
-            'index' => 'status',
-            'filter_index' => 'main_table.status',
-            'type'  => 'options',
-            'width' => '110px',
-            'options' => Mage::getSingleton('sales/order_config')->getStatuses(),
-        ));
-
-        if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/view')) {
-            $this->addColumn('action',
-                array(
-                    'header'    => Mage::helper('sales')->__('Action'),
-                    'width'     => '50px',
-                    'type'      => 'action',
-                    'getter'     => 'getId',
-                    'actions'   => array(
-                        array(
-                            'caption' => Mage::helper('sales')->__('View'),
-                            'url'     => array('base'=>'*/*/view'),
-                            'field'   => 'order_id'
-                        )
-                    ),
-                    'filter'    => false,
-                    'sortable'  => false,
-                    'index'     => 'stores',
-                    'is_system' => true,
-            ));
-        }
-        $this->addRssList('rss/order/new', Mage::helper('sales')->__('New Order RSS'));
-
-        $this->addExportType('*/*/exportCsv', Mage::helper('sales')->__('CSV'));
-        $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));
-
-        return Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
+        return $this;
     }
 }

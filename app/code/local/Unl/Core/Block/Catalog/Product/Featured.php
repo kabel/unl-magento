@@ -2,48 +2,71 @@
 
 class Unl_Core_Block_Catalog_Product_Featured extends Mage_Catalog_Block_Product_Abstract
 {
-     public function _construct()
+     protected function _construct()
      {
          parent::_construct();
+
+         if (!$this->getTemplate()) {
+             $this->setTemplate('catalog/product/featured.phtml');
+         }
+
          $this->_addPriceBlockTypes()
              ->_initCollection();
+     }
+
+     public function useSmallTemplate()
+     {
+         $this->setTemplate('catalog/product/featured2.phtml');
+
+         return $this;
      }
 
      protected function _initCollection()
      {
          $storeId = Mage::app()->getStore()->getId();
-         $product = Mage::getModel('catalog/product');
-         $stock   = Mage::getModel('cataloginventory/stock_item');
+         $now = Mage::getSingleton('core/date')->date();
 
-         /* @var $products Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
-         $products = $product->getCollection()
+         $collection = $this->_getProductCollection()
              ->setStoreId($storeId)
-             ->addAttributeToSelect('*')
-             ->addAttributeToSelect(array('featured_from', 'featured_to'), 'left')
-             ->addAttributeToFilter('enable_featured', true)
              ->addAttributeToFilter('source_store_view', $storeId)
-             ->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
-             ->addAttributeToFilter('visibility', array(Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG, Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH));
-         $stock->addCatalogInventoryToProductCollection($products);
-         $products->getSelect()->where('(IF(IF(use_config_manage_stock, 1, manage_stock), is_in_stock, 1)) = ?', true);
-         $products->getSelect()->where('NOW() BETWEEN _table_featured_from.value AND _table_featured_to.value');
+             ->addAttributeToFilter('featured_from', array('lteq' => $now))
+             ->addAttributeToFilter('featured_to', array('gteq' => $now));
 
-         $pool = $products->getItems();
-         if (!count($pool)) {
-             $products = $product->getCollection()
+         if (!count($collection->getItems())) {
+             $collection = $this->_getProductCollection()
                  ->setStoreId($storeId)
-                 ->addAttributeToSelect('*')
-                 ->addAttributeToFilter('enable_featured', true)
-                 ->addAttributeToFilter('source_store_view', $storeId)
-                 ->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
-                 ->addAttributeToFilter('visibility', array(Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG, Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH));
-             $stock->addCatalogInventoryToProductCollection($products);
-             $products->getSelect()->where('(IF(IF(use_config_manage_stock, 1, manage_stock), is_in_stock, 1)) = ?', true);
+                 ->addAttributeToFilter('source_store_view', $storeId);
          }
 
-         $this->setProductCollection($products);
+         $this->setProductCollection($collection);
 
          return $this;
+     }
+
+     /**
+      * Gets the default featured product collection
+      *
+      * @return Mage_Catalog_Model_Resource_Product_Collection
+      */
+     protected function _getProductCollection()
+     {
+         $stock = Mage::getModel('cataloginventory/stock_item');
+
+         /* @var $collection Mage_Catalog_Model_Resource_Product_Collection */
+         $collection = Mage::getModel('catalog/product')->getCollection()
+             ->addAttributeToSelect('*')
+             ->addAttributeToFilter('enable_featured', true)
+             ->addAttributeToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
+             ->setVisibility(Mage::getSingleton('catalog/product_visibility')->getVisibleInCatalogIds());
+
+         $stock->addCatalogInventoryToProductCollection($collection);
+         $collection->addFieldToFilter('is_saleable', true);
+
+         $collection->getSelect()->orderRand('e.entity_id');
+
+         $collection->setPageSize(4);
+
+         return $collection;
      }
 
      protected function _addPriceBlockTypes()

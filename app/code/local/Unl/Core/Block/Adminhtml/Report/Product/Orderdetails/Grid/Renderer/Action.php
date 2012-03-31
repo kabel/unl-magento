@@ -8,16 +8,14 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid_Renderer_Action
     {
         $actions = array();
 
+        $orderId = $this->getColumn()->getOrderIndex() ? $this->getColumn()->getOrderIndex() : 'order_id';
+
         $actions[] = array(
             '@'	=>  array(
-                'href'  => $this->getUrl('adminhtml/sales_order/view',
-                    array(
-                        'order_id'        => $row->getOrderId(),
-                    )
-                                ),
+                'href'  => $this->getUrl('adminhtml/sales_order/view', array('order_id' => $row->getData($orderId))),
                 'onclick'=>	'window.open(this.href);return false;'
             ),
-            '#'	=> $row->getOrdernum()
+            '#'	=> $this->_getValue($row)
         );
 
         return $this->_actionsToHtml($actions);
@@ -25,7 +23,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid_Renderer_Action
 
     public function renderExport(Varien_Object $row)
     {
-        return $row->getData($this->getColumn()->getIndex());
+        return $this->_getValue($row);
     }
 
     protected function _actionsToHtml(array $actions)

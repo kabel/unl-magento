@@ -4,18 +4,23 @@ class Unl_Core_Block_Adminhtml_Dashboard_Totals extends Mage_Adminhtml_Block_Das
 {
     /* Overrides
      * @see Mage_Adminhtml_Block_Dashboard_Totals::_prepareLayout()
-     * to use customer collection method and scoped results
+     * by init'ing the colleciton in order and hiding shipping for filter
      */
     protected function _prepareLayout()
     {
+        if (!Mage::helper('core')->isModuleEnabled('Mage_Reports')) {
+            return $this;
+        }
         $isFilter = $this->getRequest()->getParam('store') || $this->getRequest()->getParam('website') || $this->getRequest()->getParam('group');
-        $websiteScope = ($this->getRequest()->getParam('website') !== null);
         $period = $this->getRequest()->getParam('period', '24h');
 
+        /* @var $collection Mage_Reports_Model_Resource_Order_Collection */
         $collection = Mage::getResourceModel('reports/order_collection')
+            ->checkIsLive($period)
+            ->calculateTotals($isFilter)
             ->addCreateAtPeriodFilter($period);
 
-        $storeIds = array();
+        $storeIds = null;
         if ($this->getRequest()->getParam('store')) {
             $storeIds = array($this->getRequest()->getParam('store'));
         } else if ($this->getRequest()->getParam('website')){
@@ -24,7 +29,15 @@ class Unl_Core_Block_Adminhtml_Dashboard_Totals extends Mage_Adminhtml_Block_Das
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
         }
 
-        $collection->calculateTotals($isFilter, $websiteScope, $storeIds);
+        $storeIds = Mage::helper('unl_core')->getScopeFilteredStores($storeIds);
+
+        if (empty($storeIds) && !$collection->isLive()) {
+            $collection->addFieldToFilter('store_id',
+                array('eq' => Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId())
+            );
+        } else if (!empty($storeIds)) {
+            $collection->addFieldToFilter('store_id', array('in' => $storeIds));
+        }
 
         $collection->load();
 
@@ -32,7 +45,7 @@ class Unl_Core_Block_Adminhtml_Dashboard_Totals extends Mage_Adminhtml_Block_Das
 
         $this->addTotal($this->__('Revenue'), $totals->getRevenue());
         $this->addTotal($this->__('Tax'), $totals->getTax());
-        if (!$isFilter || $this->getRequest()->getParam('website')) {
+        if (empty($storeIds)) {
             $this->addTotal($this->__('Shipping'), $totals->getShipping());
         }
         $this->addTotal($this->__('Quantity'), $totals->getQuantity()*1, true);

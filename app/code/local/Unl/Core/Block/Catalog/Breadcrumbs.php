@@ -18,7 +18,7 @@ class Unl_Core_Block_Catalog_Breadcrumbs extends Mage_Catalog_Block_Breadcrumbs
             }
 
             if ($headBlock = $this->getLayout()->getBlock('head')) {
-                $headBlock->setTitle(join($this->getTitleSeparator(), $title));
+                $headBlock->setTitle(join($this->getTitleSeparator(), array_reverse($title)));
             }
         }
         return $this;

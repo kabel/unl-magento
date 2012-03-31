@@ -2,16 +2,13 @@
 
 class Unl_Core_Block_Adminhtml_Cms_Page_Grid extends Mage_Adminhtml_Block_Cms_Page_Grid
 {
-    /* Overrides
-     * @see Mage_Adminhtml_Block_Cms_Page_Grid::_prepareCollection()
-     * by adding scope filter
+    /**
+     * Extends parent by adding scope filters
+     *
+     * @param $collection Mage_Cms_Model_Resource_Page_Collection
      */
-    protected function _prepareCollection()
+    public function setCollection($collection)
     {
-        $collection = Mage::getModel('cms/page')->getCollection();
-        /* @var $collection Mage_Cms_Model_Mysql4_Page_Collection */
-        $collection->setFirstStoreFlag(true);
-
         if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
             $connection = $collection->getConnection();
             $where = array(array('null' => true));
@@ -22,8 +19,6 @@ class Unl_Core_Block_Adminhtml_Cms_Page_Grid extends Mage_Adminhtml_Block_Cms_Pa
             $collection->addFieldToFilter('permissions', $where);
         }
 
-        $this->setCollection($collection);
-
-        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+        return parent::setCollection($collection);
     }
 }

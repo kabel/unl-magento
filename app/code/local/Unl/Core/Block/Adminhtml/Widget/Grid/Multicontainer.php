@@ -8,7 +8,7 @@ class Unl_Core_Block_Adminhtml_Widget_Grid_Multicontainer extends Mage_Adminhtml
     {
         parent::__construct();
 
-        $this->setTemplate('report/grid/multicontainer.phtml');
+        $this->setTemplate('report/grid/container.phtml');
     }
 
     protected function _prepareLayout()
@@ -45,12 +45,13 @@ class Unl_Core_Block_Adminhtml_Widget_Grid_Multicontainer extends Mage_Adminhtml
     protected function _addGridChildBlock($childId, $blockType)
     {
         $block = $this->getLayout()->createBlock($blockType);
+        $block->setInnerTemplate($block->getTemplate());
         $block->setTemplate('widget/grid/multigrid.phtml');
         $this->setChild($childId, $block);
         return $block;
     }
 
-    public function getGridsHtml()
+    public function getGridHtml()
     {
         $out = '';
 

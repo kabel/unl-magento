@@ -10,12 +10,6 @@ class Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency
     public function renderExport(Varien_Object $row)
     {
         if ($data = $row->getData($this->getColumn()->getIndex())) {
-            $currency_code = $this->_getCurrencyCode($row);
-
-            if (!$currency_code) {
-                return $data;
-            }
-
             $data = floatval($data) * $this->_getRate($row);
             $data = sprintf("%f", $data);
             return $data;
