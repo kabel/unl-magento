@@ -2,19 +2,19 @@
 <config>
     <modules>
         <Unl_CustomerTag>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Unl_CustomerTag>
     </modules>
     
     <admin>
     	<routers>
-    		<unl_customertag>
-    			<use>admin</use>
+    		<adminhtml>
     			<args>
-    				<module>Unl_CustomerTag</module>
-    				<frontName>unlcusttag</frontName>
+                    <modules>
+                        <Unl_CustomerTag before="Mage_Adminhtml">Unl_CustomerTag</Unl_CustomerTag>
+                    </modules>
     			</args>
-    		</unl_customertag>
+    		</adminhtml>
     	</routers>
     </admin>
     
@@ -34,13 +34,10 @@
         <models>
         	<unl_customertag>
                 <class>Unl_CustomerTag_Model</class>
-                <resourceModel>unl_customertag_mysql4</resourceModel>
+                <resourceModel>unl_customertag_resource</resourceModel>
             </unl_customertag>
-            <unl_customertag_entity_customer>
-                <class>Unl_CustomerTag_Model_Entity_Customer</class>
-            </unl_customertag_entity_customer>
-            <unl_customertag_mysql4>
-                <class>Unl_CustomerTag_Model_Mysql4</class>
+            <unl_customertag_resource>
+                <class>Unl_CustomerTag_Model_Resource</class>
                 <entities>
                     <tag>
                         <table>customer_tag</table>
@@ -55,14 +52,14 @@
                         <table>customer_tag_category_link</table>
                     </category_link>
                 </entities>
-            </unl_customertag_mysql4>
+            </unl_customertag_resource>
         </models>
         
         <resources>
         	<unl_customertag_setup>
         		<setup>
 	               <module>Unl_CustomerTag</module>
-	               <class>Mage_Core_Model_Resource_Setup</class>
+	               <class>Unl_CustomerTag_Model_Resource_Setup</class>
 	            </setup>
         	</unl_customertag_setup>
         </resources>
@@ -83,7 +80,6 @@
             <core_copy_fieldset_customer_account_to_quote>
                 <observers>
                     <attach_customer_tags>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>onQuoteCopyCustomerFieldset</method>
                     </attach_customer_tags>
@@ -93,7 +89,6 @@
             <unl_product_acl_check>
                 <observers>
                     <tag_acl_check>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>isCustomerAllowedProduct</method>
                     </tag_acl_check>
@@ -103,7 +98,6 @@
             <unl_category_acl_check>
                 <observers>
                     <tag_acl_check>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>isCustomerAllowedCategory</method>
                     </tag_acl_check>
@@ -113,7 +107,6 @@
             <payment_method_is_active>
                 <observers>
                     <unlcusttag_is_payment_active>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>isPaymentMethodActive</method>
                     </unlcusttag_is_payment_active>
@@ -127,7 +120,6 @@
             <adminhtml_catalog_category_tabs>
                 <observers>
                     <access_tab_append>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>prepareCategoryTabs</method>
                     </access_tab_append>
@@ -137,16 +129,15 @@
             <catalog_category_prepare_save>
                 <observers>
                     <save_customertags>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>onCategoryPrepareSave</method>
                     </save_customertags>
                 </observers>
             </catalog_category_prepare_save>
+            
             <catalog_category_save_after>
                 <observers>
                     <save_customertags>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>onAfterCategorySave</method>
                     </save_customertags>
@@ -156,31 +147,36 @@
             <catalog_product_prepare_save>
                 <observers>
                     <save_customertags>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>onProductPrepareSave</method>
                     </save_customertags>
                 </observers>
             </catalog_product_prepare_save>
+            
             <catalog_product_save_after>
                 <observers>
                     <save_customertags>
-                        <type>singleton</type>
                         <class>unl_customertag/observer</class>
                         <method>onAfterProductSave</method>
                     </save_customertags>
                 </observers>
             </catalog_product_save_after>
-        
-            <core_block_abstract_to_html_before>
-                <observers>
-                    <customertag_correct_admin>
-                        <type>singleton</type>
-                        <class>unl_customertag/observer</class>
-                        <method>onBlockBeforeToHtml</method>
-                    </customertag_correct_admin>
-                </observers>
-            </core_block_abstract_to_html_before>
         </events>
+        
+        <layout>
+            <updates>
+                <unl_customertag module="Unl_CustomerTag">
+                    <file>unl_customertag.xml</file>
+                </unl_customertag>
+            </updates>
+        </layout>
+        
+        <unl_adminlog>
+            <log_events>
+                <adminhtml_customertag_index translate="label">
+                    <label>Customer Tags</label>
+                </adminhtml_customertag_index>
+            </log_events>
+        </unl_adminlog>
     </adminhtml>
 </config>

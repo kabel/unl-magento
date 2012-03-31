@@ -5,7 +5,7 @@
             <children>
                 <tag translate="title" module="unl_customertag">
                     <title>Customer Tags</title>
-                    <action>unlcusttag/</action>
+                    <action>adminhtml/customerTag/</action>
                     <sort_order>15</sort_order>
                 </tag>
             </children>
