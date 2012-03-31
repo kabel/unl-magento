@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Comm_QueueController extends Mage_Adminhtml_Controller_Action
+class Unl_Comm_Customer_QueueController extends Mage_Adminhtml_Controller_Action
 {
     /**
      * Queue list action
