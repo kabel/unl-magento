@@ -143,9 +143,6 @@
             <active>false</active>
         </Mage_XmlConnect>
         
-        <Find_Feed>
-            <active>false</active>
-        </Find_Feed>
         <Phoenix_Moneybookers>
             <active>false</active>
         </Phoenix_Moneybookers>
