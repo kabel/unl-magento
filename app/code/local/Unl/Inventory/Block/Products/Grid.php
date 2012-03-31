@@ -15,59 +15,20 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
 
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
-        $collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToSelect('sku')
-            ->addAttributeToSelect('name')
+        /* @var $collection Unl_Inventory_Model_Resource_Products_Collection */
+        $collection = Mage::getResourceModel('unl_inventory/products_collection')
             ->addAttributeToSelect('type_id')
             ->addAttributeToSelect('source_store_view')
-            ->joinField('qty',
-                'cataloginventory/stock_item',
-                'qty',
-                'product_id=entity_id',
-                '{{table}}.stock_id=1',
-                'left');
+            ->addAttributeToSelect('cost')
+            ->addAttributeToSelect('status');
 
-        $collection->addAttributeToSelect('cost');
-        $collection->addAttributeToSelect('price');
-        $collection->addAttributeToSelect('status');
+        Mage::helper('unl_core')->addProductAdminScopeFilters($collection);
 
-        $user = Mage::getSingleton('admin/session')->getUser();
-        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
-            $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
-            if ($whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope()) {
-                $collection->addAttributeToFilter('warehouse', array('in' => $whScope));
-            }
-        }
-
-        $collection->joinAttribute('audit_inventory', 'catalog_product/audit_inventory', 'entity_id');
-
-        /* @var $auditSelect Varien_Db_Select */
-        $auditSelect = Mage::getModel('unl_inventory/audit')->getCollection()->selectProducts()->getSelect();
-
-        /* @var $indexSelect Varien_Db_Select */
-        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectQtyOnHand()->getSelect();
-
-        $auditCondition = $this->_getSqlAuditCondition();
-        $collection->getSelect()
-            ->joinLeft(array('ia' => $auditSelect), 'ia.product_id=e.entity_id', array())
-            ->where("(ia.product_id IS NOT NULL OR {$auditCondition})")
-            ->joinLeft(array('ii' => $indexSelect), 'ii.product_id=e.entity_id', array());
-
-        $collection->addExpressionAttributeToSelect('qty_on_hand', "IF({$auditCondition}, IFNULL(ii.qty, 0), _table_qty.qty)", array());
-        $collection->addExpressionAttributeToSelect('audit_active', "IF({$auditCondition}, 1, 2)", array());
+        $collection->joinAuditAndIndex();
 
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
-    }
-
-    protected function _getSqlAuditCondition()
-    {
-        $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
-        $auditCondition = "IF(_table_qty.use_config_manage_stock, {$configStock}, _table_qty.manage_stock) && _table_audit_inventory.value";
-
-        return $auditCondition;
     }
 
     protected function _prepareColumns()

@@ -10,6 +10,8 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
     {
         parent::__construct();
         $this->setId('valuationReportGrid');
+        $this->setSaveParametersInSession(true);
+        $this->setUseAjax(true);
         $this->setDefaultSort('entity_id');
         $this->setDefaultDir('desc');
     }
@@ -21,48 +23,23 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
      */
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
-        $collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToSelect('sku')
-            ->addAttributeToSelect('name')
-            ->addAttributeToSelect('price')
-            ->joinField('qty_order',
-                'cataloginventory/stock_item',
-                'qty',
-                'product_id=entity_id',
-                '{{table}}.stock_id=1',
-                'left');
+        /* @var $collection Unl_Inventory_Model_Resource_Products_Collection */
+        $collection = Mage::getResourceModel('unl_inventory/products_collection');
 
-        $collection->joinAttribute('audit_inventory', 'catalog_product/audit_inventory', 'entity_id');
-
+        $storeIds = null;
         if ($this->getRequest()->getParam('store')) {
-            $collection->addAttributeToFilter('source_store_view', $this->getRequest()->getParam('store'));
+            $storeIds = array($this->getRequest()->getParam('store'));
         }
 
-        /* @var $indexSelect Varien_Db_Select */
-        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectValuation()->getSelect();
-        $collection->joinTable(array('iv' => $indexSelect),
-        	'product_id=entity_id',
-            array('qty' => 'qty', 'value' => 'value', 'avg_cost' => 'avg_cost'), null, 'left'
-        );
+        Mage::helper('unl_core')->addProductAdminScopeFilters($collection, $storeIds);
 
-        $collection->addExpressionAttributeToSelect('audit_active',
-            $this->_getSqlAuditCondition(),
-            array()
-        );
-        $collection->addFieldToFilter('audit_active', true);
+        $collection->joinValuation();
+
+        $collection->addFieldToFilter('audit_active', 1);
 
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
-    }
-
-    protected function _getSqlAuditCondition()
-    {
-        $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
-        $auditCondition = "IF(_table_qty_order.use_config_manage_stock, {$configStock}, _table_qty_order.manage_stock) && _table_audit_inventory.value";
-
-        return $auditCondition;
     }
 
     /**

@@ -1,34 +1,12 @@
 <?php
 
-class Unl_Inventory_Block_Products extends Mage_Adminhtml_Block_Widget_Container
+class Unl_Inventory_Block_Products extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-	/**
-     * Set template
-     */
     public function __construct()
     {
+        $this->_blockGroup = 'unl_inventory';
+        $this->_controller = 'products';
+        $this->_headerText = Mage::helper('unl_inventory')->__('Manage Product Inventory');
         parent::__construct();
-        $this->setTemplate('unl/inventory/products.phtml');
-    }
-
-    /**
-     * Prepare button and grid
-     *
-     * @return Mage_Adminhtml_Block_Catalog_Product
-     */
-    protected function _prepareLayout()
-    {
-        $this->setChild('grid', $this->getLayout()->createBlock('unl_inventory/products_grid', 'product.grid'));
-        return parent::_prepareLayout();
-    }
-
-    /**
-     * Render grid
-     *
-     * @return string
-     */
-    public function getGridHtml()
-    {
-        return $this->getChildHtml('grid');
     }
 }
