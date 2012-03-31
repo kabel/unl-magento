@@ -188,7 +188,7 @@ Checkout.prototype = {
         }
         return false;
     }
-}
+};
 
 // billing
 var Billing = Class.create();
@@ -227,7 +227,7 @@ Billing.prototype = {
     },
 
     resetSelectedAddress: function(){
-        var selectElement = $('billing-address-select')
+        var selectElement = $('billing-address-select');
         if (selectElement) {
             selectElement.value='';
         }
@@ -325,7 +325,7 @@ Billing.prototype = {
         // This moves the accordion panels of one page checkout and updates the checkout progress
         //checkout.setBilling();
     }
-}
+};
 
 // shipping
 var Shipping = Class.create();
@@ -366,7 +366,7 @@ Shipping.prototype = {
     },
 
     resetSelectedAddress: function(){
-        var selectElement = $('shipping-address-select')
+        var selectElement = $('shipping-address-select');
         if (selectElement) {
             selectElement.value='';
         }
@@ -488,7 +488,7 @@ Shipping.prototype = {
         */
         //checkout.setShipping();
     }
-}
+};
 
 // shipping method
 var ShippingMethod = Class.create();
@@ -579,7 +579,7 @@ ShippingMethod.prototype = {
 
         checkout.setShippingMethod();
     }
-}
+};
 
 
 // payment
@@ -784,7 +784,7 @@ Payment.prototype = {
             Event.observe(element, 'click', toggleToolTip);
         });
     }
-}
+};
 
 var Review = Class.create();
 Review.prototype = {
@@ -858,4 +858,4 @@ Review.prototype = {
     },
 
     isSuccess: false
-}
+};

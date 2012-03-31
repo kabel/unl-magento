@@ -4,7 +4,6 @@ var HoverMenu = function(ele, timeout) {
 	}
 	this.element = ele;
 	var menu = WDN.jQuery('.hover-menu', ele);
-	menu.css('left', ele.position().left - 1);
 	
 	if (this.element) {
 		var self = this; //closure
@@ -17,7 +16,7 @@ var HoverMenu = function(ele, timeout) {
 			}
 		);
 	}
-}
+};
 
 HoverMenu.prototype.element = null;
 HoverMenu.prototype.timeout = 500;
@@ -57,8 +56,8 @@ HoverMenu.prototype.hide = function()
 	this.element.removeClass('over');
 };
 
-WDN.jQuery(function() {
-	WDN.jQuery('.hover-menu').parent().each(function() {
+WDN.loadJQuery(function() {
+	WDN.jQuery('.block-cart, .block-wishlist').addClass('hover-menu').parent().each(function() {
 		var ele = WDN.jQuery(this);
 		ele.addClass('menu');
 		var temp = new HoverMenu(ele, 200);

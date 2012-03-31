@@ -3,3 +3,6 @@
 .toolbar,
 .actions,
 .buttons-set { display:none !important; }
+
+.product-collateral h2,
+.print-only { display:block !important; }
