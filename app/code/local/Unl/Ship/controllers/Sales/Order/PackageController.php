@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Ship_IndexController extends Mage_Adminhtml_Controller_Action
+class Unl_Ship_Sales_Order_PackageController extends Mage_Adminhtml_Controller_Action
 {
     protected function _initOrder()
     {
