@@ -29,9 +29,7 @@ class Unl_Notify_Model_Observer
 
     public function sendNotifications()
     {
-        //TODO: Write the cron method to grab a collection of orders/products and send notifications
-
-        /* @var $queueCollection Unl_Notify_Model_Mysql4_Queue_Collection */
+        /* @var $queueCollection Unl_Notify_Model_Resource_Queue_Collection */
         $queueCollection = Mage::getModel('unl_notify/queue')->getResourceCollection();
         $queueCollection->setPageSize(Mage::getStoreConfig(self::XML_PATH_ORDER_NOTIFY_COUNT));
 
@@ -45,7 +43,7 @@ class Unl_Notify_Model_Observer
             return $this;
         }
 
-        /* @var $orderItems Mage_Sales_Model_Mysql4_Order_Item_Collection */
+        /* @var $orderItems Mage_Sales_Model_Resource_Order_Item_Collection */
         $orderItems = Mage::getModel('sales/order_item')->getResourceCollection();
         $orderItems->addFieldToFilter('order_id', array('in' => $orderIds));
 
@@ -56,7 +54,7 @@ class Unl_Notify_Model_Observer
             }
         }
 
-        /* @var $products Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection */
+        /* @var $products Mage_Catalog_Model_Resource_Product_Collection */
         $products = Mage::getModel('catalog/product')->getResourceCollection();
         $products->addAttributeToFilter('notify_emails', array('neq' => ''))
             ->addAttributeToFilter('entity_id', array('in' => $productIds));
