@@ -9,7 +9,6 @@ class Unl_CustomerTag_Model_Tag extends Mage_Core_Model_Abstract
      */
     protected $_eventPrefix = 'customertag';
 
-
     protected function _construct()
 	{
 		$this->_init('unl_customertag/tag');

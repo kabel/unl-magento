@@ -7,75 +7,70 @@ class Unl_CustomerTag_Model_Observer
     protected $_invoiceCustomerTags = array(
         'Allow Invoicing',
     );
+
     protected $_invoiceTagsCollection;
 
-    public function onBlockBeforeToHtml($observer)
+    /**
+     * Returns the singleton instance of this module's helper
+     *
+     * @return Unl_CustomerTag_Helper_Data
+     */
+    protected function _getHelper()
     {
-        $block = $observer->getEvent()->getBlock();
-        //Do Actions Based on Block Type
-
-        if ($block instanceof Mage_Adminhtml_Block_Customer_Edit_Tabs) {
-            if (Mage::registry('current_customer')->getId()) {
-                $block->addTab('customertag', array(
-                    'label'     => Mage::helper('unl_customertag')->__('Customer Tags'),
-                    'class'     => 'ajax',
-                    'url'       => $block->getUrl('unl_customertag/customer/grid', array('_current'=>true)),
-                    'after'     => 'account'
-                ));
-            }
-            return;
-        }
-
-        if ($block instanceof Mage_Adminhtml_Block_Catalog_Product_Edit_Tabs
-            && !($block instanceof Mage_Adminhtml_Block_Catalog_Product_Edit_Tabs_Configurable)) {
-            if (!($setId = $block->getProduct()->getAttributeSetId())) {
-                $setId = Mage::app()->getRequest()->getParam('set', null);
-            }
-            if ($setId) {
-                $block->addTab('customertag', array(
-                    'label'     => Mage::helper('unl_customertag')->__('Access Tags'),
-                    'class'     => 'ajax',
-                    'url'       => $block->getUrl('unl_customertag/product/grid', array('_current'=>true)),
-                    'after'     => 'inventory'
-                ));
-            }
-            return;
-        }
-
-        if ($block instanceof Mage_Adminhtml_Block_Catalog_Category_Edit_Form) {
-            $block->setChild('category.access.serializer',
-                $block->getLayout()->createBlock('adminhtml/widget_grid_serializer', 'category.access.serializer')
-            );
-            $block->getLayout()->getBlock('category.access.serializer')
-                ->initSerializerBlock('category.access.grid', 'getSelectedTags', 'access_tags', 'category_access');
-            return;
-        }
+        return Mage::helper('unl_customertag');
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>adminhtml_catalog_category_tabs</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function prepareCategoryTabs($observer)
     {
         /* @var $tabs Mage_Adminhtml_Block_Catalog_Category_Tabs */
         $tabs = $observer->getEvent()->getTabs();
+
+        $parent = $tabs->getLayout()->createBlock('adminhtml/text_list');
+        $accessTab = $tabs->getLayout()->createBlock('unl_customertag/category_tab_access');
+        $parent->append($accessTab);
+        $accessTab->appendSerializer();
+
         $tabs->addTab('access', array(
-            'label'     => Mage::helper('unl_customertag')->__('Access Tags'),
-            'content'   => $tabs->getLayout()->createBlock('unl_customertag/category_tab_access', 'category.access.grid')->toHtml(),
+            'label'     => $this->_getHelper()->__('Access Tags'),
+            'content'   => $parent->toHtml(),
         ));
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>catalog_category_prepare_save</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function onCategoryPrepareSave($observer)
     {
         /* @var $category Mage_Catalog_Model_Category */
         $category = $observer->getEvent()->getCategory();
         /* @var $request Mage_Core_Controller_Request_Http */
         $request = $observer->getEvent()->getRequest();
+        $ids = $request->getPost($this->_getHelper()->getAccessStorageName());
 
-        if ($request->getPost('access_tags') !== null) {
-            $category->setAccessTagIds(Mage::helper('adminhtml/js')->decodeGridSerializedInput($request->getPost('access_tags')));
+        if ($ids !== null) {
+            $category->setAccessTagIds(Mage::helper('adminhtml/js')->decodeGridSerializedInput($ids));
         }
 
         return $this;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>catalog_category_save_after</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function onAfterCategorySave($observer)
     {
         /* @var $category Mage_Catalog_Model_Category */
@@ -88,20 +83,35 @@ class Unl_CustomerTag_Model_Observer
         return $this;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>catalog_product_prepare_save</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function onProductPrepareSave($observer)
     {
         /* @var $product Mage_Catalog_Model_Product */
         $product = $observer->getEvent()->getProduct();
         /* @var $request Mage_Core_Controller_Request_Http */
         $request = $observer->getEvent()->getRequest();
+        $ids = $request->getPost($this->_getHelper()->getCategoryAccessStorageName());
 
-        if ($request->getPost('access_tags') !== null) {
-            $product->setAccessTagIds(Mage::helper('adminhtml/js')->decodeGridSerializedInput($request->getPost('access_tags')));
+        if ($ids !== null) {
+            $product->setAccessTagIds(Mage::helper('adminhtml/js')->decodeGridSerializedInput($ids));
         }
 
         return $this;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>catalog_product_save_after</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function onAfterProductSave($observer)
     {
         /* @var $product Mage_Catalog_Model_Product */
@@ -114,6 +124,14 @@ class Unl_CustomerTag_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>core_copy_fieldset_customer_account_to_quote</code>
+     * event.
+     * Sets the customer_tag_ids from a collection.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function onQuoteCopyCustomerFieldset($observer)
     {
         $customer = $observer->getEvent()->getSource();
@@ -127,12 +145,19 @@ class Unl_CustomerTag_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the custom <code>unl_product_acl_check</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function isCustomerAllowedProduct($observer)
     {
         $result = $observer->getEvent()->getResult();
         $product = $observer->getEvent()->getProduct();
 
-        /* @var $collection Unl_CustomerTag_Model_Mysql4_Tag_Collection */
+        /* @var $collection Unl_CustomerTag_Model_Resource_Tag_Collection */
         $collection = Mage::getResourceModel('unl_customertag/tag_collection')->addProductFilter($product->getId());
         $acl = $collection->getAllIds();
         $session = Mage::getSingleton('customer/session');
@@ -158,12 +183,19 @@ class Unl_CustomerTag_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the custom <code>unl_category_acl_check</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function isCustomerAllowedCategory($observer)
     {
         $result = $observer->getEvent()->getResult();
         $category = $observer->getEvent()->getCategory();
 
-        /* @var $collection Unl_CustomerTag_Model_Mysql4_Tag_Collection */
+        /* @var $collection Unl_CustomerTag_Model_Resource_Tag_Collection */
         $collection = Mage::getResourceModel('unl_customertag/tag_collection')->addCategoryFilter($category->getId());
         $acl = $collection->getAllIds();
         $session = Mage::getSingleton('customer/session');
@@ -189,6 +221,12 @@ class Unl_CustomerTag_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>payment_method_is_active</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
     public function isPaymentMethodActive($observer)
     {
         $method = $observer->getEvent()->getMethodInstance();
@@ -218,12 +256,12 @@ class Unl_CustomerTag_Model_Observer
     /**
      * Retieves a collection of the special customer tags
      *
-     * @return Unl_CustomerTag_Model_Mysql4_Tag_Collection
+     * @return Unl_CustomerTag_Model_Resource_Tag_Collection
      */
     protected function _getInvoiceCustomerTagsCollection()
     {
         if (null === $this->_invoiceTagsCollection) {
-            /* @var $collection Unl_CustomerTag_Model_Mysql4_Tag_Collection */
+            /* @var $collection Unl_CustomerTag_Model_Resource_Tag_Collection */
             $collection = Mage::getModel('unl_customertag/tag')->getCollection();
             $collection->addFieldToFilter('name', array('in' => $this->_invoiceCustomerTags));
             $this->_invoiceTagsCollection = $collection;
