@@ -77,6 +77,15 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         }
     }
 
+    public function ignoreLinkAction()
+    {
+        if (!$this->getRequest()->isPost() || !$this->_getSession()->isLoggedIn()) {
+            return;
+        }
+
+        $this->_getSession()->setIgnoreCasLink(true);
+    }
+
     /**
      * Define target URL and redirect customer after logging in
      */
