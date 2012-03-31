@@ -2,7 +2,7 @@
 
 class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Total_Quote_Tax
 {
-    /* Override the logic of
+    /* Overrides
      * @see Mage_Tax_Model_Sales_Total_Quote_Tax::_calculateShippingTax()
      * to allow the tax calculation amounts to be saved and to add custom logic for tax free items
      */
@@ -78,13 +78,14 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
         return $this;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Tax_Model_Sales_Total_Quote_Tax::_rowBaseCalculation()
      * by saving the calculated tax amount
      */
     protected function _rowBaseCalculation(Mage_Sales_Model_Quote_Address $address, $taxRateRequest)
     {
         $items = $this->_getAddressItems($address);
+        $itemTaxGroups  = array();
         foreach ($items as $item) {
             if ($item->getParentItem()) {
                 continue;
@@ -97,6 +98,9 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                     $this->_addAmount($child->getTaxAmount());
                     $this->_addBaseAmount($child->getBaseTaxAmount());
                     $applied = $this->_calculator->getAppliedRates($taxRateRequest);
+//                    if ($rate > 0) {
+                       $itemTaxGroups[$child->getId()] = $applied;
+//                    }
                     // need to save the calc amounts
                     $this->_saveAppliedTaxes(
                         $address,
@@ -117,6 +121,9 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 $this->_addAmount($item->getTaxAmount());
                 $this->_addBaseAmount($item->getBaseTaxAmount());
                 $applied = $this->_calculator->getAppliedRates($taxRateRequest);
+//                if ($rate > 0) {
+                   $itemTaxGroups[$item->getId()] = $applied;
+//                }
                 // need to save the calc amounts
                 $this->_saveAppliedTaxes(
                     $address,
@@ -129,10 +136,15 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 );
             }
         }
+
+        if ($address->getQuote()->getTaxesForItems()) {
+            $itemTaxGroups += $address->getQuote()->getTaxesForItems();
+        }
+        $address->getQuote()->setTaxesForItems($itemTaxGroups);
         return $this;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Tax_Model_Sales_Total_Quote_Tax::_calcRowTaxAmount()
      * by saving the calculated tax amount
      */
@@ -196,16 +208,18 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
         return $this;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Tax_Model_Sales_Total_Quote_Tax::_totalBaseCalculation()
      * by saving the calculated tax amount
      */
     protected function _totalBaseCalculation(Mage_Sales_Model_Quote_Address $address, $taxRateRequest)
     {
-        $items      = $this->_getAddressItems($address);
-        $store      = $address->getQuote()->getStore();
-        $taxGroups  = array();
+        $items          = $this->_getAddressItems($address);
+        $store          = $address->getQuote()->getStore();
+        $taxGroups      = array();
+        $itemTaxGroups  = array();
 
+        $inclTax = false;
         foreach ($items as $item) {
             if ($item->getParentItem()) {
                 continue;
@@ -215,19 +229,32 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 foreach ($item->getChildren() as $child) {
                     $taxRateRequest->setProductClassId($child->getProduct()->getTaxClassId());
                     $rate = $this->_calculator->getRate($taxRateRequest);
-                    $taxGroups[(string)$rate]['applied_rates'] = $this->_calculator->getAppliedRates($taxRateRequest);
+                    $applied_rates = $this->_calculator->getAppliedRates($taxRateRequest);
+                    $taxGroups[(string)$rate]['applied_rates'] = $applied_rates;
                     $this->_aggregateTaxPerRate($child, $rate, $taxGroups);
                     $inclTax = $child->getIsPriceInclTax();
+//                    if ($rate > 0) {
+                        $itemTaxGroups[$child->getId()] = $applied_rates;
+//                    }
                 }
                 $this->_recalculateParent($item);
             } else {
                 $taxRateRequest->setProductClassId($item->getProduct()->getTaxClassId());
                 $rate = $this->_calculator->getRate($taxRateRequest);
-                $taxGroups[(string)$rate]['applied_rates'] = $this->_calculator->getAppliedRates($taxRateRequest);
+                $applied_rates = $this->_calculator->getAppliedRates($taxRateRequest);
+                $taxGroups[(string)$rate]['applied_rates'] = $applied_rates;
                 $this->_aggregateTaxPerRate($item, $rate, $taxGroups);
                 $inclTax = $item->getIsPriceInclTax();
+//                if ($rate > 0) {
+                    $itemTaxGroups[$item->getId()] = $applied_rates;
+//                }
             }
         }
+
+        if ($address->getQuote()->getTaxesForItems()) {
+            $itemTaxGroups += $address->getQuote()->getTaxesForItems();
+        }
+        $address->getQuote()->setTaxesForItems($itemTaxGroups);
 
         foreach ($taxGroups as $rateKey => $data) {
             $rate = (float) $rateKey;
@@ -245,13 +272,14 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
         return $this;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Tax_Model_Sales_Total_Quote_Tax::_unitBaseCalculation()
      * by saving the calculated tax amount
      */
     protected function _unitBaseCalculation(Mage_Sales_Model_Quote_Address $address, $taxRateRequest)
     {
         $items = $this->_getAddressItems($address);
+        $itemTaxGroups  = array();
         foreach ($items as $item) {
             if ($item->getParentItem()) {
                 continue;
@@ -265,6 +293,9 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                     $this->_addAmount($child->getTaxAmount());
                     $this->_addBaseAmount($child->getBaseTaxAmount());
                     $applied = $this->_calculator->getAppliedRates($taxRateRequest);
+//                     if ($rate > 0) {
+                        $itemTaxGroups[$child->getId()] = $applied;
+//                     }
                     // need to save the calc amounts
                     $this->_saveAppliedTaxes(
                         $address,
@@ -274,6 +305,7 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                         $rate, $child->getTaxCalcAmount(),
                         $child->getBaseTaxCalcAmount()
                     );
+                    $child->setTaxRates($applied);
                 }
                 $this->_recalculateParent($item);
             }
@@ -284,6 +316,9 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 $this->_addAmount($item->getTaxAmount());
                 $this->_addBaseAmount($item->getBaseTaxAmount());
                 $applied = $this->_calculator->getAppliedRates($taxRateRequest);
+//                 if ($rate > 0) {
+                    $itemTaxGroups[$item->getId()] = $applied;
+//                 }
                 // need to save the calc amounts
                 $this->_saveAppliedTaxes(
                     $address,
@@ -294,12 +329,17 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                     $item->getTaxCalcAmount(),
                     $item->getBaseTaxCalcAmount()
                 );
+                $item->setTaxRates($applied);
             }
         }
+        if ($address->getQuote()->getTaxesForItems()) {
+            $itemTaxGroups += $address->getQuote()->getTaxesForItems();
+        }
+        $address->getQuote()->setTaxesForItems($itemTaxGroups);
         return $this;
     }
 
-    /* Overrides the logic of
+    /* Overrides
      * @see Mage_Tax_Model_Sales_Total_Quote_Tax::_calcUnitTaxAmount()
      * by saving the calculated tax amount
      */
@@ -317,15 +357,24 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
         switch ($this->_config->getCalculationSequence($this->_store)) {
             case Mage_Tax_Model_Calculation::CALC_TAX_BEFORE_DISCOUNT_ON_EXCL:
             case Mage_Tax_Model_Calculation::CALC_TAX_BEFORE_DISCOUNT_ON_INCL:
-                $calc     = $price;
-                $baseCalc = $basePrice;
+                $unitTax        = $this->_calculator->calcTaxAmount($price, $rate, $inclTax);
+                $baseUnitTax    = $this->_calculator->calcTaxAmount($basePrice, $rate, $inclTax);
                 break;
             case Mage_Tax_Model_Calculation::CALC_TAX_AFTER_DISCOUNT_ON_EXCL:
             case Mage_Tax_Model_Calculation::CALC_TAX_AFTER_DISCOUNT_ON_INCL:
                 $discountAmount     = $item->getDiscountAmount() / $qty;
                 $baseDiscountAmount = $item->getBaseDiscountAmount() / $qty;
-                $calc     = max($price - $discountAmount, 0);
-                $baseCalc = max($basePrice - $baseDiscountAmount, 0);
+
+                $unitTax = $this->_calculator->calcTaxAmount($price, $rate, $inclTax);
+                $discountRate = ($unitTax/$price) * 100;
+                $unitTaxDiscount = $this->_calculator->calcTaxAmount($discountAmount, $discountRate, $inclTax, false);
+                $unitTax = max($unitTax - $unitTaxDiscount, 0);
+                $baseUnitTax = $this->_calculator->calcTaxAmount($basePrice, $rate, $inclTax);
+                $baseDiscountRate = ($baseUnitTax/$basePrice) * 100;
+                $baseUnitTaxDiscount = $this->_calculator
+                    ->calcTaxAmount($baseDiscountAmount, $baseDiscountRate, $inclTax, false);
+                $baseUnitTax = max($baseUnitTax - $baseUnitTaxDiscount, 0);
+
                 if ($inclTax && $discountAmount > 0) {
                     $hiddenTax      = $this->_calculator->calcTaxAmount($discountAmount, $rate, $inclTax, false);
                     $baseHiddenTax  = $this->_calculator->calcTaxAmount($baseDiscountAmount, $rate, $inclTax, false);
@@ -352,9 +401,6 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 break;
         }
 
-        $unitTax     = $this->_calculator->calcTaxAmount($calc, $rate, $inclTax);
-        $baseUnitTax = $this->_calculator->calcTaxAmount($baseCalc, $rate, $inclTax);
-
         // need to save the calc amounts
         $item->setTaxCalcAmount($qty*$calc);
         $item->setBaseTaxCalcAmount($qty*$baseCalc);
@@ -366,8 +412,6 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
     }
 
     /**
-     * Collect applied tax rates information on address level
-     *
      * @param   Mage_Sales_Model_Quote_Address $address
      * @param   array $applied
      * @param   float $amount
@@ -411,14 +455,14 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
                 }
             }
 
-            $previouslyAppliedTaxes[$row['id']]['amount']       += $appliedAmount;
-            $previouslyAppliedTaxes[$row['id']]['base_amount']  += $baseAppliedAmount;
 
-            $previouslyAppliedTaxes[$row['id']]['sale_amount']       += $saleAmount;
-            $previouslyAppliedTaxes[$row['id']]['base_sale_amount']  += $baseSaleAmount;
+            if ($saleAmount || $previouslyAppliedTaxes[$row['id']]['sale_amount']) {
+                $previouslyAppliedTaxes[$row['id']]['amount']       += $appliedAmount;
+                $previouslyAppliedTaxes[$row['id']]['base_amount']  += $baseAppliedAmount;
 
-            // Remove taxes that are for on $0 for 0%
-            if ($previouslyAppliedTaxes[$row['id']]['base_amount'] <= 0 && $previouslyAppliedTaxes[$row['id']]['base_sale_amount'] <= 0) {
+                $previouslyAppliedTaxes[$row['id']]['sale_amount']       += $saleAmount;
+                $previouslyAppliedTaxes[$row['id']]['base_sale_amount']  += $baseSaleAmount;
+            } else {
                 unset($previouslyAppliedTaxes[$row['id']]);
             }
         }
