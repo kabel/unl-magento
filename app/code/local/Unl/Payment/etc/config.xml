@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Payment>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Unl_Payment>
     </modules>
     
@@ -20,23 +20,23 @@
         <models>
             <unl_payment>
                 <class>Unl_Payment_Model</class>
-                <resourceModel>unl_payment_mysql4</resourceModel>
+                <resourceModel>unl_payment_resource</resourceModel>
             </unl_payment>
-            <unl_payment_mysql4>
-                <class>Unl_Payment_Model_Mysql4</class>
+            <unl_payment_resource>
+                <class>Unl_Payment_Model_Resource</class>
                 <entities>
                     <account>
                         <table>unl_payment_account</table>
                     </account>
                 </entities>
-            </unl_payment_mysql4>
+            </unl_payment_resource>
         </models>
         
         <resources>
             <unl_payment_setup>
                 <setup>
                     <module>Unl_Payment</module>
-                    <class>Mage_Eav_Model_Entity_Setup</class>
+                    <class>Unl_Payment_Model_Resource_Setup</class>
                 </setup>
             </unl_payment_setup>
         </resources>
@@ -47,24 +47,15 @@
             </sales_convert_quote_item>
         </fieldsets>
         
-        <events>
-            <sales_quote_item_set_product>
-                <observers>
-                    <payment_account_set>
-                        <type>singleton</type>
-                        <class>unl_payment/observer</class>
-                        <method>setQuoteItemPaymentAccount</method>
-                    </payment_account_set>
-                </observers>
-            </sales_quote_item_set_product>
-        </events>
-        
         <sales>
             <quote>
                 <item>
                     <product_attributes>
                         <unl_payment_account/>
                     </product_attributes>
+                    <set_product_attributes>
+                        <unl_payment_account/>
+                    </set_product_attributes>
                 </item>
             </quote>
         </sales>
@@ -81,25 +72,23 @@
         </unl_adminlog>
         
         <events>
-            <adminhtml_block_widget_grid_prepare_grid>
+            <adminhtml_grid_prepare_columns>
                 <observers>
                     <payment_correct_admin>
-                        <type>singleton</type>
                         <class>unl_payment/observer</class>
                         <method>onPrepareGrid</method>
                     </payment_correct_admin>
                 </observers>
-            </adminhtml_block_widget_grid_prepare_grid>
-            <adminhtml_block_html_before>
-                <observers>
-                    <payment_correct_admin>
-                        <type>singleton</type>
-                        <class>unl_payment/observer</class>
-                        <method>correctAdminBlocks</method>
-                    </payment_correct_admin>
-                </observers>
-            </adminhtml_block_html_before>
+            </adminhtml_grid_prepare_columns>
         </events>
+        
+        <layout>
+            <updates>
+                <unl_payment module="Unl_Payment">
+                    <file>unl_payment.xml</file>
+                </unl_payment>
+            </updates>
+        </layout>
     </adminhtml>
     
     <admin>
