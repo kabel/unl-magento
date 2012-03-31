@@ -2,6 +2,29 @@
 
 class Unl_Core_Model_Admin_Observer
 {
+    /**
+     * An <i>adminhtml</i> event observer for the <code>admin_user_authenticate_after</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function preventNonCasLogin($observer)
+    {
+        /* @var $user Mage_Admin_Model_User */
+        $user = $observer->getEvent()->getUser();
+        $result = $observer->getEvent()->getResult();
+
+        if ($result && $user->getIsCas()) {
+            Mage::throwException(Mage::helper('adminhtml')->__('Invalid Username or Password.'));
+        }
+    }
+
+    /**
+     * An <i>adminhtml</i> event observer for the <code>admin_user_save_before</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function beforeUserSave($observer)
     {
         /* @var $user Mage_Admin_Model_User */
@@ -28,31 +51,11 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
-    public function preventNonCasLogin($observer)
-    {
-        /* @var $user Mage_Admin_Model_User */
-        $user = $observer->getEvent()->getUser();
-        $result = $observer->getEvent()->getResult();
-
-        if ($result && $user->getIsCas()) {
-            Mage::throwException(Mage::helper('adminhtml')->__('Invalid Username or Password.'));
-        }
-    }
-
-    public function filterCasUsersFromForgotPassword($observer)
-    {
-        $collection = $observer->getEvent()->getCollection();
-        if ($collection instanceof Mage_Admin_Model_Mysql4_User_Collection && Mage::app()->getRequest()->getActionName() == 'forgotpassword') {
-            $collection->addFieldToFilter('is_cas', false);
-        }
-    }
-
-    public function clearSimpleCasSession($observer)
-    {
-        unset($_SESSION['__SIMPLECAS_TICKET']);
-        unset($_SESSION['__SIMPLECAS_UID']);
-    }
-
+    /**
+     * An <i>adminhtml</i> event observer for the <code>cms_page_save_before</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function beforeCmsPageSave($observer)
     {
         /* @var $page Mage_Cms_Model_Page */
@@ -77,6 +80,12 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>adminhtml_catalog_category_tree_can_add_root_category</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function isAllowedAddRootCategory($observer)
     {
         $options = $observer->getEvent()->getOptions();
@@ -85,74 +94,98 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
-    public function controllerActionPredispatch($observer)
+    /**
+     * An <i>adminhtml</i> event listener for the <code>controller_action_layout_render_before_adminhtml_permissions_user_edit</code>
+     * event. Adds another tab to the controller generated content.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onBeforeRenderPermissionsLayout($observer)
     {
-        $storeIdActions = array(
-            'adminhtml_dashboard_index',
-            'adminhtml_dashboard_productsViewed',
-            'adminhtml_dashboard_customersNeweset',
-            'adminhtml_dashboard_customersMost',
-            'adminhtml_dashboard_ajaxBlock',
-            'adminhtml_dashboard_tunnel',
-            'adminhtml_report_customer_accounts',
-            'adminhtml_report_customer_totals',
-            'adminhtml_report_customer_orders',
-            'adminhtml_report_product_ordered',
-            'adminhtml_report_product_sold',
-            'adminhtml_report_product_viewed',
-            'adminhtml_report_product_lowstock',
-            'adminhtml_report_product_downloads',
-            'unl_core_sales_picklist_index',
-        );
-        $storeIdsActions = array(
-            'adminhtml_report_sales_sales',
-            'adminhtml_report_sales_coupons',
-            'unl_core_report_customer_orderaddress',
-            'unl_core_report_product_orderdetails',
-            'unl_core_report_product_customized',
-        	'unl_core_report_sales_reconcile_cc',
-        	'unl_core_report_sales_reconcile_co',
-            'unl_core_report_sales_reconcile_nocap',
-            'shippingoverride_report_index',
-        );
-        $categoryIdActions = array(
-            'adminhtml_catalog_category_edit',
-            'adminhtml_catalog_category_tree',
-        );
+        /* @var $layout Mage_Core_Model_Layout */
+        $layout = Mage::getSingleton('core/layout');
+        $block  = $layout->getBlock('left');
 
-        $controller = $observer->getEvent()->getControllerAction();
-        $actionName = $controller->getFullActionName();
-        if (in_array($actionName, $storeIdActions)) {
-            $this->_setStoreParamFromUser('store');
-            return;
-        } elseif (in_array($actionName, $storeIdsActions)) {
-            $this->_setStoreParamFromUser('store_ids');
-            return;
-        } elseif (in_array($actionName, $categoryIdActions)) {
-            $checkParent = $controller->getFullActionName() == 'adminhtml_catalog_category_edit';
-            return $this->_forceCategoryId($controller, $checkParent);
-        }
-
-        if ($actionName == 'adminhtml_system_account_save') {
-            $user = Mage::getModel('admin/user')
-                ->load(Mage::getSingleton('admin/session')->getUser()->getId());
-            if ($user->getIsCas()) {
-                $controller->getRequest()->setParam('username', $user->getUsername());
-                $controller->getRequest()->setParam('password', false);
-                $controller->getRequest()->setParam('confirmation', false);
+        foreach ($block->getChild() as $child) {
+            if ($child instanceof Mage_Adminhtml_Block_Permissions_User_Edit_Tabs) {
+                $child->addTab('scope_section', array(
+                    'label'     => Mage::helper('adminhtml')->__('User Scope'),
+                    'title'     => Mage::helper('adminhtml')->__('User Scope'),
+                    'content'   => $layout->createBlock('unl_core/adminhtml_permissions_user_edit_tab_scope')->toHtml(),
+                    'after'     => 'roles_section',
+                ));
+                break;
             }
-            return;
         }
+
+        return $this;
     }
 
     /**
+     * An <i>adminhtml</i> event listener for the
+     * <code>controller_action_postdispatch_adminhtml_index_logout</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function clearSimpleCasSession($observer)
+    {
+        unset($_SESSION['__SIMPLECAS_TICKET']);
+        unset($_SESSION['__SIMPLECAS_UID']);
+    }
+
+    /**
+     * An <i>adminhtml</i> event listener for the
+     * <code>adminhtml_widget_grid_filter_collection</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Core_Model_Admin_Observer
+     */
+    public function onAdminhtmlWidgetGridFilterCollection($observer)
+    {
+        /* @var $controller Mage_Core_Controller_Varien_Action */
+        /* @var $collection Mage_Reports_Model_Resource_Report_Collection */
+        $controller = Mage::app()->getFrontController()->getAction();
+        $collection = $observer->getEvent()->getCollection();
+
+        $actions = array(
+            'adminhtml_report_customer_accounts',
+            'adminhtml_report_customer_totals',
+            'adminhtml_report_customer_orders',
+            'adminhtml_report_product_sold',
+            'adminhtml_report_product_viewed',
+        );
+
+        if (in_array($controller->getFullActionName(), $actions)) {
+            $collection->setStoreIds(Mage::helper('unl_core')->getScopeFilteredStores($collection->getStoreIds()));
+        }
+
+        return $this;
+    }
+
+    /**
+     * An <i>adminhtml</i> event observer for the following events:
+     * <ul>
+     *   <li><code>controller_action_predispatch_adminhtml_catalog_category_edit</code></li>
+     *   <li><code>controller_action_predispatch_adminhtml_catalog_category_tree</code></li>
+     * </ul>
      * Forces an id request param if a user is scoped and an id is missing
      *
-     * @param Mage_Adminhtml_Catalog_CategoryController $controller
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Core_Model_Admin_Observer
      */
-    protected function _forceCategoryId($controller, $checkParent = false)
+    public function onCatalogCategoryPreDispatch($observer)
     {
-        $this->_setStoreParamFromUser('store', false);
+        /* @var $controller Mage_Adminhtml_Catalog_CategoryController */
+        $controller = $observer->getEvent()->getControllerAction();
+        $checkParent = $controller->getFullActionName() == 'adminhtml_catalog_category_edit';
+
+        $storeIds = Mage::helper('unl_core')->getScopeFilteredStores($controller->getRequest()->getParam('store'));
+        if (!empty($storeIds) && $storeIds[0] == -1) {
+            $controller->getRequest()->setParam('store', false);
+        }
+
         $categoryId = (int) $controller->getRequest()->getParam('id');
         $parentId = (int) $controller->getRequest()->getParam('parent');
         $scope = Mage::helper('unl_core')->getAdminUserScope(true);
@@ -166,39 +199,89 @@ class Unl_Core_Model_Admin_Observer
         return $this;
     }
 
-    protected function _setStoreParamFromUser($param, $forceSet = true) {
-        $request = Mage::app()->getRequest();
+    /**
+     * An <i>adminhtml</i> event observer for the following events:
+     * <ul>
+     *   <li><code>controller_action_predispatch_adminhtml_report_sales_coupons</code></li>
+     *   <li><code>controller_action_predispatch_adminhtml_report_sales_sales</code></li>
+     * </ul>
+     * Forces a store_ids request param if a user is scoped
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onSalesReportPreDispatch($observer)
+    {
+        $reqeust = $observer->getEvent()->getControllerAction()->getRequest();
 
-        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
-            if ($store = $request->getParam($param)) {
-                if (!in_array($store, $scope)) {
-                    $request->setParam($param, current($scope));
-                }
-            } else if ($forceSet) {
-                $request->setParam($param, current($scope));
-            }
+        $storeIds = $reqeust->getParam('store_ids');
+        $storeIds = Mage::helper('unl_core')->getScopeFilteredStores($storeIds);
+
+        if (!empty($storeIds)) {
+            $reqeust->setParam('store_ids', $storeIds);
         }
     }
 
-    public function catalogProductEditActionPreDispatch($observer)
+    /**
+     * An <i>adminhtml</i> event listener for the <code>controller_action_predispatch_adminhtml_system_account_save</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Core_Model_Admin_Observer
+     */
+    public function onSystemAccountSavePreDispatch($observer)
     {
-        $request = Mage::app()->getRequest();
+        /* @var $controller Mage_Core_Controller_Varien_Action */
+        $controller = $observer->getEvent()->getControllerAction();
+        $userId = Mage::getSingleton('admin/session')->getUser()->getId();
+        $user = Mage::getModel('admin/user')->load($userId);
+
+        if ($user->getIsCas()) {
+            $controller->getRequest()->setParam('username', $user->getUsername());
+            $controller->getRequest()->setParam('password', false);
+            $controller->getRequest()->setParam('confirmation', false);
+        }
+
+        return $this;
+    }
+
+    /**
+     * An <i>adminhtml</i> event listener for the <code>controller_action_predispatch_adminhtml_catalog_product_edit</code>
+     * event. Adds ACL checks for the edited product.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Core_Model_Admin_Observer
+     */
+    public function onCatalogProductEditPreDispatch($observer)
+    {
+        /* @var $controller Mage_Core_Controller_Varien_Action */
+        $controller = $observer->getEvent()->getControllerAction();
+        $request = $controller->getRequest();
 
         if ($productId = (int) $request->getParam('id')) {
             $product = Mage::getModel('catalog/product')->load($productId);
-            if ($product->getId()) {
-                if (!Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
-                    $request->initForward()
-                        ->setActionName('denied')
-                        ->setDispatched(false);
-                }
+            if ($product->getId() && !Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+                $request->initForward()
+                    ->setActionName('denied')
+                    ->setDispatched(false);
             }
         }
+
+        return $this;
     }
 
+
+    /**
+     * An <i>adminhtml</i> event listener for the <code>controller_action_predispatch_adminhtml_cms_page_edit</code>
+     * event. Adds ACL checks for the edited page.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Core_Model_Admin_Observer
+     */
     public function onAdminCmsPageEditPreDispatch($observer)
     {
-        $request = Mage::app()->getRequest();
+        /* @var $controller Mage_Core_Controller_Varien_Action */
+        $controller = $observer->getEvent()->getControllerAction();
+        $request = $controller->getRequest();
 
         $id = $request->getParam('page_id');
         $model = Mage::getModel('cms/page');
@@ -225,32 +308,29 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
-    public function onAdminSalesCreditmemoViewPreDispatch($observer)
+    /**
+     * An <i>adminhtml</i> event observer for the following events:
+     * <ul>
+     *   <li><code>controller_action_predispatch_adminhtml_sales_creditmemo_view</code></li>
+     *   <li><code>controller_action_predispatch_adminhtml_sales_invoice_view</code></li>
+     *   <li><code>controller_action_predispatch_adminhtml_sales_order_view</code></li>
+     *   <li><code>controller_action_predispatch_adminhtml_sales_shipment_view</code></li>
+     * </ul>
+     * Enforces the ACL constraints for each entity.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onAdminSalesEntityViewPreDispatch($observer)
     {
-        $this->_onAdminSalesEntityViewPreDispatch($observer, 'creditmemo');
-    }
-
-    public function onAdminSalesInvoiceViewPreDispatch($observer)
-    {
-        $this->_onAdminSalesEntityViewPreDispatch($observer, 'invoice');
-    }
-
-    public function onAdminSalesOrderViewPreDispatch($observer)
-    {
-        $this->_onAdminSalesEntityViewPreDispatch($observer, 'order');
-    }
-
-    public function onAdminSalesShipmentViewPreDispatch($observer)
-    {
-        $this->_onAdminSalesEntityViewPreDispatch($observer, 'shipment');
-    }
-
-    protected function _onAdminSalesEntityViewPreDispatch($observer, $type)
-    {
-        $request = Mage::app()->getRequest();
         /* @var $action Mage_Adminhtml_Controller_Action */
-        $action = $observer->getControllerAction();
+        $action  = $observer->getControllerAction();
+        $request = $action->getRequest();
 
+        if (!preg_match('/^adminhtml_sales_(creditmemo|invoice|order|shipment)_view$/', $action->getFullActionName(), $matches)) {
+            return;
+        }
+
+        $type = $matches[1];
         $param = $type . '_id';
         $model = null;
         switch ($type) {
@@ -280,20 +360,14 @@ class Unl_Core_Model_Admin_Observer
             }
         }
 
-        $scope = Mage::helper('unl_core')->getAdminUserScope();
-        if ($scope && $request->getParam($param)) {
-            $order_items = Mage::getModel('sales/order_item')->getCollection();
-            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
-            $order_items->getSelect()
-                ->where('source_store_view IN (?)', $scope)
-                ->where('order_id = ?', $orderId);
+        if ($request->getParam($param) && Mage::helper('unl_core')->getAdminUserScope()) {
+            /* @var $colleciton Mage_Sales_Model_Resource_Order_Item_Collection */
+            $collection = Mage::getModel('sales/order_item')->getCollection();
 
-            $whScope = Mage::helper('unl_core')->getAdminUserWarehouseScope();
-            if ($whScope) {
-                $order_items->getSelect()->where('warehouse IN (?)', $whScope);
-            }
+            Mage::helper('unl_core')->addProductAdminScopeFilters($collection);
+            $collection->addFieldToFilter('order_id', $orderId);
 
-            if (!count($order_items)) {
+            if (!count($collection)) {
                 $request->initForward()
                     ->setActionName('denied')
                     ->setDispatched(false);
@@ -301,15 +375,29 @@ class Unl_Core_Model_Admin_Observer
         }
     }
 
-    public function onRssOrderNewCollectionSelect($observer)
-    {
-        $collection = $observer->getEvent()->getCollection();
-        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true);
-    }
-
+    /**
+     * An <i>adminhtml</i> event listener for the
+     * <code>rss_catalog_notify_stock_collection_select</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function onRssCatalogStockCollectionSelect($observer)
     {
         $collection = $observer->getEvent()->getCollection();
         Mage::helper('unl_core')->addProductAdminScopeFilters($collection);
+    }
+
+    /**
+     * An <i>adminhtml</i> event listener for the
+     * <code>rss_order_new_collection_select</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onRssOrderNewCollectionSelect($observer)
+    {
+        $collection = $observer->getEvent()->getCollection();
+        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true);
     }
 }
