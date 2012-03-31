@@ -8,6 +8,8 @@ class Unl_Core_Model_Backup_Rsync
     const XML_PATH_RSYNC_PATH    = 'system/rsync/path';
 
     /**
+     * An <i>admihtml</i> event observer for the
+     * <code>admin_system_config_changed_section_system</code> event.
      * Generate the rsync key pair on config save
      *
      * @param   Varien_Event_Observer $observer
