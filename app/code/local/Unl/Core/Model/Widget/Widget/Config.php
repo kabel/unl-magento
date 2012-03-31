@@ -2,14 +2,8 @@
 
 class Unl_Core_Model_Widget_Widget_Config extends Mage_Widget_Model_Widget_Config
 {
-    /**
-     * Return Widgets Insertion Plugin Window URL
-     *
-     * @param Varien_Object Editor element config
-     * @return string
-     */
     /*
-     * Overrides the logic of
+     * Overrides
      * @see Mage_Widget_Model_Widget_Config::getWidgetWindowUrl()
      * by getting a URL that does not always originate from adminhtml
      */
