@@ -1,12 +1,18 @@
 <?php
 
-class Unl_Inventory_Model_Mysql4_Audit_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Unl_Inventory_Model_Resource_Audit_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
 	protected function _construct()
 	{
 		$this->_init('unl_inventory/audit');
 	}
 
+	/**
+	 * Adds a product filter to the collection
+	 *
+	 * @param unknown_type $product
+	 * @return Unl_Inventory_Model_Resource_Audit_Collection
+	 */
 	public function addProductFilter($product)
 	{
 	    $this->addFieldToFilter('product_id', $product->getId());
@@ -14,6 +20,11 @@ class Unl_Inventory_Model_Mysql4_Audit_Collection extends Mage_Core_Model_Mysql4
 	    return $this;
 	}
 
+	/**
+	 * Adds a cost per item expression to the selected collection
+	 *
+	 * @return Unl_Inventory_Model_Resource_Audit_Collection
+	 */
 	public function addCostPerItem()
 	{
 	    $this->addExpressionFieldToSelect('cost_per_item', 'IF({{amount}}, {{amount}} / {{qty}}, NULL)',
@@ -23,9 +34,9 @@ class Unl_Inventory_Model_Mysql4_Audit_Collection extends Mage_Core_Model_Mysql4
 	}
 
 	/**
-	 * Get the select statement to show audited products
+	 * Sets the select statement to show audited products
 	 *
-	 * @return Unl_Inventory_Model_Mysql4_Audit_Collection
+	 * @return Unl_Inventory_Model_Resource_Audit_Collection
 	 */
 	public function selectProducts()
 	{

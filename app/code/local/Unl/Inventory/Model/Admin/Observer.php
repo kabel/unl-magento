@@ -2,36 +2,14 @@
 
 class Unl_Inventory_Model_Admin_Observer
 {
-    public function controllerActionPredispatch($observer)
-    {
-        $storeIdActions = array(
-            'unl_inventory_report_valuation',
-        );
-
-        $controller = $observer->getEvent()->getControllerAction();
-        if (in_array($controller->getFullActionName(), $storeIdActions)) {
-            $this->_setStoreParamFromUser('store');
-            return $this;
-        }
-    }
-
-    protected function _setStoreParamFromUser($param) {
-        $user  = Mage::getSingleton('admin/session')->getUser();
-        $request = Mage::app()->getRequest();
-
-        if ($scope = Mage::helper('unl_core')->getAdminUserScope()) {
-            if ($store = $request->getParam($param)) {
-                if (!in_array($store, $scope)) {
-                    $request->setParam($param, current($scope));
-                }
-            } else {
-                $request->setParam($param, current($scope));
-            }
-        }
-
-        return $this;
-    }
-
+    /**
+     * An <i>adminhtml</i> event observer for the custom
+     * <code>unl_inventory_controller_product_init</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Admin_Observer
+     */
     public function onInventoryProductInit($observer)
     {
         $product = $observer->getEvent()->getProduct();

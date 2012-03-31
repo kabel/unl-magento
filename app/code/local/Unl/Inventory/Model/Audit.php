@@ -28,7 +28,7 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 	protected function _register()
 	{
 	    $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
-	    /* @var $collection Unl_Inventory_Model_Mysql4_Index_Collection */
+	    /* @var $collection Unl_Inventory_Model_Resource_Index_Collection */
         $collection = Mage::getResourceModel('unl_inventory/index_collection')
             ->addProductFilter($this->getProductId())
             ->addAccountingOrder($accounting);
@@ -172,7 +172,7 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 
 	/**
 	 *
-	 * @param Unl_Inventory_Model_Mysql4_Index_Collection $collection
+	 * @param Unl_Inventory_Model_Resource_Index_Collection $collection
 	 * @param float $qty
 	 */
 	protected function _updateIndexes($collection, $qty)

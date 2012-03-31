@@ -4,6 +4,13 @@ class Unl_Inventory_Model_Observer
 {
     protected $_configBeforeSave = array();
 
+    /**
+     * An event observer for the <code>catalog_product_save_before</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onBeforeProductSave($observer)
     {
         /* @var $product Mage_Catalog_Model_Product */
@@ -24,7 +31,13 @@ class Unl_Inventory_Model_Observer
                 $product->setCost($helper->getIndexProductCost($product->getId()));
                 $stockData['qty'] = $helper->getQtyOnHand($product->getId());
 
-                $this->_logAuditNote($product->getId(), $helper->__('Inventory auditing has been restarted'));
+                $collection = Mage::getModel('unl_inventory/audit')
+                    ->getCollection()
+                    ->addFieldToFilter('product_id', $product->getId());
+
+                if ($collection->getSize()) {
+                    $this->_logAuditNote($product->getId(), $helper->__('Inventory auditing has been restarted'));
+                }
             } else {
                 $product->setCost(0);
                 $stockData['qty'] = 0;
@@ -39,13 +52,20 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * Instantiates and saves an audit log note
+     *
+     * @param int $product_id
+     * @param string $msg
+     * @return Unl_Inventory_Model_Observer
+     */
     protected function _logAuditNote($product_id, $msg)
     {
         $auditLog = Mage::getModel('unl_inventory/audit');
         $auditLog->setData(array(
             'product_id' => $product_id,
             'type' => Unl_Inventory_Model_Audit::TYPE_NOTE_ONLY,
-            'created_at' => now(),
+            'created_at' => Mage::getSingleton('core/date')->gmtDate(),
             'note' => $msg,
         ));
         $auditLog->save();
@@ -53,6 +73,13 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>sales_model_service_order_prepare_invoice</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onPrepareInvoice($observer)
     {
         /* @var $order Mage_Sales_Model_Order */
@@ -124,6 +151,12 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>sales_order_invoice_cancel</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onCancelInvoice($observer)
     {
         /* @var $invoice Mage_Sales_Model_Order_Invoice */
@@ -156,12 +189,18 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>sales_order_invoice_save_after</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onAfterSaveInvoice($observer)
     {
         $invoice = $observer->getEvent()->getInvoice();
         if ($auditLogs = $invoice->getAuditLogs()) {
             $note = Mage::helper('unl_inventory')->__('Order # %s , Invoice # %s', $invoice->getOrder()->getRealOrderId(), $invoice->getIncrementId());
-            $now = now();
+            $now = Mage::getSingleton('core/date')->gmtDate();
             if ($invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
                 $note .= ' [' . Mage::helper('unl_inventory')->__('CANCELED') . ']';
             }
@@ -176,6 +215,13 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>adminhtml_sales_order_creditmemo_register_before</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onBeforeCreditmemoRegistry($observer)
     {
     	/* @var $creditmemo Mage_Sales_Model_Order_Creditmemo */
@@ -207,12 +253,19 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>sales_order_creditmemo_save_after</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onAfterSaveCreditmemo($observer)
     {
         $creditmemo = $observer->getEvent()->getCreditmemo();
         if ($auditLogs = $creditmemo->getAuditLogs()) {
             $note = Mage::helper('unl_inventory')->__('Order # %s , Creditmemo # %s', $creditmemo->getOrder()->getRealOrderId(), $creditmemo->getIncrementId());
-            $now = now();
+            $now = Mage::getSingleton('core/date')->gmtDate();
             foreach ($auditLogs as $auditLog) {
                 $auditLog->setRegisterFlag(true)
                     ->setNote($note)
@@ -224,6 +277,14 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the
+     * <code>controller_action_predispatch_adminhtml_system_config_save</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onPredispatchSaveConfig($observer)
     {
         $controller = $observer->getEvent()->getControllerAction();
@@ -238,6 +299,14 @@ class Unl_Inventory_Model_Observer
         return $this;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the
+     * <code>admin_system_config_changed_section_cataloginventory</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_Inventory_Model_Observer
+     */
     public function onInventoryConfigChange($observer)
     {
         $updateCost = 0;
@@ -321,7 +390,7 @@ class Unl_Inventory_Model_Observer
 
     /**
      *
-     * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
+     * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     protected function _getAuditProductCollection()
     {
