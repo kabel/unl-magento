@@ -31,8 +31,7 @@ class Unl_AdminLog_LogController extends Mage_Adminhtml_Controller_Action
     public function gridAction()
     {
         $this->loadLayout();
-        $grid = $this->getLayout()->createBlock('unl_adminlog/log_grid')
-            ->toHtml();
+        $grid = $this->getLayout()->createBlock('unl_adminlog/log_grid')->toHtml();
         $this->getResponse()->setBody($grid);
     }
 
