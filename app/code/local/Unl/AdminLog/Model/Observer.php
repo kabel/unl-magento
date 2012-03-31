@@ -4,6 +4,14 @@ class Unl_AdminLog_Model_Observer
 {
     protected $_config;
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>controller_action_predispatch</code>
+     * event.
+     * Log configured admin actions.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_AdminLog_Model_Observer
+     */
     public function onActionPredispatch($observer)
     {
         /* @var $controller Mage_Adminhtml_Controller_Action */
@@ -75,6 +83,12 @@ class Unl_AdminLog_Model_Observer
         return $this->_config;
     }
 
+    /**
+     * Returns an admin log model instance with prepopulated data
+     *
+     * @param array $data
+     * @return Unl_AdminLog_Model_Log
+     */
     protected function _logFactory($data = array())
     {
         if ($user = Mage::getSingleton('admin/session')->getUser()) {
@@ -85,13 +99,20 @@ class Unl_AdminLog_Model_Observer
 
         $log = Mage::getModel('unl_adminlog/log');
         $log->addData($data);
-        $log->setCreatedAt(now());
+        $log->setCreatedAt(Mage::getSingleton('core/date')->gmtDate());
         $log->setRemoteAddr(sprintf('%u', Mage::helper('core/http')->getRemoteAddr(true)));
         $log->setUserId($userId);
 
         return $log;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>admin_session_user_login_failed</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_AdminLog_Model_Observer
+     */
     public function onAdminLoginFail($observer)
     {
         $config = $this->_getConfig();
@@ -119,6 +140,13 @@ class Unl_AdminLog_Model_Observer
         return $this;
     }
 
+    /**
+     * An <i>adminhtml</i> event observer for the <code>admin_session_user_login_success</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_AdminLog_Model_Observer
+     */
     public function onAdminLoginSucess($observer)
     {
         $config = $this->_getConfig();
@@ -145,6 +173,12 @@ class Unl_AdminLog_Model_Observer
         return $this;
     }
 
+    /**
+     * An event observer for the <code>log_log_clean_after</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_AdminLog_Model_Observer
+     */
     public function onLogClean($observer)
     {
         $config = $this->_getConfig();
