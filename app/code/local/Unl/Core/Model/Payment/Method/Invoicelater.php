@@ -16,12 +16,6 @@ class Unl_Core_Model_Payment_Method_Invoicelater extends Mage_Payment_Model_Meth
         return true;
     }
 
-    /**
-     * Assign data to info model instance
-     *
-     * @param   mixed $data
-     * @return  Unl_Core_Model_Payment_Method_Invoicelater
-     */
     public function assignData($data)
     {
         $details = array();

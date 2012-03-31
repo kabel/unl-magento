@@ -7,11 +7,9 @@ class Unl_Core_Model_Payment_Method_Checkmo extends Mage_Payment_Model_Method_Ch
         return true;
     }
 
-    /**
-     * Check whether method is available
-     *
-     * @param Mage_Sales_Model_Quote $quote
-     * @return bool
+    /* Extends
+     * @see Mage_Payment_Model_Method_Abstract::isAvailable()
+     * by checking the mailing address of all stores
      */
     public function isAvailable($quote = null)
     {
@@ -19,15 +17,18 @@ class Unl_Core_Model_Payment_Method_Checkmo extends Mage_Payment_Model_Method_Ch
 
         if (parent::isAvailable($quote)) {
             if (!empty($quote)) {
-                if ($store = Mage::helper('unl_core')->getSingleStoreFromQuote($quote)) {
-                    return true;
-                }
+                return $this->_validateMailingAddress($quote);
             }
 
             return false;
         }
     }
 
+    /**
+     * Get the quote from data storage or attempt to pull from session
+     *
+     * @return Mage_Sales_Model_Quote
+     */
     protected function _getQuote()
     {
         $quote = $this->getQuote();
@@ -45,17 +46,45 @@ class Unl_Core_Model_Payment_Method_Checkmo extends Mage_Payment_Model_Method_Ch
         return $quote;
     }
 
+    /**
+     * Checks if all stores in the quote use the same mailing address
+     *
+     * @param Mage_Sales_Model_Quote $quote
+     * @return boolean
+     */
+    protected function _validateMailingAddress($quote)
+    {
+        $stores = Mage::helper('unl_core')->getStoresFromQuote($quote);
+
+        if (empty($stores)) {
+            return false;
+        }
+
+        $store = array_shift($stores);
+        $address = $this->getConfigData('mailing_address', $store);
+
+        foreach ($stores as $store) {
+            if ($this->getConfigData('mailing_address', $store) != $address) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function getPayableTo()
     {
-        $store = Mage::helper('unl_core')->getSingleStoreFromQuote($this->_getQuote());
+        $stores = Mage::helper('unl_core')->getStoresFromQuote($this->_getQuote());
+        $store = empty($stores) ? null : current($stores);
 
-        return $this->getConfigData('payable_to', (!$store) ? null : $store);
+        return $this->getConfigData('payable_to', $store);
     }
 
     public function getMailingAddress()
     {
-        $store = Mage::helper('unl_core')->getSingleStoreFromQuote($this->_getQuote());
+        $stores = Mage::helper('unl_core')->getStoresFromQuote($this->_getQuote());
+        $store = empty($stores) ? null : current($stores);
 
-        return $this->getConfigData('mailing_address', (!$store) ? null : $store);
+        return $this->getConfigData('mailing_address', $store);
     }
 }
