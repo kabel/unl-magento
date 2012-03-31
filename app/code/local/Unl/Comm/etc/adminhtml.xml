@@ -5,7 +5,7 @@
             <children>
                 <commqueue translate="title" module="unl_comm">
                     <title>Communication Queue</title>
-                    <action>unlcomm/queue/</action>
+                    <action>adminhtml/customer_queue/</action>
                     <sort_order>20</sort_order>
                 </commqueue>
             </children>

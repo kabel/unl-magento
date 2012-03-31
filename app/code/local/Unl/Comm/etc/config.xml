@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Comm>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Unl_Comm>
     </modules>
     
@@ -20,10 +20,10 @@
         <models>
             <unl_comm>
                 <class>Unl_Comm_Model</class>
-                <resourceModel>unl_comm_mysql4</resourceModel>
+                <resourceModel>unl_comm_resource</resourceModel>
             </unl_comm>
-            <unl_comm_mysql4>
-            	<class>Unl_Comm_Model_Mysql4</class>
+            <unl_comm_resource>
+            	<class>Unl_Comm_Model_Resource</class>
             	<entities>
             		<queue>
             			<table>comm_queue</table>
@@ -32,13 +32,13 @@
             			<table>comm_queue_link</table>
             		</queue_link>
             	</entities>
-            </unl_comm_mysql4>
+            </unl_comm_resource>
         </models>
         <resources>
             <unl_comm_setup>
                 <setup>
                     <module>Unl_Comm</module>
-                    <class>Mage_Core_Model_Resource_Setup</class>
+                    <class>Unl_Comm_Model_Resource_Setup</class>
                 </setup>
             </unl_comm_setup>
         </resources>
@@ -46,28 +46,18 @@
     
     <admin>
         <routers>
-            <unl_comm>
-                <use>admin</use>
+            <adminhtml>
                 <args>
-                    <module>Unl_Comm</module>
-                    <frontName>unlcomm</frontName>
+                    <modules>
+                        <Unl_Comm before="Mage_Adminhtml">Unl_Comm</Unl_Comm>
+                    </modules>
                 </args>
-            </unl_comm>
+            </adminhtml>
         </routers>
     </admin>
     
     <adminhtml>
     	<events>
-    		<core_block_abstract_to_html_before>
-    			<observers>
-                    <comm_correct_admin>
-                        <type>singleton</type>
-                        <class>unl_comm/observer</class>
-                        <method>onBlockBeforeToHtml</method>
-                    </comm_correct_admin>
-                </observers>
-    		</core_block_abstract_to_html_before>
-    	    
     	    <adminhtml_block_html_before>
     			<observers>
                     <comm_correct_admin>
@@ -78,6 +68,32 @@
                 </observers>
     	    </adminhtml_block_html_before>
     	</events>
+        
+        <layout>
+            <updates>
+                <unl_comm module="Unl_Comm">
+                    <file>unl_comm.xml</file>
+                </unl_comm>
+            </updates>
+        </layout>
+        
+        <unl_adminlog>
+            <log_events>
+                <adminhtml_customer_queue translate="label">
+                    <label>Customer Communication Queue</label>
+                    <utility_actions>
+                        <cancel />
+                        <pause />
+                        <resume />
+                        <sending />
+                        <start />
+                    </utility_actions>
+                    <view_actions>
+                        <preview />
+                    </view_actions>
+                </adminhtml_customer_queue>
+            </log_events>
+        </unl_adminlog>
     </adminhtml>
     
     <default>

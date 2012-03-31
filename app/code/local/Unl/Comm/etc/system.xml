@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config>
     <sections>
-    	<communication translate="label">
+    	<communication module="unl_comm" translate="label">
     		<label>Communication</label>
             <tab>customer</tab>
             <frontend_type>text</frontend_type>
