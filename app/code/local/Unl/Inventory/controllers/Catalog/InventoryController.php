@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
+class Unl_Inventory_Catalog_InventoryController extends Mage_Adminhtml_Controller_Action
 {
     public function indexAction()
     {
@@ -94,7 +94,7 @@ class Unl_Inventory_IndexController extends Mage_Adminhtml_Controller_Action
             }
 
             $auditLog->setRegisterFlag(true)
-                ->setCreatedAt(now())
+                ->setCreatedAt(Mage::getSingleton('core/date')->gmtDate())
                 ->save();
 
             Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('unl_inventory')->__('The inventory update has been logged.'));

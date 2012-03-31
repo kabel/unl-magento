@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Inventory_ReportController extends Mage_Adminhtml_Controller_Action
+class Unl_Inventory_Report_InventoryController extends Mage_Adminhtml_Controller_Action
 {
     public function _initAction()
     {
@@ -20,7 +20,6 @@ class Unl_Inventory_ReportController extends Mage_Adminhtml_Controller_Action
             ->_setActiveMenu('report/products/inventory_valuation')
             ->_addBreadcrumb(Mage::helper('unl_inventory')->__('Inventory Valuation'),
                 Mage::helper('unl_inventory')->__('Invengtory Valuation'))
-            ->_addContent($this->getLayout()->createBlock('unl_inventory/report_valuation'))
             ->renderLayout();
     }
 
