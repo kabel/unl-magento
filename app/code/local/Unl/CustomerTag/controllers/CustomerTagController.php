@@ -1,6 +1,6 @@
 <?php
 
-class Unl_CustomerTag_IndexController extends Mage_Adminhtml_Controller_Action
+class Unl_CustomerTag_CustomerTagController extends Mage_Adminhtml_Controller_Action
 {
     protected function _initTag()
     {
