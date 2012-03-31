@@ -15,11 +15,11 @@ class Unl_Ship_Block_Shipment_View_Packages extends Mage_Adminhtml_Block_Templat
     /**
      * Retrieve a collection of packages for the current shipment
      *
-     * @return Unl_Ship_Model_Mysql4_Shipment_Package_Collection
+     * @return Unl_Ship_Model_Resource_Shipment_Package_Collection
      */
     public function getPackages()
     {
-        /* @var $collection Unl_Ship_Model_Mysql4_Shipment_Package_Collection */
+        /* @var $collection Unl_Ship_Model_Resource_Shipment_Package_Collection */
         $collection = Mage::getModel('unl_ship/shipment_package')->getResourceCollection();
         $collection->addFieldToFilter('shipment_id', $this->getShipment()->getId());
 
