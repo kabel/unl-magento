@@ -4,7 +4,7 @@ Because the files in the app/code/local/AW and app/code/local/Webshopapps are pu
 
 == INSTALLATION ==
 
-The 1.4 branch of magento requires a little fine tuning for configuration purposes.
+Magento requires a little fine tuning for configuration purposes.
 There is a folder of patches (data/patches) that should be applied to the magento root to ensure proper functionality.
 
     cd /path/to/magento
@@ -12,28 +12,13 @@ There is a folder of patches (data/patches) that should be applied to the magent
 
 The UNL extensions for magento are handled through a repository of directories and files that need to be symlinked in the magento directory structure.
 For reference the two SVN projects are hosted at the following locations:
-[magento] : http://svn.magentocommerce.com/source/branches/1.4
+[magento] : http://svn.magentocommerce.com/source/branches/1.6
 [unl-magento] : http://gforge.unl.edu/svn/unl-magento/trunk
 
+A script has been created to facilitate workspace setup.
+
 cd /path/to/magento
-ln -s /path/to/unl-magento/app/code/community/Zenprint app/etc/code/community/
-ln -s /path/to/unl-magento/app/code/local/Unl app/code/local/Unl
-ln -s /path/to/unl-magento/app/code/local/AW app/code/local/AW
-ln -s /path/to/unl-magento/app/code/local/Webshopapps app/code/local/Webshopapps
-ln -s /path/to/unl-magento/app/design/frontend/unl app/design/frontend/unl
-ln -s /path/to/unl-magento/app/design/adminhtml/default/unl/ app/design/adminhtml/default/unl
-ln -s /path/to/unl-magento/app/etc/modules/Unl_All.xml app/etc/modules/
-ln -s /path/to/unl-magento/app/etc/modules/Zenprint_Xajax.xml app/etc/modules/
-ln -s /path/to/unl-magento/app/etc/modules/Zenprint_Ordership.xml app/etc/modules/
-ln -s /path/to/unl-magento/errors/unl errors/
-ln -s /path/to/unl-magento/errors/local.xml errors/
-ln -s /path/to/unl-magento/js/xajax_js js/
-ln -s /path/to/unl-magento/lib/SimpleCAS lib/SimpleCAS
-ln -s /path/to/unl-magento/lib/SimpleCAS.php lib/SimpleCAS.php
-ln -s /path/to/unl-magento/lib/UNL lib/UNL
-ln -s /path/to/unl-magento/lib/Xajax lib/
-ln -s /path/to/unl-magento/skin/frontend/unl skin/frontend/unl
-ln -s /path/to/unl-magento/skin/adminhtml/default/unl skin/adminhtml/default/unl
+/path/to/unl-magento/data/scripts/setupEnv.sh /path/to/unl-magento .
 
 For the "online" install to run, you must
     chmod a+w app/etc
@@ -43,16 +28,7 @@ For the "online" install to run, you must
 Once installation is complete you can remove write permissions from app/etc
     chmod o-w app/etc
     
-After "online" installation, there are a couple of MySQL data imports that need to occur (separated for install speed)
-
-cd /path/to/unl-magento/data/tax
-
-* Login to mysql client and use the magento database
-
-    SOURCE MageTaxSetup.sql;
-    SOURCE MageRestaurantTaxSetup.sql;
-
-* Follow the instructions below for TAX RATE MAINTENANCE
+After "online" installation, follow the instructions below for TAX RATE MAINTENANCE
 
 == CONFIGURATION ==
 
@@ -133,8 +109,9 @@ Advanced > Developer
 
 When running maintenance on the magento project that may require temporary shutdown of magento run the following command.
     cd /path/to/magento
-    /path/to/unl-magento/swapMaintenance.sh
-Once the maintenance is over run the command again to restore access
+    /path/to/unl-magento/data/scripts/swapMaintenance.sh YOUR_IP_ADDRESS
+Once the maintenance is over run
+   /path/to/unl-magento/data/scripts/swapMaintenance.sh -e
 
 
 == TAX RATE MAINTENANCE ==
@@ -143,57 +120,22 @@ Currently, there is no automated way to update the tax rates for magento. Howeve
 
 1) Download the SST data from the above mentioned site
 2) Unzip the file and load the two files into some temporary MySQL database. (The schema for the SST tables is provided in data/tax/SSTSchema.sql)
-   The NEB######.txt file loads into the `boundaries` table
+   The NEB######.txt file loads into the `boundaries` table\
+       TRUNCATE TABLE boundaries
        LOAD DATA LOCAL INFILE 'NEB######.txt' INTO TABLE boundaries FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n';
    The NER######.txt file loads into the `rates` table
+       TRUNCATE TABLE rates
        LOAD DATA LOCAL INFILE 'NER######.txt' INTO TABLE rates FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n';
-3) Export the results of the following queries into a simple format, like CSV
-
--- USED TO GET NEW STATE RATE (NOTE: NE is fips 31)
-SELECT jurisdiction_fips_code, general_tax_rate_intra
-FROM rates r
-WHERE jurisdiction_type = 45
-  AND NOW() BETWEEN begin_date AND end_date
-ORDER BY jurisdiction_fips_code
-
--- USED TO GET ALL MAGENTO PARSIBLE CITY RATES
-CALL fetch_city_rates(38);
-
--- USED TO GET ALL MAGENTO PARSIBLE COUNTY RATES
-CALL fetch_county_rates(38);
-
-3b) [OPTIONAL] If there are extra rates that need to be generated (ex: Restuarant tax for Lincoln) run the following query for the rate(s)
-
--- USED TO GENERATE MAGENTO PARSIBLE RESTAURANT RATES
-CALL fetch_city_plus_rates(38, '28000', 'Restaurant', 0.02);
-
-4) Open the tax data normalization spreadsheet at data/tax/taxes.xlsx
-   Use the data from query 1 to populate the row labeled 'US-NE-*' of the 'State Tax' sheet (NOTE: The rate needs to be multipled by 100)
-5) Excel should have now calcuated all of the data that needs to be added to magento. Now all of the rates need to be saved into CSV format.
-   The easiest way to accomplish this is to use a text editor (Like Notepad++ or TextWrangler).
-   Copy the first 5 columns of the 'Special Tax' sheet, Paste into the text file
-   Copy the first 5 columns of the 'State Tax' sheet, Paste into a new text file
-   Combine the exported results of the remaining queries into the file
-6) You can now format the text file into a data format you can load into mysql.
-   It's recommended to use CSV. To transform the pasted data from Tab Separated Values, use the text editor's find/replace capabilities to insert " at the beginning and end of every line and replace tabs with ","
-7) Log into MySQL and use the magento DB
-8) TRUNCATE TABLE `unl_tax_boundary`
-9) LOAD the boundary data from NEB######.txt (see command from step 2)
-10) TRUNCATE TABLE `tax_calculation_rate`
-11) LOAD the text file you created into `tax_calculation_rate`. Ex:
-
-LOAD DATA LOCAL INFILE 'rates.csv'
-INTO TABLE `tax_calculation_rate`
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-(`code`, `tax_country_id`, `tax_region_id`, `tax_postcode`, `rate`);
-
-12) SOURCE the sql file at data/tax/MageTaxCalculationInit.sql
-13) SOURCE the sql file at data/tax/MageRestaurantTaxInit.sql
+3) Export the resultsets from running the data/tax/tax_procedures.sql file, into CSV. Place all of them in the data/tax/results directory
+4) Run the shell script data/tax/build.sh to compile all resultsets into a single CSV file named data/tax/rates.csv
+5) [OPTIONAL] Compress the files, so you don't have to send so much to the web server 
+   Rename the boundary file: mv NEB#####.txt NEB.txt
+   zip the files NEB.txt and rates.csv, individually
+6) Go to the Admin Panel on the site at /admin/backoffice/tax_rate/importExport/
+7) Upload the boundary file
+8) Upload the rates file (using the full import form)
 
 
 == HELP ==
 
 For help on general design and configuration refer to the documentation provided at http://www.magentocommerce.com/
-
-A listing of the events that handlers can be written for is in file data/dispatcheventlist.xls. It may not be up to date with the current version of Magento.
