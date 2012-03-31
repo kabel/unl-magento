@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Comm_Model_Mysql4_Queue_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Unl_Comm_Model_Resource_Queue_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
 	protected $_addRecipientsFlag = false;
 	protected $_recipientsFilters = array();
@@ -31,16 +31,16 @@ class Unl_Comm_Model_Mysql4_Queue_Collection extends Mage_Core_Model_Mysql4_Coll
      * Set filter for queue by customer.
      *
      * @param     int        $customerId
-     * @return    Unl_Comm_Model_Mysql4_Queue_Collection
+     * @return    Unl_Comm_Model_Resource_Queue_Collection
      */
     public function addRecipientFilter($customerId)
     {
         $this->getSelect()
-            ->join(array('link'=>$this->getTable('queue_link')),
-                                     'main_table.queue_id=link.queue_id',
-                                     array('sent_at')
-                                     )
-             ->where('link.customer_id = ?', $customerId);
+            ->join(array('link' => $this->getTable('queue_link')),
+                'main_table.queue_id=link.queue_id',
+                array('sent_at')
+            )
+            ->where($this->_getConditionSql('link.customer_id', $customerId));
 
         return $this;
     }
@@ -88,15 +88,17 @@ class Unl_Comm_Model_Mysql4_Queue_Collection extends Mage_Core_Model_Mysql4_Coll
     /**
      * Add filter by only ready fot sending item
      *
-     * @return Unl_Comm_Model_Mysql4_Queue_Collection
+     * @return Unl_Comm_Model_Resource_Queue_Collection
      */
     public function addOnlyForSendingFilter()
     {
         $this->getSelect()
-            ->where('main_table.queue_status in (?)', array(Unl_Comm_Model_Queue::STATUS_SENDING,
-                                                            Unl_Comm_Model_Queue::STATUS_NEVER))
-            ->where('main_table.queue_start_at < ?', Mage::getSingleton('core/date')->gmtdate())
-            ->where('main_table.queue_start_at IS NOT NULL');
+            ->where($this->_getConditionSql('main_table.queue_status', array('in' => array(
+                Unl_Comm_Model_Queue::STATUS_SENDING,
+                Unl_Comm_Model_Queue::STATUS_NEVER
+            ))))
+            ->where($this->_getConditionSql('main_table.queue_start_at', array('from' => Mage::getSingleton('core/date')->gmtdate())))
+            ->where($this->_getConditionSql('main_table.queue_start_at', array('notnull' => true)));
 
         return $this;
     }

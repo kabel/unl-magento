@@ -122,7 +122,7 @@ class Unl_Comm_Model_Queue extends Mage_Core_Model_Abstract
         }
 
         if(count($collection->getItems()) < $count-1 || count($collection->getItems()) == 0) {
-            $this->setQueueFinishAt(now());
+            $this->setQueueFinishAt(Mage::getSingleton('core/date')->gmtDate());
             $this->setQueueStatus(self::STATUS_SENT);
             $this->save();
         }
