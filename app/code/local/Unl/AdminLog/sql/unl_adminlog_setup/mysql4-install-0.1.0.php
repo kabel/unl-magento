@@ -7,8 +7,8 @@ $installer->startSetup();
 
 $installer->run("
 
-DROP TABLE IF EXISTS {$this->getTable('unl_adminlog/log')};
-CREATE TABLE {$this->getTable('unl_adminlog/log')} (
+DROP TABLE IF EXISTS {$installer->getTable('unl_adminlog/log')};
+CREATE TABLE {$installer->getTable('unl_adminlog/log')} (
   `log_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
   `created_at` DATETIME NOT NULL ,
   `remote_addr` bigint(20) DEFAULT NULL,

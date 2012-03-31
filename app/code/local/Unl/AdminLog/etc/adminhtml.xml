@@ -25,12 +25,12 @@
                     <children>
                         <log>
                             <title>Log</title>
-                            <action>unllog/log/</action>
+                            <action>adminhtml/log/</action>
                             <sort_order>10</sort_order>
                         </log>
                         <archive>
                             <title>Archive</title>
-                            <action>unllog/log/archive/</action>
+                            <action>adminhtml/log/archive/</action>
                             <sort_order>15</sort_order>
                         </archive>
                     </children>

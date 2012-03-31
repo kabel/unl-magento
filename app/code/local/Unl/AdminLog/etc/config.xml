@@ -2,21 +2,9 @@
 <config>
     <modules>
         <Unl_AdminLog>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Unl_AdminLog>
     </modules>
-    
-    <admin>
-    	<routers>
-    		<unl_adminlog>
-    			<use>admin</use>
-    			<args>
-    				<module>Unl_AdminLog</module>
-    				<frontName>unllog</frontName>
-    			</args>
-    		</unl_adminlog>
-    	</routers>
-    </admin>
     
     <global>
     	<helpers>
@@ -28,23 +16,23 @@
         <models>
         	<unl_adminlog>
                 <class>Unl_AdminLog_Model</class>
-                <resourceModel>unl_adminlog_mysql4</resourceModel>
+                <resourceModel>unl_adminlog_resource</resourceModel>
             </unl_adminlog>
-            <unl_adminlog_mysql4>
-                <class>Unl_AdminLog_Model_Mysql4</class>
+            <unl_adminlog_resource>
+                <class>Unl_AdminLog_Model_Resource</class>
                 <entities>
                     <log>
                         <table>unl_adminlog_log</table>
                     </log>
                 </entities>
-            </unl_adminlog_mysql4>
+            </unl_adminlog_resource>
         </models>
         
         <resources>
         	<unl_adminlog_setup>
         		<setup>
 	               <module>Unl_AdminLog</module>
-	               <class>Mage_Core_Model_Resource_Setup</class>
+	               <class>Unl_AdminLog_Model_Resource_Setup</class>
 	            </setup>
         	</unl_adminlog_setup>
         </resources>
@@ -59,7 +47,6 @@
             <log_log_clean_after>
                 <observers>
                     <unl_adminlog_clean>
-                        <type>singleton</type>
                         <class>unl_adminlog/observer</class>
                         <method>onLogClean</method>
                     </unl_adminlog_clean>
@@ -67,10 +54,23 @@
             </log_log_clean_after>
         </events>
     </global>
+        
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <adminlog before="Mage_Adminhtml">Unl_AdminLog</adminlog>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
     
     <adminhtml>
         <unl_adminlog>
             <log_events module="unl_adminlog">
+                <!-- BEGIN: Core Modules -->
                 <adminhtml_api_role translate="label">
                     <label>Web Services Roles</label>
                     <id_param>rid</id_param>
@@ -727,7 +727,8 @@
                 <adminhtml_urlrewrite translate="label">
                     <label>URL Rewrites</label>
                 </adminhtml_urlrewrite>
-                
+                <!-- END: Core Modules -->
+                <!-- BEGIN: Core Extended Modules -->
                 <adminhtml_compiler_process translate="label">
                     <label>System Compilation</label>
                     <utility_actions>
@@ -845,106 +846,14 @@
                         <key />
                     </alt_params>
                 </adminhtml_mobile>
+                <!-- END: Core Extended Modules -->
                 
-                <unl_adminlog_log translate="label">
+                <adminhtml_log translate="label">
                     <label>Admin Action Log</label>
                     <view_actions>
                         <archive />
                     </view_actions>
-                </unl_adminlog_log>
-                <unl_comm_queue translate="label">
-                    <label>Customer Communication Queue</label>
-                    <utility_actions>
-                        <cancel />
-                        <pause />
-                        <resume />
-                        <sending />
-                        <start />
-                    </utility_actions>
-                    <view_actions>
-                        <preview />
-                    </view_actions>
-                </unl_comm_queue>
-                <unl_core_report_sales_bursar translate="label">
-                    <label>Reporting: Sales - Bursar</label>
-                    <view_actions>
-                        <cc />
-                        <co />
-                        <nocap />
-                    </view_actions>
-                </unl_core_report_sales_bursar>
-                <unl_core_report_sales_reconcile translate="label">
-                    <label>Reporting: Sales - Reconcile</label>
-                    <view_actions>
-                        <cc />
-                        <co />
-                        <nocap />
-                    </view_actions>
-                </unl_core_report_sales_reconcile>
-                <unl_core_report_customer translate="label">
-                    <label>Reporting: Customer Info</label>
-                    <view_actions>
-                        <orderaddress />
-                    </view_actions>
-                </unl_core_report_customer>
-                <unl_core_report_product translate="label">
-                    <label>Reporting: Sold Product Details</label>
-                    <view_actions>
-                        <customized />
-                        <orderdetails />
-                    </view_actions>
-                </unl_core_report_product>
-                <unl_core_sales_order_view_externalid translate="label">
-                    <label>Sales Order External Id</label>
-                </unl_core_sales_order_view_externalid>
-                <unl_core_sales_picklist translate="label">
-                    <label>Sales Picklists</label>
-                </unl_core_sales_picklist>
-                <unl_core_warehouse translate="label">
-                    <label>Manage Warehouses</label>
-                </unl_core_warehouse>
-                <unl_customertag_index translate="label">
-                    <label>Customer Tags</label>
-                </unl_customertag_index>
-                <unl_inventory_index translate="label">
-                    <label>Catalog Product Inventory</label>
-                </unl_inventory_index>
-                <unl_inventory_report translate="label">
-                    <label>Reporting: Inventory</label>
-                    <view_actions>
-                        <valuation />
-                    </view_actions>
-                </unl_inventory_report>
-                <unl_ship_index translate="label">
-                    <label>Sales Shipping Labels</label>
-                    <view_actions>
-                        <customs />
-                        <highvalue />
-                        <label />
-                        <labelpdf />
-                    </view_actions>
-                    <save_actions>
-                        <create />
-                    </save_actions>
-                    <alt_params>
-                        <order_id />
-                    </alt_params>
-                </unl_ship_index>
-                <shippingoverride_index translate="label">
-                    <label>Manage Shipping Overrides</label>
-                    <save_actions>
-                        <massstatus />
-                    </save_actions>
-                    <delete_actions>
-                        <massdelete />
-                    </delete_actions>
-                    <alt_params>
-                        <override />
-                    </alt_params>
-                </shippingoverride_index>
-                <shippingoverride_report translate="label">
-                    <label>Reporting: Shipping Overrides</label>
-                </shippingoverride_report>
+                </adminhtml_log>
             </log_events>
             <action_map>
                 <edit>2</edit>
@@ -966,7 +875,6 @@
             <controller_action_predispatch>
                 <observers>
                     <unl_adminlog_action_log>
-                        <type>singleton</type>
                         <class>unl_adminlog/observer</class>
                         <method>onActionPredispatch</method>
                     </unl_adminlog_action_log>
@@ -975,7 +883,6 @@
             <admin_session_user_login_success>
                 <observers>
                     <unl_adminlog_action_log>
-                        <type>singleton</type>
                         <class>unl_adminlog/observer</class>
                         <method>onAdminLoginSucess</method>
                     </unl_adminlog_action_log>
@@ -984,7 +891,6 @@
             <admin_session_user_login_failed>
                 <observers>
                     <unl_adminlog_action_log>
-                        <type>singleton</type>
                         <class>unl_adminlog/observer</class>
                         <method>onAdminLoginFail</method>
                     </unl_adminlog_action_log>
@@ -992,6 +898,14 @@
             </admin_session_user_login_failed>
            
         </events>
+        
+        <layout>
+            <updates>
+                <unl_adminlog module="Unl_AdminLog">
+                    <file>unl_adminlog.xml</file>
+                </unl_adminlog>
+            </updates>
+        </layout>
     </adminhtml>
     
     <default>
