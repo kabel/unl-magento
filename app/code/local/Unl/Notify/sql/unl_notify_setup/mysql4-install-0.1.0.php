@@ -1,10 +1,19 @@
 <?php
 
+/* @var $installer Unl_Notify_Model_Resource_Setup */
 $installer = $this;
-
 $installer->startSetup();
 
-$installer->addAttribute('catalog_product', 'notify_emails', array(
+$installer->run("
+CREATE TABLE {$installer->getTable('unl_notify/order_queue')} (
+  `queue_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `order_id` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`queue_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
+
+$catalogInstaller = Mage::getResourceModel('catalog/setup', 'catalog_setup');
+$catalogInstaller->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'notify_emails', array(
 	'type'              => 'text',
 	'backend'           => '',
 	'frontend'          => '',
@@ -24,13 +33,5 @@ $installer->addAttribute('catalog_product', 'notify_emails', array(
 	'unique'            => false,
 	'note'              => 'Comma-separated list of email addresses.'
 ));
-
-$installer->run("
-CREATE TABLE {$this->getTable('unl_notify/order_queue')} (
-  `queue_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `order_id` INT(10) UNSIGNED NOT NULL ,
-  PRIMARY KEY (`queue_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-");
 
 $installer->endSetup();

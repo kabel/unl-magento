@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Notify>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Unl_Notify>
     </modules>
     
@@ -15,16 +15,16 @@
         <models>
             <unl_notify>
                 <class>Unl_Notify_Model</class>
-                <resourceModel>unl_notify_mysql4</resourceModel>
+                <resourceModel>unl_notify_resource</resourceModel>
             </unl_notify>
-            <unl_notify_mysql4>
-                <class>Unl_Notify_Model_Mysql4</class>
+            <unl_notify_resource>
+                <class>Unl_Notify_Model_Resource</class>
                 <entities>
                     <order_queue>
                         <table>unl_notify_order_queue</table>
                     </order_queue>
                 </entities>
-            </unl_notify_mysql4>
+            </unl_notify_resource>
         </models>
         
         <template>
@@ -41,7 +41,7 @@
             <unl_notify_setup>
                 <setup>
                     <module>Unl_Notify</module>
-                    <class>Mage_Eav_Model_Entity_Setup</class>
+                    <class>Unl_Notify_Model_Resource_Setup</class>
                 </setup>
             </unl_notify_setup>
         </resources>
