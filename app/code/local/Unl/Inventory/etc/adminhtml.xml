@@ -5,7 +5,7 @@
             <children>
                 <inventory translate="title" module="unl_inventory">
                     <title>Manage Inventory</title>
-                    <action>unlinv/</action>
+                    <action>adminhtml/catalog_inventory/</action>
                     <sort_order>1</sort_order>
                 </inventory>
             </children>
@@ -16,7 +16,7 @@
                     <children>
                         <inventory_valuation translate="title" module="unl_inventory">
                             <title>Inventory Valuation</title>
-                            <action>unlinv/report/valuation</action>
+                            <action>adminhtml/report_inventory/valuation</action>
                         </inventory_valuation>
                     </children>
                 </products>

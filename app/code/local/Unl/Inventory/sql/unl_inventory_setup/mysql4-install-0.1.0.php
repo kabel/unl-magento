@@ -6,8 +6,8 @@ $installer = $this;
 $installer->startSetup();
 
 $installer->run("
--- DROP TABLE IF EXISTS `{$this->getTable('unl_inventory/audit')}`;
-CREATE TABLE `{$this->getTable('unl_inventory/audit')}` (
+-- DROP TABLE IF EXISTS `{$installer->getTable('unl_inventory/audit')}`;
+CREATE TABLE `{$installer->getTable('unl_inventory/audit')}` (
     `audit_id` int(10) unsigned NOT NULL auto_increment,
     `product_id` int(10) unsigned NOT NULL default '0',
     `type` tinyint(1) unsigned NOT NULL default '0',
@@ -17,11 +17,11 @@ CREATE TABLE `{$this->getTable('unl_inventory/audit')}` (
     `note` text NOT NULL default '',
     PRIMARY KEY  (`audit_id`),
     KEY `FK_UNL_INVENTORY_AUDIT_PRODUCT` (`product_id`),
-    CONSTRAINT `FK_UNL_INVENTORY_AUDIT_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `{$this->getTable('catalog_product_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `FK_UNL_INVENTORY_AUDIT_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `{$installer->getTable('catalog_product_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `{$this->getTable('unl_inventory/index')}`;
-CREATE TABLE `{$this->getTable('unl_inventory/index')}` (
+-- DROP TABLE IF EXISTS `{$installer->getTable('unl_inventory/index')}`;
+CREATE TABLE `{$installer->getTable('unl_inventory/index')}` (
     `index_id` int(10) unsigned NOT NULL auto_increment,
     `product_id` int(10) unsigned NOT NULL default '0',
     `qty_on_hand` decimal(12,4) NOT NULL default '0.0000',
@@ -29,19 +29,19 @@ CREATE TABLE `{$this->getTable('unl_inventory/index')}` (
     `created_at` DATETIME NOT NULL default '0000-00-00',
     PRIMARY KEY  (`index_id`),
     KEY `FK_UNL_INVENTORY_INDEX_PRODUCT` (`product_id`),
-    CONSTRAINT `FK_UNL_INVENTORY_INDEX_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `{$this->getTable('catalog_product_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `FK_UNL_INVENTORY_INDEX_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `{$installer->getTable('catalog_product_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `{$this->getTable('unl_inventory/index_idx')}`;
-CREATE TABLE `{$this->getTable('unl_inventory/index_idx')}` (
+-- DROP TABLE IF EXISTS `{$installer->getTable('unl_inventory/index_idx')}`;
+CREATE TABLE `{$installer->getTable('unl_inventory/index_idx')}` (
     `index_id` int(10) unsigned NOT NULL,
     `product_id` int(10) unsigned NOT NULL,
     PRIMARY KEY  (`product_id`),
     KEY `FK_UNL_INVENTORY_INDEX_IDX_INDEX` (`index_id`),
-    CONSTRAINT `FK_UNL_INVENTORY_INDEX_IDX_INDEX` FOREIGN KEY (`index_id`) REFERENCES `{$this->getTable('unl_inventory/index')}` (`index_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `FK_UNL_INVENTORY_INDEX_IDX_INDEX` FOREIGN KEY (`index_id`) REFERENCES `{$installer->getTable('unl_inventory/index')}` (`index_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `{$this->getTable('unl_inventory/index_tmp')}`;
+-- DROP TABLE IF EXISTS `{$installer->getTable('unl_inventory/index_tmp')}`;
 CREATE TABLE `{$installer->getTable('unl_inventory/index_tmp')}` (
      `product_id` int(10) unsigned NOT NULL,
      `qty_on_hand` decimal(12,4) NOT NULL default '0.0000',
@@ -51,8 +51,8 @@ CREATE TABLE `{$installer->getTable('unl_inventory/index_tmp')}` (
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 ");
 
-$setup = new Mage_Catalog_Model_Resource_Eav_Mysql4_Setup('catalog_setup');
-$setup->addAttribute('catalog_product', 'audit_inventory', array(
+$setup = new Mage_Catalog_Model_Resource_Setup('catalog_setup');
+$setup->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'audit_inventory', array(
     'type'                 => 'int',
     'label'                => 'Audit Inventory',
     'input'                => '',
@@ -62,9 +62,9 @@ $setup->addAttribute('catalog_product', 'audit_inventory', array(
     'user_defined'         => false,
     'default'              => false,
     'unique'               => false,
-    'used_for_price_rules' => false,
+    'used_for_promo_rules' => false,
     'is_configurable'      => false,
-    'apply_to'             => 'simple,virtual',
+    'apply_to'             => 'simple,virtual,downloadable',
 ));
 
 $installer->endSetup();

@@ -2,19 +2,19 @@
 <config>
     <modules>
         <Unl_Inventory>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Unl_Inventory>
     </modules>
     
     <admin>
     	<routers>
-    		<unl_inventory>
-    			<use>admin</use>
+    		<adminhtml>
     			<args>
-    				<module>Unl_Inventory</module>
-    				<frontName>unlinv</frontName>
+                    <modules>
+                        <Unl_Inventory before="Mage_Adminhtml">Unl_Inventory</Unl_Inventory>
+                    </modules>
     			</args>
-    		</unl_inventory>
+    		</adminhtml>
     	</routers>
     </admin>
     
@@ -28,10 +28,10 @@
         <models>
         	<unl_inventory>
                 <class>Unl_Inventory_Model</class>
-                <resourceModel>unl_inventory_mysql4</resourceModel>
+                <resourceModel>unl_inventory_resource</resourceModel>
             </unl_inventory>
-            <unl_inventory_mysql4>
-                <class>Unl_Inventory_Model_Mysql4</class>
+            <unl_inventory_resource>
+                <class>Unl_Inventory_Model_Resource</class>
                 <entities>
                     <audit>
                         <table>unl_inventory_audit</table>
@@ -46,14 +46,14 @@
                         <table>unl_inventory_index_idx</table>
                     </index_idx>
                 </entities>
-            </unl_inventory_mysql4>
+            </unl_inventory_resource>
         </models>
         
         <resources>
         	<unl_inventory_setup>
         		<setup>
 	               <module>Unl_Inventory</module>
-	               <class>Mage_Core_Model_Resource_Setup</class>
+	               <class>Unl_Inventory_Model_Resource_Setup</class>
 	            </setup>
         	</unl_inventory_setup>
         </resources>
@@ -68,7 +68,6 @@
             <catalog_product_save_before>
                 <observers>
                     <unl_audit_inventory>
-                        <type>singleton</type>
                         <class>unl_inventory/observer</class>
                         <method>onBeforeProductSave</method>
                     </unl_audit_inventory>
@@ -78,7 +77,6 @@
             <sales_model_service_order_prepare_invoice>
                 <observers>
                     <unl_audit_inventory>
-                        <type>singleton</type>
                         <class>unl_inventory/observer</class>
                         <method>onPrepareInvoice</method>
                     </unl_audit_inventory>
@@ -88,7 +86,6 @@
             <sales_order_invoice_cancel>
                 <observers>
                     <unl_audit_inventory>
-                        <type>singleton</type>
                         <class>unl_inventory/observer</class>
                         <method>onCancelInvoice</method>
                     </unl_audit_inventory>
@@ -98,7 +95,6 @@
             <sales_order_invoice_save_after>
                 <observers>
                     <unl_audit_inventory>
-                        <type>singleton</type>
                         <class>unl_inventory/observer</class>
                         <method>onAfterSaveInvoice</method>
                     </unl_audit_inventory>
@@ -124,14 +120,18 @@
                     </unl_audit_inventory>
                 </observers>
             </sales_order_creditmemo_save_after>
-        
+        </events>
+    </global>
+    
+    <adminhtml>
+        <events>
             <admin_system_config_changed_section_cataloginventory>
                 <observers>
+                    <!-- Disable and forward this event locally -->
                     <inventory>
                         <type>disabled</type>
                     </inventory>
                     <unl_audit_inventory>
-                        <type>singleton</type>
                         <class>unl_inventory/observer</class>
                         <method>onInventoryConfigChange</method>
                     </unl_audit_inventory>
@@ -141,37 +141,43 @@
             <controller_action_predispatch_adminhtml_system_config_save>
                 <observers>
                     <check_inventory_config>
-                        <type>singleton</type>
                         <class>unl_inventory/observer</class>
                         <method>onPredispatchSaveConfig</method>
                     </check_inventory_config>
                 </observers>
             </controller_action_predispatch_adminhtml_system_config_save>
-        </events>
-    </global>
-    
-    <adminhtml>
-        <events>
-            <controller_action_predispatch>
-                <observers>
-                    <unl_invengtory_store_id>
-                        <type>singleton</type>
-                        <class>unl_inventory/admin_observer</class>
-                        <method>controllerActionPredispatch</method>
-                    </unl_invengtory_store_id>
-                </observers>
-            </controller_action_predispatch>
             
             <unl_inventory_controller_product_init>
                 <observers>
                     <product_auth>
-                        <type>singleton</type>
                         <class>unl_inventory/admin_observer</class>
                         <method>onInventoryProductInit</method>
                     </product_auth>
                 </observers>
             </unl_inventory_controller_product_init>
         </events>
+        
+        <layout>
+            <updates>
+                <unl_inventory module="Unl_Inventory">
+                    <file>unl_inventory.xml</file>
+                </unl_inventory>
+            </updates>
+        </layout>
+        
+        <unl_adminlog>
+            <log_events>
+                <unl_inventory_index translate="label">
+                    <label>Catalog Product Inventory</label>
+                </unl_inventory_index>
+                <unl_inventory_report translate="label">
+                    <label>Reporting: Inventory</label>
+                    <view_actions>
+                        <valuation />
+                    </view_actions>
+                </unl_inventory_report>
+            </log_events>
+        </unl_adminlog>
     </adminhtml>
     
     <default>
