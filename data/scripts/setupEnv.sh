@@ -16,6 +16,7 @@ cd $magePath
 
 symlinks=(
 #	"app/code/community/Zenprint"
+    "app/code/local/Mage"
 	"app/code/local/Unl"
 	"app/code/local/AW"
 	"app/code/local/Webshopapps"
