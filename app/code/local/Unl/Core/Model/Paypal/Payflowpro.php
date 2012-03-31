@@ -2,7 +2,21 @@
 
 class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
 {
-    /* Extends the logic of
+    /**
+     * Additional response codes
+     */
+    const RESPONSE_CODE_INVALID_ACCOUNT   = 23;
+    const RESPONSE_CODE_INVALID_EXP_DATE  = 24;
+    const RESPONSE_CODE_CSC_MISMATCH      = 114;
+
+    protected $_cardInfoErrors = array(
+        self::RESPONSE_CODE_DECLINED,
+        self::RESPONSE_CODE_INVALID_ACCOUNT,
+        self::RESPONSE_CODE_INVALID_EXP_DATE,
+        self::RESPONSE_CODE_CSC_MISMATCH,
+    );
+
+    /* Extends
      * @see Mage_Payment_Model_Method_Abstract::canCapturePartial()
      * by first checking the config for reference_txn
      */
@@ -11,7 +25,7 @@ class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
         return ($this->getConfigData('reference_txn') || parent::canCapturePartial());
     }
 
-    /* Extends the logic of
+    /* Extends
      * @see Mage_Payment_Model_Method_Abstract::canRefundPartialPerInvoice()
      * by first checking the config for reference_txn
      */
@@ -28,25 +42,20 @@ class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
      */
     protected function _isOrderPartialCaptured($payment)
     {
-        $collection = Mage::getModel('sales/order_payment_transaction')->getCollection()
-            ->setOrderFilter($payment->getOrder())
-            ->addPaymentIdFilter($payment->getId())
-            ->addTxnTypeFilter(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
-
-        if ($collection->count()) {
-            return true;
-        }
-
-        return false;
+        return $payment->lookupTransaction(false, Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE) !== false;
     }
 
-    /* Override the logic of
+    /* Overrides
      * @see Mage_Paypal_Model_Payflowpro::capture()
      * by implementing delayed capture and partial capture
      */
     public function capture(Varien_Object $payment, $amount)
     {
-        if ($payment->getParentTransactionId()) {
+        if ($payment->getReferenceTransactionId()) {
+            $request = $this->_buildPlaceRequest($payment, $amount);
+            $request->setTrxtype(self::TRXTYPE_SALE);
+            $request->setOrigid($payment->getReferenceTransactionId());
+        } elseif ($payment->getParentTransactionId()) {
             $request = $this->_buildBasicRequest($payment);
             if (!$this->canCapturePartial()) {
                 $request->setTrxtype(self::TRXTYPE_DELAYED_CAPTURE);
@@ -78,5 +87,20 @@ class Unl_Core_Model_Paypal_Payflowpro extends Mage_Paypal_Model_Payflowpro
                 break;
         }
         return $this;
+    }
+
+    /* Extends
+     * @see Mage_Paypal_Model_Payflowpro::_processErrors()
+     * by throwing a specific exception for declined responses
+     */
+    protected function _processErrors(Varien_Object $response)
+    {
+        if (in_array($response->getResultCode(), $this->_cardInfoErrors)) {
+            throw new Mage_Payment_Model_Info_Exception(
+                Mage::helper('paypal')->__('Transaction Declined. Please review your card information to ensure it is correct and try again. If you still have problems, please call your card issuing bank to resolve.')
+            );
+        }
+
+        parent::_processErrors($response);
     }
 }
