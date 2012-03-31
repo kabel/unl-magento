@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.1.24</version>
+            <version>0.2.0</version>
         </Unl_Core>
     </modules>
     
@@ -18,12 +18,17 @@
                     <!-- Adv Filter -->
                     <customer_grid>Unl_Core_Block_Adminhtml_Customer_Grid</customer_grid>
                     <!-- Customize the dashboard elements for scope -->
+                    <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
+                    <dashboard_searches_top>Unl_Core_Block_Adminhtml_Dashboard_Searches_Top</dashboard_searches_top>
+                    <dashboard_searches_last>Unl_Core_Block_Adminhtml_Dashboard_Searches_Top</dashboard_searches_last>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
+                    <dashboard_tab_products_ordered>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Ordered</dashboard_tab_products_ordered>
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
-                    <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
-                     <!-- Customize report grids -->
+                    <!-- Customizes the caching/fetching -->
+                    <notification_security>Unl_Core_Block_Adminhtml_Notification_Security</notification_security>
+                    <!-- Customize report grids -->
                     <report_product_downloads_grid>Unl_Core_Block_Adminhtml_Report_Product_Downloads_Grid</report_product_downloads_grid>
                     <report_product_lowstock_grid>Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid</report_product_lowstock_grid>
                     <report_review_product_grid>Unl_Core_Block_Adminhtml_Report_Review_Product_Grid</report_review_product_grid>
@@ -36,11 +41,9 @@
                     <sales_shipment_grid>Unl_Core_Block_Adminhtml_Sales_Shipment_Grid</sales_shipment_grid>
                     <!-- Adds an ACL check to the Payment Method Form -->
                     <sales_order_create_billing_method_form>Unl_Core_Block_Adminhtml_Sales_Order_Create_Billing_Method_Form</sales_order_create_billing_method_form>
-                    <!-- Adds a force pay button to invoice -->
-                    <sales_order_invoice_view>Unl_Core_Block_Adminhtml_Sales_Order_Invoice_View</sales_order_invoice_view>
                     <!-- No empty optgroups -->
                     <widget_grid_column_filter_store>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Filter_Store</widget_grid_column_filter_store>
-                    <!-- Don't export the currenct symbols -->
+                    <!-- Don't export the currency symbols -->
                     <widget_grid_column_renderer_currency>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Currency</widget_grid_column_renderer_currency>
                     <widget_grid_column_renderer_price>Unl_Core_Block_Adminhtml_Widget_Grid_Column_Renderer_Price</widget_grid_column_renderer_price>
                 </rewrite>
@@ -51,14 +54,13 @@
                     <breadcrumbs>Unl_Core_Block_Catalog_Breadcrumbs</breadcrumbs>
                     <!-- Customized layed navigation -->
                     <layer_view>Unl_Core_Block_Catalog_Layer_View</layer_view>
-                    <!-- Check category ACL -->
-                    <navigation>Unl_Core_Block_Catalog_Navigation</navigation>
                     <!-- Add text list mode -->
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
                 </rewrite>
             </catalog>
             <giftmessage>
                 <rewrite>
+                    <!-- Display Gift Message interface in admin if possible -->
                     <adminhtml_sales_order_view_form>Unl_Core_Block_GiftMessage_Adminhtml_Sales_Order_View_Form</adminhtml_sales_order_view_form>
                     <adminhtml_sales_order_view_items>Unl_Core_Block_GiftMessage_Adminhtml_Sales_Order_View_Items</adminhtml_sales_order_view_items>
                 </rewrite>
@@ -71,15 +73,10 @@
             </googleanalytics>
             <page>
                 <rewrite>
+                    <!-- Fix link sorting and removing -->
                     <template_links>Unl_Core_Block_Page_Template_Links</template_links>
                 </rewrite>
             </page>
-            <wishlist>
-                <rewrite>
-                    <customer_sidebar>Unl_Core_Block_Wishlist_Customer_Sidebar</customer_sidebar>
-                    <customer_wishlist>Unl_Core_Block_Wishlist_Customer_Wishlist</customer_wishlist>
-                </rewrite>
-            </wishlist>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
@@ -87,16 +84,18 @@
         <helpers>
             <adminhtml>
                 <rewrite>
-                    <!-- Fix source_store logic -->
+                    <!-- Allow Dashboard to show full user scope -->
                     <dashboard_order>Unl_Core_Helper_Adminhtml_Dashboard_Order</dashboard_order>
                 </rewrite>
             </adminhtml>
             <catalog>
                 <rewrite>
-                    <!-- Upate Security Logic -->
-                    <product>Unl_Core_Helper_Catalog_Product</product>
+                    <!-- Add ACL check when getting categories -->
+                    <category>Unl_Core_Helper_Catalog_Category</category>
                     <!-- Allow images to specify secure url pref -->
                     <image>Unl_Core_Helper_Catalog_Image</image>
+                    <!-- Upate Security Logic -->
+                    <product>Unl_Core_Helper_Catalog_Product</product>
                 </rewrite>
             </catalog>
             <payment>
@@ -118,48 +117,57 @@
         <models>
             <unl_core>
                 <class>Unl_Core_Model</class>
-                <resourceModel>unl_core_mysql4</resourceModel>
+                <resourceModel>unl_core_resource</resourceModel>
             </unl_core>
-            <unl_core_mysql4>
-                <class>Unl_Core_Model_Mysql4</class>
+            <unl_core_resource>
+                <class>Unl_Core_Model_Resource</class>
                 <entities>
                     <tax_boundary>
                         <table>unl_tax_boundary</table>
                     </tax_boundary>
+                    <tax_counties>
+                        <table>unl_tax_counties</table>
+                    </tax_counties>
+                    <tax_places>
+                        <table>unl_tax_places</table>
+                    </tax_places>
                     <warehouse>
                     	<table>unl_warehouse</table>
                     </warehouse>
                 </entities>
-            </unl_core_mysql4>
+            </unl_core_resource>
             <adminhtml>
                 <rewrite>
                     <!-- Add new catalog list modes -->
-                    <system_config_source_catalog_listMode>Unl_Core_Model_System_Config_Source_Catalog_ListMode</system_config_source_catalog_listMode>
+                    <system_config_source_catalog_listMode>Unl_Core_Model_Adminhtml_System_Config_Source_Catalog_ListMode</system_config_source_catalog_listMode>
                 </rewrite>
             </adminhtml>
-            <backup>
+            <backup_resource>
                 <rewrite>
                     <!-- Excludes certain backup tables -->
-                    <db>Unl_Core_Model_Backup_Db</db>
+                    <db>Unl_Core_Model_Backup_Resource_Db</db>
                 </rewrite>
-            </backup>
+            </backup_resource>
             <catalog>
                 <rewrite>
                     <!-- Fix upload exception logging when no upload occurs -->
                     <category_attribute_backend_image>Unl_Core_Model_Catalog_Category_Attribute_Backend_Image</category_attribute_backend_image>
                     <!-- Allow product import of configs/upsells/related -->
-                    <convert_adapter_product>Unl_Core_Model_Convert_Adapter_Product</convert_adapter_product>
+                    <convert_adapter_product>Unl_Core_Model_Catalog_Convert_Adapter_Product</convert_adapter_product>
                     <!-- Add ACL checks to filter categories -->
                     <layer_filter_category>Unl_Core_Model_Catalog_Layer_Filter_Category</layer_filter_category>
                     <!-- Allow product images to specify secure url pref -->
                     <product_image>Unl_Core_Model_Catalog_Product_Image</product_image>
                 </rewrite>
             </catalog>
-            <catalog_resource_eav_mysql4>
+            <catalog_resource>
                 <rewrite>
-                    <product_link_product_collection>Unl_Core_Model_Catalog_Resource_Eav_Mysql4_Product_Link_Product_Collection</product_link_product_collection>
+                    <!-- Add an event hook on _renderFiltersBefore -->
+                    <product_collection>Unl_Core_Model_Catalog_Resource_Product_Collection</product_collection>
+                    <!-- Fix position link attribute filtering in EAV collection -->
+                    <product_link_product_collection>Unl_Core_Model_Catalog_Resource_Product_Link_Product_Collection</product_link_product_collection>
                 </rewrite>
-            </catalog_resource_eav_mysql4>
+            </catalog_resource>
             <cms>
             	<rewrite>
             		<!-- Fix skin URL -->
@@ -178,20 +186,27 @@
                 </rewrite>
             </core>
             <dataflow>
-                <!-- Fix Double HTML Escaping -->
                 <rewrite>
-                    <convert_parser_xml_excel>Unl_Core_Model_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
+                    <!-- Fix Double HTML Escaping -->
+                    <convert_parser_xml_excel>Unl_Core_Model_Dataflow_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
                 </rewrite>
             </dataflow>
             <importexport>
                 <rewrite>
+                    <!-- Add admin scope filters -->
                     <export_entity_product>Unl_Core_Model_ImportExport_Export_Entity_Product</export_entity_product>
                     <import_entity_product>Unl_Core_Model_ImportExport_Import_Entity_Product</import_entity_product>
                 </rewrite>
             </importexport>
+            <log>
+                <rewrite>
+                    <!-- Fix stack trace in error message -->
+                    <cron>Unl_Core_Model_Log_Cron</cron>
+                </rewrite>
+            </log>
             <payment>
                 <rewrite>
-                    <!-- Custom availability/display logic (single store) -->
+                    <!-- Custom availability/display logic -->
                     <method_checkmo>Unl_Core_Model_Payment_Method_Checkmo</method_checkmo>
                 </rewrite>
             </payment>
@@ -201,61 +216,73 @@
             		<payflowpro>Unl_Core_Model_Paypal_Payflowpro</payflowpro>
             	</rewrite>
             </paypal>
-            <reports_mysql4>
+            <reports_resource>
                 <rewrite>
                     <!-- Dashboard Report Fixes for Store Owned Products -->
-                    <order_collection>Unl_Core_Model_Reports_Mysql4_Order_Collection</order_collection>
-                    <!-- Store Owned Product Filters -->
-                    <product_sold_collection>Unl_Core_Model_Reports_Mysql4_Product_Sold_Collection</product_sold_collection>
-                    <product_viewed_collection>Unl_Core_Model_Reports_Mysql4_Product_Viewed_Collection</product_viewed_collection>
+                    <order_collection>Unl_Core_Model_Reports_Resource_Order_Collection</order_collection>
+                    <!-- Source Store Filter -->
+                    <product_sold_collection>Unl_Core_Model_Reports_Resource_Product_Sold_Collection</product_sold_collection>
+                    <product_viewed_collection>Unl_Core_Model_Reports_Resource_Product_Viewed_Collection</product_viewed_collection>
                 </rewrite>
-            </reports_mysql4>
+            </reports_resource>
             <sales>
                 <rewrite>
+                    <!-- Email Stores/Warehouse and Invoice Write-Off -->
                     <order>Unl_Core_Model_Sales_Order</order>
                     <!-- Adds force pay abstaction for checkmo -->
                     <order_invoice>Unl_Core_Model_Sales_Order_Invoice</order_invoice>
-                    <!-- Allow for better multi-transaction payments -->
+                    <!-- Multiple Refunds per Capture -->
                     <order_payment>Unl_Core_Model_Sales_Order_Payment</order_payment>
                     <!-- Change size of order PDFs to US Letter -->
-                    <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
                     <order_pdf_items_creditmemo_default>Unl_Core_Model_Sales_Order_Pdf_Items_Creditmemo_Default</order_pdf_items_creditmemo_default>
                     <order_pdf_items_invoice_default>Unl_Core_Model_Sales_Order_Pdf_Items_Invoice_Default</order_pdf_items_invoice_default>
                     <order_pdf_items_shipment_default>Unl_Core_Model_Sales_Order_Pdf_Items_Shipment_Default</order_pdf_items_shipment_default>
+                    <order_pdf_creditmemo>Unl_Core_Model_Sales_Order_Pdf_Creditmemo</order_pdf_creditmemo>
                     <order_pdf_invoice>Unl_Core_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
                     <order_pdf_shipment>Unl_Core_Model_Sales_Order_Pdf_Shipment</order_pdf_shipment>
                     <!-- Adds an event to fire after setting shipping_method -->
                     <quote_address>Unl_Core_Model_Sales_Quote_Address</quote_address>
+                    <!-- New methods to pull config attributes -->
+                    <quote_config>Unl_Core_Model_Sales_Quote_Config</quote_config>
                     <!-- Fixes dummy qty and adds before total events -->
                     <service_order>Unl_Core_Model_Sales_Service_Order</service_order>
                 </rewrite>
             </sales>
-            <sales_mysql4>
+            <sales_resource>
                 <rewrite>
                     <!-- Fix Aggregate Methods And Live Reports -->
-                    <report_bestsellers>Unl_Core_Model_Sales_Mysql4_Report_Bestsellers</report_bestsellers>
-                    <report_order>Unl_Core_Model_Sales_Mysql4_Report_Order</report_order>
-                    <report_order_updatedat_collection>Unl_Core_Model_Sales_Mysql4_Report_Order_Updatedat_Collection</report_order_updatedat_collection>
+                    <report_bestsellers>Unl_Core_Model_Sales_Resource_Report_Bestsellers</report_bestsellers>
+                    <report_order_createdat>Unl_Core_Model_Sales_Resource_Report_Order_Createdat</report_order_createdat>
+                    <report_order_updatedat>Unl_Core_Model_Sales_Resource_Report_Order_Updatedat</report_order_updatedat>
                 </rewrite>
-            </sales_mysql4>
+            </sales_resource>
+            <!-- Handled by config change
+            <shipping>
+                <rewrite>
+                    <carrier_pickup>Unl_Core_Model_Shipping_Carrier_Pickup</carrier_pickup>
+                </rewrite>
+            <shipping>
+             -->
             <tax>
                 <rewrite>
-                    <!-- Fixes to Attach Sale Amount to tax report and Zip+4 -->
+                    <!-- Find the Zip+4 for NE Addresses -->
                     <calculation>Unl_Core_Model_Tax_Calculation</calculation>
+                    <!-- Add method for getting shipping tax class -->
                     <config>Unl_Core_Model_Tax_Config</config>
                     <!-- Adds the total product amount applied to the tax rate -->
                     <sales_total_quote_tax>Unl_Core_Model_Tax_Sales_Total_Quote_Tax</sales_total_quote_tax>
                 </rewrite>
             </tax>
-            <tax_mysql4>
-                <!-- Tax report fix -->
+            <tax_resource>
                 <rewrite>
-                    <calculation>Unl_Core_Model_Tax_Mysql4_Calculation</calculation>
-                    <report_collection>Unl_Core_Model_Tax_Mysql4_Report_Collection</report_collection>
-                    <report_updatedat_collection>Unl_Core_Model_Tax_Mysql4_Report_Updatedat_Collection</report_updatedat_collection>
-                    <report_tax>Unl_Core_Model_Tax_Mysql4_Report_Tax</report_tax>
+                    <!-- Aggregate additional tax column -->
+                    <report_tax_createdat>Unl_Core_Model_Tax_Resource_Report_Tax_Createdat</report_tax_createdat>
+                    <report_tax_updatedat>Unl_Core_Model_Tax_Resource_Report_Tax_Updatedat</report_tax_updatedat>
+                    <!-- Core Tax Report Collection Modifications -->
+                    <report_collection>Unl_Core_Model_Tax_Resource_Report_Collection</report_collection>
+                    <report_updatedat_collection>Unl_Core_Model_Tax_Resource_Report_Updatedat_Collection</report_updatedat_collection>
                 </rewrite>
-            </tax_mysql4>
+            </tax_resource>
             <widget>
             	<rewrite>
                     <!-- Allow WYWSIWYG outside of adminhtml -->
@@ -267,10 +294,19 @@
             <unl_core_setup>
                 <setup>
                     <module>Unl_Core</module>
-                    <class>Mage_Eav_Model_Entity_Setup</class>
+                    <class>Unl_Core_Model_Resource_Setup</class>
                 </setup>
             </unl_core_setup>
         </resources>
+        <resource>
+            <connection>
+                <types>
+                    <pdo_mysql>
+                        <compatibleMode>0</compatibleMode>
+                    </pdo_mysql>
+                </types>
+            </connection>
+        </resource>
         
         <fieldsets>
             <sales_convert_quote_item>
@@ -283,151 +319,151 @@
             <catalog_controller_category_init_after>
                 <observers>
                     <catalog_acl>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
+                        <class>unl_core/catalog_observer</class>
                         <method>isCustomerAllowedCategory</method>
                     </catalog_acl>
                 </observers>
             </catalog_controller_category_init_after>
+            
             <catalog_controller_product_init_after>
                 <observers>
                     <catalog_acl>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
+                        <class>unl_core/catalog_observer</class>
                         <method>isCustomerAllowedProduct</method>
                     </catalog_acl>
                 </observers>
             </catalog_controller_product_init_after>
+            
             <catalog_product_is_salable_after>
                 <observers>
                     <no_sale_check>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
-                        <method>checkNoSale</method>
+                        <class>unl_core/catalog_observer</class>
+                        <method>isProductNoSale</method>
                     </no_sale_check>
                 </observers>
             </catalog_product_is_salable_after>
+            
             <core_block_abstract_prepare_layout_before>
                 <observers>
                     <unlcore_before_block_to_html>
-                        <type>singleton</type>
                         <class>unl_core/observer</class>
                         <method>consumeCheckoutMessages</method>
                     </unlcore_before_block_to_html>
                 </observers>
             </core_block_abstract_prepare_layout_before>
-            <core_block_abstract_to_html_before>
-                <observers>
-                    <unlcore_before_block_to_html>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
-                        <method>beforeCoreBlockToHtml</method>
-                    </unlcore_before_block_to_html>
-                </observers>
-            </core_block_abstract_to_html_before>
+                        
             <sales_convert_quote_item_to_order_item>
                 <observers>
                     <multiship_fix>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onSalesConvertQuoteItemToOrderItem</method>
                     </multiship_fix>
                 </observers>
             </sales_convert_quote_item_to_order_item>
+            
             <sales_quote_address_set_shipping_method_after>
                 <observers>
                     <pickup_fix>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onShippingMethodSet</method>
                     </pickup_fix>
                 </observers>
             </sales_quote_address_set_shipping_method_after>
+            
             <sales_quote_item_set_product>
                 <observers>
                     <source_store_set>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
-                        <method>setQuoteItemSourceStore</method>
+                        <method>onSalesQuoteItemSetProduct</method>
                     </source_store_set>
                 </observers>
             </sales_quote_item_set_product>
+            
+            <sales_order_place_after>
+                <observers>
+                    <virtual_capture>
+                        <class>unl_core/sales_observer</class>
+                        <method>onAfterPlaceOrder</method>
+                    </virtual_capture>
+                </observers>
+            </sales_order_place_after>
+            
             <sales_order_save_after>
                 <observers>
+                    <!-- Override Tax Module -->
                     <tax>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
-                        <method>salesEventOrderAfterSave</method>
+                        <class>unl_core/sales_observer</class>
+                        <method>onAfterOrderSave</method>
                     </tax>
                 </observers>
             </sales_order_save_after>
+            
             <sales_order_creditmemo_refund>
             	<observers>
                     <apply_refunded_at>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onSalesOrderCreditmemoRefund</method>
                     </apply_refunded_at>
                 </observers>
             </sales_order_creditmemo_refund>
+            
             <sales_order_invoice_pay>
             	<observers>
                     <apply_paid_at>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onSalesOrderInvoicePay</method>
                     </apply_paid_at>
                 </observers>
             </sales_order_invoice_pay>
+            
             <sales_order_shipment_resource_init_virtual_grid_columns>
                 <observers>
                     <recon_grid>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>initShipmentGridVirtualColumns</method>
                     </recon_grid>
                 </observers>
             </sales_order_shipment_resource_init_virtual_grid_columns>
+            
             <sales_order_item_save_before>
             	<observers>
                     <set_dummy>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onBeforeSalesItemSave</method>
                     </set_dummy>
                 </observers>
             </sales_order_item_save_before>
+            
             <sales_creditmemo_item_save_before>
             	<observers>
                     <set_dummy>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onBeforeSalesItemSave</method>
                     </set_dummy>
                 </observers>
             </sales_creditmemo_item_save_before>
+            
             <sales_invoice_item_save_before>
             	<observers>
                     <set_dummy>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onBeforeSalesItemSave</method>
                     </set_dummy>
                 </observers>
             </sales_invoice_item_save_before>
+            
             <sales_shipment_item_save_before>
             	<observers>
                     <set_dummy>
-                        <type>singleton</type>
                         <class>unl_core/sales_observer</class>
                         <method>onBeforeSalesItemSave</method>
                     </set_dummy>
                 </observers>
             </sales_shipment_item_save_before>
+            
             <admin_system_config_changed_section_system>
                 <observers>
                     <check_rsync>
-                        <type>singleton</type>
                         <class>unl_core/backup_rsync</class>
                         <method>onSystemConfigSave</method>
                     </check_rsync>
@@ -442,8 +478,23 @@
                         <source_store_view/>
                         <warehouse/>
                     </product_attributes>
+                    <set_product_attributes>
+                        <source_store_view/>
+                        <warehouse/>
+                    </set_product_attributes>
+                    <address_item_parent_attributes>
+                        <store_id/>
+                    </address_item_parent_attributes>
                 </item>
             </quote>
+            
+            <order>
+                <states>
+                    <pending_payment>
+                        <visible_on_front>1</visible_on_front>
+                    </pending_payment>
+                </states>
+            </order>
         </sales>
         
         <pdf>
@@ -490,6 +541,16 @@
     </global>
     
     <frontend>
+        <routers>
+            <catalog>
+                <args>
+                    <modules>
+                        <unl_core before="Mage_Catalog">Unl_Core_Catalog</unl_core>
+                    </modules>
+                </args>
+            </catalog>
+        </routers>
+    
         <events>
             <core_design_check_useragent_exps_before>
                 <observers>
@@ -499,17 +560,34 @@
                     </no_mobile>
                 </observers>
             </core_design_check_useragent_exps_before>
+            
+            <sales_order_save_commit_after>
+                <observers>
+                    <!-- Extend and Forward Core -->
+                    <downloadable_observer>
+                        <class>unl_core/downloadable_observer</class>
+                        <method>setLinkStatus</method>
+                    </downloadable_observer>
+                </observers>
+            </sales_order_save_commit_after>
         
             <sales_quote_item_qty_set_after>
                 <observers>
                     <product_limit>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
+                        <class>unl_core/sales_observer</class>
                         <method>onAfterSetSalesQuoteItemQty</method>
                     </product_limit>
                 </observers>
             </sales_quote_item_qty_set_after>
         </events>
+        
+        <category>
+            <collection>
+                <attributes>
+                    <group_acl/>
+                </attributes>
+            </collection>
+        </category>
         
         <layout>
             <updates>
@@ -522,13 +600,13 @@
     
     <admin>
         <routers>
-            <unl_core>
-                <use>admin</use>
+            <adminhtml>
                 <args>
-                    <module>Unl_Core</module>
-                    <frontName>unl</frontName>
+                    <modules>
+                        <unl_core before="Mage_Connect_Adminhtml">Unl_Core_Adminhtml</unl_core>
+                    </modules>
                 </args>
-            </unl_core>
+            </adminhtml>
         </routers>
     </admin>
     
@@ -546,7 +624,6 @@
         	<admin_user_authenticate_after>
         		<observers>
                     <filter_cas>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>preventNonCasLogin</method>
                     </filter_cas>
@@ -556,79 +633,107 @@
             <admin_user_save_before>
                 <observers>
                     <save_store>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>beforeUserSave</method>
                     </save_store>
                 </observers>
             </admin_user_save_before>
             
+            <adminhtml_widget_grid_filter_collection>
+                <observers>
+                    <unl_scope>
+                        <class></class>
+                        <method></method>
+                    </unl_scope>
+                </observers>
+            </adminhtml_widget_grid_filter_collection>
+            
             <cms_page_save_before>
                 <observers>
                     <save_store>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>beforeCmsPageSave</method>
                     </save_store>
                 </observers>
             </cms_page_save_before>
             
-            <adminhtml_block_html_before>
-                <observers>
-                    <correct_admin_blocks>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
-                        <method>correctAdminBlocks</method>
-                    </correct_admin_blocks>
-                </observers>
-            </adminhtml_block_html_before>
-            
             <adminhtml_catalog_category_tree_can_add_root_category>
                 <observers>
                     <add_root_acl>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>isAllowedAddRootCategory</method>
                     </add_root_acl>
                 </observers>
             </adminhtml_catalog_category_tree_can_add_root_category>
             
+            <catalog_product_collection_render_filters_before>
+                <observers>
+                    <unl_product_scope>
+                        <class>unl_core/catalog_observer</class>
+                        <method>beforeRenderProductCollectionFilters</method>
+                    </unl_product_scope>
+                </observers>
+            </catalog_product_collection_render_filters_before>
+            
             <cms_wysiwyg_config_prepare>
                 <observers>
                     <unl_prep_wysiwyg>
-                        <type>singleton</type>
                         <class>unl_core/observer</class>
                         <method>prepareWysiwygConfig</method>
                     </unl_prep_wysiwyg>
                 </observers>
             </cms_wysiwyg_config_prepare>
             
+            <controller_action_layout_render_before_adminhtml_permissions_user_edit>
+                <observers>
+                    <unl_scope_permissions>
+                        <class>unl_core/admin_observer</class>
+                        <method>onBeforeRenderPermissionsLayout</method>
+                    </unl_scope_permissions>
+                </observers>
+            </controller_action_layout_render_before_adminhtml_permissions_user_edit>
+            
             <controller_action_postdispatch_adminhtml_index_logout>
             	<observers>
 		            <clear_simplecas>
-		                <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>clearSimpleCasSession</method>
 		            </clear_simplecas>
 		        </observers>
             </controller_action_postdispatch_adminhtml_index_logout>
             
-            <controller_action_predispatch>
-		        <observers>
-		            <unl_core_store_id>
-		                <type>singleton</type>
-                        <class>unl_core/admin_observer</class>
-                        <method>controllerActionPredispatch</method>
-		            </unl_core_store_id>
-		        </observers>
-		    </controller_action_predispatch>
+            <controller_action_predispatch_adminhtml_system_account_save>
+                <observers>
+                    <unl_filter_cas>
+                        <class>unl_core/admion_observer</class>
+                        <method>onSystemAccountSavePreDispatch</method>
+                    </unl_filter_cas>
+                </observers>
+            </controller_action_predispatch_adminhtml_system_account_save>
 		    
-		    <controller_action_predispatch_adminhtml_catalog_product_edit>
+		    <controller_action_predispatch_adminhtml_catalog_category_edit>
+                <observers>
+                    <unl_category_scope>
+                        <class>unl_core/admin_observer</class>
+                        <method>onCatalogCategoryPreDispatch</method>
+                    </unl_category_scope>
+                </observers>
+            </controller_action_predispatch_adminhtml_catalog_category_edit>
+            
+            <controller_action_predispatch_adminhtml_catalog_category_tree>
+                <observers>
+                    <unl_category_scope>
+                        <class>unl_core/admin_observer</class>
+                        <method>onCatalogCategoryPreDispatch</method>
+                    </unl_category_scope>
+                </observers>
+            </controller_action_predispatch_adminhtml_catalog_category_tree>
+            
+            <controller_action_predispatch_adminhtml_catalog_product_edit>
                 <observers>
                     <product_auth>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>catalogProductEditActionPreDispatch</method>
+                        <method>onCatalogProductEditPredispatch</method>
                     </product_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_catalog_product_edit>
@@ -636,7 +741,6 @@
             <controller_action_predispatch_adminhtml_cms_page_edit>
                 <observers>
                     <product_auth>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>onAdminCmsPageEditPreDispatch</method>
                     </product_auth>
@@ -646,7 +750,6 @@
             <controller_action_predispatch_adminhtml_customer_grid>
             	<observers>
             		<advfilter>
-            			<type>singleton</type>
             			<class>unl_core/observer</class>
                         <method>onBeforeManageCustomers</method>
             		</advfilter>
@@ -656,7 +759,6 @@
             <controller_action_predispatch_adminhtml_index_login>
                 <observers>
                     <ssl_check>
-                        <type>singleton</type>
                         <class>unl_core/observer</class>
                         <method>onBeforeAdminLoginCheckSSL</method>
                     </ssl_check>
@@ -666,9 +768,8 @@
             <controller_action_predispatch_adminhtml_sales_creditmemo_view>
                 <observers>
 	                <order_auth>
-	                    <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>onAdminSalesCreditmemoViewPreDispatch</method>
+                        <method>onAdminSalesEntityViewPreDispatch</method>
 	                </order_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_sales_creditmemo_view>
@@ -676,9 +777,8 @@
             <controller_action_predispatch_adminhtml_sales_invoice_view>
                 <observers>
                     <order_auth>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>onAdminSalesInvoiceViewPreDispatch</method>
+                        <method>onAdminSalesEntityViewPreDispatch</method>
                     </order_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_sales_invoice_view>
@@ -686,7 +786,6 @@
             <controller_action_predispatch_adminhtml_sales_order_grid>
             	<observers>
             		<advfilter>
-            			<type>singleton</type>
             			<class>unl_core/observer</class>
                         <method>onBeforeSalesOrderGrid</method>
             		</advfilter>
@@ -696,9 +795,8 @@
             <controller_action_predispatch_adminhtml_sales_order_view>
                 <observers>
                     <order_auth>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>onAdminSalesOrderViewPreDispatch</method>
+                        <method>onAdminSalesEntityViewPreDispatch</method>
                     </order_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_sales_order_view>
@@ -706,37 +804,51 @@
             <controller_action_predispatch_adminhtml_sales_shipment_view>
                 <observers>
                     <order_auth>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
-                        <method>onAdminSalesShipmentViewPreDispatch</method>
+                        <method>onAdminSalesEntityViewPreDispatch</method>
                     </order_auth>
                 </observers>
             </controller_action_predispatch_adminhtml_sales_shipment_view>
             
-            <core_collection_abstract_load_before>
-            	<observers>
-                    <filter_cas_users_from_forgot>
-                        <type>singleton</type>
-                        <class>unl_core/admin_observer</class>
-                        <method>filterCasUsersFromForgotPassword</method>
-                    </filter_cas_users_from_forgot>
-                </observers>
-            </core_collection_abstract_load_before>
-            
-            <eav_collection_abstract_load_before>
+            <controller_action_predispatch_adminhtml_report_sales_coupons>
                 <observers>
-                    <unlcore_before_eav_collection_load>
-                        <type>singleton</type>
-                        <class>unl_core/observer</class>
-                        <method>beforeEavCollectionLoad</method>
-                    </unlcore_before_eav_collection_load>
+                    <unl_scope>
+                        <class>unl_core/admin_observer</class>
+                        <method>onSalesReportPreDispatch</method>
+                    </unl_scope>
                 </observers>
-            </eav_collection_abstract_load_before>
+            </controller_action_predispatch_adminhtml_report_sales_coupons>
+            
+            <controller_action_predispatch_adminhtml_report_sales_sales>
+                <observers>
+                    <unl_scope>
+                        <class>unl_core/admin_observer</class>
+                        <method>onSalesReportPreDispatch</method>
+                    </unl_scope>
+                </observers>
+            </controller_action_predispatch_adminhtml_report_sales_sales>
+            
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <unl_core_admin_layout>
+                        <class>unl_core/observer</class>
+                        <method>onAfterAdminPrepareLayout</method>
+                    </unl_core_admin_layout>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
+            
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <unlcore_before_block_to_html>
+                        <class>unl_core/observer</class>
+                        <method>beforeCoreBlockToHtml</method>
+                    </unlcore_before_block_to_html>
+                </observers>
+            </core_block_abstract_to_html_before>
             
             <rss_catalog_notify_stock_collection_select>
                 <observers>
                     <filter_scope>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>onRssCatalogStockCollectionSelect</method>
                     </filter_scope>
@@ -746,12 +858,21 @@
             <rss_order_new_collection_select>
                 <observers>
                     <filter_scope>
-                        <type>singleton</type>
                         <class>unl_core/admin_observer</class>
                         <method>onRssOrderNewCollectionSelect</method>
                     </filter_scope>
                 </observers>
             </rss_order_new_collection_select>
+            
+            <sales_order_save_commit_after>
+                <observers>
+                    <!-- Extend and Forward Core -->
+                    <downloadable_observer>
+                        <class>unl_core/downloadable_observer</class>
+                        <method>setLinkStatus</method>
+                    </downloadable_observer>
+                </observers>
+            </sales_order_save_commit_after>
             
             <sales_order_shipment_save_before>
                 <observers>
@@ -761,6 +882,7 @@
                     </was_new>
                 </observers>
             </sales_order_shipment_save_before>
+            
             <sales_order_shipment_save_after>
                 <observers>
                     <capture_case>
@@ -778,6 +900,46 @@
                 </unlcore>
             </updates>
         </layout>
+        
+        <unl_adminlog>
+            <log_events>
+                <adminhtml_report_sales_bursar translate="label">
+                    <label>Reporting: Sales - Bursar</label>
+                    <view_actions>
+                        <cc />
+                        <co />
+                        <nocap />
+                    </view_actions>
+                </adminhtml_report_sales_bursar>
+                <adminhtml_report_sales_reconcile translate="label">
+                    <label>Reporting: Sales - Reconcile</label>
+                    <view_actions>
+                        <cc />
+                        <co />
+                        <nocap />
+                    </view_actions>
+                </adminhtml_report_sales_reconcile>
+                <adminhtml_report_customer translate="label">
+                    <label>Reporting: Customer Info</label>
+                    <view_actions>
+                        <orderaddress />
+                    </view_actions>
+                </adminhtml_report_customer>
+                <adminhtml_report_product translate="label">
+                    <label>Reporting: Sold Product Details</label>
+                    <view_actions>
+                        <customized />
+                        <orderdetails />
+                    </view_actions>
+                </adminhtml_report_product>
+                <adminhtml_sales_order_view_externalid translate="label">
+                    <label>Sales Order External Id</label>
+                </adminhtml_sales_order_view_externalid>
+                <adminhtml_warehouse translate="label">
+                    <label>Manage Warehouses</label>
+                </adminhtml_warehouse>
+            </log_events>
+        </unl_adminlog>
     </adminhtml>
     
     
@@ -811,19 +973,7 @@
             </design>
         </admin>
     </stores>
-    
-    <!-- Fixes admin 404 issue
-    <websites>
-        <admin>
-            <web>
-                <default>
-                    <no_route>backoffice/index/noRoute</no_route>
-                </default>
-            </web>
-        </admin>
-    </websites>
-     -->
-    
+
     <default>
         <catalog>
             <frontend>
@@ -849,8 +999,8 @@
                 <group>offline</group>
             </invoicelater>
             <verisign>
-            	<reference_txn>0</reference_txn>
             </verisign>
+            	<reference_txn>0</reference_txn>
             <!-- ensure GoogleCheckout is NOT active -->
             <googlecheckout>
                 <active>0</active>
@@ -871,6 +1021,9 @@
             <classes>
                 <exempt_shipping_tax_class></exempt_shipping_tax_class>
             </classes>
+            <defaults>
+                <fallback_zip>68508-1651</fallback_zip>
+            </defaults>
         </tax>
         <dev>
             <template>
@@ -880,7 +1033,6 @@
         <google>
             <analytics>
                 <output_script>0</output_script>
-                <track_page_load>1</track_page_load>
             </analytics>
         </google>
         <system>

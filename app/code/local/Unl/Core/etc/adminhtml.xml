@@ -6,20 +6,33 @@
             <children>
                 <salesroot>
                     <children>
+                        <taxroot translate="title" module="reports">
+                            <title>Tax Reports</title>
+                            <children>
+                                <totals translate="title">
+                                    <title>Totals</title>
+                                    <action>adminhtml/report_sales_tax/totals</action>
+                                </totals>
+                                <reconcile translate="title">
+                                    <title>Reconcile</title>
+                                    <action>adminhtml/report_sales_tax/reconcile</action>
+                                </reconcile>
+                            </children>
+                        </taxroot>
                         <bursar translate="title" module="reports">
                             <title>Bursar Reports</title>
                             <children>
                                 <cc translate="title" module="reports">
                                     <title>Credit Card</title>
-                                    <action>unl/report_sales_bursar/cc</action>
+                                    <action>adminhtml/report_sales_bursar/cc</action>
                                 </cc>
                                 <co translate="title" module="reports">
                                     <title>Cost Object</title>
-                                    <action>unl/report_sales_bursar/co</action>
+                                    <action>adminhtml/report_sales_bursar/co</action>
                                 </co>
                                 <nocap translate="title" module="reports">
                                     <title>Non-Captured</title>
-                                    <action>unl/report_sales_bursar/nocap</action>
+                                    <action>adminhtml/report_sales_bursar/nocap</action>
                                 </nocap>
                             </children>
                         </bursar>
@@ -28,15 +41,15 @@
                             <children>
                                 <cc translate="title" module="reports">
                                     <title>Credit Card</title>
-                                    <action>unl/report_sales_reconcile/cc</action>
+                                    <action>adminhtml/report_sales_reconcile/cc</action>
                                 </cc>
                                 <co translate="title" module="reports">
                                     <title>Cost Object</title>
-                                    <action>unl/report_sales_reconcile/co</action>
+                                    <action>adminhtml/report_sales_reconcile/co</action>
                                 </co>
                                 <nocap translate="title" module="reports">
                                     <title>Non-Captured</title>
-                                    <action>unl/report_sales_reconcile/nocap</action>
+                                    <action>adminhtml/report_sales_reconcile/nocap</action>
                                 </nocap>
                             </children>
                         </reconcile>
@@ -46,11 +59,11 @@
                     <children>
                         <orderdetails translate="title" module="reports">
                             <title>Order Details</title>
-                            <action>unl/report_product/orderdetails</action>
+                            <action>adminhtml/report_product/orderdetails</action>
                         </orderdetails>
                         <customized translate="title" module="reports">
                             <title>Customized</title>
-                            <action>unl/report_product/customized</action>
+                            <action>adminhtml/report_product/customized</action>
                         </customized>
                     </children>
                 </products>
@@ -58,28 +71,19 @@
                     <children>
                         <orderaddress translate="title" module="unl_core">
                             <title>Order Address</title>
-                            <action>unl/report_customer/orderaddress</action>
+                            <action>adminhtml/report_customer/orderaddress</action>
                         </orderaddress>
                     </children>
                 </customers>
             </children>
         </report>
-        <sales>
-            <children>
-                <picklist translate="title" module="sales">
-                    <title>Pick Lists</title>
-                    <action>unl/sales_picklist</action>
-                    <sort_order>41</sort_order>
-                </picklist>
-            </children>
-        </sales>
         <system>
         	<children>
         		<shippingroot>
         			<children>
         				<warehouse translate="title">
 		                    <title>Manage Warehouses</title>
-		                    <action>unl/warehouse</action>
+		                    <action>adminhtml/warehouse</action>
 		                    <sort_order>20</sort_order>
 		                </warehouse>
         			</children>
@@ -96,6 +100,17 @@
                         <children>
                             <salesroot>
                                 <children>
+                                    <taxroot translate="title">
+                                        <title>Tax Reports</title>
+                                        <children>
+                                            <totals translate="title">
+                                                <title>Totals</title>
+                                            </totals>
+                                            <reconcile translate="title">
+                                                <title>Reconcile</title>
+                                            </reconcile>
+                                        </children>
+                                    </taxroot>
                                     <bursar translate="title">
                                         <title>Bursar Reports</title>
                                         <children>
@@ -156,10 +171,6 @@
                                     </actions>
                                 </children>
                             </order>
-                            <picklist translate="title">
-                                <title>Pick Lists</title>
-                                <sort_order>41</sort_order>
-                            </picklist>
                         </children>
                     </sales>
                     <system>
