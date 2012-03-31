@@ -5,8 +5,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$setup = new Mage_Catalog_Model_Resource_Eav_Mysql4_Setup('catalog_setup');
-$setup->addAttribute('catalog_product', 'ships_separately', array(
+$catalogInstaller = Mage::getResourceModel('catalog/setup', 'catalog_setup');
+$catalogInstaller->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'ships_separately', array(
     'type'              => 'int',
     'label'             => 'Ships Separately',
     'input'             => 'select',

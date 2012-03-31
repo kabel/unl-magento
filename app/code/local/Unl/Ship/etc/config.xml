@@ -2,19 +2,19 @@
 <config>
     <modules>
         <Unl_Ship>
-            <version>0.1.1</version>
+            <version>0.2.0</version>
         </Unl_Ship>
     </modules>
     
     <admin>
     	<routers>
-    		<unl_ship>
-    			<use>admin</use>
+    		<adminhtml>
     			<args>
-    				<module>Unl_Ship</module>
-    				<frontName>unlship</frontName>
+                    <modules>
+                        <Unl_Ship before="Mage_Adminhtml">Unl_Ship</Unl_Ship>
+                    </modules>
     			</args>
-    		</unl_ship>
+    		</adminhtml>
     	</routers>
     </admin>
     
@@ -28,16 +28,16 @@
         <models>
         	<unl_ship>
                 <class>Unl_Ship_Model</class>
-                <resourceModel>unl_ship_mysql4</resourceModel>
+                <resourceModel>unl_ship_resource</resourceModel>
             </unl_ship>
-            <unl_ship_mysql4>
-                <class>Unl_Ship_Model_Mysql4</class>
+            <unl_ship_resource>
+                <class>Unl_Ship_Model_Resource</class>
                 <entities>
                     <shipment_package>
                         <table>unl_shipment_package</table>
                     </shipment_package>
                 </entities>
-            </unl_ship_mysql4>  
+            </unl_ship_resource>  
             <usa>
             	<rewrite>
             		<shipping_carrier_fedex>Unl_Ship_Model_Shipping_Carrier_Fedex</shipping_carrier_fedex>
@@ -50,7 +50,7 @@
         	<unl_ship_setup>
         		<setup>
 	               <module>Unl_Ship</module>
-	               <class>Mage_Core_Model_Resource_Setup</class>
+	               <class>Unl_Ship_Model_Resource_Setup</class>
 	            </setup>
         	</unl_ship_setup>
         </resources>
@@ -74,17 +74,45 @@
     </global>
     
     <adminhtml>
-    	<events>
-    		<adminhtml_block_html_before>
+        <events>
+            <adminhtml_block_html_before>
                 <observers>
-                    <unl_ship_block_fix>
+                    <ship_correct_admin>
                         <type>singleton</type>
                         <class>unl_ship/observer</class>
                         <method>correctAdminBlocks</method>
-                    </unl_ship_block_fix>
+                    </ship_correct_admin>
                 </observers>
             </adminhtml_block_html_before>
-    	</events>
+        </events>
+    
+        <layout>
+            <updates>
+                <unl_ship module="Unl_Ship">
+                    <file>unl_ship.xml</file>
+                </unl_ship>
+            </updates>
+        </layout>
+        
+        <unl_adminlog>
+            <log_events>
+                <unl_ship_index translate="label">
+                    <label>Sales Shipping Labels</label>
+                    <view_actions>
+                        <customs />
+                        <highvalue />
+                        <label />
+                        <labelpdf />
+                    </view_actions>
+                    <save_actions>
+                        <create />
+                    </save_actions>
+                    <alt_params>
+                        <order_id />
+                    </alt_params>
+                </unl_ship_index>
+            </log_events>
+        </unl_adminlog>
     </adminhtml>
     
     <default>

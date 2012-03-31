@@ -6,9 +6,8 @@ $installer = $this;
 $installer->startSetup();
 
 $installer->run("
-
-DROP TABLE IF EXISTS {$this->getTable('unl_ship/shipment_package')};
-CREATE TABLE {$this->getTable('unl_ship/shipment_package')} (
+DROP TABLE IF EXISTS {$installer->getTable('unl_ship/shipment_package')};
+CREATE TABLE {$installer->getTable('unl_ship/shipment_package')} (
   `package_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT ,
   `order_id` INT(10) UNSIGNED NOT NULL ,
   `shipment_id` INT (10) UNSIGNED DEFAULT NULL,
@@ -34,48 +33,6 @@ CREATE TABLE {$this->getTable('unl_ship/shipment_package')} (
     REFERENCES `{$installer->getTable('sales/shipment')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO {$this->getTable('unl_ship/shipment_package')}
-  (`order_id`,
-  `shipment_id`,
-  `carrier`,
-  `carrier_shipment_id`,
-  `weight_units`,
-  `weight`,
-  `tracking_number`,
-  `currency_units`,
-  `transporation_charge`,
-  `service_option_charge`,
-  `shipping_total`,
-  `negotiated_total`,
-  `label_format`,
-  `label_image`,
-  `html_label_image`,
-  `ins_doc`,
-  `intl_doc`,
-  `date_shipped`)
-  SELECT
-      o.`entity_id`,
-      ssp.`order_shipment_id`,
-      ssp.`carrier`,
-      ssp.`carrier_shipment_id`,
-      ssp.`weight_units`,
-      ssp.`weight`,
-      ssp.`tracking_number`,
-      ssp.`currency_units`,
-      ssp.`transporation_charge`,
-      ssp.`service_option_charge`,
-      ssp.`shipping_total`,
-      ssp.`negotiated_total`,
-      ssp.`label_format`,
-      ssp.`label_image`,
-      ssp.`html_label_image`,
-      ssp.`ins_doc`,
-      ssp.`intl_doc`,
-      ssp.`date_shipped`
-  FROM {$this->getTable('shipping_shipment_package')} ssp
-  JOIN {$this->getTable('sales/order')} o ON ssp.order_increment_id = o.increment_id;
-
-DROP TABLE IF EXISTS {$this->getTable('shipping_shipment_package')};
 ");
 
 $installer->endSetup();
