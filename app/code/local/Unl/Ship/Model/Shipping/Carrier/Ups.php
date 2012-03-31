@@ -783,7 +783,7 @@ XMLRequest;
                     ->setHtmlLabelImage($respackage['html_image'])
                     ->setInsDoc($ship_accept_response->getInsDoc())
                     ->setIntlDoc($ship_accept_response->getIntlDoc())
-                    ->setDateShipped(now());
+                    ->setDateShipped(Mage::getSingleton('core/date')->gmtDate());
 
                 $retpak[$reqpackage->getPackageIndex()] = $pkg;
             }

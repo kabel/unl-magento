@@ -705,7 +705,7 @@ class Unl_Ship_Model_Shipping_Carrier_Fedex
                     ->setShippingTotal($shipresult->getTotalShippingCharges())
                     ->setLabelFormat($respackage['label_image_format'])
                     ->setLabelImage($respackage['label_image'])
-                    ->setDateShipped(now());
+                    ->setDateShipped(Mage::getSingleton('core/date')->gmtDate());
 
                 $retval[$reqpackage->getPackageIndex()] = $pkg;
             }

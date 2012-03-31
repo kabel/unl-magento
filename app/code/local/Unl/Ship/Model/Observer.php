@@ -2,6 +2,11 @@
 
 class Unl_Ship_Model_Observer
 {
+    /**
+     * Event handler for the <code>adminhtml_block_html_before</code> event
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function correctAdminBlocks($observer)
     {
         $block = $observer->getEvent()->getBlock();
@@ -12,21 +17,8 @@ class Unl_Ship_Model_Observer
         if ($block instanceof $type) {
             if ($this->_isAllowedSalesAction('label_ship'))  {
                 $block->getMassactionBlock()->addItem('unl_ship_queue', array(
-                     'label'=> Mage::helper('sales')->__('Queue for Auto Ship'),
-                     'url'  => $block->getUrl('unl_ship/index/queueOrders'),
-                ));
-            }
-            return;
-        }
-
-        $type = 'Mage_Adminhtml_Block_Sales_Order_View';
-        if ($block instanceof $type) {
-            if ($this->_isAllowedSalesAction('label_ship') && $block->getOrder()->canShip()
-                && Mage::helper('unl_ship')->isOrderSupportAutoShip($block->getOrder())) {
-                $block->addButton('auto_ship', array(
-                    'label'     => Mage::helper('sales')->__('Auto Ship'),
-                    'onclick'   => "setLocation('{$block->getUrl('unlship/')}')",
-                    'class'     => 'go',
+                     'label' => Mage::helper('unl_ship')->__('Queue for Auto Ship'),
+                     'url'   => $block->getUrl('*/sales_order_package/queueOrders'),
                 ));
             }
             return;
