@@ -2,8 +2,6 @@
 
 class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    const CUSTOMER_GROUP_TAX_EXEMPT = 'Tax Exempt Org';
-
     const CUSTOMER_TAG_STUDENT       = 'UNL Student';
     const CUSTOMER_TAG_STUDENT_FEES  = 'UNL Student - Fee Paying';
     const CUSTOMER_TAG_FACULTY_STAFF = 'UNL Faculty/Staff';
@@ -43,7 +41,8 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
     public function canShowCasLinkNotice()
     {
         if (!$this->isCustomerCasUser()) {
-            return Mage::getSingleton('customer/session')->getFailedLink() !== true;
+            $session = Mage::getSingleton('customer/session');
+            return $session->getFailedLink() !== true && $session->getIgnoreCasLink() !== true;
         }
 
         return false;
@@ -163,14 +162,14 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function authorizeCostObject($customer)
     {
-        $group = Mage::getModel('customer/group')->load(self::CUSTOMER_GROUP_TAX_EXEMPT, 'customer_group_code');
+        $group = Mage::getModel('customer/group')->load(Unl_Core_Helper_Data::TAX_GROUP_EXEMPT_ORG, 'customer_group_code');
         $this->_assignCustomerGroup($customer, $group);
     }
 
     public function revokeCostObjectAuth($customer)
     {
         if ($customer->getPreviousGroupId()) {
-            $group = Mage::getModel('customer/group')->load(self::CUSTOMER_GROUP_TAX_EXEMPT, 'customer_group_code');
+            $group = Mage::getModel('customer/group')->load(Unl_Core_Helper_Data::TAX_GROUP_EXEMPT_ORG, 'customer_group_code');
             if ($customer->getGroupId() == $group->getId()) {
                 $group->unsetData()
                     ->load($customer->getPreviousGroupId());
@@ -220,12 +219,12 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
 	/**
      * Retieves a collection of the special customer tags
      *
-     * @return Unl_CustomerTag_Model_Mysql4_Tag_Collection
+     * @return Unl_CustomerTag_Model_Resource_Tag_Collection
      */
     protected function _getSpecialCustomerTagsCollection()
     {
         if (null === $this->_specialTagCollection) {
-            /* @var $collection Unl_CustomerTag_Model_Mysql4_Tag_Collection */
+            /* @var $collection Unl_CustomerTag_Model_Resource_Tag_Collection */
             $collection = Mage::getModel('unl_customertag/tag')->getCollection();
             $collection->addFieldToFilter('name', array('in' => $this->_specialCustomerTags));
             $this->_specialTagCollection = $collection;
