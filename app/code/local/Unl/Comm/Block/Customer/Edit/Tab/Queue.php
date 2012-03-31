@@ -16,7 +16,7 @@ class Unl_Comm_Block_Customer_Edit_Tab_Queue extends Mage_Adminhtml_Block_Widget
 
     public function getGridUrl()
     {
-        return $this->getUrl('unl_comm/queue/customerGrid', array('_current'=>true));
+        return $this->getUrl('*/customer_queue/customerGrid', array('_current'=>true));
     }
 
     /**
