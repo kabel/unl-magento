@@ -3,10 +3,33 @@
 class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier_Pickup
 {
     /**
+     * Returns if this method will be available for the items
      *
-     * @param Mage_Shipping_Model_Rate_Request $data
-     * @return Mage_Shipping_Model_Rate_Result
+     * @param array $items
+     * @return boolean
      */
+    public function isAvailable($items)
+    {
+        if (!$this->getConfigFlag('active')) {
+            return false;
+        }
+
+        $stores = $this->_getStoresFromItems($items);
+
+        if (empty($stores) || !$this->_validatePickup($stores)) {
+            return false;
+        }
+
+        $this->setStore(current($stores));
+        $pickup = $this->getConfigData('pickupaddress');
+
+        if (empty($pickup)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
         if (!$this->getConfigFlag('active')) {
@@ -14,25 +37,23 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         }
 
         $result = Mage::getModel('shipping/rate_result');
+        $stores = $this->_getStoresFromItems($request->getAllItems());
 
-        $sourceStore = $this->_getSingleStoreFromItems($request->getAllItems());
-        if (!$sourceStore) {
-            if (is_null($sourceStore)) {
-                $message = $this->getConfigData('specificerrmsg');
-            } else {
-                $message = Mage::helper('shipping')->__('All items must be from the same store to use this method');
-            }
-            $error = Mage::getModel('shipping/rate_result_error');
-            $error->setCarrier('pickup');
-            $error->setCarrierTitle($this->getConfigData('title'));
-            $error->setErrorMessage($message);
-            $result->append($error);
+        if (empty($stores)) {
+            $this->_appendError($result, $this->getConfigData('specificerrmsg'));
+            return $result;
+        }
+
+        if (!$this->_validatePickup($stores)) {
+            $this->_appendError($result,
+                Mage::helper('unl_core')->__('Some of your selected items are not available from the same pickup location'));
             return $result;
         }
 
         // Don't show it if the store has no address to display
-        $this->setStore($sourceStore);
+        $this->setStore(current($stores));
         $pickup = $this->getConfigData('pickupaddress');
+
         if (empty($pickup)) {
             return false;
         }
@@ -47,26 +68,95 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
             $method->setMethod('store' . $i);
             $method->setMethodTitle($this->getConfigData('name'));
 
-            $method->setPrice('0.00');
-            $method->setCost('0.00');
+            $method->setPrice(0);
+            $method->setCost(0);
 
             $method->setMethodDescription($description);
 
             $result->append($method);
         }
 
-
-
         return $result;
     }
 
+    /**
+     * Append an error the the rate result
+     *
+     * @param Mage_Shipping_Model_Rate_Result $result
+     * @param string $message
+     * @return Unl_Core_Model_Shipping_Carrier_Pickup
+     */
+    protected function _appendError($result, $message)
+    {
+        $error = Mage::getModel('shipping/rate_result_error');
+        $error->setCarrier('pickup');
+        $error->setCarrierTitle($this->getConfigData('title'));
+        $error->setErrorMessage($message);
+        $result->append($error);
+
+        return $this;
+    }
+
+    /**
+     * Returns if all the pickup addresses of the stores match
+     *
+     * @param array $stores
+     * @return boolean
+     */
+    protected function _validatePickup($stores)
+    {
+        $origStore = $this->getStore();
+        $store = array_shift($stores);
+        $this->setStore($store);
+        $location = $this->getConfigData('pickupaddress');
+
+        foreach ($stores as $store) {
+            $this->setStore($store);
+            if ($location != $this->getConfigData('pickupaddress')) {
+                $this->setStore($origStore);
+                return false;
+            }
+        }
+
+        $this->setStore($origStore);
+        return true;
+    }
+
+    /**
+     * Forwards all non-virtual items to helper to get all store_ids
+     *
+     * @param array $items
+     */
+    protected function _getStoresFromItems($items)
+    {
+        $quoteItems = array();
+        foreach ($items as $item) {
+            if (!$item->getIsVirtual()) {
+                $quoteItems[] = $item;
+            }
+        }
+        return Mage::helper('unl_core')->getStoresFromItems($quoteItems);
+    }
+
+    /**
+     * Get an array of locations available for pickup
+     *
+     * @return array:
+     */
     protected function _getPickupLocations()
     {
         $locations = explode("\n\n", $this->getConfigData('pickupaddress'));
         return $locations;
     }
 
-    public function getLocationFromMethod($method, $store=false)
+    /**
+     * Get the location from the given shipping method code and store
+     *
+     * @param string $method
+     * @param array $items
+     * @return boolean|string
+     */
+    public function getLocationFromMethod($method, $items)
     {
         $arr = explode('_', $method, 2);
         if (empty($arr[1]) || substr($arr[1], 0, 5) != 'store') {
@@ -75,9 +165,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
 
         $i = intval(substr($arr[1], 5));
 
-        if ($store) {
-            $this->setStore($store);
-        }
+        $this->setStore(current($this->_getStoresFromItems($items)));
 
         $locations = $this->_getPickupLocations();
         if (isset($locations[$i])) {
@@ -87,11 +175,6 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         return false;
     }
 
-    /**
-     * Get allowed shipping methods
-     *
-     * @return array
-     */
     public function getAllowedMethods()
     {
         $locations = $this->_getPickupLocations();
@@ -102,26 +185,6 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         return $methods;
     }
 
-    public function isAvailable($items)
-    {
-        if (!$this->getConfigFlag('active')) {
-            return false;
-        }
-
-        $sourceStore = $this->_getSingleStoreFromItems($items);
-        if (!$sourceStore) {
-            return false;
-        }
-
-        $this->setStore($sourceStore);
-        $pickup = $this->getConfigData('pickupaddress');
-        if (empty($pickup)) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * Sets up the provided address to be the admin configured pickup address
      * used for accurate tax calculation
@@ -130,7 +193,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
      */
     public function updateAddress($address)
     {
-        $this->setStore($this->_getSingleStoreFromItems($address->getAllItems()));
+        $this->setStore(current($this->_getStoresFromItems($address->getAllItems())));
 
         // clear any values that link this address to anything else
         $address->setSameAsBilling(0)
@@ -154,32 +217,5 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
 
         $address->addData($data);
         $address->implodeStreetAddress();
-    }
-
-    protected function _getSingleStoreFromItems($items)
-    {
-        $sourceStore = null;
-        $c = count($items);
-        $i = 0;
-        while ($i < $c) {
-            ++$i;
-            if ($items[$i-1]->getProduct()->isVirtual() || $items[$i-1]->getParentItem()) {
-                continue;
-            } else {
-                $sourceStore = ($items[$i-1] instanceof Mage_Sales_Model_Quote_Address_Item) ? $items[$i-1]->getQuoteItem()->getSourceStoreView() : $items[$i-1]->getSourceStoreView();
-                break;
-            }
-        }
-
-        for ($i; $i < $c; $i++) {
-            if ($items[$i]->getProduct()->isVirtual() || $items[$i]->getParentItem()) {
-                continue;
-            }
-            if ($items[$i]->getSourceStoreView() != $sourceStore) {
-                return false;
-            }
-        }
-
-        return $sourceStore;
     }
 }
