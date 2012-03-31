@@ -1,8 +1,9 @@
 <?php /* @var $this Mage_Page_Block_Html_Breadcrumbs */ ?>
 <div id="wdn_navigation_bar">
-    <div id="breadcrumbs">
+    <nav id="breadcrumbs">
         <!-- WDN: see glossary item 'breadcrumbs' -->
-        <!-- TemplateBeginEditable name="breadcrumbs" -->
+        <h3 class="wdn_list_descriptor hidden">Breadcrumbs</h3>
+        <!-- InstanceBeginEditable name="breadcrumbs" -->
         <ul>
             <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
             <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
@@ -17,33 +18,36 @@
                 </div>
             </li>
             <li class="selected">
-                <a href="<?php echo $this->getBaseUrl(); ?>"><?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?></a>
+                <a href="<?php echo $this->getBaseUrl(); ?>"><?php echo $this->escapeHtml(Mage::app()->getGroup()->getName()) ?></a>
             </li>
             <?php endif;?>
             <?php if($crumbs && is_array($crumbs)): ?>
-            <?php foreach($crumbs as $_crumbName=>$_crumbInfo): ?>
+            <?php foreach($crumbs as $_crumbName => $_crumbInfo): ?>
                 <?php if ($_crumbName === 'home') { continue; } ?>
                 <li class="<?php echo $_crumbName ?>">
                 <?php if($_crumbInfo['link']): ?>
-                    <a href="<?php echo $_crumbInfo['link'] ?>" title="<?php echo $this->htmlEscape($_crumbInfo['title']) ?>"><?php echo $this->htmlEscape($_crumbInfo['label']) ?></a>
+                    <a href="<?php echo $_crumbInfo['link'] ?>" title="<?php echo $this->escapeHtml($_crumbInfo['title']) ?>"><?php echo $this->escapeHtml($_crumbInfo['label']) ?></a>
                     <div class="storednav">
                         <?php echo $this->getChildHtml('topMenu') ?>
                     </div>
                 <?php else: ?>
-                    <?php echo $this->htmlEscape($_crumbInfo['label']) ?>
+                    <?php echo $this->escapeHtml($_crumbInfo['label']) ?>
                 <?php endif; ?>
                 </li>
             <?php endforeach; ?>
             <?php endif; ?>
         </ul>
-    <!-- TemplateEndEditable --></div>
+        <!-- InstanceEndEditable -->
+    </nav>
     <div id="wdn_navigation_wrapper">
-        <div id="navigation"><!-- TemplateBeginEditable name="navlinks" -->
-        <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+        <nav id="navigation" role="navigation">
+            <!-- InstanceBeginEditable name="navlinks" -->
+            <?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
             <?php echo $this->getChildHtml('store_switcher') ?>
-        <?php else: ?>
+            <?php else: ?>
             <?php echo $this->getChildHtml('topMenu') ?>
-        <?php endif; ?>
-        <!-- TemplateEndEditable --></div>
+            <?php endif; ?>
+            <!-- InstanceEndEditable -->
+        </nav>
     </div>
 </div>

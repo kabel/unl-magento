@@ -4,11 +4,9 @@
  */
 ?>
 <div class="shipping">
-<div class="no-display">
-<div id="shipping-form-wrapper">
-    <h2><?php echo $this->__('Estimate Shipping and Tax') ?></h2>
     <div class="shipping-form">
        <form action="<?php echo $this->getUrl('checkout/cart/estimatePost') ?>" method="post" id="shipping-zip-form">
+            <h2><?php echo $this->__('Estimate Shipping and Tax') ?></h2>
             <p><?php echo $this->__('Enter your destination to get a shipping estimate.') ?></p>
             <ul class="form-list">
                 <li>
@@ -47,18 +45,15 @@
                 <button type="button" title="<?php echo $this->__('Get a Quote') ?>" onclick="coShippingMethodForm.submit()" class="button"><span><span><?php echo $this->__('Get a Quote') ?></span></span></button>
             </div>
         </form>
-    </div>
-</div>
-<script type="text/javascript">
-//<![CDATA[
-    $('region_id').setAttribute('defaultValue',  "<?php echo $this->getEstimateRegionId() ?>");
-    new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>);
-//]]>
-</script>
-</div>
+        <script type="text/javascript">
+        //<![CDATA[
+            $('region_id').setAttribute('defaultValue',  "<?php echo $this->getEstimateRegionId() ?>");
+            new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>);
+        //]]>
+        </script>
 
         <?php if (($_shippingRateGroups = $this->getEstimateRates())): ?>
-        <h2><?php echo $this->__('Estimated Shipping Rates') ?></h2>
+        <h2><?php echo $this->__('Estimated Shipping and Tax') ?></h2>
         <form id="co-shipping-method-form" action="<?php echo $this->getUrl('checkout/cart/estimateUpdatePost') ?>">
             <dl class="sp-methods">
                 <?php foreach ($_shippingRateGroups as $code => $_rates): ?>
@@ -121,4 +116,5 @@
             }
         //]]>
         </script>
+    </div>
 </div>

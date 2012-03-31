@@ -9,22 +9,26 @@
 <?php $_categories = $this->getCurrentChildCategories() ?>
 <?php $_count = is_array($_categories)?count($_categories):$_categories->count(); ?>
 <?php if($_count): ?>
-<div class="zenbox soothing block block-layered-nav">
-    <h3><?php echo $this->__('Browse By') ?></h3>
-    <dl id="narrow-by-list2">
-        <dt><?php echo $this->__('Category') ?></dt>
-        <dd>
-            <ol>
-            <?php foreach ($_categories as $_category): ?>
-                <?php if($_category->getIsActive() && Mage::helper('unl_core')->isCustomerAllowedCategory($_category)): ?>
-                <li>
-                    <a href="<?php echo $this->getCategoryUrl($_category) ?>"<?php if ($this->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $this->htmlEscape($_category->getName()) ?></a> (<?php echo $_category->getProductCount() ?>)
-                </li>
-                <?php endif; ?>
-            <?php endforeach ?>
-            </ol>
-        </dd>
-    </dl>
-    <script type="text/javascript">decorateDataList('narrow-by-list2')</script>
+<div class="block block-layered-nav">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Browse By') ?></span></strong>
+    </div>
+    <div class="block-content">
+        <dl id="narrow-by-list2">
+            <dt><?php echo $this->__('Category') ?></dt>
+            <dd>
+                <ol>
+                <?php foreach ($_categories as $_category): ?>
+                    <?php if($_category->getIsActive() && Mage::helper('unl_core')->isCustomerAllowedCategory($_category)): ?>
+                    <li>
+                        <a href="<?php echo $this->getCategoryUrl($_category) ?>"<?php if ($this->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $this->htmlEscape($_category->getName()) ?></a> (<?php echo $_category->getProductCount() ?>)
+                    </li>
+                    <?php endif; ?>
+                <?php endforeach ?>
+                </ol>
+            </dd>
+        </dl>
+        <script type="text/javascript">decorateDataList('narrow-by-list2');</script>
+    </div>
 </div>
 <?php endif; ?>

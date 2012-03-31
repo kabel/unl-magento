@@ -1,0 +1,9 @@
+<?php /* @var $this Unl_Core_Block_Page_Html_Titlegraphic */ ?>
+<span id="wdn_site_title"><!-- InstanceBeginEditable name="titlegraphic" -->
+<?php if ($this->isDefaultStore()): ?>
+UNL Marketplace
+<?php else: ?>
+<?php echo $this->escapeHtml($this->getStoreGroup()->getName()) ?>
+<span>A member store of the UNL Marketplace</span>
+<?php endif; ?>
+<!-- InstanceEndEditable --></span>

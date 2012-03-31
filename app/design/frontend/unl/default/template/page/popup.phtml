@@ -3,45 +3,43 @@
  * Template for Mage_Page_Block_Html
  */
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="ie iem7"><![endif]-->
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"><![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7) ]><html class="ie" lang="en"><![endif]-->
+<!--[if !(IEMobile) | !(IE)]><!--><html lang="en"><!-- InstanceBegin template="/Templates/php.local.dwt.php" codeOutsideHTMLIsLocked="false" --><!--<![endif]-->
 <head>
 <?php echo $this->getChildHtml('head') ?>
+<!-- InstanceParam name="class" type="text" value="popup" -->
 </head>
-<body class="popup page-popup<?php echo $this->getBodyClass()?$this->getBodyClass() : ''?>">
-
-<p class="skipnav"> <a class="skipnav" href="#maincontent">Skip Navigation</a> </p>
-<div id="wdn_wrapper">
-    <div id="header"> <a href="http://www.unl.edu/" title="UNL website"><img src="/wdn/templates_3.0/images/logo.png" alt="UNL graphic identifier" id="logo" /></a>
-        <h1>University of Nebraska&ndash;Lincoln</h1>
-    </div>
-    <div id="wdn_content_wrapper">
-        <div id="titlegraphic"><!-- TemplateBeginEditable name="titlegraphic" -->
-            <h1>Marketplace</h1>
-        <!-- TemplateEndEditable --></div>
-        <div id="pagetitle"><!-- TemplateBeginEditable name="pagetitle" --> <!-- TemplateEndEditable --></div>
-        <div id="maincontent">
-            <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
-            <!-- TemplateBeginEditable name="maincontentarea" -->
-            <?php echo $this->getChildHtml('after_body_start') ?>
-            <?php echo $this->getChildHtml('content') ?>
-            <?php echo $this->getChildHtml('before_body_end') ?>
-            <!-- TemplateEndEditable -->
-            <div class="clear"></div>
-            <?php Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/noscript.html'); ?>
-            <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
+<body class="popup<?php echo $this->getBodyClass() ? ' ' . $this->getBodyClass() : '' ?>" data-version="3.1">
+    <?php echo $this->getChildHtml('after_body_start') ?>
+    <nav class="skipnav">
+        <a class="skipnav" href="#maincontent">Skip Navigation</a>
+    </nav>
+    <div id="wdn_wrapper">
+        <?php echo $this->getChildHtml('header') ?>
+        <?php echo $this->getChildHtml('breadcrumbs') ?>
+        <div id="wdn_content_wrapper">
+            <div id="pagetitle">
+                <!-- InstanceBeginEditable name="pagetitle" -->
+                <!-- InstanceEndEditable -->
+            </div>
+            <div id="maincontent" role="main">
+                <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
+                <!-- InstanceBeginEditable name="maincontentarea" -->
+                <?php echo $this->getChildHtml('content') ?>
+                <!-- InstanceEndEditable -->
+                <div class="clear"></div>
+                <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/noscript.html'); ?>
+                <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
+            </div>
         </div>
-        <div id="footer">
-            <div id="footer_floater"></div>
-            <div id="wdn_copyright"><!-- TemplateBeginEditable name="footercontent" -->
-                &copy; 2010 University of Nebraska&ndash;Lincoln | Lincoln, NE 68588
-                <!-- TemplateEndEditable -->
-                <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/wdn.html'); ?>
-                | <a href="http://validator.unl.edu/check/referer">W3C</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS</a> <a href="http://www.unl.edu/" title="UNL Home" id="wdn_unl_wordmark"><img src="/wdn/templates_3.0/css/footer/images/wordmark.png" alt="UNL's wordmark" /></a> </div>
-        </div>
+        <?php echo $this->getChildHtml('footer') ?>
+        <?php echo $this->getChildHtml('before_body_end') ?>
     </div>
-    <div id="wdn_wrapper_footer"> </div>
-</div>
-<?php echo $this->getAbsoluteFooter() ?>
+    <?php echo $this->getAbsoluteFooter() ?>
 </body>
-</html>
+<!-- InstanceEnd --></html>

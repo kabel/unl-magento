@@ -8,14 +8,12 @@
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 <form id="checkout_multishipping_form" action="<?php echo $this->getPostActionUrl() ?>" method="post">
     <div class="multiple-checkout">
-        <div class="page-title">
+        <div class="page-title title-buttons">
             <h1><?php echo $this->__('Ship to Multiple Addresses') ?></h1>
+            <button type="button" title="<?php echo $this->__('Enter a New Address') ?>" class="button" onclick="$('add_new_address_flag').value=1; $('checkout_multishipping_form').submit();"><span><span><?php echo $this->__('Enter a New Address') ?></span></span></button>
         </div>
         <input type="hidden" name="continue" value="0" id="can_continue_flag" />
         <input type="hidden" name="new_address" value="0" id="add_new_address_flag" />
-        <div class="table-buttons">
-            <button type="submit" title="<?php echo $this->__('Enter a New Address') ?>" class="button" onclick="$('add_new_address_flag').value=1"><span><span><?php echo $this->__('Enter a New Address') ?></span></span></button>
-        </div>
         <h2><?php echo $this->__('Please select shipping address for applicable items') ?></h2>
         <table class="data-table" id="multiship-addresses-table">
             <col />
@@ -48,11 +46,11 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <p style="margin-top:15px; font-size:0.8em;"><?php echo $this->__('Please note: UPS is unable to ship to post office boxes. If you wish to use UPS, you will need to provide a complete street address.') ?></p>
+        <p class="disclaimer"><?php echo $this->__('Please note: UPS is unable to ship to post office boxes. If you wish to use UPS, you will need to provide a complete street address.') ?></p>
         <script type="text/javascript">decorateTable('multiship-addresses-table')</script>
         <div class="buttons-set">
             <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Shopping Cart') ?></a></p>
-            <button type="submit" title="<?php echo $this->__('Continue') ?>" class="button<?php if ($this->isContinueDisabled()):?> disabled<?php endif; ?>" onclick="$('can_continue_flag').value=1"<?php if ($this->isContinueDisabled()):?> disabled="disabled"<?php endif; ?>><span><span><?php echo $this->__('Continue') ?></span></span></button>
+            <button type="submit" title="<?php echo $this->__('Continue to Shipping Information') ?>" class="button<?php if ($this->isContinueDisabled()):?> disabled<?php endif; ?>" onclick="$('can_continue_flag').value=1"<?php if ($this->isContinueDisabled()):?> disabled="disabled"<?php endif; ?>><span><span><?php echo $this->__('Continue to Shipping Information') ?></span></span></button>
         </div>
     </div>
 </form>

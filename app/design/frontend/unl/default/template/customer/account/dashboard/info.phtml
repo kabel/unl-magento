@@ -1,32 +1,90 @@
 <div class="col2-set">
     <div class="col-1">
-        <div class="sec_main neutral">
-            <h3><?php echo $this->__('Contact Information') ?> <span class="heading-link"><a href="<?php echo $this->getUrl('customer/account/edit') ?>"><?php echo $this->__('Edit') ?></a></span></h3>
-            <p>
-                <?php echo $this->htmlEscape($this->getCustomer()->getName()) ?><br />
-                <?php echo $this->htmlEscape($this->getCustomer()->getEmail()) ?><br />
-                <a href="<?php echo $this->getChangePasswordUrl() ?>"><?php echo $this->__('Change Password') ?></a>
-            </p>
+        <div class="box">
+            <div class="box-title">
+                <h3><?php echo $this->__('Contact Information') ?></h3>
+                <a href="<?php echo $this->getUrl('customer/account/edit') ?>"><?php echo $this->__('Edit') ?></a>
+            </div>
+            <div class="box-content">
+                <p>
+                    <?php echo $this->htmlEscape($this->getCustomer()->getName()) ?><br />
+                    <?php echo $this->htmlEscape($this->getCustomer()->getEmail()) ?><br />
+                    <a href="<?php echo $this->getChangePasswordUrl() ?>"><?php echo $this->__('Change Password') ?></a>
+                </p>
+            </div>
         </div>
     </div>
     <?php if( $this->isNewsletterEnabled() ): ?>
     <div class="col-2">
-        <div class="sec_main cool">
-            <h3><?php echo $this->__('Newsletters') ?> <span class="heading-link"><a href="<?php echo $this->getUrl('newsletter/manage') ?>"><?php echo $this->__('Edit') ?></a></span></h3>
-            <p>
-                <?php if( $this->getIsSubscribed() ): ?>
-                    <?php echo $this->__("You are currently subscribed to 'General Subscription'.") ?>
-                <?php else: ?>
-                    <?php echo $this->__('You are currently not subscribed to any newsletter.') ?>
-                <?php endif; ?>
-            </p>
+        <div class="box">
+            <div class="box-title">
+                <h3><?php echo $this->__('Newsletters') ?></h3>
+                <a href="<?php echo $this->getUrl('newsletter/manage') ?>"><?php echo $this->__('Edit') ?></a>
+            </div>
+            <div class="box-content">
+                <p>
+                    <?php if( $this->getIsSubscribed() ): ?>
+                        <?php echo $this->__("You are currently subscribed to 'General Subscription'.") ?>
+                    <?php else: ?>
+                        <?php echo $this->__('You are currently not subscribed to any newsletter.') ?>
+                    <?php endif; ?>
+                </p>
+            </div>
         </div>
-        <?php if (Mage::helper('unl_cas')->isCustomerCasUser()): ?>
-        <div class="sec_main primary">
-            <h3><?php echo $this->__('Linked UNL Account') ?></h3>
-            <p><?php echo $this->getCustomer()->getUnlCasUid() ?></p>
-        </div>
-        <?php endif; ?>
     </div>
+    <?php endif; ?>
+    <?php if (Mage::helper('unl_cas')->isCustomerCasUser()): ?>
+    <div class="col-2">
+        <div class="box box-unl-cas">
+            <div class="box-title">
+                <h3><?php echo $this->__('Linked UNL Account') ?></h3>
+                <a href="#">Info</a>
+            </div>
+            <div class="box-content">
+                <p>
+                    <?php $uid = $this->getCustomer()->getUnlCasUid(); ?>
+                    <img alt="Your Profile Pic" src="//planetred.unl.edu/pg/icon/unl_<?php echo substr($uid, 0, 2) == 's-' ? 's_' . substr($uid, 2) : $uid ?>/topbar/" />
+                    <span><?php echo $this->getCustomer()->getUnlCasUid() ?></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="window-overlay" class="window-overlay" style="display:none;"></div>
+    <div id="unl-cas-popup" class="ui-modal unl-cas-popup" style="display:none;">
+        <div class="ui-modal-head">
+            <h3>About linked UNL account</h3>
+            <a href="#" class="ui-modal-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a>
+        </div>
+        <div class="ui-modal-body">
+            <p>Your shopping account on UNL Marketplace is linked to your My.UNL account, allowing you access to products and services specifically for students, faculty, and staff.</p>
+            <p>For security reasons, you are only allowed to link a single account and the link cannot be removed. If you have further questions, please contact us.</p>
+            <div class="a-right">
+                <a href="#" class="button button-close" title="<?php echo $this->__('Close') ?>"><span><?php echo $this->__('Close') ?></span></a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+        function toggleUnlCasPopup(event){
+            if($('unl-cas-popup')){
+                $('unl-cas-popup').toggle();
+                $('window-overlay').toggle();
+            }
+            Event.stop(event);
+        }
+
+        document.observe("dom:loaded", function() {
+            new Insertion.Bottom($$('body')[0], $('window-overlay'));
+            new Insertion.Bottom($$('body')[0], $('unl-cas-popup'));
+
+            $$('.ui-modal-close, .button-close').each(function(element){
+                Event.observe(element, 'click', toggleUnlCasPopup);
+            });
+            $$('.box-unl-cas a').each(function(element) {
+                Event.observe(element, 'click', toggleUnlCasPopup);
+            });
+        });
+    //]]>
+    </script>
     <?php endif; ?>
 </div>

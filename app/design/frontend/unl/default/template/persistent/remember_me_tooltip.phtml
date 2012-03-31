@@ -1,0 +1,46 @@
+<?php
+/**
+ * "Remember Me" popup template (when click on "What's this?")
+ *
+ */
+/** @var $this Mage_Core_Block_Template */
+?>
+<div id="window-overlay" class="window-overlay" style="display:none;"></div>
+<div id="remember-me-popup" class="ui-modal remember-me-popup" style="display:none;">
+    <div class="ui-modal-head">
+        <h3>What's this?</h3>
+        <a href="#" class="ui-modal-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a>
+    </div>
+    <div class="ui-modal-body">
+        <p>Checking &quot;Remember Me&quot; will let you access your shopping cart on this computer when you are logged out</p>
+        <div class="remember-me-popup-close-button a-right">
+            <a href="#" class="button button-close" title="<?php echo $this->__('Close') ?>"><span><?php echo $this->__('Close') ?></span></a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    function toggleRememberMepopup(event){
+        if($('remember-me-popup')){
+            var viewportHeight = document.viewport.getHeight(),
+                docHeight      = $$('body')[0].getHeight(),
+                height         = docHeight > viewportHeight ? docHeight : viewportHeight;
+            $('remember-me-popup').toggle();
+            $('window-overlay').setStyle({ height: height + 'px' }).toggle();
+        }
+        Event.stop(event);
+    }
+
+    document.observe("dom:loaded", function() {
+        new Insertion.Bottom($$('body')[0], $('window-overlay'));
+        new Insertion.Bottom($$('body')[0], $('remember-me-popup'));
+
+        $$('.ui-modal-close, .button-close').each(function(element){
+            Event.observe(element, 'click', toggleRememberMepopup);
+        });
+        $$('#remember-me-box a').each(function(element) {
+            Event.observe(element, 'click', toggleRememberMepopup);
+        });
+    });
+//]]>
+</script>

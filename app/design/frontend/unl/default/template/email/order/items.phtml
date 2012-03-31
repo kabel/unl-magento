@@ -20,18 +20,19 @@
         <?php echo $this->getChildHtml('order_totals') ?>
     </tbody>
 </table>
-
+<?php if ($this->helper('giftmessage/message')->isMessagesAvailable('order', $_order, $_order->getStore()) && $_order->getGiftMessageId()): ?>
+    <?php $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_order->getGiftMessageId()); ?>
+    <?php if ($_giftMessage): ?>
 <br />
-
-<?php if($_order->getGiftMessageId() && $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_order->getGiftMessageId())): ?>
 <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #bebcb7; background:#f8f7f5;">
     <thead>
         <tr>
-            <th align="left" bgcolor="#d9e5ee" style="padding:3px 9px"><strong><?php echo $this->__('Gift Message for this Order') ?></strong></th>
+            <th align="left" bgcolor="#d9e5ee" style="font-size:13px; padding:3px 9px"><strong><?php echo $this->__('Gift Message for this Order') ?></strong></th>
         </tr>
     </thead>
 
     <tbody>
+
         <tr>
             <td colspan="4" align="left" style="padding:3px 9px">
             <strong><?php echo $this->__('From:'); ?></strong> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?>
@@ -41,4 +42,5 @@
         </tr>
     </tbody>
 </table>
+    <?php endif; ?>
 <?php endif; ?>

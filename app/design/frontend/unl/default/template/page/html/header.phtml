@@ -1,4 +1,7 @@
-<div id="header"> <a href="http://www.unl.edu/" title="UNL website"><img src="/wdn/templates_3.0/images/logo.png" alt="UNL graphic identifier" id="logo" /></a>
-        <h1>University of Nebraska&ndash;Lincoln</h1>
-        <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/wdnTools.html'); ?>
-</div>
+<header id="header" role="banner">
+    <a id="logo" href="http://www.unl.edu/" title="UNL website">UNL</a>
+    <span id="wdn_institution_title">University of Nebraska&ndash;Lincoln</span>
+    <?php echo $this->getChildHtml('titlegraphic') ?>
+    <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/idm.html'); ?>
+    <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/wdnTools.html'); ?>
+</header>

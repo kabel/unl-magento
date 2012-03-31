@@ -6,6 +6,7 @@ My Orders,Your Orders
 My Tags,Your Tags
 My Wishlist (%d items),Your Wishlist
 My Wishlist (%d item),Your Wishlist
+My Wishlist <small>(%d)</small>,Your Wishlist <small>(%d)</small>
 My Wishlist,Your Wishlist
 My Product Reviews,Your Product Reviews
 My Downloadable Products,Your Downloadable Products
@@ -21,3 +22,5 @@ Delivery Date,Ship Date
 Delivery Notice,Shipping/Order Notes
 Specified delivery date is invalid.,Specified ship date is invalid.
 Previous Step,Back
+Orders and Returns,Check Order Status
+Returns,Check Order Status

@@ -44,7 +44,7 @@
             <div class="col-1 col-narrow">
                 <div class="box">
                     <div class="box-title">
-                        <h3><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a class="edit-link" href="<?php echo $this->getAddressEditUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
+                        <h3><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a href="<?php echo $this->getAddressEditUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
                     </div>
                     <div class="box-content">
                         <address><?php echo $_address->format('html') ?></address>
@@ -101,7 +101,7 @@
             </div>
             <div class="col-2 col-wide">
                 <?php echo $this->helper('giftmessage/message')->getInline('multishipping_adress_checkbox', $_address); ?>
-                <h3><?php echo $this->__('Items') ?> <span class="separator">|</span> <a class="edit-link" href="<?php echo $this->getItemsEditUrl($_address) ?>"><?php echo $this->__('Edit Items') ?></a></h3>
+                <h3><?php echo $this->__('Items') ?> <span class="separator">|</span> <a href="<?php echo $this->getItemsEditUrl($_address) ?>"><?php echo $this->__('Edit Items') ?></a></h3>
                 <table class="data-table" id="shipping-table-<?php echo $_address->getId() ?>">
                     <col />
                     <col width="1" />
@@ -134,7 +134,7 @@
         <?php echo $this->getChildHtml('checkout_billing_items') ?>
         <div class="buttons-set">
             <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Select Addresses') ?></a></p>
-            <button type="submit" title="<?php echo $this->__('Continue') ?>" class="button"><span><span><?php echo $this->__('Continue') ?></span></span></button>
+            <button type="submit" title="<?php echo $this->__('Continue to Billing Information') ?>" class="button"><span><span><?php echo $this->__('Continue to Billing Information') ?></span></span></button>
         </div>
     </form>
 </div>

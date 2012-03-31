@@ -4,13 +4,30 @@
     </div>
     <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
     <?php if (Mage::helper('unl_cas')->canShowCasLinkNotice()): ?>
-    <div class="zenbox">
-        <h2 style="font-style: italic;">Are you a UNL Student, Faculty, or Staff?</h2>
-        <div class="f-right" style="margin-left: 10px">
-            <button class="button" onclick="setLocation('<?php echo $this->getUrl('unl_cas/account/caslink') ?>')"><span><span>Link UNL Account</span></span></button>
+    <div class="box box-unl-cas-link">
+        <div class="box-title">
+            <h3><?php echo $this->__('Are you a UNL Student, Faculty, or Staff?') ?></h3>
+            <a href="#"><?php echo $this->__('Hide') ?></a>
         </div>
-        <p>Link your UNL account to your shopping account to gain access to many of the products and features only available to members of the UNL community.</p>
+        <div class="box-content">
+            <p><?php echo $this->__('Link your UNL account to your shopping account to gain access to many of the products and features only available to members of the UNL community.') ?></p>
+            <div class="actions">
+                <button class="button" onclick="setLocation('<?php echo $this->getUrl('unl_cas/account/caslink') ?>')"><span><span><?php echo $this->__('Link UNL Account') ?></span></span></button>
+            </div>
+        </div>
     </div>
+    <script type="text/javascript">
+    $$('.box-unl-cas-link a').each(function(element){
+        Event.observe(element, 'click', function(event){
+        	var request = new Ajax.Request(
+                '<?php echo $this->getUrl('unl_cas/account/ignoreLink') ?>',
+                {method: 'post'}
+            );
+            $$('.box-unl-cas-link')[0].hide();
+            Event.stop(event);
+        });
+    });
+    </script>
     <?php endif; ?>
     <?php echo $this->getChildHtml('hello') ?>
     <?php echo $this->getChildHtml('top') ?>

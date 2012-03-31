@@ -1,4 +1,5 @@
 <?php /* @var $this Mage_Page_Block_Html_Head */ ?>
+<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/metanfavico.html'); ?>
 <!--
     Membership and regular participation in the UNL Web Developer Network
     is required to use the UNL templates. Visit the WDN site at
@@ -11,37 +12,31 @@
     create a derivative work.
     This message may not be removed from any pages based on the UNL site template.
 
-    $Id: php.fixed.dwt.php 1390 2010-11-18 15:24:33Z bbieber2 $
+    $Id: php.local.dwt.php | d3b0e517ecafe3e1f81c45ddafa7a316adcc45dd | Fri Mar 9 11:41:56 2012 -0600 | Kevin Abel  $
 -->
-<link rel="stylesheet" type="text/css" media="screen" href="/wdn/templates_3.0/css/all.css" />
-<link rel="stylesheet" type="text/css" media="print" href="/wdn/templates_3.0/css/print.css" />
-<script type="text/javascript" src="/wdn/templates_3.0/scripts/all.js"></script>
-<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/browserspecifics.html'); ?>
-<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.0/includes/metanfavico.html'); ?>
+<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/scriptsandstyles_local.html'); ?>
 <!-- TemplateBeginEditable name="doctitle" -->
 <title>
 <?php if (substr($this->getTitle(), 0, 3) == 'UNL'): ?>
     <?php echo $this->getTitle() ?>
 <?php else: ?>
-    UNL | Marketplace<?php if (Mage::app()->getStore()->getCode() != 'default'): ?> | <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?><?php endif; ?> | <?php echo $this->getTitle() ?>
+    <?php echo $this->getTitle() ?><?php if (Mage::app()->getStore()->getCode() != 'default'): ?> | <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?><?php endif; ?> | UNL Marketplace
 <?php endif; ?>
 </title>
-<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
 <!-- Place optional header elements here -->
-<link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
-<?php if (Mage::helper('unl_cas')->getAuth()->isLoggedIn()): ?>
-<link rel="logout" href="<?php echo $this->getUrl('customer/account/logout') ?>" />
-<?php endif; ?>
-<script type="text/javascript">
-//<![CDATA[
-    var BLANK_URL = '<?php echo $this->helper('core/js')->getJsUrl('blank.html') ?>';
-    var BLANK_IMG = '<?php echo $this->helper('core/js')->getJsUrl('spacer.gif') ?>';
-//]]>
-</script>
-
 <meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
 <meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
 <meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
+<?php if (Mage::helper('unl_cas')->getAuth()->isLoggedIn()): ?>
+<script type="text/javascript">
+//<![CDATA[
+    WDN.setPluginParam('idm', 'logout', '<?php echo $this->getUrl('customer/account/logout') ?>');
+//]]>
+</script>
+<?php endif; ?>
 
 <?php echo $this->getCssJsHtml() ?>
 <?php echo $this->getChildHtml() ?>
