@@ -89,7 +89,7 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                             </a>
                         </div>
                         <div class="external-id-form" id="external_id_edit" style="display:none;">
-                            <form id="external_id_form" action="<?php echo $this->getUrl('unl/sales_order_view_externalid/save', array('order_id' => $_order->getId())) ?>">
+                            <form id="external_id_form" action="<?php echo $this->getUrl('*/sales_order_view_externalid/save', array('order_id' => $_order->getId())) ?>">
                                 <div class="entry-edit">
                                     <fieldset>
                                         <span class="field-row">

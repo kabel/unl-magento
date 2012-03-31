@@ -1,11 +1,5 @@
-<?php
-$_user = Mage::getSingleton('admin/session')->getUser();
-$_scope = array();
-if ($_user->getScope()) {
-    $_scope = explode(',', $_user->getScope());
-}
-$_websiteCollection = $this->getWebsiteCollection()
-?>
+<?php $_scope = Mage::helper('unl_core')->getAdminUserScope(); ?>
+<?php $_websiteCollection = $this->getWebsiteCollection() ?>
 <?php if ($_websiteCollection->getSize()): ?>
 <div id="store_switcher_container">
 <p class="switcher"><label for="store_switcher"><?php echo $this->__('Choose Store View') ?>:</label>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<layout>
+    <!--
+    Unl_Comm Module
+    -->
+    <comm_queue_preview>
+        <block type="core/template" name="root" output="toHtml" template="unl/comm/queue/preview.phtml">
+            <block type="unl_comm/queue_preview" name="content" as="content" />
+        </block>
+    </comm_queue_preview>
+    
+    <adminhtml_customer_queue_edit>
+        <update handle="editor"/>
+        <reference name="content">
+            <block type="unl_comm/queue_edit" name="queue_edit" template="unl/comm/queue/edit.phtml"/>
+        </reference>
+        <reference name="left">
+            <block type="unl_comm/queue_edit_tabs" name="comm_queue_tabs">
+                <action method="addTab"><name>queue_info</name><block>unl_comm/queue_edit_tabs_info</block></action>
+                <action method="addTab"><name>queue_recipients</name><block>unl_comm/queue_edit_tabs_recipients</block></action>
+            </block>
+        </reference>
+    </adminhtml_customer_queue_edit>
+    
+    <!-- 
+    Core Updates
+    -->
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <block type="unl_comm/update">
+                <action method="addParentCommTab" />
+            </block>
+        </reference>
+    </adminhtml_customer_edit>
+</layout>

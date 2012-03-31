@@ -1,6 +1,7 @@
 <?php $_item = $this->getItem(); ?>
 <?php $_options = $_item->getProductOptionByCode('options'); ?>
 <?php $optionCount = count($_options); ?>
+<?php if ($optionCount): ?>
 <table cellspacing="0" class="data">
     <thead>
         <tr class="headings">
@@ -17,3 +18,4 @@
         </tr>
     </tbody>
 </table>
+<?php endif; ?>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<layout>
+    <!--
+    Shipping Override Module
+    -->
+    <adminhtml_shippingoverride_index>
+        <reference name="content">
+            <block type="shippingoverride/shippingoverride" name="shipping_overrides"/>
+        </reference>
+    </adminhtml_shippingoverride_index>
+    
+    <adminhtml_shippingoverride_edit>
+        <reference name="content">
+            <block type="shippingoverride/shippingoverride_edit" name="shippingoverride_edit"/>
+        </reference>
+    </adminhtml_shippingoverride_edit>
+    
+    <adminhtml_report_shippingoverride>
+       <reference name="content">
+            <block type="shippingoverride/adminhtml_report_shippingoverride" name="sales.report.grid.container"/>
+        </reference>
+    </adminhtml_report_shippingoverride>
+</layout>

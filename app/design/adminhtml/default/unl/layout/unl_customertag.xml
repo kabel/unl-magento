@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<layout>
+    <!-- 
+    Unl_CustomerTag Module
+    -->
+    <adminhtml_customertag_index>
+        <reference name="content">
+            <block type="unl_customertag/tag" name="tag_list" />
+        </reference>
+    </adminhtml_customertag_index>
+    
+    <adminhtml_customertag_edit>
+        <reference name="content">
+            <block type="unl_customertag/tag_edit" name="tag_edit" template="unl/customertag/edit/container.phtml" />
+        </reference>
+    </adminhtml_customertag_edit>
+    <adminhtml_customertag_assigned>
+            <remove name="root" />
+            <block type="unl_customertag/tag_assigned_grid" name="tag_assigned_grid" output="toHtml" />
+            <block type="adminhtml/widget_grid_serializer" name="tag_grid_serializer" output="toHtml">
+                <reference name="tag_grid_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>tag_assigned_grid</grid_block_name>
+                        <data_callback>getLinkedCustomers</data_callback>
+                        <hidden_input_name>tag_assigned_customers</hidden_input_name>
+                        <reload_param_name>assigned_customers</reload_param_name>
+                    </action>
+                </reference>
+            </block>
+    </adminhtml_customertag_assigned>
+    <adminhtml_customertag_assignedgridonly>
+        <remove name="root" />
+        <block type="unl_customertag/tag_assigned_grid" name="assigned_grid" output="toHtml" />
+    </adminhtml_customertag_assignedgridonly>
+    
+    <adminhtml_customertag_product_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>
+            <block type="adminhtml/widget_grid_serializer" name="customertag_grid_serializer">
+                <reference name="customertag_grid_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>product.customertag.grid</grid_block_name>
+                        <data_callback>getSelectedTags</data_callback>
+                        <hidden_input_name>access_tags</hidden_input_name>
+                        <reload_param_name>product_access</reload_param_name>
+                    </action>
+                </reference>
+            </block>
+        </block>
+    </adminhtml_customertag_product_grid>
+    <adminhtml_customertag_product_gridonly>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>
+        </block>
+    </adminhtml_customertag_product_gridonly>
+    
+    <!-- 
+    Core Updates 
+    -->
+    <adminhtml_catalog_product_new>
+        <reference name="product_tabs">
+            <block type="unl_customertag/update">
+                <action method="addParentProductTagsTab" />
+            </block>
+        </reference>
+    </adminhtml_catalog_product_new>
+    <adminhtml_catalog_product_edit>
+        <reference name="product_tabs">
+            <block type="unl_customertag/update">
+                <action method="addParentProductTagsTab" />
+            </block>
+        </reference>
+    </adminhtml_catalog_product_edit>
+    
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <block type="unl_customertag/update">
+                <action method="addParentTagsTab" />
+            </block>
+        </reference>
+    </adminhtml_customer_edit>
+</layout>

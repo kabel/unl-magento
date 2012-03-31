@@ -1,0 +1,24 @@
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('catalog')->__('Product In Websites') ?></h4>
+    </div>
+    <fieldset id="grop_fields">
+    <?php if($this->getProductId()): ?>
+        <ul class="messages">
+            <li class="notice-msg">
+                <ul>
+                    <li><?php echo Mage::helper('catalog')->__("Items that you don't want to show in the catalog or search results should have status 'Disabled' in the desired store.") ?></li>
+                </ul>
+            </li>
+        </ul>
+    <?php endif; ?>
+    <?php foreach ($this->getWebsiteCollection() as $_website): ?>
+    <div>
+        <div class="website-name">
+            <input name="product[website_ids][]" value="<?php echo $_website->getId() ?>" <?php if ($this->isReadonly()):?> disabled="disabled"<?php endif;?> class="checkbox website-checkbox" id="product_website_<?php echo $_website->getId() ?>" type="checkbox"<?php if($this->hasWebsite($_website->getId())): ?> checked="checked"<?php endif; ?> />
+            <big><strong><label for="product_website_<?php echo $_website->getId() ?>"><?php echo $this->escapeHtml($_website->getName()) ?></label></strong></big>
+        </div>
+    </div>
+    <?php endforeach; ?>
+    </fieldset>
+</div>

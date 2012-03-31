@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<layout>
+    <!-- 
+    AdminLog Module
+    -->
+    <adminhtml_log_index>
+        <reference name="content">
+            <block type="unl_adminlog/log" name="adminlog"/>
+        </reference>
+    </adminhtml_log_index>
+    
+    <adminhtml_log_archive>
+        <reference name="content">
+            <block type="unl_adminlog/archive" name="adminlog"/>
+        </reference>
+    </adminhtml_log_archive>
+</layout>

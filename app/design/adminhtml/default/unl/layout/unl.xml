@@ -4,6 +4,7 @@
 <default>
 	<reference name="head">
 		<action method="addCss"><name>unl_boxes.css</name></action>
+        <action method="setTitle" translate="title"><title>Magento Admin / UNL Marketplace</title></action>
 	</reference>
     <reference name="notifications">
         <block type="unl_core/adminhtml_notification_maintenance" name="notification_maintenance" template="notification/maintenance.phtml" />
@@ -18,9 +19,12 @@ Advanced Filters (add-on)
     </adminhtml_customer_index>
     
     <adminhtml_sales_order_index>
-   		<block type="unl_core/adminhtml_sales_order_grid_filter_form" name="adv.filter" />
+        <reference name="sales_order.grid.container">
+            <action method="setTemplate"><template>widget/grid/advanced/container.phtml</template></action>
+            <block type="unl_core/adminhtml_sales_order_grid_filter_form" name="adv.filter" />
+        </reference>
     </adminhtml_sales_order_index>
-    
+
 <!--
 CMS Page Permissions (add-on)
 -->
@@ -31,10 +35,45 @@ CMS Page Permissions (add-on)
             <action method="addTab"><name>permissions_section</name><block>cms_page_edit_tab_permissions</block></action>
         </reference>
     </adminhtml_cms_page_edit>
+
+<!-- 
+Invoice Button (add-on)
+-->
+    <adminhtml_sales_order_invoice_view>
+        <reference name="sales_invoice_view">
+            <block type="unl_core/adminhtml_update">
+                <action method="addParentButtons" />
+            </block>
+        </reference>
+    </adminhtml_sales_order_invoice_view>
     
 <!--
 Misc. Admin Updates
 -->
+
+    <adminhtml_dashboard_index>
+        <reference name="store_switcher">
+            <action method="setTemplate"><template>unl/store/switcher.phtml</template></action>
+        </reference>
+    </adminhtml_dashboard_index>
+    
+    <adminhtml_report_sales_bestsellers>
+        <reference name="store.switcher">
+            <action method="setTemplate"><template>unl/report/store/switcher/enhanced.phtml</template></action>
+        </reference>
+    </adminhtml_report_sales_bestsellers>
+    
+    <adminhtml_report_sales_coupons>
+        <reference name="store.switcher">
+            <action method="setTemplate"><template>unl/report/store/switcher/enhanced.phtml</template></action>
+        </reference>
+    </adminhtml_report_sales_coupons>
+    
+    <adminhtml_report_sales_sales>
+        <reference name="store.switcher">
+            <action method="setTemplate"><template>unl/report/store/switcher/enhanced.phtml</template></action>
+        </reference>
+    </adminhtml_report_sales_sales>
 
 	<adminhtml_report_sales_tax>
 	    <reference name="sales.report.grid.container">
@@ -47,85 +86,60 @@ Misc. Admin Updates
     </adminhtml_system_config_edit>
 
 <!--
-Shipment Packages Display (Ordership Module)
--->
-	
-	<adminhtml_sales_order_shipment_view>
-	   <reference name="form">
-	       <block type="unl_ship/shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml"></block>
-	   </reference>
-	</adminhtml_sales_order_shipment_view>
-    
-<!--
 Custom Product Reports
 -->
     
-    <unl_core_report_product_orderdetails>
+    <adminhtml_report_product_orderdetails>
         <reference name="content">
-            <block type="unl_core/adminhtml_report_product_orderdetails" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
-                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
-                </block>
-                <block type="unl_core/adminhtml_report_filter_form_products" name="grid.filter.form" />
-            </block>
+            <block type="unl_core/adminhtml_report_product_orderdetails" name="sales.grid.container"/>
         </reference>
-    </unl_core_report_product_orderdetails>
+    </adminhtml_report_product_orderdetails>
     
-    <unl_core_report_product_customized>
+    <adminhtml_report_product_customized>
         <reference name="content">
-            <block type="unl_core/adminhtml_report_product_customized" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
-                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
-                </block>
-                <block type="unl_core/adminhtml_report_filter_form_products" name="grid.filter.form" />
-            </block>
+            <block type="unl_core/adminhtml_report_product_customized" name="sales.grid.container"/>
         </reference>
-    </unl_core_report_product_customized>
+    </adminhtml_report_product_customized>
 	
 <!--
 Custom Customer Reports
 -->
     
-    <unl_core_report_customer_orderaddress>
+    <adminhtml_report_customer_orderaddress>
         <reference name="content">
-            <block type="unl_core/adminhtml_report_customer_orderaddress" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
-                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
-                </block>
-                <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
-            </block>
+            <block type="unl_core/adminhtml_report_customer_orderaddress" name="sales.grid.container" />
         </reference>
-    </unl_core_report_customer_orderaddress>
+    </adminhtml_report_customer_orderaddress>
 
 <!--
 Bursar/Reconcile Reports
 -->
 
-	<unl_core_report_sales_bursar_cc>
+	<adminhtml_report_sales_bursar_cc>
 	   <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_cc" name="sales.report.grid.container">
                 <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
-	</unl_core_report_sales_bursar_cc>
+	</adminhtml_report_sales_bursar_cc>
 	
-	<unl_core_report_sales_bursar_co>
+	<adminhtml_report_sales_bursar_co>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_co" name="sales.report.grid.container">
                 <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
-    </unl_core_report_sales_bursar_co>
+    </adminhtml_report_sales_bursar_co>
     
-    <unl_core_report_sales_bursar_nocap>
+    <adminhtml_report_sales_bursar_nocap>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_bursar_nocap" name="sales.report.grid.container">
                 <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
-    </unl_core_report_sales_bursar_nocap>
+    </adminhtml_report_sales_bursar_nocap>
     
-    <unl_core_report_sales_reconcile_cc>
+    <adminhtml_report_sales_reconcile_cc>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_reconcile_cc" name="sales.report.grid.container">
                 <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
@@ -134,9 +148,9 @@ Bursar/Reconcile Reports
                 <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
-    </unl_core_report_sales_reconcile_cc>
+    </adminhtml_report_sales_reconcile_cc>
     
-    <unl_core_report_sales_reconcile_co>
+    <adminhtml_report_sales_reconcile_co>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_reconcile_co" name="sales.report.grid.container">
                 <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
@@ -145,9 +159,9 @@ Bursar/Reconcile Reports
                 <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
-    </unl_core_report_sales_reconcile_co>
+    </adminhtml_report_sales_reconcile_co>
     
-    <unl_core_report_sales_reconcile_nocap>
+    <adminhtml_report_sales_reconcile_nocap>
        <reference name="content">
             <block type="unl_core/adminhtml_report_sales_reconcile_nocap" name="sales.report.grid.container">
                 <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
@@ -156,213 +170,39 @@ Bursar/Reconcile Reports
                 <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
             </block>
         </reference>
-    </unl_core_report_sales_reconcile_nocap>
+    </adminhtml_report_sales_reconcile_nocap>
     
+<!-- 
+New Tax Reports
+-->
+
+    <adminhtml_report_sales_tax_totals>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_sales_tax_totals" name="sales.report.grid.container">
+                <block type="unl_core/adminhtml_report_filter_form_settled" name="grid.filter.form" />
+            </block>
+        </reference>
+    </adminhtml_report_sales_tax_totals>
+    
+    <adminhtml_report_sales_tax_reconcile>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_sales_tax_reconcile" name="sales.report.grid.container"/>
+        </reference>
+    </adminhtml_report_sales_tax_reconcile>
+
 <!-- 
 Warehouse Stuff
 -->
-	<unl_core_warehouse_index>
+	<adminhtml_warehouse_index>
         <reference name="content">
             <block type="unl_core/adminhtml_warehouse" name="warehouse.container"/>
         </reference>
-    </unl_core_warehouse_index>
+    </adminhtml_warehouse_index>
     
-    <unl_core_warehouse_edit>
+    <adminhtml_warehouse_edit>
         <reference name="content">
             <block type="unl_core/adminhtml_warehouse_edit" name="warehouse_edit"/>
         </reference>
-    </unl_core_warehouse_edit>
-
-    <unl_adminlog_log_index>
-        <reference name="content">
-            <block type="unl_adminlog/log" name="adminlog"/>
-        </reference>
-    </unl_adminlog_log_index>
+    </adminhtml_warehouse_edit>
     
-    <unl_adminlog_log_archive>
-        <reference name="content">
-            <block type="unl_adminlog/archive" name="adminlog"/>
-        </reference>
-    </unl_adminlog_log_archive>
-
-<!-- 
-Auto Ship Module
--->
-	<unl_ship_index_index>
-		<reference name="content">
-			<block type="unl_ship/shipment_create" name="shipment_create">
-                <block type="unl_ship/shipment_create_form" name="form" template="unl/ship/shipment/create/form.phtml">
-                    <!-- <block type="unl_ship/order_view_info" name="order_info" template="unl/ship/order/view/info.phtml">
-                    	<block type="unl_ship/shipment_create_address" name="shipping_address" template="unl/ship/shipment/create/address.phtml" />
-                    </block> -->
-                    <block type="unl_ship/order_view_info" name="order_info" template="sales/order/view/info.phtml"></block>
-                    <block type="adminhtml/sales_order_payment" name="order_payment"></block>
-                    <block type="unl_ship/shipment_create_packages" name="packages" template="unl/ship/shipment/create/packages.phtml" />
-                    <block type="unl_ship/shipment_create_items" name="order_items" template="unl/ship/shipment/create/items.phtml">
-                        <action method="addItemRender"><type>default</type><block>adminhtml/sales_items_renderer_default</block><template>unl/ship/shipment/create/items/renderer/default.phtml</template></action>
-                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>unl/ship/shipment/create/items/column/bundle/name.phtml</template><type>bundle</type></action>
-                        <!-- 
-                        <action method="addColumnRender"><column>qty</column><block>adminhtml/sales_items_column_qty</block><template>sales/items/column/qty.phtml</template></action>
-                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
-                        -->
-                    </block>
-                </block>
-            </block>
-		</reference>
-	</unl_ship_index_index>
-
-<!--
-Shipping Override Module
--->
-    
-    <shippingoverride_index_index>
-        <reference name="content">
-            <block type="shippingoverride/shippingoverride" name="shipping_overrides"/>
-        </reference>
-    </shippingoverride_index_index>
-    
-    <shippingoverride_index_edit>
-        <reference name="content">
-            <block type="shippingoverride/shippingoverride_edit" name="shippingoverride_edit"/>
-        </reference>
-    </shippingoverride_index_edit>
-    
-    <shippingoverride_report_index>
-       <reference name="content">
-            <block type="shippingoverride/adminhtml_report_shippingoverride" template="report/grid/container.phtml" name="sales.report.grid.container">
-                <block type="adminhtml/store_switcher" template="unl/report/store/switcher/enhanced.phtml" name="store.switcher">
-                    <action method="setStoreVarName"><var_name>store_ids</var_name></action>
-                </block>
-                <block type="shippingoverride/adminhtml_report_filter_form_reconcile" name="grid.filter.form">
-                    <action method="addReportTypeOption" translate="value">
-                        <key>created_at_order</key>
-                        <value>Created At Order</value>
-                    </action>
-                    <action method="addReportTypeOption" translate="value">
-                        <key>updated_at_order</key>
-                        <value>Updated At Order</value>
-                    </action>
-                </block>
-            </block>
-        </reference>
-    </shippingoverride_report_index>
-
-<!--
-Unl_Comm Module
--->
-
-    <comm_queue_preview>
-	    <block type="core/template" name="root" output="toHtml" template="unl/comm/queue/preview.phtml">
-            <block type="unl_comm/queue_preview" name="content" as="content" />
-        </block>
-    </comm_queue_preview>
-    
-    <unl_comm_queue_edit>
-    	<update handle="editor"/>
-    	<reference name="content">
-    		<block type="unl_comm/queue_edit" name="queue_edit" template="unl/comm/queue/edit.phtml"/>
-    	</reference>
-        <reference name="left">
-            <block type="unl_comm/queue_edit_tabs" name="comm_queue_tabs">
-                <action method="addTab"><name>queue_info</name><block>unl_comm/queue_edit_tabs_info</block></action>
-                <action method="addTab"><name>queue_recipients</name><block>unl_comm/queue_edit_tabs_recipients</block></action>
-            </block>
-        </reference>
-    </unl_comm_queue_edit>
-
-<!-- 
-Unl_CustomerTag Module
--->
-
-    <unl_customertag_index_index>
-        <reference name="content">
-            <block type="unl_customertag/tag" name="tag_list" />
-        </reference>
-    </unl_customertag_index_index>
-    
-    <unl_customertag_index_edit>
-        <reference name="content">
-            <block type="unl_customertag/tag_edit" name="tag_edit" template="unl/customertag/edit/container.phtml" />
-        </reference>
-    </unl_customertag_index_edit>
-    <unl_customertag_index_assigned>
-            <remove name="root" />
-            <block type="unl_customertag/tag_assigned_grid" name="tag_assigned_grid" output="toHtml" />
-            <block type="adminhtml/widget_grid_serializer" name="tag_grid_serializer" output="toHtml">
-                <reference name="tag_grid_serializer">
-                    <action method="initSerializerBlock">
-                        <grid_block_name>tag_assigned_grid</grid_block_name>
-                        <data_callback>getLinkedCustomers</data_callback>
-                        <hidden_input_name>tag_assigned_customers</hidden_input_name>
-                        <reload_param_name>assigned_customers</reload_param_name>
-                    </action>
-                </reference>
-            </block>
-    </unl_customertag_index_assigned>
-    <unl_customertag_index_assignedgridonly>
-        <remove name="root" />
-        <block type="unl_customertag/tag_assigned_grid" name="assigned_grid" output="toHtml" />
-    </unl_customertag_index_assignedgridonly>
-    
-    <unl_customertag_product_grid>
-        <block type="core/text_list" name="root" output="toHtml">
-            <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>
-            <block type="adminhtml/widget_grid_serializer" name="customertag_grid_serializer">
-                <reference name="customertag_grid_serializer">
-                    <action method="initSerializerBlock">
-                        <grid_block_name>product.customertag.grid</grid_block_name>
-                        <data_callback>getSelectedTags</data_callback>
-                        <hidden_input_name>access_tags</hidden_input_name>
-                        <reload_param_name>product_access</reload_param_name>
-                    </action>
-                </reference>
-            </block>
-        </block>
-    </unl_customertag_product_grid>
-    <unl_customertag_product_gridonly>
-        <block type="core/text_list" name="root" output="toHtml">
-            <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>
-        </block>
-    </unl_customertag_product_gridonly>
-
-<!-- 
-Unl_Inventory Module
--->
-
-    <unl_inventory_index_index>
-        <reference name="content">
-            <block type="unl_inventory/products" name="products_list" />
-        </reference>
-    </unl_inventory_index_index>
-    
-    <unl_inventory_index_edit>
-        <reference name="content">
-            <block type="unl_inventory/inventory_edit" name="inventory_edit"></block>
-        </reference>
-        <reference name="left">
-            <block type="unl_inventory/inventory_edit_tabs" name="inventory_edit_tabs">
-                <block type="unl_inventory/inventory_edit_tab_overview" name="inventory_edit_tab_overview" template="unl/inventory/tab/overview.phtml" />
-                <action method="addTab"><name>inventory_edit_tab_overview</name><block>inventory_edit_tab_overview</block></action>
-            </block>
-        </reference>
-        <reference name="js">
-            <block type="adminhtml/template" template="unl/inventory/edit/js.phtml" name="inventory.edit.js" as="inventory_edit_js"></block>
-        </reference>
-    </unl_inventory_index_edit>
-    
-<!-- 
-Unl_Payment Module
--->
-
-    <adminhtml_catalog_account_index>
-        <reference name="content">
-            <block type="unl_payment/account" name="account_list"/>
-        </reference>
-    </adminhtml_catalog_account_index>
-    <adminhtml_catalog_account_edit>
-        <reference name="content">
-            <block type="unl_payment/account_edit" name="account_edit"/>
-        </reference>
-    </adminhtml_catalog_account_edit>
-
 </layout>

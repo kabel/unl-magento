@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<layout>
+    <!-- 
+    Unl_Payment Module
+    -->
+    <adminhtml_catalog_account_index>
+        <reference name="content">
+            <block type="unl_payment/account" name="account_list"/>
+        </reference>
+    </adminhtml_catalog_account_index>
+    <adminhtml_catalog_account_edit>
+        <reference name="content">
+            <block type="unl_payment/account_edit" name="account_edit"/>
+        </reference>
+    </adminhtml_catalog_account_edit>
+</layout>

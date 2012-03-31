@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<layout>
+    <!-- 
+    Unl_Inventory Module
+    -->
+    <adminhtml_catalog_inventory_index>
+        <reference name="content">
+            <block type="unl_inventory/products" name="products_list" />
+        </reference>
+    </adminhtml_catalog_inventory_index>
+    
+    <adminhtml_catalog_inventory_edit>
+        <reference name="content">
+            <block type="unl_inventory/inventory_edit" name="inventory_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="unl_inventory/inventory_edit_tabs" name="inventory_edit_tabs">
+                <block type="unl_inventory/inventory_edit_tab_overview" name="inventory_edit_tab_overview" template="unl/inventory/tab/overview.phtml" />
+                <action method="addTab"><name>inventory_edit_tab_overview</name><block>inventory_edit_tab_overview</block></action>
+            </block>
+        </reference>
+        <reference name="js">
+            <block type="adminhtml/template" template="unl/inventory/edit/js.phtml" name="inventory.edit.js" as="inventory_edit_js"></block>
+        </reference>
+    </adminhtml_catalog_inventory_edit>
+    
+    <adminhtml_report_inventory_valuation>
+        <reference name="content">
+            <block type="unl_inventory/report_valuation" name="report_valuation" />
+        </reference>
+    </adminhtml_report_inventory_valuation>
+</layout>

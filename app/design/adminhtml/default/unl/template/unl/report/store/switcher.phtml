@@ -1,23 +1,15 @@
-<?php
-$_user = Mage::getSingleton('admin/session')->getUser();
-$_scope = array();
-if ($_user->getScope()) {
-    $_scope = explode(',', $_user->getScope());
-}
-?>
+<?php $scope = Mage::helper('unl_core')->getAdminUserScope(); ?>
 <?php if ($this->isShow()): ?>
-<p class="switcher"><label for="store_switcher"><?php echo $this->__('Show Report for') ?>:</label>
+<p class="switcher"><label for="store_switcher"><?php echo $this->__('Show Report For') ?>:</label>
 <select name="store_switcher" id="store_switcher" onchange="return switchStore(this);">
-     <?php if (empty($_scope)): ?>
-    <option value=""><?php echo $this->__('All Websites') ?></option>
-    <?php endif; ?>
+    <option value=""><?php echo $this->__('All') ?></option>
     <?php foreach ($this->getWebsiteCollection() as $_website): ?>
         <?php $showWebsite=false; ?>
         <?php foreach ($this->getGroupCollection($_website) as $_group): ?>
             <?php $showGroup=false; ?>
             <?php foreach ($this->getStoreCollection($_group) as $_store): ?>
-                <?php if (!empty($_scope) && !in_array($_store->getId(), $_scope)): ?>
-                <?php continue; ?>
+                <?php if (!empty($scope) && !in_array($_store->getId(), $scope)): ?>
+                    <?php continue; ?>
                 <?php endif; ?>
                 <?php if ($showWebsite == false): ?>
                     <?php $showWebsite = true; ?>
