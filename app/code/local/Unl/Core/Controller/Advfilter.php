@@ -2,9 +2,9 @@
 
 abstract class Unl_Core_Controller_Advfilter extends Mage_Adminhtml_Controller_Action
 {
-    abstract public function applyfilterAction();
+    abstract public function applyAction();
 
-    abstract public function currentfiltersAction();
+    abstract public function currentAction();
 
     protected function _applyFilters($sessionParam, $dateFields = null)
     {

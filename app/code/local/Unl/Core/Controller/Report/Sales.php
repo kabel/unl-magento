@@ -1,13 +1,16 @@
 <?php
 
-class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_Action
+abstract class Unl_Core_Controller_Report_Sales extends Mage_Adminhtml_Controller_Action
 {
+    protected $_controllerGroup;
+    protected $_controllerTitle;
+
     protected function _initAction()
     {
         $this->loadLayout()
             ->_addBreadcrumb(Mage::helper('reports')->__('Reports'), Mage::helper('reports')->__('Reports'))
             ->_addBreadcrumb(Mage::helper('reports')->__('Sales'), Mage::helper('reports')->__('Sales'))
-            ->_addBreadcrumb(Mage::helper('reports')->__('Bursar'), Mage::helper('reports')->__('Bursar'));
+            ->_addBreadcrumb(Mage::helper('reports')->__($this->_controllerTitle), Mage::helper('reports')->__($this->_controllerTitle));
         return $this;
     }
 
@@ -55,23 +58,28 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
 
     protected function _exportCsv($gridId, $paymentGroup)
     {
-        $fileName   = "bursar_{$paymentGroup}_{$gridId}.csv";
-        $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_bursar_{$paymentGroup}_grid_{$gridId}");
+        $gridBlock  = implode('_', array($this->_controllerGroup, $paymentGroup, $gridId));
+        $fileName   = "{$gridBlock}.csv";
+        $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_{$gridBlock}");
         $this->_initReportAction($grid);
         $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
     }
 
     protected function _exportExcel($gridId, $paymentGroup)
     {
-        $fileName   = "bursar_{$paymentGroup}_{$gridId}.xml";
-        $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_bursar_{$paymentGroup}_grid_{$gridId}");
+        $gridBlock  = implode('_', array($this->_controllerGroup, $paymentGroup, $gridId));
+        $fileName   = "{$gridBlock}.xml";
+        $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_{$gridBlock}");
         $this->_initReportAction($grid);
         $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
     }
 
     public function ccAction()
     {
-        $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Credit Card'));
+        $this->_title($this->__('Reports'))
+            ->_title($this->__('Sales'))
+            ->_title($this->__($this->_controllerTitle))
+            ->_title($this->__('Credit Card'));
 
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
@@ -122,7 +130,10 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
 
     public function coAction()
     {
-        $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Cost Object'));
+        $this->_title($this->__('Reports'))
+            ->_title($this->__('Sales'))
+            ->_title($this->__($this->_controllerTitle))
+            ->_title($this->__('Cost Object'));
 
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
@@ -173,7 +184,10 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
 
     public function nocapAction()
     {
-        $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('Bursar'))->_title($this->__('Non-Captured'));
+        $this->_title($this->__('Reports'))
+            ->_title($this->__('Sales'))
+            ->_title($this->__($this->_controllerTitle))
+            ->_title($this->__('Non-Captured'));
 
         $this->_initAction()
             ->_setActiveMenu('report/sales/sales')
@@ -225,11 +239,13 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
     protected function _isAllowed()
     {
         $act = $this->getRequest()->getActionName();
+        $aclPrefix = "report/salesroot/{$this->_controllerGroup}/";
+
         switch ($act) {
             case 'cc':
             case 'co':
             case 'nocap':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/' . $act);
+                return Mage::getSingleton('admin/session')->isAllowed($aclPrefix . $act);
                 break;
             case 'exportCsvCcProductsPaid':
             case 'exportCsvCcProductsRefunded':
@@ -239,7 +255,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             case 'exportExcelCcProductsRefunded':
             case 'exportExcelCcShippingPaid':
             case 'exportExcelCcShippingRefunded':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/cc');
+                return Mage::getSingleton('admin/session')->isAllowed($aclPrefix .'cc');
                 break;
             case 'exportCsvCoProductsPaid':
             case 'exportCsvCoProductsRefunded':
@@ -249,7 +265,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             case 'exportExcelCoProductsRefunded':
             case 'exportExcelCoShippingPaid':
             case 'exportExcelCoShippingRefunded':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/co');
+                return Mage::getSingleton('admin/session')->isAllowed($aclPrefix . 'co');
                 break;
             case 'exportCsvNocapProductsPaid':
             case 'exportCsvNocapProductsRefunded':
@@ -259,7 +275,7 @@ class Unl_Core_Report_Sales_BursarController extends Mage_Adminhtml_Controller_A
             case 'exportExcelNocapProductsRefunded':
             case 'exportExcelNocapShippingPaid':
             case 'exportExcelNocapShippingRefunded':
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/bursar/nocap');
+                return Mage::getSingleton('admin/session')->isAllowed($aclPrefix . 'nocap');
                 break;
             default:
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot');

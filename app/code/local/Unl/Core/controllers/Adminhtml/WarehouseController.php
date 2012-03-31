@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_WarehouseController extends Mage_Adminhtml_Controller_Action
+class Unl_Core_Adminhtml_WarehouseController extends Mage_Adminhtml_Controller_Action
 {
     protected function _initAction()
     {

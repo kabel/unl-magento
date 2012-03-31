@@ -1,14 +1,14 @@
 <?php
 
-class Unl_Core_Sales_OrderController extends Unl_Core_Controller_Advfilter
+class Unl_Core_Adminhtml_Sales_Order_FilterController extends Unl_Core_Controller_Advfilter
 {
-    public function applyfilterAction()
+    public function applyAction()
     {
         $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('order');
         $this->_applyFilters($sessionParamName);
     }
 
-    public function currentfiltersAction()
+    public function currentAction()
     {
         $this->loadLayout();
 

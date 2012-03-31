@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Sales_Order_View_ExternalidController extends Mage_Adminhtml_Controller_Action
+class Unl_Core_Adminhtml_Sales_Order_View_ExternalidController extends Mage_Adminhtml_Controller_Action
 {
     protected function _construct()
     {

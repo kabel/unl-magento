@@ -1,14 +1,14 @@
 <?php
 
-class Unl_Core_CustomerController extends Unl_Core_Controller_Advfilter
+class Unl_Core_Adminhtml_Customer_FilterController extends Unl_Core_Controller_Advfilter
 {
-    public function applyfilterAction()
+    public function applyAction()
     {
         $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('customer');
         $this->_applyFilters($sessionParamName, array('purchase_from', 'purchase_to'));
     }
 
-    public function currentfiltersAction()
+    public function currentAction()
     {
         $this->loadLayout();
 
