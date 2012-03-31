@@ -2,6 +2,9 @@
 
 class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const TAX_EXEMPT_ORG = 'Exempt Org';
+    const TAX_GROUP_EXEMPT_ORG = 'Tax Exempt Org';
+
     const CUSTOMER_ALLOWED_PRODUCT_SUCCESS       = 0;
     const CUSTOMER_ALLOWED_PRODUCT_FAILURE_LOGIN = 1;
     const CUSTOMER_ALLOWED_PRODUCT_FAILURE_ACL   = 2;
@@ -9,6 +12,20 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     const CUSTOMER_ALLOWED_CATEGORY_SUCCESS       = 0;
     const CUSTOMER_ALLOWED_CATEGORY_FAILURE_LOGIN = 1;
     const CUSTOMER_ALLOWED_CATEGORY_FAILURE_ACL   = 2;
+
+    protected $_taxCodeCases = array(
+        "code LIKE '%-CountyFips-%' OR code LIKE '%-CityFips-%'" => "CONCAT('US-NE-', RIGHT(code, 14))",
+        "code LIKE '%-CityFips+-%'" => "CONCAT('US-NE-CityFips-', SUBSTRING(code, LOCATE('-CityFips+-', code) + 11))",
+    );
+
+    protected $_cityFipsCases = array(
+        "code LIKE '%-CityFips-%'" => "RIGHT(code, 5) = pf.fips_place_number",
+        "code LIKE '%-CityFips+-%'" => "SUBSTRING(code, LOCATE('-CityFips+-', code) + 11, 5) = pf.fips_place_number",
+    );
+
+    protected $_countyFipsCases = array(
+        "code LIKE '%-CountyFips-%'" => "RIGHT(code, 3) = cf.county_id",
+    );
 
     public function fetchServerFile($path)
     {
@@ -101,25 +118,27 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return Varien_Db_Select
      */
-    public function addAdminScopeFilters($collection, $joinColumn = 'order_id', $withState = false)
+    public function addAdminScopeFilters($collection, $joinColumn = 'order_id', $withState = false, $storeIds = null)
     {
         $select = null;
+        $storeIds = $this->getScopeFilteredStores($storeIds);
 
-        if ($scope = $this->getAdminUserScope()) {
+        if (!empty($storeIds)) {
+            /* @var $order_items Mage_Sales_Model_Resource_Order_Item_Collection */
             $order_items = Mage::getModel('sales/order_item')->getCollection();
-            /* @var $order_items Mage_Sales_Model_Mysql4_Order_Item_Collection */
+            $adapter = $order_items->getConnection();
+
             $select = $order_items->getSelect()->reset(Zend_Db_Select::COLUMNS)
                 ->columns(array('order_id'))
                 ->group('order_id')
-                ->where('source_store_view IN (?)', $scope);
+                ->where($adapter->prepareSqlCondition('source_store_view', array('in' => $storeIds)));
 
             if ($whScope = $this->getAdminUserWarehouseScope()) {
                 if ($withState) {
-                    $collection->addFieldToFilter('state', array(
-                    	'nin' => Mage::getModel('unl_core/warehouse')->getFilterStates()
-                    ));
+                    $collection->addFieldToFilter('state', array('nin' => Mage::getModel('unl_core/warehouse')->getFilterStates()));
                 }
-                $select->where('warehouse IN (?)', $whScope);
+
+                $select->where($adapter->prepareSqlCondition('warehouse', array('in' => $whScope)));
             }
 
             $collection->getSelect()
@@ -132,44 +151,62 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Add the admin user scope filters to a product collection
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
-     * @param int $storeId
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection
+     * @param array|int $storeIds
      */
-    public function addProductAdminScopeFilters($collection, $storeId = null)
+    public function addProductAdminScopeFilters($collection, $storeIds = null)
     {
-        if ($scope = $this->getAdminUserScope()) {
-            if ($storeId && in_array($storeId, $scope)) {
-                $collection->addAttributeToFilter('source_store_view', array('eq' => $storeId));
-            } else {
-                $collection->addAttributeToFilter('source_store_view', array('in' => $scope));
-            }
+        $storeIds = $this->getScopeFilteredStores($storeIds);
+
+        if (!empty($storeIds)) {
+            $collection->addAttributeToFilter('source_store_view', array('in' => $storeIds));
+
             if ($whScope = $this->getAdminUserWarehouseScope()) {
                 $collection->addAttributeToFilter('warehouse', array('in' => $whScope));
             }
-        } elseif ($storeId) {
-            $collection->addAttributeToFilter('source_store_view', array('eq' => $storeId));
         }
 
         return $this;
     }
 
-    public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
+    /**
+     * Returns a optionally filtered admin user scope
+     *
+     * @param array|null $storeIds
+     * @return mixed
+     */
+    public function getScopeFilteredStores($storeIds = null)
     {
-        $_cat = $category;
-        if (!($category instanceof Mage_Catalog_Model_Category)) {
-            $_cat = Mage::getModel('catalog/category')->load($category->getId());
-        } else if ($reload) {
-            $_cat->load($_cat->getId());
+        if ($scope = $this->getAdminUserScope()) {
+            if (!empty($storeIds)) {
+                if (!is_array($storeIds)) {
+                    $storeIds = array($storeIds);
+                }
+
+                $storeIds = array_intersect($scope, $storeIds);
+
+                // ensure the return isn't empty, return impossible value
+                if (empty($storeIds)) {
+                    $storeIds = array(-1);
+                }
+            } else {
+                $storeIds = $scope;
+            }
         }
 
-        $result = $this->_getCustomerAllowedCategory($_cat);
+        return $storeIds;
+    }
+
+    public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
+    {
+        $result = $this->_getCustomerAllowedCategory($category);
         switch ($result) {
             case self::CUSTOMER_ALLOWED_CATEGORY_FAILURE_LOGIN:
                 if ($addNotice) {
                     Mage::getSingleton('core/session')->addNotice('You must be logged in and authorized to access this part of the catalog');
                 }
                 if ($action) {
-                    Mage::getSingleton('customer/session')->setBeforeAuthUrl($_cat->getUrl());
+                    Mage::getSingleton('customer/session')->setBeforeAuthUrl($this->getCategoryUrl($category));
                     $action->getResponse()->setRedirect($this->_getUrl('customer/account/login'));
                 }
                 break;
@@ -181,6 +218,19 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return ($result == self::CUSTOMER_ALLOWED_CATEGORY_SUCCESS);
+    }
+
+    public function getCategoryUrl($category)
+    {
+        if ($category instanceof Mage_Catalog_Model_Category) {
+            $url = $category->getUrl();
+        } else {
+            $url = Mage::getModel('catalog/category')
+                ->setData($category->getData())
+                ->getUrl();
+        }
+
+        return $url;
     }
 
     protected function _getCustomerAllowedCategory($category) {
@@ -420,38 +470,83 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
 
+    public function getTaxCodeCases()
+    {
+        return $this->_taxCodeCases;
+    }
+
+    public function getCityFipsCases()
+    {
+        return $this->_cityFipsCases;
+    }
+
+    public function getCountyFipsCases()
+    {
+        return $this->_countyFipsCases;
+    }
+
     /**
-     * Retrieves the store_id of all the items in the quote, otherwise false
+     * Returns the store_ids of all the items in the quote
      *
      * @param Mage_Sales_Model_Quote $quote
-     * @return int|false
+     * @return array
      */
-    public function getSingleStoreFromQuote($quote)
+    public function getStoresFromQuote($quote)
     {
-        $sourceStore = false;
-        $items = $quote->getAllItems();
-        $c = count($items);
-        $i = 0;
+        return $this->getStoresFromItems($quote->getAllItems());
+    }
 
-        while ($i < $c) {
-            ++$i;
-            if ($items[$i-1]->getParentItem()) {
+    /**
+     * Returns the store_ids of all the items
+     *
+     * @param array $items
+     * @return array
+     */
+    public function getStoresFromItems($items)
+    {
+        $stores = array();
+
+        foreach ($items as $item) {
+            if ($item instanceof Mage_Sales_Model_Quote_Address_Item) {
+                $item = $item->getQuoteItem();
+            }
+
+            if ($item->getParentItem()) {
                 continue;
-            } else {
-                $sourceStore = $items[$i-1]->getSourceStoreView();
-                break;
+            }
+
+            if (!in_array($item->getSourceStoreView(), $stores)) {
+                $stores[] = $item->getSourceStoreView();
             }
         }
 
-        for (;$i < $c; $i++) {
-            if ($items[$i]->getParentItem()) {
-                continue;
-            }
-            if ($items[$i]->getSourceStoreView() != $sourceStore) {
-                return false;
-            }
+        return $stores;
+    }
+
+    /**
+     * Check for quote items used for dummy calculations
+     *
+     * @param Mage_Sales_Model_Quote_Item $quoteItem
+     * @return boolean
+     */
+    protected function _isDummyQuoteItem($quoteItem)
+    {
+        if ($quoteItem->getHasChildren() && $quoteItem->isChildrenCalculated()) {
+            return true;
         }
 
-        return $sourceStore;
+        if ($quoteItem->getHasChildren() && !$quoteItem->isChildrenCalculated()) {
+            return false;
+        }
+
+        if ($quoteItem->getParentItem() && $quoteItem->isChildrenCalculated()) {
+            return false;
+        }
+
+        if ($quoteItem->getParentItem() && !$quoteItem->isChildrenCalculated()) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -4,6 +4,10 @@ class Unl_Core_Helper_Catalog_Image extends Mage_Catalog_Helper_Image
 {
     protected $_secureUrl = null;
 
+    /* Extends
+     * @see Mage_Catalog_Helper_Image::_reset()
+     * by resetting the secure URL flag
+     */
     protected function _reset()
     {
         parent::_reset();
@@ -11,12 +15,22 @@ class Unl_Core_Helper_Catalog_Image extends Mage_Catalog_Helper_Image
         return $this;
     }
 
+    /**
+     * Sets the secure URL flag
+     *
+     * @param boolean $flag
+     * @return Unl_Core_Helper_Catalog_Image
+     */
     public function useSecureUrl($flag)
     {
         $this->_secureUrl = is_null($flag) ? $flag : (bool)$flag;
         return $this;
     }
 
+    /* Overrides
+     * @see Mage_Catalog_Helper_Image::__toString()
+     * by passing the secure URL flag to the URL model
+     */
     public function __toString()
     {
         try {
