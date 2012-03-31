@@ -6,7 +6,7 @@ class Unl_CustomerTag_Helper_Data extends Mage_Core_Helper_Abstract
      * Retireve a customer tag collection and store it in the customer model
      *
      * @param Mage_Customer_Model_Customer $customer
-     * @return Unl_CustomerTag_Model_Mysql4_Tag_Collection
+     * @return Unl_CustomerTag_Model_Resource_Tag_Collection
      */
     public function getTagsByCustomer($customer)
     {
@@ -65,5 +65,10 @@ class Unl_CustomerTag_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $order->getCustomerTags();
+    }
+
+    public function getAccessStorageName()
+    {
+        return 'access_tags';
     }
 }
