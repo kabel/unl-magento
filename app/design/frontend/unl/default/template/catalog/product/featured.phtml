@@ -1,44 +1,40 @@
-<?php if (($_products = $this->getProductCollection()) && count($_products->getItems())): ?>
 <?php
-    $_allFeaured = $_products->getItems();
-    shuffle($_allFeaured);
-    $_product = current($_allFeaured);
+    $_product = $this->getProduct();
     $_helper = $this->helper('catalog/output');
 ?>
-<div class="featured zenbox">
-    <h2 class="sec_main"><?php echo $this->__('Featured Product') ?></h2>
-    <a class="product-image" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>">
-        <img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(174, 174); ?>" width="174" height="174" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+<?php if ($_product->getId()): ?>
+<div class="<?php echo $this->getWrapperClass() ?>">
+    <h2 class="sec_header"><?php echo $this->__('Featured Product') ?></h2>
+    <?php // Product Image ?>
+    <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(177); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+    <?php // Product description ?>
     <div class="product-shop">
-        <h2 class="sec_header"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h2>
-
-        <div class="right-box">
+        <div class="f-fix">
+            <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+            <h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h3>
+            <?php if($_product->getRatingSummary()): ?>
+            <?php echo $this->getReviewsSummaryHtml($_product) ?>
+            <?php endif; ?>
             <?php echo $this->getPriceHtml($_product, true) ?>
             <?php if($_product->isSaleable()): ?>
-                <p><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+                <p class="availability"><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
             <?php elseif ($_product->getNoSale()): ?>
                 <p class="availability no-sale"><span><?php echo $this->__('Not Available Online') ?></span></p>
             <?php else: ?>
                 <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
             <?php endif; ?>
-            <p class="add-to">
-                Add to:
+            <div class="desc std">
+                <?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
+            </div>
+            <ul class="add-to-links">
                 <?php if ($this->helper('wishlist')->isAllow()) : ?>
-                    <a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>"><?php echo $this->__('Wishlist') ?></a>
+                    <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
                 <?php endif; ?>
                 <?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
-                    <span class="separator">|</span> <a href="<?php echo $_compareUrl ?>"><?php echo $this->__('Compare') ?></a>
+                    <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
                 <?php endif; ?>
-            </p>
-        </div>
-
-        <?php if($_product->getRatingSummary()): ?>
-        <?php echo $this->getReviewsSummaryHtml($_product) ?>
-        <?php endif; ?>
-
-        <div class="desc std">
-            <?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
-            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>" class="link-more"><?php echo $this->__('Learn More') ?></a>
+            </ul>
         </div>
     </div>
     <div class="clear"></div>

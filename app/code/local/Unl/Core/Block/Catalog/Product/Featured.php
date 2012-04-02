@@ -10,21 +10,43 @@ class Unl_Core_Block_Catalog_Product_Featured extends Mage_Catalog_Block_Product
              $this->setTemplate('catalog/product/featured.phtml');
          }
 
+         if ($this->hasData('minimal')) {
+             $this->setWrapperClass('featured minimal');
+         } else {
+             $this->setWrapperClass('featured');
+         }
+
+         if (!$this->getCollectionSize()) {
+             $this->setCollectionSize(1);
+         }
+
          $this->_addPriceBlockTypes()
              ->_initCollection();
      }
 
-     public function useSmallTemplate()
+     public function useMinimalTemplate()
      {
-         $this->setTemplate('catalog/product/featured2.phtml');
+         $this->setWrapperClass('featured minimal');
 
          return $this;
+     }
+
+     public function getProduct()
+     {
+         $collection = $this->getProductCollection();
+
+         return $collection->getFirstItem();
+     }
+
+     public function getProducts()
+     {
+         return $this->getProductCollection()->getItems();
      }
 
      protected function _initCollection()
      {
          $storeId = Mage::app()->getStore()->getId();
-         $now = Mage::getSingleton('core/date')->date();
+         $now = Mage::getSingleton('core/date')->gmtDate();
 
          $collection = $this->_getProductCollection()
              ->setStoreId($storeId)
@@ -64,7 +86,7 @@ class Unl_Core_Block_Catalog_Product_Featured extends Mage_Catalog_Block_Product
 
          $collection->getSelect()->orderRand('e.entity_id');
 
-         $collection->setPageSize(4);
+         $collection->setPageSize($this->getCollectionSize());
 
          return $collection;
      }

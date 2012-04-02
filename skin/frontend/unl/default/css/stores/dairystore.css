@@ -1,2 +1,4 @@
 /* Dairy Store Overrides */
-#maincontent .dairystore div.featured2 { border:none; background:none; }
+#maincontent .dairystore .sec_header { margin-bottom: 10px; }
+.dairystore .featured .product-image img { width: 140px; }
+.dairystore .featured .product-shop { margin-left: 166px; }

@@ -880,24 +880,26 @@ tr.summary-details-excluded { font-style:italic; }
 /* Featured Product ====================================================================== */
 .featured {}
 .featured .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
-.featured .product-shop { float: left; padding-left: 20px; width: 490px; }
-.featured .product-shop .right-box { float:right; text-align: right; margin: 0 0 10px 10px; }
+.featured .product-image img { display: block; width: 177px; }
+.featured .product-shop { margin-left: 203px; }
+#maincontent .featured .product-name { font-size: 1.3em; }
+#maincontent .featured .add-to-links { list-style: none; padding:0; margin-top: 8px; }
+.featured .add-to-links li { display: inline; margin-right: 10px; }
 
-.featured2 {}
-#maincontent div.featured2 ul { padding:0; }
-#maincontent div.featured2 ul li { border:none; padding:0 0 0 12px; display:inline; margin-left:12px; }
-#maincontent .featured2 .product-name { font-size: 16px; }
-.featured2 .add-to-links { text-align: right; }
-.featured2 .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
-.featured2 .product-shop { float:left; padding-left: 20px; width: 290px; }
-.featured2 .price-box { float:left; margin: 4px 13px 0 0; }
-.featured2 .learn-more { text-align: right; }
+.featured.minimal .desc { display: none; }
 
-.featured-global {}
-#maincontent .featured-global .product-name { font-size:16px; margin-bottom:8px;}
-.featured-global .product-image { display: block; float: right; border: 1px solid #ddd; background-color: #fff; }
-.featured-global .product-shop { float: left; width: 300px; }
-.featured-global .product-shop .price-box { float:right; margin-left: 15px; }
+.featured-grid {}
+.featured-grid .product-image { display: block; padding:4px; border: 1px solid #ddd; background-color: #fff; }
+.featured-grid .product-image img { display: block; width: 212px; height: auto; }
+#maincontent .featured-grid .product-name { font-size: 1.3em; }
+.featured-grid .add-to-links { display:none; }
+
+.featured.global {}
+#maincontent .featured.global .product-name { font-size:1.3em; }
+.featured.global .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
+.featured.global .product-image img { display: block; width: 177px; }
+.featured.global .add-to-links { display:none; }
+.featured.global .product-shop { margin-left: 203px }
 /* ======================================================================================= */
 
 /* Product View ========================================================================== */
@@ -1966,7 +1968,7 @@ f/********** Product Prices > */
 .send-friend .form-list li p:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
 /* ======================================================================================= */
 
-.mceContentBody { float: none !important; margin: auto; background: none; }
+.mceContentBody { float: none !important; margin: auto; background: none; width:960px; }
 .mceContentBody .first { margin-left: 0; clear: left; }
 .calendar { line-height: 18px; }
 .calendar table { border-collapse: separate; }

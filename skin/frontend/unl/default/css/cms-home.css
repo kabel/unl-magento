@@ -36,3 +36,9 @@
 	font-size: 14px;
 	width: 226px;
 }
+
+#maincontent .featured.global .sec_header {
+	color: #b70302;
+	font-style: italic;
+	font-family: Georgia,'Times New Roman',Times,serif;
+}
