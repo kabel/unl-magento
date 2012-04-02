@@ -196,7 +196,8 @@ class Unl_Core_Model_Observer
             if (!$config->getDisableDesignCss()) {
                 $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
                 $css = array(
-                    '/wdn/templates_3.0/css/all.css', //TODO: Update to latest WDN Templates
+                    '/wdn/templates_3.1/css/compressed/base.css',
+                    '/wdn/templates_3.1/css/variations/media_queries.css',
                     $design->getSkinUrl('css/styles.css')
                 );
 
