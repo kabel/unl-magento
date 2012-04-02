@@ -14,7 +14,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
 
         $collection
             ->addFilterToMap('increment_id', 'main_table.increment_id')
-            ->addFilterToMap('created_at', 'main_table.increment_id')
+            ->addFilterToMap('created_at', 'main_table.created_at')
             ->addFilterToMap('billing_name', 'main_table.billing_name')
             ->addFilterToMap('shipping_name', 'main_table.shipping_name')
             ->addFilterToMap('base_grand_total', 'main_table.base_grand_total')
