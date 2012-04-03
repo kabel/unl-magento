@@ -549,6 +549,13 @@
                     </modules>
                 </args>
             </catalog>
+            <persistent>
+                <args>
+                    <modules>
+                        <unl_core before="Mage_Persistent">Unl_Core_Persistent</unl_core>
+                    </modules>
+                </args>
+            </persistent>
         </routers>
     
         <events>
