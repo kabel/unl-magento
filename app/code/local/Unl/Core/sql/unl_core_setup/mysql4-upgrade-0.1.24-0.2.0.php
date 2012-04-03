@@ -864,6 +864,18 @@ $tables = array(
 $installer->getConnection()->modifyTables($tables);
 
 $installer->getConnection()->addColumn(
+    $installer->getTable('core/store_group'),
+    'description',
+    array(
+        'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
+        'length'    => '64k',
+        'nullable'  => false,
+        'default'   => '',
+        'comment'   => 'Description'
+    )
+);
+
+$installer->getConnection()->addColumn(
     $installer->getTable('tax/tax_order_aggregated_updated'),
     'base_sales_amount_sum',
     array(

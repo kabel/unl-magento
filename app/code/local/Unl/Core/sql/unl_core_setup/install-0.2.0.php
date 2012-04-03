@@ -987,6 +987,18 @@ $installer->getConnection()->addColumn(
 );
 
 $installer->getConnection()->addColumn(
+    $installer->getTable('core/store_group'),
+    'description',
+    array(
+        'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
+        'length'    => '64k',
+        'nullable'  => false,
+        'default'   => '',
+        'comment'   => 'Description'
+    )
+);
+
+$installer->getConnection()->addColumn(
     $installer->getTable('cms/page'),
     'permissions',
     array(
