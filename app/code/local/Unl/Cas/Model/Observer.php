@@ -130,12 +130,12 @@ class Unl_Cas_Model_Observer
     }
 
     /**
-     * An <i>adminhtml</i> event handler for the <code>core_block_abstract_prepare_layout_after</code>
+     * An <i>adminhtml</i> event handler for the <code>adminhtml_block_html_before</code>
      * event.
      *
      * @param Varient_Event_Observer $observer
      */
-    public function onAfterAdminPrepareLayout($observer)
+    public function onBeforeToHtml($observer)
     {
         $block = $observer->getEvent()->getBlock();
 
@@ -162,6 +162,22 @@ class Unl_Cas_Model_Observer
                 ->addFieldDependence('password', 'cas_enabled', '0')
                 ->addFieldDependence('confirmation', 'cas_enabled', '0')
             );
+
+            return;
+        }
+
+        $type = 'Mage_Adminhtml_Block_System_Account_Edit_Form';
+        if ($block instanceof $type) {
+            $form = $block->getForm();
+            $model = Mage::getModel('admin/user')->load(Mage::getSingleton('admin/session')->getUser()->getId());
+            if ($model->getIsCas()) {
+                $fs = $form->getElement('base_fieldset');
+                $fs->removeField('username');
+                $fs->removeField('password');
+                $fs->removeField('confirmation');
+            }
+
+            return;
         }
     }
 }

@@ -25,43 +25,6 @@ class Unl_Core_Model_Observer
             return;
         }
 
-        $type = 'Mage_Adminhtml_Block_System_Store_Edit';
-        if ($block instanceof $type) {
-            $child = $block->getChild('form');
-            /* @var $form Varien_Data_Form */
-            $form = $child->getForm();
-            if ($fs = $form->getElement('group_fieldset')) {
-                $model = Mage::registry('store_data');
-                $fs->addField('group_is_hidden', 'select', array(
-                    'name'      => 'group[is_hidden]',
-                    'label'     => Mage::helper('core')->__('Hidden'),
-                    'value'     => $model->getIsHidden(),
-                    'options'   => array(
-                        0 => Mage::helper('adminhtml')->__('Disabled'),
-                        1 => Mage::helper('adminhtml')->__('Enabled')
-                    ),
-                    'required'  => true,
-                    'disabled'  => $model->isReadOnly(),
-                ));
-            }
-
-            return;
-        }
-
-        $type = 'Mage_Adminhtml_Block_System_Account_Edit_Form';
-        if ($block instanceof $type) {
-            $form = $block->getForm();
-            $model = Mage::getModel('admin/user')->load(Mage::getSingleton('admin/session')->getUser()->getId());
-            if ($model->getIsCas()) {
-                $fs = $form->getElement('base_fieldset');
-                $fs->removeField('username');
-                $fs->removeField('password');
-                $fs->removeField('confirmation');
-            }
-
-            return;
-        }
-
         $type = 'Mage_Adminhtml_Block_Customer';
         if ($block instanceof $type) {
             $block->setTemplate('widget/grid/advanced/container.phtml');
@@ -101,6 +64,46 @@ class Unl_Core_Model_Observer
         $type = 'Mage_Adminhtml_Block_Catalog_Product_Grid';
         if ($block instanceof $type) {
             Mage::register('UNL_PRODUCT_GRID', true, true);
+            return;
+        }
+    }
+
+    /**
+     * An <i>adminhtml</i> event listener for the <code>adminhtml_block_html_before</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onBeforeToHtml($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+
+        $type = 'Mage_Adminhtml_Block_System_Store_Edit_Form';
+        if ($block instanceof $type) {
+            /* @var $form Varien_Data_Form */
+            $form = $block->getForm();
+            if ($fs = $form->getElement('group_fieldset')) {
+                $model = Mage::registry('store_data');
+                $fs->addField('group_is_hidden', 'select', array(
+                    'name'      => 'group[is_hidden]',
+                    'label'     => Mage::helper('core')->__('Hidden'),
+                    'value'     => $model->getIsHidden(),
+                    'options'   => array(
+                        0 => Mage::helper('adminhtml')->__('Disabled'),
+                        1 => Mage::helper('adminhtml')->__('Enabled')
+                    ),
+                    'required'  => true,
+                    'disabled'  => $model->isReadOnly(),
+                ));
+                $fs->addField('group_description', 'textarea', array(
+                    'name'      => 'group[description]',
+                    'label'     => Mage::helper('core')->__('Description'),
+                    'value'     => $model->getDescription(),
+                    'required'  => false,
+                    'disabled'  => $model->isReadOnly(),
+                ));
+            }
+
             return;
         }
     }

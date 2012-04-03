@@ -118,14 +118,14 @@
                 </observers>
             </admin_session_user_login_success>
             
-            <core_block_abstract_prepare_layout_after>
+            <adminhtml_block_html_before>
                 <observers>
-                    <unl_cas_admin_layout>
+                    <unl_cas>
                         <class>unl_cas/observer</class>
-                        <method>onAfterAdminPrepareLayout</method>
-                    </unl_cas_admin_layout>
+                        <method>onBeforeToHtml</method>
+                    </unl_cas>
                 </observers>
-            </core_block_abstract_prepare_layout_after>
+            </adminhtml_block_html_before>
         </events>
     </adminhtml>
     

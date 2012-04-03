@@ -628,6 +628,15 @@
     		</browser>
     	</cms>
         <events>
+            <adminhtml_block_html_before>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/observer</class>
+                        <method>onBeforeToHtml</method>
+                    </unl_core>
+                </observers>
+            </adminhtml_block_html_before>
+        
         	<admin_user_authenticate_after>
         		<observers>
                     <filter_cas>
