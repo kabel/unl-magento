@@ -60,7 +60,6 @@ Product.Bundle.prototype = {
             this.populateQty(parts[2], selection.value);
         }
         this.reloadPrice();
-
     },
 
     reloadPrice: function() {
@@ -78,11 +77,19 @@ Product.Bundle.prototype = {
             }
         }
 
-        optionsPrice.specialTaxPrice = 'true';
-        optionsPrice.changePrice('bundle', calculatedPrice);
-        optionsPrice.changePrice('nontaxable', dispositionPrice);
-        optionsPrice.changePrice('priceInclTax', includeTaxPrice);
-        optionsPrice.reload();
+        var event = $(document).fire('bundle:reload-price', {
+            price: calculatedPrice,
+            priceInclTax: includeTaxPrice,
+            dispositionPrice: dispositionPrice,
+            bundle: this
+        });
+        if (!event.noReloadPrice) {
+            optionsPrice.specialTaxPrice = 'true';
+            optionsPrice.changePrice('bundle', calculatedPrice);
+            optionsPrice.changePrice('nontaxable', dispositionPrice);
+            optionsPrice.changePrice('priceInclTax', includeTaxPrice);
+            optionsPrice.reload();
+        }
 
         return calculatedPrice;
     },
@@ -139,13 +146,12 @@ Product.Bundle.prototype = {
             price = Math.min(newPrice, price);
         }
 
-        taxPercent = this.config.options[optionId].selections[selectionId].taxPercent;
-        if (this.config.includeTax == 'true') {
+        selection = this.config.options[optionId].selections[selectionId];
+        if (selection.priceInclTax !== undefined) {
+            priceInclTax = selection.priceInclTax;
+            price = selection.priceExclTax !== undefined ? selection.priceExclTax : selection.price;
+        } else {
             priceInclTax = price;
-            price = price / ((100 + taxPercent) / 100);
-        }
-        else {
-            priceInclTax = price * ((100 + taxPercent) / 100);
         }
 
         var result = new Array(price*qty, disposition*qty, priceInclTax*qty);
