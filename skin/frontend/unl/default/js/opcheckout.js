@@ -76,7 +76,7 @@ Checkout.prototype = {
     },
 
     setMethod: function(){
-        if ($('login:register') && $F('login:register') == 'guest') {
+        if ($('login:method') && $F('login:method') == 'guest') {
             this.method = 'guest';
             var request = new Ajax.Request(
                 this.saveMethodUrl,
@@ -85,7 +85,7 @@ Checkout.prototype = {
             Element.hide('register-customer-password');
             this.gotoSection('billing');
         }
-        else if($('login:register') && $F('login:register') == 'register') {
+        else if($('login:method') && $F('login:method') == 'register') {
             this.method = 'register';
             var request = new Ajax.Request(
                 this.saveMethodUrl,
@@ -507,7 +507,7 @@ ShippingMethod.prototype = {
     validate: function() {
         var methods = document.getElementsByName('shipping_method');
         if (methods.length==0) {
-            alert(Translator.translate('Your order can not be completed at this time as there is no shipping methods available for it. Please make necessary changes in your shipping address.'));
+            alert(Translator.translate('Your order cannot be completed at this time as there is no shipping methods available for it. Please make necessary changes in your shipping address.'));
             return false;
         }
 
@@ -657,7 +657,7 @@ Payment.prototype = {
             element = $(el);
             if (element) {
                 element.style.display = (mode) ? 'none' : '';
-                element.select('input', 'select', 'textarea').each(function(field) {
+                element.select('input', 'select', 'textarea', 'button').each(function(field) {
                     field.disabled = mode;
                 });
             }
@@ -690,7 +690,7 @@ Payment.prototype = {
         }
         var methods = document.getElementsByName('payment[method]');
         if (methods.length==0) {
-            alert(Translator.translate('Your order can not be completed at this time as there is no payment methods available for it.'));
+            alert(Translator.translate('Your order cannot be completed at this time as there is no payment methods available for it.'));
             return false;
         }
         for (var i=0; i<methods.length; i++) {
@@ -778,7 +778,7 @@ Payment.prototype = {
 
         //checkout.setPayment();
     },
- 
+
     initWhatIsCvvListeners: function(){
         $$('.cvv-what-is-this').each(function(element){
             Event.observe(element, 'click', toggleToolTip);
@@ -829,6 +829,7 @@ Review.prototype = {
                 response = {};
             }
             if (response.redirect) {
+                this.isSuccess = true;
                 location.href = response.redirect;
                 return;
             }
