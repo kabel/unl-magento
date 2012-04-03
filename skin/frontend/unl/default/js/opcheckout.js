@@ -640,6 +640,7 @@ Payment.prototype = {
     switchMethod: function(method){
         if (this.currentMethod && $('payment_form_'+this.currentMethod)) {
             this.changeVisible(this.currentMethod, true);
+            $('payment_form_'+this.currentMethod).fire('payment-method:switched-off', {method_code : this.currentMethod});
         }
         if ($('payment_form_'+method)){
             this.changeVisible(method, false);
@@ -647,6 +648,9 @@ Payment.prototype = {
         } else {
             //Event fix for payment methods without form like "Check / Money order"
             document.body.fire('payment-method:switched', {method_code : method});
+        }
+        if (method) {
+            this.lastUsedMethod = method;
         }
         this.currentMethod = method;
     },
