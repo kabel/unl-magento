@@ -58,6 +58,11 @@
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
                 </rewrite>
             </catalog>
+            <customer>
+                <rewrite>
+                    <address_renderer_default>Unl_Core_Block_Customer_Address_Renderer_Default</address_renderer_default>
+                </rewrite>
+            </customer>
             <giftmessage>
                 <rewrite>
                     <!-- Display Gift Message interface in admin if possible -->
