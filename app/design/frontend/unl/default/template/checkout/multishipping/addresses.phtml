@@ -17,9 +17,9 @@
         <h2><?php echo $this->__('Please select shipping address for applicable items') ?></h2>
         <table class="data-table" id="multiship-addresses-table">
             <col />
-            <col width="1" />
-            <col width="1" />
-            <col width="1" />
+            <col class="min" />
+            <col class="min" />
+            <col class="min" />
             <thead>
                 <tr>
                     <th><?php echo $this->__('Product') ?></th>
@@ -30,7 +30,7 @@
             </thead>
             <tfoot>
                 <tr>
-                    <td colspan="100" class="a-right"><button type="submit" title="<?php echo $this->__('Update Qty &amp; Addresses') ?>" class="button" onclick="$('can_continue_flag').value=0"><span><span><?php echo $this->__('Update Qty &amp; Addresses') ?></span></span></button></td>
+                    <td colspan="4" class="a-right"><button type="submit" title="<?php echo $this->__('Update Qty &amp; Addresses') ?>" class="button" onclick="$('can_continue_flag').value=0"><span><span><?php echo $this->__('Update Qty &amp; Addresses') ?></span></span></button></td>
                 </tr>
             </tfoot>
             <tbody>
