@@ -1,0 +1,15 @@
+<?php
+/**
+ * Customer "Remember Me" template
+ *
+ */
+/** @var $this Mage_Persistent_Block_Form_Remember */
+?>
+<li>
+    <div class="input-box remember-me">
+        <?php $rememberMeId = 'remember_me' . Mage::helper('core')->getRandomString(10); ?>
+        <input type="checkbox" name="persistent_remember_me" class="input-checkbox" id="<?php echo $rememberMeId; ?>"<?php if ($this->isRememberMeChecked()): ?> checked="checked"<?php endif; ?> title="<?php echo $this->__('Remember Me') ?>" />
+        <label for="<?php echo $rememberMeId; ?>"><?php echo $this->__('Remember Me') ?></label>
+        <a href="#"><?php echo $this->__('What\'s this?') ?></a>
+    </div>
+</li>

@@ -112,9 +112,12 @@
 
     	$('login:method').value = method;
     	if (method == 'register') {
-        	var request = new Ajax.Request('<?php echo $this->getUrl('persistent/index/saveMethod'); ?>',
-                {method: 'post', onFailure: function(){checkout.ajaxFailure();}}
-            );
+    		var request = new Ajax.Request('<?php echo $this->getUrl('persistent/index/saveMethod'); ?>', {
+            	method: 'post',
+            	onFailure: function() {
+                	checkout.ajaxFailure();
+            	}
+        	});
     	}
         checkout.setMethod();
     };
