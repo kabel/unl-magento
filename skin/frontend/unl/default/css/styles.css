@@ -2015,7 +2015,9 @@ f/********** Product Prices > */
 .page-print .print-head:after,
 .advanced-search-summary:after,
 .gift-messages-form .item:after,
-.send-friend .form-list li p:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
+.send-friend .form-list li p:after,
+.featured:after,
+.store-directory .store:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
 /* ======================================================================================= */
 
 .mceContentBody { float: none !important; margin: auto; background: none; width:960px; }

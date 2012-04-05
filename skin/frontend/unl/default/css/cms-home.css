@@ -1,17 +1,31 @@
-#store-directory { height:400px; overflow:hidden; position:relative; }
-#store-directory .scroll-decor {
-	background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 30px;
+#maincontent .featured.global .sec_header {
+	color: #b70302;
+	font-style: italic;
+	font-family: Georgia,'Times New Roman',Times,serif;
 }
-.zenbox_store div {
-    border:1px solid #ccc;
+
+.store-directory { position:relative; margin-bottom:1.1em; }
+.store-directory .scroll-decor {
+	background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+}
+#maincontent .store-directory h2 {
+    color: #b70302;
+    font-style: italic;
+    font-family: Georgia,'Times New Roman',Times,serif;
+    text-align: right;
+}
+#maincontent .store-directory ul { padding:0 6px 0 0; list-style:none; height:400px; overflow:auto; }
+#maincontent .store-directory ul.auto-scroll { padding:0; overflow:hidden; }
+.store-directory .store {
+	border:1px solid #ccc;
     padding:5px;
     margin-bottom: 15px;
     line-height:1.3em;
@@ -20,25 +34,8 @@
     -moz-border-radius:6px;
     -webkit-border-radius:6px;
 }
-#maincontent .zenbox_store div h4 {
-	color: #333;
-	padding: 0;
-	margin-bottom: 4px;
-	border-bottom: 1px solid #ccc;
-	font-weight: bolder;
-}
-.zenbox_store div img {
-	margin: 0;
-	float: right;
-	width: 220px;
-}
-.zenbox_store div p {
-	font-size: 14px;
-	width: 226px;
-}
-
-#maincontent .featured.global .sec_header {
-	color: #b70302;
-	font-style: italic;
-	font-family: Georgia,'Times New Roman',Times,serif;
-}
+.store-directory .store .store-icon { float:right; display:block; }
+.store-directory .store .store-icon img { display: block; width: 220px; }
+.store-directory .store .store-shop { margin-right: 230px; }
+#maincontent .store-directory .store h3 { padding:0; margin-bottom: 4px; border-bottom: 1px solid #cecece; }
+#maincontent .store-directory .store h3 a { color:#333; }

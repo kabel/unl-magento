@@ -1,0 +1,80 @@
+<?php
+/**
+ * Store directory template
+ *
+ * @see Unl_Core_Block_Page_Html_Directory
+ */
+/* @var $this Unl_Core_Block_Page_Html_Directory */
+?>
+<div class="store-directory">
+    <h2><?php echo $this->__('Store Directory') ?></h2>
+    <?php if(count($this->getGroups())>1): ?>
+    <ul>
+        <?php foreach ($this->getGroups() as $_group): ?>
+        <?php /* @var $_group Mage_Core_Model_Store_Group */ ?>
+        <?php if (!$_group->getIsHidden() && !in_array('default', $_group->getStoreCodes())): ?>
+            <li>
+                <div class="store">
+                    <?php if ($this->hasStoreIcon($_group->getDefaultStore()->getCode())): ?>
+                    <a class="store-icon" href="<?php echo $_group->getHomeUrl() ?>">
+                        <img src="<?php echo $this->getStoreIconUrl($_group->getDefaultStore()->getCode()) ?>" alt="<?php echo $this->escapeHtml($_group->getName()) ?> <?php echo $this->__('icon') ?>" />
+                    </a>
+                    <?php endif; ?>
+                    <h3><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->escapeHtml($_group->getName()) ?></a></h3>
+                    <div class="store-shop">
+                        <div class="f-fix">
+                            <p><?php echo $this->htmlEscape($_group->getDescription()) ?></p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+    <div class="scroll-decor"></div>
+</div>
+<?php if ($this->hasData('scroller')): ?>
+<script type="text/javascript">
+//<![CDATA[
+if (WDN.jQuery) {
+	WDN.jQuery(function($) {
+		$('.store-directory ul').each(function() {
+			$(this).addClass('auto-scroll');
+    		var fxElem, i, baseHeight = 0,
+    		    stores = $('li .store', this);
+    	        self = this,
+        	    fadeSlide = function(delay) {
+        			delay = delay || 3.5;
+        			fxElem = $('li', self).eq(0);
+        			fxElem.delay(delay * 1000).animate({
+            				opacity:0,
+            				height:'toggle'
+            			}, 700, function() {
+            				$(this).appendTo($(this).parent()).css('opacity', 1).show();
+            			})
+            		    .queue(function(next) {
+            		        fadeSlide();
+            		        next();
+            	        });
+        		},
+        		control = {
+        			stop: function() {
+        				fxElem.clearQueue();
+        			},
+        			play: function() {
+        				fadeSlide(2);
+        			}
+        		};
+
+			for (i = 0; i < 3 && i < stores.length; i++) {
+				baseHeight += stores.eq(i).outerHeight(true);
+			}
+			$(this).height(baseHeight).hover(control.stop, control.play).data('scroll-control', control);
+    		fadeSlide();
+		});
+	});
+}
+//]]>
+</script>
+<?php endif; ?>

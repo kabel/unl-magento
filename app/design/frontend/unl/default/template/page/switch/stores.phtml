@@ -9,7 +9,7 @@
 <ul>
     <?php foreach ($this->getGroups() as $_group): ?>
     <?php if (!$_group->getIsHidden() && !in_array('default', $_group->getStoreCodes())): ?>
-        <li><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->htmlEscape($_group->getName()) ?></a></li>
+        <li><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->escapeHtml($_group->getName()) ?></a></li>
     <?php endif; ?>
     <?php endforeach; ?>
 </ul>
