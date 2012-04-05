@@ -714,15 +714,6 @@
                 </observers>
             </controller_action_layout_render_before_adminhtml_permissions_user_edit>
             
-            <controller_action_postdispatch_adminhtml_index_logout>
-            	<observers>
-		            <clear_simplecas>
-                        <class>unl_core/admin_observer</class>
-                        <method>clearSimpleCasSession</method>
-		            </clear_simplecas>
-		        </observers>
-            </controller_action_postdispatch_adminhtml_index_logout>
-            
             <controller_action_predispatch_adminhtml_system_account_save>
                 <observers>
                     <unl_filter_cas>

@@ -126,6 +126,15 @@
                     </unl_cas>
                 </observers>
             </adminhtml_block_html_before>
+            
+            <controller_action_postdispatch_adminhtml_index_logout>
+                <observers>
+                    <clear_simplecas>
+                        <class>unl_cas/observer</class>
+                        <method>onAfterAdminLogout</method>
+                    </clear_simplecas>
+                </observers>
+            </controller_action_postdispatch_adminhtml_index_logout>
         </events>
     </adminhtml>
     

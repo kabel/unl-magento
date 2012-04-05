@@ -4,6 +4,31 @@ require_once "Mage/Adminhtml/controllers/IndexController.php";
 
 class Unl_Cas_Adminhtml_IndexController extends Mage_Adminhtml_IndexController
 {
+    /* Extends
+     * @see Mage_Adminhtml_IndexController::_outTemplate()
+     * by also init'ing admin/session message
+     */
+    protected function _outTemplate($tplName, $data = array())
+    {
+        $this->_initLayoutMessages('admin/session');
+        parent::_outTemplate($tplName, $data);
+    }
+
+    /* Overrides
+     * @see Mage_Adminhtml_IndexController::logoutAction()
+     * by using custom session logic
+     */
+    public function logoutAction()
+    {
+        /* @var $adminSession Mage_Admin_Model_Session */
+        $adminSession = Mage::getSingleton('admin/session');
+        $adminSession->unsetAll();
+        $adminSession->renewSession();
+        $adminSession->addSuccess(Mage::helper('adminhtml')->__('You have logged out.'));
+
+        $this->_redirect('*');
+    }
+
     /* Overrides
      * @see Mage_Adminhtml_IndexController::forgotpasswordAction()
      * by giving a message to CAS users.

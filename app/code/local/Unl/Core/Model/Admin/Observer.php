@@ -123,19 +123,6 @@ class Unl_Core_Model_Admin_Observer
 
     /**
      * An <i>adminhtml</i> event listener for the
-     * <code>controller_action_postdispatch_adminhtml_index_logout</code>
-     * event.
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function clearSimpleCasSession($observer)
-    {
-        unset($_SESSION['__SIMPLECAS_TICKET']);
-        unset($_SESSION['__SIMPLECAS_UID']);
-    }
-
-    /**
-     * An <i>adminhtml</i> event listener for the
      * <code>adminhtml_widget_grid_filter_collection</code>
      * event.
      *

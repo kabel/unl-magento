@@ -37,6 +37,22 @@ class Unl_Cas_Model_Observer
     }
 
     /**
+     * An <i>adminhtml</i> event listener for the
+     * <code>controller_action_postdispatch_adminhtml_index_logout</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onAfterAdminLogout()
+    {
+        /* @var $session Mage_Core_Model_Session_Abstract */
+        foreach (array('core/session', 'adminhtml/session', 'unl_cas/session') as $sessionModel) {
+            $session = Mage::getSingleton($sessionModel);
+            $session->clear();
+        }
+    }
+
+    /**
      * A <i>frontend</i> event handler for the
      * <code>sales_quote_payment_import_data_before</code>
      * event
