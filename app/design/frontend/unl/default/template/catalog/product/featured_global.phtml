@@ -28,10 +28,6 @@
             <?php else: ?>
                 <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
             <?php endif; ?>
-            <div class="desc std">
-                <?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
-                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
-            </div>
             <ul class="add-to-links">
                 <?php if ($this->helper('wishlist')->isAllow()) : ?>
                     <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
@@ -43,5 +39,9 @@
         </div>
     </div>
     <div class="clear"></div>
+    <div class="desc std">
+        <?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+        <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
+    </div>
 </div>
 <?php endif; ?>

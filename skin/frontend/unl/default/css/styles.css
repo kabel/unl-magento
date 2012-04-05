@@ -896,11 +896,8 @@ tr.summary-details-excluded { font-style:italic; }
 .featured-grid .add-to-links { display:none; }
 
 .featured.global {}
-#maincontent .featured.global .product-name { font-size:1.3em; }
-.featured.global .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
-.featured.global .product-image img { display: block; width: 177px; }
 .featured.global .add-to-links { display:none; }
-.featured.global .product-shop { margin-left: 203px }
+.featured.global .desc { margin-top: 1.1em; max-height:345px; overflow:auto; }
 /* ======================================================================================= */
 
 /* Product View ========================================================================== */
