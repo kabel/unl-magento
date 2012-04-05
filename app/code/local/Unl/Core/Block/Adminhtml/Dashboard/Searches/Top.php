@@ -17,7 +17,7 @@ class Unl_Core_Block_Adminhtml_Dashboard_Searches_Top extends Mage_Adminhtml_Blo
         } else if ($this->getRequest()->getParam('group')){
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
         } else {
-            $storeIds = null;
+            $storeIds = '';
         }
 
         $storeIds = Mage::helper('unl_core')->getScopeFilteredStores($storeIds);
