@@ -5,7 +5,7 @@ class Unl_Core_Block_Catalog_Product_Featured_Global extends Unl_Core_Block_Cata
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('catalog/product/featured_grid.phtml');
+        $this->setTemplate('catalog/product/featured_global.phtml');
         $this->setWrapperClass('featured global');
     }
 
