@@ -20,7 +20,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
 
         $dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
 
-        $this->_prepareBaseFieldset($fieldset);
+        $this->prepareBaseFieldset($fieldset);
 
         $fieldset->addField('from_store', 'select', array(
             'name'    => 'from_store',
@@ -79,7 +79,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
         return parent::_prepareForm();
     }
 
-    protected function _prepareBaseFieldset($fieldset)
+    public function prepareBaseFieldset($fieldset)
     {
         Mage::helper('unl_core')->prepareAdvfilterFieldset('customer', $this, $fieldset);
         return $this;

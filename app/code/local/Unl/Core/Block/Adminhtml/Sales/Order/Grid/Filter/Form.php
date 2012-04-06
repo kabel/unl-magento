@@ -18,7 +18,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
         $form->setHtmlIdPrefix($htmlIdPrefix);
         $fieldset = $form->addFieldset('base_fieldset', array('legend'=>Mage::helper('adminhtml')->__('Advanced Filters')));
 
-        $this->_prepareBaseFieldset($fieldset);
+        $this->prepareBaseFieldset($fieldset);
 
         $paymentOptions = Mage::helper('unl_core')->getActivePaymentMethodOptions();
         $fieldset->addField('payment_method', 'select', array(
@@ -75,7 +75,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
         return parent::_prepareForm();
     }
 
-    protected function _prepareBaseFieldset($fieldset)
+    public function prepareBaseFieldset($fieldset)
     {
         Mage::helper('unl_core')->prepareAdvfilterFieldset('order', $this, $fieldset);
         return $this;
