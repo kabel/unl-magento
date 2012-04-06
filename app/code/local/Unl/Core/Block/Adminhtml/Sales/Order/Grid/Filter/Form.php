@@ -1,6 +1,7 @@
 <?php
 
 class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminhtml_Block_Widget_Form
+    implements Unl_Core_Block_Adminhtml_Widget_Form_AdvfilterInterface
 {
 	/**
      * Add fieldset with general fields
