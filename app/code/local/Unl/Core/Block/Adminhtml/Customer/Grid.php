@@ -9,6 +9,8 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
      */
     public function setCollection($collection)
     {
+        $collection->joinAttribute('billing_company', 'customer_address/company', 'default_billing', null, 'left');
+
         $advfilter = Mage::helper('unl_core')->getAdvancedGridFilters('customer');
         if (!empty($advfilter) && $advfilter->hasData()) {
             if ($advfilter->getData('is_subscriber')) {
@@ -61,5 +63,32 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
         }
 
         return parent::setCollection($collection);
+    }
+
+    /* Extends
+     * @see Mage_Adminhtml_Block_Customer_Grid::_prepareColumns()
+     * by customizing the rendered columns
+     */
+    protected function _prepareColumns()
+    {
+        $this->addColumnAfter('billing_company', array(
+            'header'    => Mage::helper('customer')->__('Company'),
+            'index'     => 'billing_company'
+        ), 'email');
+
+        $this->addColumnAfter('billing_city', array(
+            'header'    => Mage::helper('customer')->__('City'),
+            'width'     => '90',
+            'index'     => 'billing_city',
+        ), 'Telephone');
+
+        parent::_prepareColumns();
+
+        $this->removeColumn('entity_id')
+            ->removeColumn('billing_country_id')
+            ->removeColumn('website_id')
+            ->removeColumn('customer_since');
+        $this->getColumn('action')->unsWidth();
+        return $this;
     }
 }

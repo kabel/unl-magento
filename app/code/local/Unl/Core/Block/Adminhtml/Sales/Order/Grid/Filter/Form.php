@@ -17,10 +17,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
         $form->setHtmlIdPrefix($htmlIdPrefix);
         $fieldset = $form->addFieldset('base_fieldset', array('legend'=>Mage::helper('adminhtml')->__('Advanced Filters')));
 
-        $fieldset->getRenderer()->setTemplate('widget/grid/advanced/renderer/fieldset.phtml');
-        $fieldset->setFilterUrl($this->getUrl('*/sales_order_filter/apply'));
-        $fieldset->setAdvFiltersUrl($this->getUrl('*/sales_order_filter/current'));
-        $fieldset->setGridJsObject('sales_order_gridJsObject');
+        $this->_prepareBaseFieldset($fieldset);
 
         $paymentOptions = Mage::helper('unl_core')->getActivePaymentMethodOptions();
         $fieldset->addField('payment_method', 'select', array(
@@ -75,6 +72,12 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid_Filter_Form extends Mage_Adminht
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    protected function _prepareBaseFieldset($fieldset)
+    {
+        Mage::helper('unl_core')->prepareAdvfilterFieldset('order', $this, $fieldset);
+        return $this;
     }
 
     /**

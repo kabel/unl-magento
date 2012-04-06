@@ -78,7 +78,7 @@ function loadAdvFilters() {
 function advFilterFormSubmit() {
     var filters = $$('#<?php echo $_element->getHtmlId() ?> input', '#<?php echo $_element->getHtmlId() ?> select');
     var elements = [];
-    for(var i in filters){
+    for (var i = 0; i < filters.length; i++){
         if(filters[i].value && filters[i].value.length && !filters[i].disabled) elements.push(filters[i]);
     }
     new Ajax.Request('<?php echo $_element->getFilterUrl(); ?>advfilter/'+encode_base64(Form.serializeElements(elements))+'/', {
@@ -102,16 +102,32 @@ function advFilterFormSubmit() {
                         setLocation(response.ajaxRedirect);
                     }
                 } else {
-                	<?php echo $_element->getGridJsObject() ?>.doFilter();
+                    var grid = <?php echo $_element->getGridJsObject() ?>;
+                	var re = new RegExp('\/(filter\/.*?\/)');
+                	var parts = grid.url.split(new RegExp('\\?'));
+                	var url = parts[0].replace(re, '/');
+                	<?php echo $_element->getGridJsObject() ?>.reload(url);
                 }
             }
             catch (e) {
-                <?php echo $_element->getGridJsObject() ?>.doFilter();
+                <?php echo $_element->getGridJsObject() ?>.reload();
             }
     	}
     });
     return;
 }
+
+document.observe("dom:loaded", function() {
+	var oldCallback = <?php echo $_element->getGridJsObject() ?>.doFilterCallback;
+	<?php echo $_element->getGridJsObject() ?>.doFilterCallback = function() {
+		new Ajax.Request('<?php echo $_element->getFreezeUrl(); ?>');
+		if (oldCallback) {
+			return oldCallback();
+		}
+
+		return true;
+	}
+});
 //]]>
 </script>
 <?php if ($_element->getFieldsetContainerId()): ?>

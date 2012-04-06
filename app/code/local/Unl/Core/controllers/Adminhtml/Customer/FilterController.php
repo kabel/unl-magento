@@ -4,8 +4,7 @@ class Unl_Core_Adminhtml_Customer_FilterController extends Unl_Core_Controller_A
 {
     public function applyAction()
     {
-        $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('customer');
-        $this->_applyFilters($sessionParamName, array('purchase_from', 'purchase_to'));
+        $this->_applyFilters('customer', array('purchase_from', 'purchase_to'));
     }
 
     public function currentAction()
@@ -16,6 +15,11 @@ class Unl_Core_Adminhtml_Customer_FilterController extends Unl_Core_Controller_A
         $resp = $this->_getFilterFromBlock($block);
 
         $this->getResponse()->setBody(Zend_Json::encode($resp));
+    }
+
+    protected function freezeAction()
+    {
+        $this->_freezeFilters('customer');
     }
 
     protected function _isAllowed()

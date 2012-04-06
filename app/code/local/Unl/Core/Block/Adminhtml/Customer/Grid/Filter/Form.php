@@ -1,6 +1,7 @@
 <?php
 
 class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_Block_Widget_Form
+    implements Unl_Core_Block_Adminhtml_Widget_Form_AdvfilterInterface
 {
 	/**
      * Add fieldset with general fields
@@ -19,10 +20,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
 
         $dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
 
-        $fieldset->getRenderer()->setTemplate('widget/grid/advanced/renderer/fieldset.phtml');
-        $fieldset->setFilterUrl($this->getUrl('*/customer_filter/apply'));
-        $fieldset->setAdvFiltersUrl($this->getUrl('*/customer_filter/current'));
-        $fieldset->setGridJsObject('customerGridJsObject');
+        $this->_prepareBaseFieldset($fieldset);
 
         $fieldset->addField('from_store', 'select', array(
             'name'    => 'from_store',
@@ -79,6 +77,12 @@ class Unl_Core_Block_Adminhtml_Customer_Grid_Filter_Form extends Mage_Adminhtml_
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    protected function _prepareBaseFieldset($fieldset)
+    {
+        Mage::helper('unl_core')->prepareAdvfilterFieldset('customer', $this, $fieldset);
+        return $this;
     }
 
     /**

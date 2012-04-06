@@ -4,8 +4,7 @@ class Unl_Core_Adminhtml_Sales_Order_FilterController extends Unl_Core_Controlle
 {
     public function applyAction()
     {
-        $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey('order');
-        $this->_applyFilters($sessionParamName);
+        $this->_applyFilters('order');
     }
 
     public function currentAction()
@@ -16,6 +15,11 @@ class Unl_Core_Adminhtml_Sales_Order_FilterController extends Unl_Core_Controlle
         $resp = $this->_getFilterFromBlock($block);
 
         $this->getResponse()->setBody(Zend_Json::encode($resp));
+    }
+
+    public function freezeAction()
+    {
+        $this->_freezeFilters('order');
     }
 
     protected function _isAllowed()

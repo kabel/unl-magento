@@ -8,6 +8,7 @@ abstract class Unl_Core_Controller_Advfilter extends Mage_Adminhtml_Controller_A
 
     protected function _applyFilters($sessionParam, $dateFields = null)
     {
+        $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey($sessionParam);
         $session = Mage::getSingleton('adminhtml/session');
         if ($this->getRequest()->has('advfilter')) {
             $requestData = $this->getRequest()->getParam('advfilter');
@@ -20,12 +21,12 @@ abstract class Unl_Core_Controller_Advfilter extends Mage_Adminhtml_Controller_A
             $params = new Varien_Object();
 
             foreach ($requestData as $key => $value) {
-                if (!empty($value)) {
+                if (!is_null($value)) {
                     $params->setData($key, $value);
                 }
             }
 
-            $session->setData($sessionParam, $params);
+            $session->setData($sessionParamName, $params);
         }
     }
 
@@ -50,5 +51,14 @@ abstract class Unl_Core_Controller_Advfilter extends Mage_Adminhtml_Controller_A
         }
 
         return $resp;
+    }
+
+    protected function _freezeFilters($sessionParam)
+    {
+        $sessionParamName = Mage::helper('unl_core')->getAdvancedGridFiltersStorageKey($sessionParam);
+        $session = Mage::getSingleton('adminhtml/session');
+        if ($storage = $session->getData($sessionParamName)) {
+            $storage->setData('freeze', true);
+        }
     }
 }

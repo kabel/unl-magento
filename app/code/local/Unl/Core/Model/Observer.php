@@ -264,6 +264,29 @@ class Unl_Core_Model_Observer
     }
 
     /**
+     * @param Varien_Event_Observer $observer
+     * @param string $grid
+     */
+    protected function _clearAdvfilter($observer, $grid)
+    {
+        $controller = $observer->getEvent()->getControllerAction();
+        $request = $controller->getRequest();
+        if ($request->has('filter')) {
+            $filters = Mage::helper('unl_core')->getAdvancedGridFilters($grid);
+            $frozen = false;
+
+            if ($filters) {
+                $frozen = $filters->getData('freeze');
+                $filters->unsetData('freeze');
+            }
+
+            if ($request->getParam('filter') == '' && !$frozen) {
+                Mage::helper('unl_core')->getAdvancedGridFilters($grid, true);
+            }
+        }
+    }
+
+    /**
      * An <i>adminhtml</i> event observer for the
      * <code>controller_action_predispatch_adminhtml_customer_grid</code>
      * event.
@@ -272,11 +295,7 @@ class Unl_Core_Model_Observer
      */
     public function onBeforeManageCustomers($observer)
     {
-        $controller = $observer->getEvent()->getControllerAction();
-        $request = $controller->getRequest();
-        if ($request->has('filter') && $request->getParam('filter') == '') {
-            Mage::helper('unl_core')->getAdvancedGridFilters('customer', true);
-        }
+        $this->_clearAdvfilter($observer, 'customer');
     }
 
     /**
@@ -288,13 +307,8 @@ class Unl_Core_Model_Observer
      */
     public function onBeforeSalesOrderGrid($observer)
     {
-        $controller = $observer->getEvent()->getControllerAction();
-        $request = $controller->getRequest();
-        if ($request->has('filter') && $request->getParam('filter') == '') {
-            Mage::helper('unl_core')->getAdvancedGridFilters('order', true);
-        }
+        $this->_clearAdvfilter($observer, 'order');
     }
-
 
     /**
      * A cron method for cleaning the block cache automatically

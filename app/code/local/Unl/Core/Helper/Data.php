@@ -470,6 +470,37 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
 
+    /**
+     * Sets up an advanced filter for a grid using common logic
+     *
+     * @param string $type
+     * @param Mage_Core_Block_Abstract $block
+     * @param Varien_Data_Form_Element_Fieldset $fieldset
+     */
+    public function prepareAdvfilterFieldset($type, $block, $fieldset)
+    {
+        $params = array(
+            'order' => array(
+                'grid' => 'sales_order_gridJsObject',
+                'controller' => 'sales_order_filter'
+            ),
+            'customer' => array(
+                'grid' => 'customerGridJsObject',
+                'controller' => 'customer_filter'
+            )
+        );
+
+        if (empty($params[$type])) {
+            return;
+        }
+
+        $fieldset->getRenderer()->setTemplate('widget/grid/advanced/renderer/fieldset.phtml');
+        $fieldset->setFilterUrl($block->getUrl("*/{$params[$type]['controller']}/apply"));
+        $fieldset->setAdvFiltersUrl($block->getUrl("*/{$params[$type]['controller']}/current"));
+        $fieldset->setFreezeUrl($block->getUrl("*/{$params[$type]['controller']}/freeze"));
+        $fieldset->setGridJsObject($params[$type]['grid']);
+    }
+
     public function getTaxCodeCases()
     {
         return $this->_taxCodeCases;
