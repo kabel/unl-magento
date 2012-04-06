@@ -8,9 +8,15 @@
 ?>
 <div class="store-directory">
     <h2><?php echo $this->__('Store Directory') ?></h2>
-    <?php if(count($this->getGroups())>1): ?>
+    <?php
+    $groups = $this->getGroups();
+    if ($this->hasData('shuffle')) {
+        shuffle($groups);
+    }
+    ?>
+    <?php if(count($groups)>1): ?>
     <ul>
-        <?php foreach ($this->getGroups() as $_group): ?>
+        <?php foreach ($groups as $_group): ?>
         <?php /* @var $_group Mage_Core_Model_Store_Group */ ?>
         <?php if (!$_group->getIsHidden() && !in_array('default', $_group->getStoreCodes())): ?>
             <li>
