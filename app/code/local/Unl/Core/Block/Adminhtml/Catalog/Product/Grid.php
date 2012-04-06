@@ -31,7 +31,8 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
 
         parent::_prepareColumns();
 
-        $this->removeColumn('websites');
+        $this->removeColumn('entity_id')
+            ->removeColumn('websites');
 
         return $this;
     }
