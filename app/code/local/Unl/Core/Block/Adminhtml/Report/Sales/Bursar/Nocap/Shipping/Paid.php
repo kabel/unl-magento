@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Nocap_Grid_Shipping_Paid
+class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Nocap_Shipping_Paid
     extends Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Grid_Shipping
 {
     protected function _construct()
