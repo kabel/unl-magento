@@ -38,19 +38,19 @@
             var fullImportForm = new varienForm('full_import_form');
         </script>
 
-        <form id="boundry_import_form" action="<?php echo $this->getUrl('*/*/fullImportPost') ?>" method="post" enctype="multipart/form-data">
+        <form id="boundary_import_form" action="<?php echo $this->getUrl('*/*/boundaryImportPost') ?>" method="post" enctype="multipart/form-data">
             <?php echo $this->getBlockHtml('formkey')?>
             <div class="entry-edit-head">
                 <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('tax')->__('Import NE Tax Boundaries') ?></h4>
             </div>
             <fieldset>
                 <legend><?php echo Mage::helper('tax')->__('Import NE Tax Boundaries') ?></legend>
-                <input type="file" name="import_boundry_file" class="input-file required-entry"/>
+                <input type="file" name="import_boundary_file" class="input-file required-entry"/>
                 <?php echo $this->getButtonHtml('Import Boundaries', "this.form.submit()") ?>
             </fieldset>
         </form>
         <script type="text/javascript">
-            var fullImportForm = new varienForm('boundry_import_form');
+            var fullImportForm = new varienForm('boundary_import_form');
         </script>
     </div>
     <?php endif; ?>

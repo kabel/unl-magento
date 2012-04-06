@@ -29,14 +29,19 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
         return $columns;
     }
 
-    protected function _beginImport($table)
+    protected function _beginImport($table, $withTruncate = true)
     {
         $adapter = $this->_getWriteAdapter();
-        $adapter->delete($table);
-        $adapter->query(sprintf('ALTER TABLE %s AUTO_INCREMENT=%s',
-            $adapter->quoteIdentifier($table),
-            1
-        ));
+
+        if ($withTruncate) {
+            $adapter->truncateTable($table);
+        } else {
+            $adapter->delete($table);
+            $adapter->query(sprintf('ALTER TABLE %s AUTO_INCREMENT=%s',
+                $adapter->quoteIdentifier($table),
+                1
+            ));
+        }
 
         return $this;
     }
@@ -50,7 +55,7 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
 
     public function beginRateImport()
     {
-        $this->_beginImport($this->getTable('tax/tax_calculation_rate'));
+        $this->_beginImport($this->getTable('tax/tax_calculation_rate'), false);
 
         return $this;
     }
@@ -67,6 +72,37 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
     {
         $adapter = $this->_getWriteAdapter();
         $adapter->insertArray($this->getTable('tax/tax_calculation_rate'), $this->getTaxRateColumns(), $data);
+
+        return $this;
+    }
+
+    public function loadLocalFile($filePath)
+    {
+        return $this->_loadLocalFile($filePath, $this->getMainTable());
+    }
+
+    public function loadLocalRateFile($filePath)
+    {
+        return $this->_loadLocalFile($filePath, $this->getTable('tax/tax_calculation_rate'), $this->getTaxRateColumns());
+    }
+
+    protected function _loadLocalFile($filePath, $table, $fields = array())
+    {
+        $connConfig = Mage::getConfig()->getResourceConnectionConfig('core_setup')->asArray();
+        $adapter = new Varien_Db_Adapter_Mysqli($connConfig);
+
+        $sql = sprintf('LOAD DATA LOCAL INFILE %s INTO TABLE %s FIELDS TERMINATED BY %s',
+            $adapter->quote($filePath),
+            $adapter->quoteIdentifier($table),
+            $adapter->quote(',')
+        );
+
+        if ($fields) {
+            $columns = array_map(array($adapter, 'quoteIdentifier'), $fields);
+            $sql .= sprintf(' (%s)', implode(', ', $columns));
+        }
+
+        $result = $adapter->raw_query($sql);
 
         return $this;
     }
@@ -103,7 +139,7 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
         $productCond = implode(' AND ', $productCond);
 
         $select
-            ->from(array('rt' => $this->getTable('tax/tax_calculation_rate')), array('tax_calulation_rate_id'))
+            ->from(array('rt' => $this->getTable('tax/tax_calculation_rate')), array('tax_calculation_rate_id'))
             ->join(array('ru' => $this->getTable('tax/tax_calculation_rule')), $ruleCond, array('tax_calculation_rule_id'))
             ->join(array('cc' => $this->getTable('tax/tax_class')), $customerCond, array('class_id'))
             ->join(array('pc' => $this->getTable('tax/tax_class')), $productCond, array('class_id'));
@@ -311,7 +347,12 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
             $select = $this->_getRateLoadSelect($calc['rule'], $calc['customer'], $calc['product'],
                 isset($calc['straight']) ? $calc['straight'] : false);
 
-            $adapter->query($adapter->insertFromSelect($select, $this->getTable('tax/tax_calculation')));
+            $adapter->query($adapter->insertFromSelect($select, $this->getTable('tax/tax_calculation'), array(
+                'tax_calculation_rate_id',
+                'tax_calculation_rule_id',
+                'customer_tax_class_id',
+                'product_tax_class_id',
+            )));
         }
 
         return $this;
