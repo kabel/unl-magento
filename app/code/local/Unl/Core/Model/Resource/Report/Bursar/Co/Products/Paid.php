@@ -18,7 +18,7 @@ class Unl_Core_Model_Resource_Report_Bursar_Co_Products_Paid extends Unl_Core_Mo
 
     protected function _initSelect()
     {
-        $this->_initSelectForShipping(true);
+        $this->_initSelectForProducts(true);
         Mage::helper('unl_core/report_bursar')->joinBillingNameToCollection($this);
 
         return $this;
