@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Model_Resource_Report_Reconcile_Co_Products_Products_Refunded
+class Unl_Core_Model_Resource_Report_Reconcile_Co_Products_Refunded
     extends Unl_Core_Model_Resource_Report_Reconcile_Collection_Products_Refunded
 {
     public function __construct()
