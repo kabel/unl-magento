@@ -22,7 +22,7 @@ class Unl_Core_Model_Resource_Report_Tax_Reconcile_Paid extends Mage_Tax_Model_R
 
         $this->getSelect()
             ->columns(array('real_code' => $this->getConnection()->getCaseSql('', $codeCases, 'code')))
-            ->join(array('o' => $this->getTable('sales/order')), 'o.entity_id = t.order_id', array('ordernum' => 'increment_id'))
+            ->join(array('o' => $this->getTable('sales/order')), 'o.entity_id = main_table.order_id', array('ordernum' => 'increment_id'))
             ->join(array('i' => $innerSelect), 'i.order_id = o.entity_id', array('period' => 'paid_at'))
             ->join(array('p' => $this->getTable('sales/order_payment')), 'p.parent_id = o.entity_id', array('method'))
             ->joinLeft(array('pf' => $this->getTable('unl_core/tax_places')),

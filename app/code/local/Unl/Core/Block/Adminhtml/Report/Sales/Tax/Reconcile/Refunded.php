@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Reconcile_Paid extends Unl_Core_Block_Adminhtml_Report_Sales_Tax_Reconcile_Paid
+class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Reconcile_Refunded extends Unl_Core_Block_Adminhtml_Report_Sales_Tax_Reconcile_Paid
 {
 
     public function __construct()

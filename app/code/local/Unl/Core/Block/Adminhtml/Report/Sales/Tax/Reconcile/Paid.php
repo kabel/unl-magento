@@ -36,20 +36,22 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Tax_Reconcile_Paid extends Mage_Admi
         $this->addColumn('period', array(
             'header'    => Mage::helper('sales')->__('Processed On'),
             'index'     => 'period',
-            'width'     => '100px',
+            'width'     => '160px',
             'type'      => 'datetime',
         ));
 
         $this->addColumn('payment_method', array(
             'header'    => Mage::helper('sales')->__('Payment Method'),
             'index'     => 'method',
+            'width'     => '125px',
             'type'      => 'options',
             'options'   => Mage::helper('unl_core')->getActivePaymentMethodOptions(false),
         ));
 
         $this->addColumn('code', array(
             'header'    => Mage::helper('sales')->__('Tax'),
-            'index'     => 'code',
+            'index'     => 'real_code',
+            'width'     => '200px',
             'type'      => 'string',
         ));
 
