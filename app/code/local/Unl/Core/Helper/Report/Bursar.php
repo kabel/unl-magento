@@ -133,6 +133,8 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
      */
     public function addCostObjectColumns($grid, $fromReconcile = false, $isShipping = false)
     {
+        $after = $isShipping ? 'period' : 'merchant';
+
         if (!$fromReconcile) {
             $this->addReconcileColumns($grid, $isShipping);
         }
@@ -143,7 +145,7 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
             'totals_label'    => '',
             'subtotals_label' => '',
             'sortable'        => false
-        ), 'order_num');
+        ), $after);
 
         $grid->addColumnAfter('billing_name', array(
             'header'          => Mage::helper('sales')->__('Billing Name'),
