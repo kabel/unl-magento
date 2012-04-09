@@ -250,7 +250,7 @@ body.mobile #wdn_wrapper { -moz-border-radius:0; -webkit-border-radius:0; border
     width:98px;
     height:25px;
     display:block;
-    background:url('//m.unl.edu/images/mobileSwitcher.png') no-repeat 0 0;
+    background:url('../images/mobileSwitcher.png') no-repeat 0 0;
 }
 #mobile_help .links {
     background: -moz-linear-gradient(top, rgba(183,183,183,0.8) 0%, rgba(172,172,172,0.8) 100%); /* FF3.6+ */
