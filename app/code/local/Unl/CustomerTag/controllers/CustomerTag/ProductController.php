@@ -1,6 +1,6 @@
 <?php
 
-class Unl_CustomerTag_ProductController extends Mage_Adminhtml_Controller_Action
+class Unl_CustomerTag_CustomerTag_ProductController extends Mage_Adminhtml_Controller_Action
 {
     protected function _initProduct()
     {
