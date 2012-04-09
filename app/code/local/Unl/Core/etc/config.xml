@@ -1011,8 +1011,8 @@
                 <group>offline</group>
             </invoicelater>
             <verisign>
-            </verisign>
             	<reference_txn>0</reference_txn>
+            </verisign>
             <!-- ensure GoogleCheckout is NOT active -->
             <googlecheckout>
                 <active>0</active>
