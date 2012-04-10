@@ -1070,8 +1070,9 @@ f/********** Product Prices > */
 .product-view .product-img-box { float:left; width:42.58%; }
 .col3-layout .product-view .product-img-box { float:none; margin:0 auto; }
 .product-view .product-img-box .product-image { margin:0 0 10px; border:1px solid #cacaca; }
+.product-view .product-img-box .product-image img { display: block; height:302px; }
 .product-view .product-img-box .product-image-zoom { position:relative; width:auto; height:302px; overflow:hidden; z-index:9; }
-.product-view .product-img-box .product-image-zoom img { position:absolute; left:0; top:0; cursor:move; }
+.product-view .product-img-box .product-image-zoom img { height:auto; position:absolute; left:0; top:0; cursor:move; }
 .product-view .product-img-box .zoom-notice { display:none; font-size:0.8em; font-style:italic; text-align:center; }
 .product-view .product-img-box .zoom { display:none; color: #686868; font: bold 1.5em Helvetica,Arial,FreeSans,"Liberation Sans","Nimbus Sans L",sans-serif; text-shadow: 1px 1px #fffaeb; position:relative; z-index:9; height:24px; margin:0 auto 13px; padding:0 28px; background:#F2EDDE; -webkit-border-radius: 12px; -moz-border-radius: 12px; border-radius: 12px; }
 .product-view .product-img-box .zoom.disabled { -moz-opacity:.3; -webkit-opacity:.3; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";/*IE8*/ opacity:.3; }
