@@ -1,90 +1,20 @@
 <?php
 
-class Unl_Ship_Model_Shipping_Carrier_Ups
-    extends Mage_Usa_Model_Shipping_Carrier_Ups
-    implements Unl_Ship_Model_Shipping_Carrier_Xmlship_Interface
+class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrier_Ups
 {
-    protected $_shiprequest;
-
-    // see UPS Developer Guide for infomartion about error codes
-    protected $_retryErrors = array(
-        120203,
-        120213,
-        120217,
-        120201,
-    );
-
-    protected $_errorCodes = array();
-
-    public function addErrorRetry($code)
+    public function getConfigData($field)
     {
-        $this->_errorCodes[] = $code;
-    }
-
-    public function isErrorRetried($code)
-    {
-        return in_array($code, $this->_errorCodes);
-    }
-
-    public function isRequestRetryAble($code)
-    {
-        if (in_array($code, $this->_retryErrors)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets a value for an ship xml requeset based on code and returned errors
-     *
-     * @param string $code
-     * @param mixed $value
-     * @return string
-     */
-    protected function _getCleanXmlValue($code, $value)
-    {
-        if ($code == 'shipto_addr2') {
-            if ($this->isErrorRetried(120203)) {
-                $value = '';
-            }
-        } else if ($code == 'shipto_phone') {
-            $value = preg_replace('/[^\d]/', '', $value);
-            if ($this->isErrorRetried(120213) || $this->isErrorRetried(120217)) {
-                $value = '';
-            }
-        } else if ($code == 'shipto_attention') {
-            $shipaddress = $value;
-            $value = '';
-            if ($shipaddress->getCompany() || $this->isErrorRetried(120201)) {
-                $value = substr($shipaddress->getName(), 0, 35);
+        if ($field == 'url') {
+            if (parent::getConfigData('mode_xml')) {
+                $this->_defaultUrls['ShipConfirm'] = 'https://onlinetools.ups.com/ups.app/xml/ShipConfirm';
+                $this->_defaultUrls['ShipAccept']  = 'https://onlinetools.ups.com/ups.app/xml/ShipAccept';
             }
         }
 
-        return $value;
+        return parent::getConfigData($field);
     }
 
-    /**
-     * Retrieves the dimension units for this carrier
-     *
-     * @return string IN or CM
-     */
-    public function getDimensionUnits()
-    {
-        return $this->getConfigData('dimension_units');
-    }
-
-    /**
-     * Retrieves the weight units for this carrier and store
-     *
-     * @return string LBS or KGS
-     */
-    public function getWeightUnits()
-    {
-        return $this->getConfigData('unit_of_measure');
-    }
-
-    /* Overrides
+    /* Extends
      * @see Mage_Usa_Model_Shipping_Carrier_Ups::_getCorrectWeight()
      * by using new UPS recommedation to use next whole pound
      */
@@ -106,10 +36,8 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
             return parent::getTotalNumOfBoxes($weight);
         }
 
-        /*
-        reset num box first before retrieve again
-        */
         $defaultBox = false;
+        // reset num box first before retrieve again
         $this->_numBoxes = 0;
         foreach ($items as $item) {
             if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
@@ -138,7 +66,7 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
         return $weight;
     }
 
-    /* Overrides
+    /* Extends
      * @see Mage_Usa_Model_Shipping_Carrier_Ups::setRequest()
      * by changing the logic for calculating the rawRequest weight/boxes
      */
@@ -155,7 +83,7 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
     }
 
     /*
-     * Overrides the default functionality of
+     * Overrides
      * @see Mage_Usa_Model_Shipping_Carrier_Ups::_getXmlQuotes()
      * by adding insurance to values over
      */
@@ -175,7 +103,9 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
             '15_origPostal'  => $r->getOrigPostal(),
             'origCity'       => $r->getOrigCity(),
             'origRegionCode' => $r->getOrigRegionCode(),
-            '19_destPostal'  => 'US' == $r->getDestCountry() ? substr($r->getDestPostal(), 0, 5) : $r->getDestPostal(), // UPS returns error for zip+4 US codes
+            '19_destPostal'  => Mage_Usa_Model_Shipping_Carrier_Abstract::USA_COUNTRY_ID == $r->getDestCountry() ?
+                substr($r->getDestPostal(), 0, 5) :
+                $r->getDestPostal(),
             '22_destCountry' => $r->getDestCountry(),
             'destRegionCode' => $r->getDestRegionCode(),
             '23_weight'      => $r->getWeight(),
@@ -192,7 +122,7 @@ class Unl_Ship_Model_Shipping_Carrier_Ups
             $serviceCode = $r->getProduct() ? $r->getProduct() : '';
         }
 
-        if ($r->getValue() >= 1000) { // Require insurance for >= $1000
+        if ($r->getValue() >= $this->getConfigData('force_insurance_value')) {
             $params['insurance_value'] = $r->getValue();
             $params['insurance_currencycode'] = $this->_request->getBaseCurrency()->getCurrencyCode();
         }
@@ -232,12 +162,24 @@ XMLRequest;
             $xmlRequest .= "<ShipperNumber>{$shipper}</ShipperNumber>";
         }
 
+        if ($r->getIsReturn()) {
+            $shipperCity = '';
+            $shipperPostalCode = $params['19_destPostal'];
+            $shipperCountryCode = $params['22_destCountry'];
+            $shipperStateProvince = $params['destRegionCode'];
+        } else {
+            $shipperCity = $params['origCity'];
+            $shipperPostalCode = $params['15_origPostal'];
+            $shipperCountryCode = $params['14_origCountry'];
+            $shipperStateProvince = $params['origRegionCode'];
+        }
+
 $xmlRequest .= <<< XMLRequest
       <Address>
-          <City>{$params['origCity']}</City>
-          <PostalCode>{$params['15_origPostal']}</PostalCode>
-          <CountryCode>{$params['14_origCountry']}</CountryCode>
-          <StateProvinceCode>{$params['origRegionCode']}</StateProvinceCode>
+          <City>{$shipperCity}</City>
+          <PostalCode>{$shipperPostalCode}</PostalCode>
+          <CountryCode>{$shipperCountryCode}</CountryCode>
+          <StateProvinceCode>{$shipperStateProvince}</StateProvinceCode>
       </Address>
     </Shipper>
     <ShipTo>
@@ -248,7 +190,10 @@ $xmlRequest .= <<< XMLRequest
           <StateProvinceCode>{$params['destRegionCode']}</StateProvinceCode>
 XMLRequest;
 
-          $xmlRequest .= ($params['49_residential']==='01' ? "<ResidentialAddressIndicator>{$params['49_residential']}</ResidentialAddressIndicator>" : '');
+          $xmlRequest .= ($params['49_residential']==='01'
+                  ? "<ResidentialAddressIndicator>{$params['49_residential']}</ResidentialAddressIndicator>"
+                  : ''
+          );
 
 $xmlRequest .= <<< XMLRequest
       </Address>
@@ -293,7 +238,6 @@ $xmlRequest .= <<< XMLRequest
 </RatingServiceSelectionRequest>
 XMLRequest;
 
-
         $xmlResponse = $this->_getCachedQuotes($xmlRequest);
         if ($xmlResponse === null) {
             $debugData = array('request' => $xmlRequest);
@@ -321,7 +265,7 @@ XMLRequest;
         return $this->_parseXmlResponse($xmlResponse);
     }
 
-    /* Overriding the logic of
+    /* Overrides
      * @see Mage_Usa_Model_Shipping_Carrier_Ups::_parseXmlTrackingResponse()
      * to better handle UPS responses. Includes only showing delivery info for delivered statuses,
      * showing the UPS delivery estimate, and showing the topmost activity in the progress.
@@ -441,241 +385,6 @@ XMLRequest;
     }
 
     /* Extends
-     * @see Mage_Usa_Model_Shipping_Carrier_Ups::getCode()
-     * by adding XML compatibile codes
-     */
-    public function getCode($type, $code='')
-    {
-        //get the customer defined package dimensions in in and cm (rounded to 2 dec places)
-        if ($this->getDimensionUnits() == 'IN') {
-            $conv = array(
-            	'in' => 1,
-                'cm' => 2.54
-            );
-        } else {
-            $conv = array(
-            	'in' => (1 / 2.54),
-                'cm' => 1
-            );
-        }
-        $cdef_in = array(
-            'height' => round($this->getConfigData('default_height') * $conv['in'], 2),
-            'width' => round($this->getConfigData('default_width') * $conv['in'], 2),
-            'length' => round($this->getConfigData('default_length') * $conv['in'], 2)
-        );
-        $cdef_cm = array(
-            'height' => round($this->getConfigData('default_height') * $conv['cm'], 2),
-            'width' => round($this->getConfigData('default_width') * $conv['cm'], 2),
-            'length' => round($this->getConfigData('default_length') * $conv['cm'], 2)
-        );
-
-        $codes = array(
-            'method'=>array(
-                '1DM'    => 'Next Day Air Early AM',
-                '1DML'   => 'Next Day Air Early AM Letter',
-                '1DA'    => 'Next Day Air',
-                '1DAL'   => 'Next Day Air Letter',
-                '1DAPI'  => 'Next Day Air Intra (Puerto Rico)',
-                '1DP'    => 'Next Day Air Saver',
-                '1DPL'   => 'Next Day Air Saver Letter',
-                '2DM'    => '2nd Day Air AM',
-                '2DML'   => '2nd Day Air AM Letter',
-                '2DA'    => '2nd Day Air',
-                '2DAL'   => '2nd Day Air Letter',
-                '3DS'    => '3 Day Select',
-                'GND'    => 'Ground',
-                'GNDCOM' => 'Ground Commercial',
-                'GNDRES' => 'Ground Residential',
-                'STD'    => 'Canada Standard',
-                'XPR'    => 'Worldwide Express',
-                'WXS'    => 'Worldwide Express Saver',
-                'XPRL'   => 'Worldwide Express Letter',
-                'XDM'    => 'Worldwide Express Plus',
-                'XDML'   => 'Worldwide Express Plus Letter',
-                'XPD'    => 'Worldwide Expedited',
-            ),
-
-            'container'=>array(
-                'CP'     => '02',
-                'ULE'    => '01',
-                'UT'     => '03',
-                'UEB'    => '21',
-                'UW25'   => '24',
-                'UW10'   => '25',
-                'UPAK'   => '04',
-                'UEBS'   => '2a',
-                'UEBM'   => '2b',
-                'UEBL'   => '2c',
-                'UPAL'   => '30',
-            ),
-
-            'container_description'=>array(
-                'CP'     => Mage::helper('usa')->__('Customer Supplied Package'),
-                'ULE'    => Mage::helper('usa')->__('UPS Letter'),
-                'UT'     => Mage::helper('usa')->__('UPS Tube'),
-                'UEB'    => Mage::helper('usa')->__('UPS Express Box'),
-                'UW25'   => Mage::helper('usa')->__('UPS 25KG Box'),
-                'UW10'   => Mage::helper('usa')->__('UPS 10KG Box'),
-                'UPAK'   => Mage::helper('usa')->__('UPS PAK'),
-                'UEBS'   => Mage::helper('usa')->__('UPS Small Express Box'),
-                'UEBM'   => Mage::helper('usa')->__('UPS Medium Express Box'),
-                'UEBL'   => Mage::helper('usa')->__('UPS Large Express Box'),
-                'UPAL'   => Mage::helper('usa')->__('Pallet'),
-            ),
-
-            //these are dimensions in centimeters for each package type
-            'container_dimensions_cm' => array(
-                //Customer Supplied Package
-                'CP' => $cdef_cm,
-                //UPS Letter
-                'ULE' => array(
-                    'height' => 0,
-                    'width' => 9.5 * 2.54,
-                    'length' => 12.5 * 2.54,
-                ),
-                //Tube
-                'UT' => array(
-                    'height' => 38 * 2.54,
-                    'width' => 6 * 2.54,
-                    'length' => 6 * 2.54,
-                ),
-                //PAK
-                'UPAK' => array(
-                    'height' => 0,
-                    'width' => 12.75 * 2.54,
-                    'length' => 16 * 2.54,
-                ),
-                //UPS Express Box (defining same as small)
-                'UEB' => array(
-                    'height' => 2 * 2.54,
-                    'width' => 11 * 2.54,
-                    'length' => 13 * 2.54,
-                ),
-                //UPS Small Express Box
-                'UEBS' => array(
-                    'height' => 2 * 2.54,
-                    'width' => 11 * 2.54,
-                    'length' => 13 * 2.54,
-                ),
-                //UPS Medium Express Box
-                'UEBM' => array(
-                    'height' => 3 * 2.54,
-                    'width' => 11 * 2.54,
-                    'length' => 15 * 2.54,
-                ),
-                //UPS Large Express Box
-                'UEBL' => array(
-                    'height' => 3 * 2.54,
-                    'width' => 13 * 2.54,
-                    'length' => 18 * 2.54,
-                ),
-                //UPS 25KG Box
-                'UW25' => array(
-                    'height' => 14 * 2.54,
-                    'width' => 17.38 * 2.54,
-                    'length' => 19.38 * 2.54,
-                ),
-                //UPS 10KG Box
-                'UW10' => array(
-                    'height' => 10.75 * 2.54,
-                    'width' => 13.25 * 2.54,
-                    'length' => 16.5 * 2.54,
-                ),
-                //Pallet
-                'UPAL' => array(
-                    'height' => 120,
-                    'width' => 160,
-                    'length' => 200,
-                ),
-            ),
-
-            //these are dimensions in inches for each package type
-            'container_dimensions_in' => array(
-                //Customer Supplied Package
-                'CP' => $cdef_in,
-                //UPS Letter
-                'ULE' => array(
-                    'height' => 0,
-                    'width' => 9.5,
-                    'length' => 12.5,
-                ),
-                //Tube
-                'UT' => array(
-                    'height' => 6,
-                    'width' => 6,
-                    'length' => 38,
-                ),
-                //PAK
-                'UPAK' => array(
-                    'height' => 0,
-                    'width' => 12.75,
-                    'length' => 16,
-                ),
-                //UPS Express Box (defining same as small)
-                'UEB' => array(
-                    'height' => 2,
-                    'width' => 11,
-                    'length' => 13,
-                ),
-                //UPS Small Express Box
-                'UEBS' => array(
-                    'height' => 2,
-                    'width' => 11,
-                    'length' => 13,
-                ),
-                //UPS Medium Express Box
-                'UEBM' => array(
-                    'height' => 3,
-                    'width' => 11,
-                    'length' => 15,
-                ),
-                //UPS Large Express Box
-                'UEBL' => array(
-                    'height' => 3,
-                    'width' => 13,
-                    'length' => 18,
-                ),
-                //UPS 25KG Box
-                'UW25' => array(
-                    'height' => 14,
-                    'width' => 17.38,
-                    'length' => 19.38,
-                ),
-                //UPS 10KG Box
-                'UW10' => array(
-                    'height' => 10.75,
-                    'width' => 13.25,
-                    'length' => 16.5,
-                ),
-                //Pallet
-                'UPAL' => array(
-                    'height' => 47.24,
-                    'width' => 62.99,
-                    'length' => 78.74,
-                ),
-            ),
-
-            'unit_of_dimension'=>array(
-                'IN'   =>  Mage::helper('usa')->__('Inches'),
-                'CM'   =>  Mage::helper('usa')->__('Centimeters'),
-            ),
-
-        );
-
-        if (!isset($codes[$type])) {
-            return parent::getCode($type, $code);
-        } elseif (''===$code) {
-            return $codes[$type];
-        }
-
-        if (!isset($codes[$type][$code])) {
-           return parent::getCode($type, $code);
-        } else {
-            return $codes[$type][$code];
-        }
-    }
-
-    /* Extends the logic of
      * @see Mage_Usa_Model_Shipping_Carrier_Abstract::proccessAdditionalValidation()
      * by passing the rate request to a helper to validate the street address
      */
@@ -694,788 +403,353 @@ XMLRequest;
         return $this;
     }
 
-    public function getAddressValidation(Mage_Shipping_Model_Rate_Request $request)
+    public function requestToShipment(Mage_Shipping_Model_Shipment_Request $request)
     {
-        return '';
-    }
-
-    /****************************** New Methods for Shipping *************************/
-
-    /**
-     * Creates a shipment to be sent. Will initialize the shipment, retrieve tracking number, and get shipping label
-     *
-     */
-    public function createShipment(Unl_Ship_Model_Shipment_Request $request) {
-        $this->_shiprequest = $request;
-        $this->_result = $this->_createShipment();
-        return $this->_result;
-    }
-
-    protected function _createShipment() {
-        $store = $this->getStore();
-        $orderStore = $this->_shiprequest->getOrder()->getStore();
-        $this->setStore($orderStore);
-
-        switch ($this->getConfigData('type')) {
-            case 'UPS':
-                $this->setStore($store);
-                throw Mage::exception('Mage_Shipping', Mage::helper('usa')->__('UPS shipments can only be automatically created when \'United Parcel Service XML\' is configured as the \'UPS type\'.'));
-                return false;
-            //currently only available through XML
-            case 'UPS_XML':
-                return $this->_createXmlShipment();
+        $packages = $request->getPackages();
+        if (!is_array($packages) || !$packages) {
+            Mage::throwException(Mage::helper('usa')->__('No packages for request'));
         }
-        $this->setStore($store);
-        return null;
-    }
+        if ($request->getStoreId() != null) {
+            $this->setStore($request->getStoreId());
+        }
+        $data = array();
+        foreach ($packages as $packageId => $package) {
+            $request->setPackageId($packageId);
+            $request->setPackagingType($package['params']['container']);
+            $request->setPackageWeight($package['params']['weight']);
+            $request->setPackageParams(new Varien_Object($package['params']));
+            $request->setPackageItems($package['items']);
+            $result = $this->_doShipmentRequest($request);
 
-    /**
-     * Generates and executes the actual XML requests to forward a shipment, which consists of 4 separate steps:
-     *
-     *     1. ShipmentConfirmRequest - submission of request for shipment containing proposed shipment information
-     *     2. ShipmentConfirmResponse - data sent back containing rate information for the proposed shipment
-     *     3. ShipmentAcceptRequest - submission indicating acceptance of proposed rate for shipment
-     *     4. ShipmentAcceptResponse - data sent back containing tracking info and shipping label
-     *
-     * @return array An array of Unl_Ship_Model_Shipment_Package objects. An exception will be thrown on error.
-     */
-    protected function _createXmlShipment() {
-        /* @var $order Mage_Sales_Model_Order */
-        $order = $this->_shiprequest->getOrder();
-
-        //get the params
-        $url = $this->getConfigData('shipping_xml_url');
-        //make sure the $url does not have ShipConfirm or ShipAccept on the end
-        $url = (rtrim($url, 'ShipConfirm'));
-        $url = (rtrim($url, 'ShipAccept'));
-        $url = (rtrim($url, '/'));
-
-        $packages = $this->_shiprequest->getPackages();
-
-        $retpak = array();
-        try {
-            //only send one package per request so that we can track the price of individual packages
-            foreach ($packages as $reqpackage) {
-                //ShipmentConfirmRequest
-                $ship_confirm_response = $this->_sendXmlShipmentConfirmRequest($url.'/ShipConfirm', $order, array($reqpackage));
-
-                //ShipmentAcceptRequest
-                $ship_accept_response = $this->_sendXmlShipmentAcceptRequest($url.'/ShipAccept', $order, $ship_confirm_response->getShipmentDigest());
-
-                //store the results of the request if it was successful
-                $respackage = current($ship_accept_response->getPackages());
-
-                //create a package to store
-                $pkg = Mage::getModel('unl_ship/shipment_package')
-                    ->setOrderId($order->getId())
-                    ->setCarrier($this->getCarrierCode())
-                    ->setCarrierShipmentId($ship_accept_response->getShipmentIdentificationNumber())
-                    ->setWeightUnits($ship_accept_response->getBillingWeightUnits())
-                    ->setWeight($ship_accept_response->getBillingWeight())
-                    ->setTrackingNumber($respackage['tracking_number'])
-                    ->setCurrencyUnits($ship_accept_response->getCurrencyUnits())
-                    ->setTransportationCharge($ship_accept_response->getTransportationShippingCharges())
-                    ->setServiceOptionCharge($ship_accept_response->getServiceOptionsShippingCharges())
-                    ->setShippingTotal($ship_accept_response->getTotalShippingCharges())
-                    ->setNegotiatedTotal($ship_accept_response->getNegotiatedTotalShippingCharges())
-                    ->setLabelFormat($respackage['label_image_format'])
-                    ->setLabelImage($respackage['label_image'])
-                    ->setHtmlLabelImage($respackage['html_image'])
-                    ->setInsDoc($ship_accept_response->getInsDoc())
-                    ->setIntlDoc($ship_accept_response->getIntlDoc())
-                    ->setDateShipped(Mage::getSingleton('core/date')->gmtDate());
-
-                $retpak[$reqpackage->getPackageIndex()] = $pkg;
-            }
-        } catch (Mage_Shipping_Exception $e) {
-            if (empty($retpak)) {
-                throw $e;
+            if ($result->hasErrors()) {
+                $this->rollBack($data);
+                break;
             } else {
-                $retpak[$reqpackage->getPackageIndex()] = $e->getMessage();
+                $data[] = array(
+                    'tracking_number' => $result->getTrackingNumber(),
+                    'label_content'   => $result->getShippingLabelContent(),
+                    'package'         => $result->getPackage(),
+                );
+            }
+            if (!isset($isFirstRequest)) {
+                $request->setMasterTrackingId($result->getTrackingNumber());
+                $isFirstRequest = false;
             }
         }
 
-        return $retpak;
+        $response = new Varien_Object(array(
+            'info'   => $data
+        ));
+        if ($result->getErrors()) {
+            $response->setErrors($result->getErrors());
+        } else {
+            $shipment = $request->getOrderShipment();
+            $pkgs = array();
+
+            foreach ($response->getInfo() as $inf) {
+                if ($inf['package']) {
+                    $pkg = $inf['package'];
+                    $pkg->setOrderId($shipment->getOrderId());
+                    $pkg->setLabelImage($inf['label_content']);
+                    $pkg->setTrackingNumber($inf['tracking_number']);
+                    $pkg->setCarrier($this->getCarrierCode());
+                    $pkg->setDateShipped(Mage::getSingleton('core/date')->gmtDate());
+
+                    $pkgs[] = $pkg;
+                }
+            }
+
+            if ($pkgs) {
+                $shipment->setUnlPackages($pkgs);
+            }
+        }
+        return $response;
     }
 
-    /**
-     * Sends the ShipmentConfirmRequest message.
-     *
-     * @param Mage_Sales_Model_Order $order The order to ship from
-     * @param array $packages An array of Unl_Ship_Model_Shipment_Package objects.
-     * @param string $url URL to submit request to.
-     * @return Mage_Shipping_Model_Shipment_Confirmation The ShipmentConfirmationResponse object
-     */
-    protected function _sendXmlShipmentConfirmRequest($url, $order, $packages)
+    protected function _formShipmentRequest(Varien_Object $request)
     {
-        if (empty($url)) {
-            $url = rtrim($this->getConfigData('shipping_xml_url'), '/').'/ShipConfirm';
+        $packageParams = $request->getPackageParams();
+        $height = $packageParams->getHeight();
+        $width = $packageParams->getWidth();
+        $length = $packageParams->getLength();
+        $weightUnits = $packageParams->getWeightUnits() == Zend_Measure_Weight::POUND ? 'LBS' : 'KGS';
+        $dimensionsUnits = $packageParams->getDimensionUnits() == Zend_Measure_Length::INCH ? 'IN' : 'CM';
+
+        $itemsDesc = array();
+        $itemsShipment = $request->getPackageItems();
+        foreach ($itemsShipment as $itemShipment) {
+            $item = new Varien_Object();
+            $item->setData($itemShipment);
+            $itemsDesc[] = $item->getName();
         }
 
-        $store = $order->getStore();
+        $xmlRequest = new SimpleXMLElement('<?xml version = "1.0" ?><ShipmentConfirmRequest xml:lang="en-US"/>');
+        $requestPart = $xmlRequest->addChild('Request');
+        $requestPart->addChild('RequestAction', 'ShipConfirm');
+        $requestPart->addChild('RequestOption', $this->getConfigData('ship_request_option'));
 
-        $shipaddress = $order->getShippingAddress();  //Mage_Sales_Model_Order_Address
-        if (empty($shipaddress)) {
-            throw Mage::exception('Mage_Shipping', Mage::helper('usa')->__('No shipping address for order.'));
-            return false;
+        $shipmentPart = $xmlRequest->addChild('Shipment');
+        if ($request->getIsReturn()) {
+            $returnPart = $shipmentPart->addChild('ReturnService');
+            // UPS Print Return Label
+            $returnPart->addChild('Code', '9');
         }
+        $shipmentPart->addChild('Description', substr(implode(' ', $itemsDesc), 0, 35));//empirical
 
-        //get the package data
-        $pkgs = array();
-        $invoicetotal = 0;
-        $invoicetotalpkgtype = true;
-        foreach ($packages as $pkg) {
-            $p = array(
-                'package_code' => $this->getCode('container', $pkg->getContainerCode()),  //2 char, code for packaging type, default is '02' - customer supplied package
-                'package_description' => $this->getCode('package_type', $pkg->getContainerCode()),  //description of packaging, default 'customer supplied package
-                'weight_unitcode' => $this->getWeightUnits(),  //units for weight, can be either 'LBS' or 'KGS'
-                'weight' => sprintf("%01.1f", $pkg->getWeight()),  //5 chars, up to 1 digit after decimal
-                'dimension_unitcode' => $this->getDimensionUnits(),  //units for dimension, can be either 'IN' or 'CM'
-                'height' => $pkg->getHeight(),
-                'width' => $pkg->getWidth(),
-                'length' => $pkg->getLength(),
-                'reference_code' => 'TN',  //2 chars, optional - default 'TN' (Transaction Reference Number) - Order ID
-                'reference_value' => substr($order->getRealOrderId(), 0, 35), //35 chars, optional - order_id
-                'description' => ''
-            );
+        $shipperPart = $shipmentPart->addChild('Shipper');
+        if ($request->getIsReturn()) {
+            $shipperPart->addChild('Name', $request->getRecipientContactCompanyName());
+            $shipperPart->addChild('AttentionName', $request->getRecipientContactPersonName());
+            $shipperPart->addChild('ShipperNumber', $this->getConfigData('shipper_number'));
+            $shipperPart->addChild('PhoneNumber', $request->getRecipientContactPhoneNumber());
 
-            //reference codes can only be used in US domestic shipments
-            if ($shipaddress->getCountryId() != 'US' || $store->getConfig('shipping/origin/country_id') != 'US') {
-                unset($p['reference_code']);
-                unset($p['reference_value']);
+            $addressPart = $shipperPart->addChild('Address');
+            $addressPart->addChild('AddressLine1', $request->getRecipientAddressStreet());
+            $addressPart->addChild('AddressLine2', $request->getRecipientAddressStreet2());
+            $addressPart->addChild('City', $request->getRecipientAddressCity());
+            $addressPart->addChild('CountryCode', $request->getRecipientAddressCountryCode());
+            $addressPart->addChild('PostalCode', $request->getRecipientAddressPostalCode());
+            if ($request->getRecipientAddressStateOrProvinceCode()) {
+                $addressPart->addChild('StateProvinceCode', $request->getRecipientAddressStateOrProvinceCode());
             }
+        } else {
+            $shipperPart->addChild('Name', $request->getShipperContactCompanyName());
+            $shipperPart->addChild('AttentionName', $request->getShipperContactPersonName());
+            $shipperPart->addChild('ShipperNumber', $this->getConfigData('shipper_number'));
+            $shipperPart->addChild('PhoneNumber', $request->getShipperContactPhoneNumber());
 
-            //if package has confirmation
-            if ($pkg->getConfirmationCode() != null) {
-                $p['confirmation_type'] = $pkg->getConfirmationCode();  //'1' (delivery confirmation), '2' (signature required), or '3' (adult signature required)
-                $p['confirmation_number'] = $pkg->getConfirmationNumber();  //delivery confirmation control number
-            }
-            //if package insured
-            if ($pkg->getInsuranceCode() != null) {
-                $p['insurance_type'] = $pkg->getInsuranceCode();  //2 char, '01' (EVS Declared Value), or '02' (DVS Shipper Declared Value), UPS default is '01'
-                $p['insurance_currencycode'] = $pkg->getInsuranceCurrencyCode();  //3 letter currency abbreviation (USD)
-                $p['insurance_value'] = $pkg->getInsuranceValue();  //limited to 99999999.99 with up to 2 digits after
-            } else if ($pkg->getValue() >= 1000) {  //force declared value on packages
-                $p['insurance_type'] = '01';
-                $p['insurance_currencycode'] = 'USD';
-                $p['insurance_value'] = sprintf('%01.2f', $pkg->getValue());
-            }
-
-            //if release without signature requested
-            if ($pkg->getReleaseWithoutSignature()) {
-                $p['release_without_signature'] = 1;  //if non-null driver may release package without a signature, only valid in US & Puerto Rico
-            }
-
-            //if verbal confirmation requested
-            if ($pkg->getVerballyConfirm()) {
-                $p['verbal_name'] = substr($store->getConfig('shipping/origin/attention'), 0, 35);  //35 char, contact name to notify on delivery
-                $p['verbal_phone'] = substr($store->getConfig('shipping/origin/phone'), 0, 15);  //required for international destinations
-            }
-            $pkgs[] = $p;
-
-            //add the package items to the invoice total
-            $invoicetotal += $pkg->getValue();
-            if ($p['package_code'] == '01') {
-                $invoicetotalpkgtype = false;
+            $addressPart = $shipperPart->addChild('Address');
+            $addressPart->addChild('AddressLine1', $request->getShipperAddressStreet());
+            $addressPart->addChild('AddressLine2', $request->getShipperAddressStreet2());
+            $addressPart->addChild('City', $request->getShipperAddressCity());
+            $addressPart->addChild('CountryCode', $request->getShipperAddressCountryCode());
+            $addressPart->addChild('PostalCode', $request->getShipperAddressPostalCode());
+            if ($request->getShipperAddressStateOrProvinceCode()) {
+                $addressPart->addChild('StateProvinceCode', $request->getShipperAddressStateOrProvinceCode());
             }
         }
 
-        $ship = explode('_', $order->getShippingMethod());
-        $servicecode = $ship[1];
+        $shipToPart = $shipmentPart->addChild('ShipTo');
+        $shipToPart->addChild('AttentionName', $request->getRecipientContactPersonName());
+        $shipToPart->addChild('CompanyName', $request->getRecipientContactCompanyName()
+            ? $request->getRecipientContactCompanyName()
+            : 'N/A');
+        $shipToPart->addChild('PhoneNumber', $request->getRecipientContactPhoneNumber());
 
-        $params = array(
-            'order_id' => $order->getRealOrderId(),
-            'address_validation' =>  'validate',
-            'shipment_description' => 'Order # '. $order->getRealOrderId(),  //35 chars, required for some international, optional
-            'shipper_name' => substr($store->getWebsite()->getName(), 0, 35),  //35 chars
-            'shipper_attention' => substr($store->getConfig('shipping/origin/attention'), 0, 35),  //35 chars required for international and next day AM
-            'shipper_number' => $this->getConfigData('shipper_number'),  //6 digit UPS account number
-            'shipper_phone' => $store->getConfig('shipping/origin/phone'),  //15 chars, digits only, required for international, optional
-            'shipper_addr1' => $store->getConfig('shipping/origin/address1'),  //35 chars
-            'shipper_addr2' => $store->getConfig('shipping/origin/address2'),  //35 chars
-            'shipper_addr3' => $store->getConfig('shipping/origin/address3'),  //35 chars
-            'shipper_city' => $store->getConfig('shipping/origin/city'),  //30 chars
-            'shipper_state' => Mage::getModel('directory/region')->load($store->getConfig('shipping/origin/region_id'))->getCode(),  //2-5 chars, required for US, Mexico, and Canada (for Ireland use 5 digit county abbreviation)
-            'shipper_postalcode' => $store->getConfig('shipping/origin/postcode'),  //9 chars , required for US, Canada, Puerto Rico, may include - with 9 digits
-            'shipper_country' => $store->getConfig('shipping/origin/country_id'),  //2 digit ISO code
+        $addressPart = $shipToPart->addChild('Address');
+        $addressPart->addChild('AddressLine1', $request->getRecipientAddressStreet1());
+        $addressPart->addChild('AddressLine2', $request->getRecipientAddressStreet2());
+        $addressPart->addChild('City', $request->getRecipientAddressCity());
+        $addressPart->addChild('CountryCode', $request->getRecipientAddressCountryCode());
+        $addressPart->addChild('PostalCode', $request->getRecipientAddressPostalCode());
+        if ($request->getRecipientAddressStateOrProvinceCode()) {
+            $addressPart->addChild('StateProvinceCode', $request->getRecipientAddressRegionCode());
+        }
+        if ($this->getConfigData('dest_type') == 'RES') {
+            $addressPart->addChild('ResidentialAddress');
+        }
 
-            'shipto_name' => $shipaddress->getCompany() ? substr($shipaddress->getCompany(), 0, 35) : substr($shipaddress->getName(), 0, 35),  //35 chars
-            'shipto_attention' => $this->_getCleanXmlValue('shipto_attention', $shipaddress), //35 chars, required for international and next day AM
-            'shipto_phone' => $this->_getCleanXmlValue('shipto_phone', $shipaddress->getTelephone()),  //15 chars, digits only, required for international, optional
-            'shipto_addr1' => $shipaddress->getStreet(1),  //35 chars
-            'shipto_addr2' => $this->_getCleanXmlValue('shipto_addr2', $shipaddress->getStreet(2)),  //35 chars
-            'shipto_addr3' => $shipaddress->getStreet(3),  //35 chars
-            'shipto_city' => $shipaddress->getCity(),  //30 chars
-            'shipto_state' => $shipaddress->getRegionCode(),  //2-5 chars, required for US, Mexico, and Canada (for Ireland use 5 digit county abbreviation)
-            'shipto_postalcode' => $shipaddress->getPostcode(),  //9 chars , required for US, Canada, Puerto Rico, may include - with 9 digits
-            'shipto_country' => $shipaddress->getCountryId(),  //2 digit ISO code
-            'negotiated_rate' => $this->getConfigFlag('negotiated_active'),
+        if ($request->getIsReturn()) {
+            $shipFromPart = $shipmentPart->addChild('ShipFrom');
+            $shipFromPart->addChild('AttentionName', $request->getShipperContactPersonName());
+            $shipFromPart->addChild('CompanyName', $request->getShipperContactCompanyName()
+                ? $request->getShipperContactCompanyName()
+                : $request->getShipperContactPersonName());
+            $shipFromAddress = $shipFromPart->addChild('Address');
+            $shipFromAddress->addChild('AddressLine1', $request->getShipperAddressStreet1());
+            $shipFromAddress->addChild('AddressLine2', $request->getShipperAddressStreet2());
+            $shipFromAddress->addChild('City', $request->getShipperAddressCity());
+            $shipFromAddress->addChild('CountryCode', $request->getShipperAddressCountryCode());
+            $shipFromAddress->addChild('PostalCode', $request->getShipperAddressPostalCode());
+            if ($request->getShipperAddressStateOrProvinceCode()) {
+                $shipFromAddress->addChild('StateProvinceCode', $request->getShipperAddressStateOrProvinceCode());
+            }
 
-            'service_code' => $servicecode,  //UPS shipment service code
-            'service_description' => $this->getShipmentByCode($servicecode),  //UPS shipment service description, optional
-            'invoice_line_total_currency_code' => Mage::app()->getBaseCurrencyCode(),
-            'invoice_line_total_value' => round($invoicetotal),
-            'invoice_total_pkg_type' => $invoicetotalpkgtype,
+            $addressPart = $shipToPart->addChild('Address');
+            $addressPart->addChild('AddressLine1', $request->getShipperAddressStreet1());
+            $addressPart->addChild('AddressLine2', $request->getShipperAddressStreet2());
+            $addressPart->addChild('City', $request->getShipperAddressCity());
+            $addressPart->addChild('CountryCode', $request->getShipperAddressCountryCode());
+            $addressPart->addChild('PostalCode', $request->getShipperAddressPostalCode());
+            if ($request->getShipperAddressStateOrProvinceCode()) {
+                $addressPart->addChild('StateProvinceCode', $request->getShipperAddressStateOrProvinceCode());
+            }
+            if ($this->getConfigData('dest_type') == 'RES') {
+                $addressPart->addChild('ResidentialAddress');
+            }
+        }
 
-            'packages' => $pkgs,  //package information
-            'label_printcode' => 'GIF',
-            'label_agent' => 'Mozilla/4.5',
-            'label_imagecode' => 'GIF',
+        $servicePart = $shipmentPart->addChild('Service');
+        $servicePart->addChild('Code', $request->getShippingMethod());
+        $packagePart = $shipmentPart->addChild('Package');
+        $packagePart->addChild('Description', substr(implode(' ', $itemsDesc), 0, 35));//empirical
+        $packagePart->addChild('PackagingType')
+            ->addChild('Code', $request->getPackagingType());
+        $packageWeight = $packagePart->addChild('PackageWeight');
+        $packageWeight->addChild('Weight', $request->getPackageWeight());
+        $packageWeight->addChild('UnitOfMeasurement')->addChild('Code', $weightUnits);
 
-            'thirdparty_number' => $this->getConfigData('third_party_account_number'),  //6 digit UPS account number
-            'thirdparty_postalcode' => $this->getConfigData('third_party_postcode'),  //required for US, Canada, Puerto Rico, 9 digits plus -
-            'thirdparty_country' => $this->getConfigData('third_party_country'),  //2 digit ISO code
+        // set dimensions
+        if ($length || $width || $height) {
+            $packageDimensions = $packagePart->addChild('Dimensions');
+            $packageDimensions->addChild('UnitOfMeasurement')->addChild('Code', $dimensionsUnits);
+            $packageDimensions->addChild('Length', $length);
+            $packageDimensions->addChild('Width', $width);
+            $packageDimensions->addChild('Height', $height);
+        }
 
-            'destination_type' => $this->getConfigData('dest_type'),  //RES=Residential, COM=Commercial
-        );
+        // ups support reference number only for domestic service
+        if ($this->_isUSCountry($request->getRecipientAddressCountryCode())
+            && $this->_isUSCountry($request->getShipperAddressCountryCode())
+        ) {
+            if ($request->getReferenceData()) {
+                $referenceCode = $request->hasReferenceCode() ? $request->getReferenceCode() : 'PO';
+                $referenceData = $request->getReferenceData();
+            } else {
+                $referenceCode = 'TN';
+                $referenceData = $request->getOrderShipment()->getOrder()->getIncrementId();
+            }
+            $referencePart = $packagePart->addChild('ReferenceNumber');
+            $referencePart->addChild('Code', $referenceCode);
+            $referencePart->addChild('Value', $referenceData);
+        }
 
-        //TODO: Use address validation to determine destination_type
+        $deliveryConfirmation = $packageParams->getDeliveryConfirmation();
+        if ($deliveryConfirmation) {
+            /** @var $serviceOptionsNode SimpleXMLElement */
+            $serviceOptionsNode = null;
+            switch ($this->_getDeliveryConfirmationLevel($request->getRecipientAddressCountryCode())) {
+                case self::DELIVERY_CONFIRMATION_PACKAGE:
+                    $serviceOptionsNode = $packagePart->addChild('PackageServiceOptions');
+                    break;
+                case self::DELIVERY_CONFIRMATION_SHIPMENT:
+                    $serviceOptionsNode = $shipmentPart->addChild('ShipmentServiceOptions');
+                    break;
+            }
+            if (!is_null($serviceOptionsNode)) {
+                $serviceOptionsNode
+                    ->addChild('DeliveryConfirmation')
+                    ->addChild('DCISType', $packageParams->getDeliveryConfirmation());
+            }
+        }
 
-        //start with the access request
+        $forceInsuranceValue = $this->getConfigData('force_insurance_value');
+        if ($forceInsuranceValue && $packageParams->getCustomsValue() >= $forceInsuranceValue) {
+            $serviceOptionsNode = isset($packagePart->PackageServiceOptions)
+                ? $packagePart->PackageServiceOptions
+                : $packagePart->addChild('PackageServiceOptions');
+
+            /* @var $insuredValuePart SimpleXMLElement */
+            $insuredValuePart = $serviceOptionsNode->addChild('InsuredValue');
+            $insuredValuePart->addChild('Type')
+                ->addChild('Code', '01');
+
+            $insuredValuePart->addChild('CurrencyCode', $request->getBaseCurrencyCode());
+            $insuredValuePart->addChild('MonetaryValue', $packageParams->getCustomsValue());
+        }
+
+        $shipmentPart->addChild('PaymentInformation')
+            ->addChild('Prepaid')
+            ->addChild('BillShipper')
+            ->addChild('AccountNumber', $this->getConfigData('shipper_number'));
+
+        if ($this->getConfigFlag('negotiated_active')) {
+            $shipmentPart->addChild('RateInformation')
+                ->addChild('NegotiatedRatesIndicator');
+        }
+
+        if ($request->getPackagingType() != $this->getCode('container', 'ULE')
+            && $request->getShipperAddressCountryCode() == Mage_Usa_Model_Shipping_Carrier_Abstract::USA_COUNTRY_ID
+            && ($request->getRecipientAddressCountryCode() == 'CA' //Canada
+                || $request->getRecipientAddressCountryCode() == 'PR' //Puerto Rico
+        )) {
+            $invoiceLineTotalPart = $shipmentPart->addChild('InvoiceLineTotal');
+            $invoiceLineTotalPart->addChild('CurrencyCode', $request->getBaseCurrencyCode());
+            $invoiceLineTotalPart->addChild('MonetaryValue', ceil($packageParams->getCustomsValue()));
+        }
+
+        $labelPart = $xmlRequest->addChild('LabelSpecification');
+        $labelPart->addChild('LabelPrintMethod')
+                ->addChild('Code', 'GIF');
+        $labelPart->addChild('LabelImageFormat')
+                ->addChild('Code', 'GIF');
+
         $this->setXMLAccessRequest();
-        $xmlRequest = $this->_xmlAccessRequest;
+        $xmlRequest = $this->_xmlAccessRequest . $xmlRequest->asXml();
+        return $xmlRequest;
+    }
 
-        $xmlRequest .= <<< XMLRequest
+    protected function _sendShipmentAcceptRequest(SimpleXMLElement $shipmentConfirmResponse)
+    {
+        $xmlRequest = new SimpleXMLElement('<?xml version = "1.0" ?><ShipmentAcceptRequest/>');
+        $request = $xmlRequest->addChild('Request');
+        $request->addChild('RequestAction', 'ShipAccept');
+        $xmlRequest->addChild('ShipmentDigest', $shipmentConfirmResponse->ShipmentDigest);
 
-<?xml version="1.0"?>
-<ShipmentConfirmRequest>
-    <Request>
-        <TransactionReference>
-            <CustomerContext>{$params['order_id']}</CustomerContext>
-            <XpciVersion>1.0001</XpciVersion>
-        </TransactionReference>
-        <RequestAction>ShipConfirm</RequestAction>
-        <RequestOption>{$params['address_validation']}</RequestOption>
-    </Request>
-    <Shipment>
-        <Description><![CDATA[{$params['shipment_description']}]]></Description>
-        <Shipper>
-            <Name><![CDATA[{$params['shipper_name']}]]></Name>
-            <AttentionName><![CDATA[{$params['shipper_attention']}]]></AttentionName>
-            <ShipperNumber><![CDATA[{$params['shipper_number']}]]></ShipperNumber>
-            <PhoneNumber><![CDATA[{$params['shipper_phone']}]]></PhoneNumber>
-            <Address>
-                 <AddressLine1><![CDATA[{$params['shipper_addr1']}]]></AddressLine1>
-                 <AddressLine2><![CDATA[{$params['shipper_addr2']}]]></AddressLine2>
-                 <AddressLine3><![CDATA[{$params['shipper_addr3']}]]></AddressLine3>
-                 <City><![CDATA[{$params['shipper_city']}]]></City>
-                 <StateProvinceCode><![CDATA[{$params['shipper_state']}]]></StateProvinceCode>
-                 <PostalCode><![CDATA[{$params['shipper_postalcode']}]]></PostalCode>
-                 <CountryCode><![CDATA[{$params['shipper_country']}]]></CountryCode>
-            </Address>
-        </Shipper>
-        <ShipTo>
-            <CompanyName><![CDATA[{$params['shipto_name']}]]></CompanyName>
-XMLRequest;
-
-        //determine if residential
-        if (!empty($params['shipto_attention'])) {
-            $xmlRequest .= <<< XMLRequest
-
-            <AttentionName><![CDATA[{$params['shipto_attention']}]]></AttentionName>
-XMLRequest;
-        }
-
-        $xmlRequest .= <<< XMLRequest
-
-            <PhoneNumber><![CDATA[{$params['shipto_phone']}]]></PhoneNumber>
-            <Address>
-                 <AddressLine1><![CDATA[{$params['shipto_addr1']}]]></AddressLine1>
-                 <AddressLine2><![CDATA[{$params['shipto_addr2']}]]></AddressLine2>
-                 <AddressLine3><![CDATA[{$params['shipto_addr3']}]]></AddressLine3>
-                 <City><![CDATA[{$params['shipto_city']}]]></City>
-                 <StateProvinceCode><![CDATA[{$params['shipto_state']}]]></StateProvinceCode>
-                 <PostalCode><![CDATA[{$params['shipto_postalcode']}]]></PostalCode>
-                 <CountryCode><![CDATA[{$params['shipto_country']}]]></CountryCode>
-XMLRequest;
-
-        //determine if residential
-        if ($params['destination_type'] == 'RES') {
-            $xmlRequest .= <<< XMLRequest
-
-                 <ResidentialAddress />
-XMLRequest;
-        }
-
-        $xmlRequest .= <<< XMLRequest
-
-            </Address>
-        </ShipTo>
-XMLRequest;
-
-        //if negotiated rate should be retrieved
-        if ($params['negotiated_rate']) {
-            $xmlRequest .= <<< XMLRequest
-
-        <RateInformation>
-            <NegotiatedRatesIndicator/>
-        </RateInformation>
-XMLRequest;
-        }
-        $xmlRequest .= <<< XMLRequest
-
-        <Service>
-            <Code>{$params['service_code']}</Code>
-            <Description><![CDATA[{$params['service_description']}]]></Description>
-        </Service>
-XMLRequest;
-
-        //Determine if the invoice line total should be added
-        //This is the case if shipper is in US and destination is in CA or PR and package types are not UPS Letter
-        if ($params['invoice_total_pkg_type'] && ($params['shipper_country'] == 'US') && (($params['shipto_country'] == 'CA') ||
-          ($params['shipto_country'] == 'US' && $params['shipto_state'] == 'PR'))) {
-              $xmlRequest .= <<< XMLRequest
-
-        <InvoiceLineTotal>
-            <CurrencyCode>{$params['invoice_line_total_currency_code']}</CurrencyCode>
-            <MonetaryValue>{$params['invoice_line_total_value']}</MonetaryValue>
-        </InvoiceLineTotal>
-XMLRequest;
-        }
-
-        //Determine the payment method to be used
-        //third party account (different from shipper)
-        if ($this->getConfigFlag('third_party') && !empty($params['thirdparty_number'])) {
-            $xmlRequest .= <<< XMLRequest
-
-        <PaymentInformation>
-             <BillThirdParty>
-                  <BillThirdPartyShipper>
-                          <AccountNumber>{$params['thirdparty_number']}</AccountNumber>
-                          <ThirdParty>
-                              <Address>
-                                  <PostalCode>{$params['thirdparty_postalcode']}</PostalCode>
-                                  <CountryCode>{$params['thirdparty_country']}</CountryCode>
-                              </Address>
-                          </ThirdParty>
-                  </BillThirdPartyShipper>
-             </BillThirdParty>
-        </PaymentInformation>
-XMLRequest;
-        }
-
-        //pay with the shippers account
-        else  {
-            $xmlRequest .= <<< XMLRequest
-
-        <PaymentInformation>
-            <Prepaid>
-                 <BillShipper>
-                      <AccountNumber>{$params['shipper_number']}</AccountNumber>
-                 </BillShipper>
-            </Prepaid>
-        </PaymentInformation>
-XMLRequest;
-        }
-
-        //Add each package
-        foreach ($params['packages'] as $pkg) {
-            $xmlRequest .= <<< XMLRequest
-
-        <Package>
-            <Description><![CDATA[{$pkg['description']}]]></Description>
-            <PackagingType>
-                  <Code>{$pkg['package_code']}</Code>
-                  <Description><![CDATA[{$pkg['package_description']}]]></Description>
-            </PackagingType>
-            <Dimensions>
-                <UnitOfMeasure>
-                    <Code>{$pkg['dimension_unitcode']}</Code>
-                </UnitOfMeasure>
-                <Length>{$pkg['length']}</Length>
-                <Width>{$pkg['width']}</Width>
-                <Height>{$pkg['height']}</Height>
-            </Dimensions>
-            <PackageWeight>
-                  <UnitOfMeasurement>
-                      <Code>{$pkg['weight_unitcode']}</Code>
-                  </UnitOfMeasurement>
-                  <Weight>{$pkg['weight']}</Weight>
-            </PackageWeight>
-XMLRequest;
-
-        if (!empty($pkg['reference_code'])) {
-            $xmlRequest .= <<< XMLRequest
-            <ReferenceNumber>
-                  <Code>{$pkg['reference_code']}</Code>
-                  <Value>{$pkg['reference_value']}</Value>
-            </ReferenceNumber>
-XMLRequest;
-        }
-
-            //add any applicable Service Options
-            if (!empty($pkg['confirmation_type']) || !empty($pkg['insurance_type']) || !empty($pkg['verbal_name'])) {
-                $xmlRequest .= '
-            <PackageServiceOptions>';
-
-                //if confirmation requested
-                if (!empty($pkg['confirmation_type'])) {
-                    $xmlRequest .= '
-                  <DeliveryConfirmation>
-                       <DCISType>'.$pkg['confirmation_type'].'</DCISType>
-                       <DCISNumber>'.$pkg['confirmation_number'].'</DCISNumber>
-                  </DeliveryConfirmation>';
-                }
-
-                //if insurance requested
-                if (!empty($pkg['insurance_type'])) {
-                    $xmlRequest .= '
-                  <InsuredValue>
-                         <Type>
-                               <Code>'.$pkg['insurance_type'].'</Code>
-                         </Type>
-                       <CurrencyCode>'.$pkg['insurance_currencycode'].'</CurrencyCode>
-                       <MonetaryValue>'.$pkg['insurance_value'].'</MonetaryValue>
-                  </InsuredValue>';
-                }
-
-                //if verbal confirmation requested
-                if (!empty($pkg['verbal_name'])) {
-                    $xmlRequest .= '
-                  <VerbalConfirmation>
-                         <ContactInfo>
-                             <Name><![CDATA['.$pkg['verbal_name'].']]></Name>
-                             <PhoneNumber><![CDATA['.$pkg['verbal_phone'].']]></PhoneNumber>
-                       </ContactInfo>
-                  </VerbalConfirmation>';
-                }
-
-                //if release without signature is set
-                if (!empty($pkg['release_without_signature'])) {
-                    $xmlRequest .= '
-                  <ShipperReleaseIndicator/>';
-                }
-
-                //close service options
-                $xmlRequest .= '
-            </PackageServiceOptions>';
-            }
-            //close package
-            $xmlRequest .= '
-        </Package>';
-        }
-
-        //continue
-        $xmlRequest .= <<< XMLRequest
-
-    </Shipment>
-    <LabelSpecification>
-        <LabelPrintMethod>
-            <Code>{$params['label_printcode']}</Code>
-        </LabelPrintMethod>
-        <HTTPUserAgent><![CDATA[{$params['label_agent']}]]></HTTPUserAgent>
-        <LabelImageFormat>
-            <Code>{$params['label_imagecode']}</Code>
-        </LabelImageFormat>
-    </LabelSpecification>
-</ShipmentConfirmRequest>
-XMLRequest;
-
-        $debugData = array('request' => $xmlRequest);
+        $debugData = array('request' => $xmlRequest->asXML());
         try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
+            $url = $this->_defaultUrls['ShipAccept'];
+
+            $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
-            $xmlResponse = curl_exec ($ch);
-            $debugData['result'] = $xmlResponse;
-        } catch (Exception $e) {
-            $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
-            $xmlResponse = '';
-        }
-        $this->_debug($debugData);
-
-        return $this->_parseXmlShipmentConfirmResponse($xmlResponse, $params['order_id']);
-    }
-
-    /**
-     * Parses the XML from a ShipmentConfirmReponse document and returns the results
-     *
-     * @param string $xmlResponse The full ShipmentConfirmResponse XML document
-     * @param string $transaction_reference The reference id supplied in the initial ShipmentConfirmRequest.
-     * @return Mage_Shipping_Model_Shipment_Confirmation The ShipmentConfirmationResponse object
-     * @throws Unl_Ship_Exception
-     */
-    protected function _parseXmlShipmentConfirmResponse($xmlResponse, $transaction_reference) {
-        //create the result and set the raw response
-        $result = Mage::getModel('unl_ship/shipment_confirmation');
-
-        if (!$result->setRawResponse($xmlResponse)) {
-            return $result;
-        }
-
-        $success = (int)$result->getValueForXpath("//ShipmentConfirmResponse/Response/ResponseStatusCode/");
-        if ($success === 1) {
-            //get the transaction reference and make sure it matches what was sent
-            $tref = $result->getValueForXpath("//ShipmentConfirmResponse/Response/TransactionReference/CustomerContext/");
-            //if the transaction reference does not match
-            if ($tref != $transaction_reference) {
-                //set error and throw exception
-                $errormsg = "Transaction reference '".$tref."' received in response does not match transaction reference '".$transaction_reference.
-                    "' that was sent in request.";
-                $result->setError($errormsg);
-                return $result;
-            }
-
-            //get the currency units
-            $cunits = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentCharges/TotalCharges/CurrencyCode/");
-            $result->setCurrencyUnits($cunits);
-
-            //get the shipping charges
-            //transportation
-            $trans = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentCharges/TransportationCharges/MonetaryValue/");
-            $result->setTransportationShippingCharges($trans);
-            //service options
-            $servopt = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentCharges/ServiceOptionsCharges/MonetaryValue/");
-            $result->setServiceOptionsShippingCharges($servopt);
-            //total charges
-            $total = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentCharges/TotalCharges/MonetaryValue/");
-            $result->setTotalShippingCharges($total);
-
-            //get negotiated rate total
-            $negtotal = $result->getValueForXpath("//ShipmentConfirmResponse/NegotiatedRates/NetSummaryCharges/GrandTotal/MonetaryValue/");
-            $result->setNegotiatedTotalShippingCharges($negtotal);
-
-            //get billing weight
-            //units
-            $wunits = $result->getValueForXpath("//ShipmentConfirmResponse/BillingWeight/UnitOfMeasurement/Code/");
-            $result->setBillingWeightUnits($wunits);
-            //weight
-            $weight = $result->getValueForXpath("//ShipmentConfirmResponse/BillingWeight/Weight/");;
-            $result->setBillingWeight($weight);
-
-            //get the shipment id number
-            $shipmentid = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentIdentificationNumber/");
-            $result->setShipmentIdentificationNumber($shipmentid);
-
-            //get the shipment digest
-            $shipmentdigest = $result->getValueForXpath("//ShipmentConfirmResponse/ShipmentDigest/");
-            $result->setShipmentDigest($shipmentdigest);
-
-            //make sure all required params are present
-            if (empty($total) || empty($shipmentid) || empty($shipmentdigest)) {
-                $errmsg = "Required parameter(s) not found in response: ";
-                if (empty($total)) {
-                    $errmsg .= 'TotalCharges, ';
-                }
-                if (empty($shipmentid)) {
-                    $errmsg .= 'ShipmentIdentificationNumber, ';
-                }
-                if (empty($shipmentdigest)) {
-                    $errmsg .= 'ShipmentDigest';
-                }
-                $errmsg = rtrim($errmsg, ', ');
-                $result->setError($errmsg);
-                return $result;
-            }
-        }
-        else  {
-            //get the error description
-            $errorTitle = $result->getValueForXpath("//ShipmentConfirmResponse/Response/Error/ErrorDescription/");
-            //get the error code
-            $errorCode = $result->getValueForXpath("//ShipmentConfirmResponse/Response/Error/ErrorCode/");
-
-            //add an error object to the result
-            $result->setError($errorTitle, $errorCode);
-            return $result;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Creates and submits the ShipmentAcceptRequest to approve the request to create a shipment.
-     *
-     * @param string $url The URL to submit the XML to.
-     * @param Mage_Sales_Model_Order $order The shipping order
-     * @param string $shipmentdigest The UPS generated digest to identify the request
-     * @return unknown
-     */
-    protected function _sendXmlShipmentAcceptRequest($url, $order, $shipmentdigest) {
-        if (empty($url)) {
-            $url = rtrim($this->getConfig('shipping_xml_url'), '/').'/ShipAccept';
-        }
-
-        //start with the access request
-        $xmlRequest = $this->_xmlAccessRequest;
-        //add the rest of the XML
-        $xmlRequest .= <<< XMLRequest
-
-<?xml version="1.0"?>
-<ShipmentAcceptRequest>
-    <Request>
-         <TransactionReference>
-              <CustomerContext>{$order->getRealOrderId()}</CustomerContext>
-              <XpciVersion>1.0001</XpciVersion>
-         </TransactionReference>
-         <RequestAction>ShipAccept</RequestAction>
-    </Request>
-    <ShipmentDigest><![CDATA[{$shipmentdigest}]]></ShipmentDigest>
-</ShipmentAcceptRequest>
-XMLRequest;
-
-        $debugData = array('request' => $xmlRequest);
-        try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_xmlAccessRequest . $xmlRequest->asXML());
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
             $xmlResponse = curl_exec ($ch);
 
             $debugData['result'] = $xmlResponse;
+            $this->_setCachedQuotes($xmlRequest, $xmlResponse);
         } catch (Exception $e) {
             $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
             $xmlResponse = '';
         }
+
+        try {
+            $response = new SimpleXMLElement($xmlResponse);
+        } catch (Exception $e) {
+            $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
+        }
+
+        $result = new Varien_Object();
+        if (isset($response->Error)) {
+            $result->setErrors((string)$response->Error->ErrorDescription);
+        } else {
+            $shippingLabelContent = (string)$response->ShipmentResults->PackageResults->LabelImage->GraphicImage;
+            $trackingNumber       = (string)$response->ShipmentResults->PackageResults->TrackingNumber;
+
+            $result->setShippingLabelContent(base64_decode($shippingLabelContent));
+            $result->setTrackingNumber($trackingNumber);
+
+            $pkg = Mage::getModel('unl_ship/shipment_package')
+                ->setCarrierShipmentId((string)$response->ShipmentResults->ShipmentIdentificationNumber)
+                ->setWeightUnits((string)$response->ShipmentResults->BillingWeight->UnitOfMeasurement->Code)
+                ->setWeight((string)$response->ShipmentResults->BillingWeight->Weight)
+                ->setTrackingNumber($trackingNumber)
+                ->setCurrencyUnits((string)$response->ShipmentResults->ShipmentCharges->TotalCharges->CurrencyCode)
+                ->setShippingTotal((string)$response->ShipmentResults->ShipmentCharges->TotalCharges->MonetaryValue)
+                ->setTransportationCharge((string)$response->ShipmentResults->ShipmentCharges->TransportationCharges->MonetaryValue)
+                ->setServiceOptionCharge((string)$response->ShipmentResults->ShipmentCharges->ServiceOptionsCharges->MonetaryValue)
+                ->setLabelFormat((string)$response->ShipmentResults->PackageResults->LabelImage->LabelImageFormat->Code)
+                ->setHtmlLabelImage(base64_decode((string)$response->ShipmentResults->PackageResults->LabelImage->HTMLImage));
+
+            if (isset($response->ShipmentResults->NegotiatedRates)) {
+                $pkg->setNegotiatedTotal((string)$response->ShipmentResults->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue);
+            }
+
+            if (isset($response->ShipmentResults->ControlLogReceipt)) {
+                $pkg->setInsDoc(base64_decode((string)$response->ShipmentResults->ControlLogReceipt->GraphicImage));
+            }
+
+            if (isset($response->ShipmentResults->Form)) {
+                $pkg->setIntlDoc(base64_decode((string)$response->ShipmentResults->Form->Image->GraphicImage));
+            }
+
+            $result->setPackage($pkg);
+        }
+
         $this->_debug($debugData);
-
-        return $this->_parseXmlShipmentAcceptResponse($xmlResponse, $order->getRealOrderId());
-    }
-
-    /**
-     * Parses the XML from a ShipmentAcceptReponse document and returns the results
-     *
-     * @param string $xmlResponse The full ShipmentConfirmResponse XML document
-     * @param string $transaction_reference The reference id supplied in the initial ShipmentConfirmRequest.
-     * @return Unl_Ship_Model_Shipment_Confirmation The ShipmentAcceptResponse object
-     */
-    protected function _parseXmlShipmentAcceptResponse($xmlResponse, $transaction_reference) {
-        //create the result and set the raw response
-        $result = Mage::getModel('unl_ship/shipment_confirmation');
-        if (!$result->setRawResponse($xmlResponse)) {
-            return $result;
-        }
-
-        $success = (int)$result->getValueForXpath("//ShipmentAcceptResponse/Response/ResponseStatusCode/");
-        if ($success === 1) {
-            //get the transaction reference and make sure it matches what was sent
-            $tref = $result->getValueForXpath("//ShipmentAcceptResponse/Response/TransactionReference/CustomerContext/");
-            //if the transaction reference does not match
-            if ($tref != $transaction_reference) {
-                //set error and throw exception
-                $errormsg = "Transaction reference '".$tref."' received in response does not match transaction reference '".$transaction_reference.
-                    "' that was sent in request.";
-                $result->setError($errormsg);
-                return $result;
-            }
-
-            //get the currency units
-            $cunits = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentCharges/TotalCharges/CurrencyCode/");
-            $result->setCurrencyUnits($cunits);
-
-            //get the shipping charges
-            //transportation
-            $trans = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentCharges/TransportationCharges/MonetaryValue/");
-            $result->setTransportationShippingCharges($trans);
-            //service options
-            $servopt = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentCharges/ServiceOptionsCharges/MonetaryValue/");
-            $result->setServiceOptionsShippingCharges($servopt);
-            //total charges
-            $total = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentCharges/TotalCharges/MonetaryValue/");
-            $result->setTotalShippingCharges($total);
-
-            //get negotiated rate total
-            $negtotal = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/NegotiatedRates/NetSummaryCharges/GrandTotal/MonetaryValue/");
-            $result->setNegotiatedTotalShippingCharges($negtotal);
-
-            //get billing weight
-            //units
-            $wunits = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/BillingWeight/UnitOfMeasurement/Code/");
-            $result->setBillingWeightUnits($wunits);
-            //weight
-            $weight = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/BillingWeight/Weight/");
-            $result->setBillingWeight($weight);
-
-            //get the shipment id number
-            $shipmentid = $result->getValueForXpath("//ShipmentAcceptResponse/ShipmentResults/ShipmentIdentificationNumber/");
-            $result->setShipmentIdentificationNumber($shipmentid);
-
-            //high value report
-            $ins_doc = $result->getValueForXpath('//ShipmentAcceptResponse/ShipmentResults/ControlLogReceipt/GraphicImage');
-            $result->setInsDoc($ins_doc);
-
-            //internation forms
-            $intl_doc = $result->getValueForXpath('//ShipmentAcceptResponse/ShipmentResults/Form/Image/GraphicImage');
-            $result->setIntlDoc($intl_doc);
-
-            //get all packages
-            $xmlpackages = $result->getXpath("//ShipmentAcceptResponse/ShipmentResults/PackageResults");
-            $packages = array();
-            if ($xmlpackages) {
-                foreach ($xmlpackages as $package) {
-                    //get the package info
-                    //tracking number
-                    $tracking = (string)$package->TrackingNumber;
-                    //service option charges
-                    $service_option_currency = null;
-                    if (isset($package->ServiceOptionCharges->CurrencyCode)) {
-                        $service_option_currency = (string)$tracking->ServiceOptionCharges->CurrencyCode;
-                    }
-                    $service_option_charge = null;
-                    if (isset($package->ServiceOptionCharges->MonetaryValue)) {
-                        $service_option_charge = (string)$tracking->ServiceOptionCharges->MonetaryValue;
-                    }
-                    //label images
-                    $label_image = null;
-                    $label_image_format = null;
-                    $html_image = null;
-                    if (isset($package->LabelImage)) {
-                        $label_image_format = (string)$package->LabelImage->LabelImageFormat->Code;
-                        $label_image = (string)$package->LabelImage->GraphicImage;  //Base64 encoded
-                        if (isset($package->LabelImage->HTMLImage)) {
-                            $html_image = (string)$package->LabelImage->HTMLImage;  //Base64 encoded GIF
-                        }
-                    }
-
-                    //add data to packages array
-                    $pkg = array(
-                        'tracking_number' => $tracking,
-                        'service_option_currency' => $service_option_currency,
-                        'service_option_charge' => $service_option_charge,
-                        'label_image_format' => $label_image_format,
-                        'label_image' => $label_image,
-                        'html_image' => $html_image,
-                        'ins_doc' => $ins_doc,
-                        'intl_doc' => $intl_doc
-                    );
-                    $packages[] = $pkg;
-                }
-            }
-            $result->setPackages($packages);
-
-            //make sure all required params are present
-            if (empty($total) || empty($shipmentid) || empty($packages)) {
-                $errmsg = "Required parameter(s) not found in response: ";
-                if (empty($total)) {
-                    $errmsg .= 'TotalCharges, ';
-                }
-                if (empty($shipmentid)) {
-                    $errmsg .= 'ShipmentIdentificationNumber, ';
-                }
-                if (empty($packages)) {
-                    $errmsg .= 'PackageResults';
-                }
-                $errmsg = rtrim($errmsg, ', ');
-                $result->setError($errmsg);
-                return $result;
-            }
-        }
-        else  {
-            $errortitle = $result->getValueForXpath("//ShipmentAcceptResponse/Response/Error/ErrorDescription/");
-            $errorcode = $result->getValueForXpath("//ShipmentAcceptResponse/Response/Error/ErrorCode/");
-            $result->setError($errortitle, $errorcode);
-            return $result;
-        }
-
         return $result;
     }
 }
