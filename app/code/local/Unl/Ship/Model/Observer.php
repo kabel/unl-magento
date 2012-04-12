@@ -17,11 +17,27 @@ class Unl_Ship_Model_Observer
         if ($block instanceof $type) {
             if ($this->_isAllowedSalesAction('label_ship'))  {
                 $block->getMassactionBlock()->addItem('unl_ship_queue', array(
-                     'label' => Mage::helper('unl_ship')->__('Queue for Auto Ship'),
-                     'url'   => $block->getUrl('*/sales_order_package/queueOrders'),
+                     'label' => Mage::helper('unl_ship')->__('Queue for Shipment'),
+                     'url'   => $block->getUrl('*/sales_order_shipment/queueOrders'),
                 ));
             }
             return;
+        }
+    }
+
+    /**
+     * An event observer for the <code>sales_order_shipment_save_after</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onAfterSalesOrderShipmentSave($observer)
+    {
+        $shipment = $observer->getEvent()->getShipment();
+        if ($pkgs = $shipment->getUnlPackages()) {
+            foreach ($pkgs as $pkg) {
+                $pkg->setShipmentId($shipment->getId());
+                $pkg->save();
+            }
         }
     }
 
