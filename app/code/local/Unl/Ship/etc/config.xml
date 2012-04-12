@@ -59,6 +59,11 @@
         	<unl_ship>
                 <class>Unl_Ship_Block</class>
             </unl_ship>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_shipment_packaging>Unl_Ship_Block_Sales_Order_Shipment_Packaging</sales_order_shipment_packaging>
+                </rewrite>
+            </adminhtml>
         </blocks>
         
         <sales>
@@ -84,6 +89,15 @@
                     </ship_correct_admin>
                 </observers>
             </adminhtml_block_html_before>
+            
+            <sales_order_shipment_save_after>
+                <observers>
+                    <unl_ship>
+                        <class>unl_ship/observer</class>
+                        <method>onAfterSalesOrderShipmentSave</method>
+                    </unl_ship>
+                </observers>
+            </sales_order_shipment_save_after>
         </events>
     
         <layout>
@@ -116,17 +130,16 @@
     </adminhtml>
     
     <default>
+        <sales>
+            <shipment_label>
+                <use_unl>1</use_unl>
+            </shipment_label>
+        </sales>
         <carriers>
-            <fedex>
-                <password backend_model="adminhtml/system_config_backend_encrypted"></password>
-                <key backend_model="adminhtml/system_config_backend_encrypted"></key>
-                <meter backend_model="adminhtml/system_config_backend_encrypted"></meter>
-            </fedex>
-
             <ups>
+                <force_insurance_value>1000</force_insurance_value>
+                <ship_request_option>nonvalidate</ship_request_option>
                 <gateway_xml_url>https://onlinetools.ups.com/ups.app/xml/Rate</gateway_xml_url>
-                <third_party>0</third_party>
-                <third_party_country>US</third_party_country>
             </ups>
         </carriers>
     </default>
