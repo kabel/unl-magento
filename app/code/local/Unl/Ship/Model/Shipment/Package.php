@@ -8,33 +8,30 @@ class Unl_Ship_Model_Shipment_Package extends Mage_Core_Model_Abstract
 		$this->_init('unl_ship/shipment_package');
 	}
 
-	/**
-	 * Retrieves the label image as a PNG data URI
-	 *
-	 * @return string
-	 */
-	public function getLabelImagePngPath()
+	public function getPdfImage()
 	{
 	    $rawformat = strtolower($this->getLabelFormat());
 	    $imgstr = $this->getLabelImage();
 
-	    if ($rawformat == 'gif') {
-	        $pngimagepath = "data://image/gif;base64,{$imgstr}";
-		    $handler = imagecreatefromgif($pngimagepath);
-		    imageinterlace($handler, false);
-		    //rotate the image so it fits properly and can be oriented the same as Fedex (portrait)
-		    if($this->getCarrier() == 'ups')  {
-		        $handler = imagerotate($handler, 270, 0);
-		    }
-		    ob_start();
-		    imagepng($handler);
-		    imagedestroy($handler);
-		    $imgstr = base64_encode(ob_get_clean());
+	    if (!$imgstr) {
+	        return false;
 	    }
 
-	    //get the image in the proper format
-		$pngimagepath = "data://image/png;base64,{$imgstr}";
+	    if ($rawformat != 'png') {
+	        $image = imagecreatefromstring($imgstr);
+	        imageinterlace($image, false);
 
-		return $pngimagepath;
+	        if ($this->getCarrier() == 'ups') {
+	            $image = imagerotate($image, 270, 0);
+	        }
+
+	        ob_start();
+	        imagepng($image);
+	        $imgstr = ob_get_clean();
+	        imagedestroy($image);
+	        unset($image);
+	    }
+
+        return new Zend_Pdf_Resource_Image_Png('data://image/png;base64,' . base64_encode($imgstr));
 	}
 }
