@@ -217,7 +217,7 @@ document.observe("dom:loaded", function() {
             <div id="packages_content"></div>
         </div>
         <div class="buttons-set a-right">
-            <button type="button" class="scalable disabled SavePackagesBtn" disabled="disabled" onclick="packaging.confirmPackaging();" title="<?php echo Mage::helper('sales')->__('Products should be added to package(s)')?>">
+            <button type="button" class="scalable disabled SavePackagesBtn save" disabled="disabled" onclick="packaging.confirmPackaging();" title="<?php echo Mage::helper('sales')->__('Products should be added to package(s)')?>">
                 <span><?php echo Mage::helper('sales')->__('OK') ?></span>
             </button>
             <button type="button" class="scalable" onclick="packaging.cancelPackaging();">
