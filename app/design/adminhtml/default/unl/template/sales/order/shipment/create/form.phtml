@@ -95,10 +95,18 @@
                 packaging.sendCreateLabelRequest();
             });
             packaging.setLabelCreatedCallback(function(response){
+            <?php if (Mage::helper('unl_ship')->isUnlShipQueueEmpty()): ?>
                 setLocation("<?php echo $this->getUrl(
                     '*/sales_order/view',
                     array('order_id' => $this->getShipment()->getOrderId())
                 ); ?>");
+            <?php else: ?>
+                window.open("<?php echo $this->getUrl(
+                    '*/sales_order/view',
+                    array('order_id' => $this->getShipment()->getOrderId())
+                ); ?>");
+                setLocation("<?php echo $this->getUrl('*/*/nextInQueue'); ?>");
+            <?php endif; ?>
             });
             packaging.setCancelCallback(function() {
                 packaging.cleanPackages();

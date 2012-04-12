@@ -3,43 +3,11 @@
     <!-- 
     Ship Module
     -->
-    <adminhtml_sales_order_package_index>
-        <reference name="content">
-            <block type="unl_ship/shipment_create" name="shipment_create">
-                <block type="unl_ship/shipment_create_form" name="form" template="unl/ship/shipment/create/form.phtml">
-                    <!-- <block type="unl_ship/order_view_info" name="order_info" template="unl/ship/order/view/info.phtml">
-                        <block type="unl_ship/shipment_create_address" name="shipping_address" template="unl/ship/shipment/create/address.phtml" />
-                    </block> -->
-                    <block type="unl_ship/order_view_info" name="order_info" template="sales/order/view/info.phtml"></block>
-                    <block type="adminhtml/sales_order_payment" name="order_payment"></block>
-                    <block type="unl_ship/shipment_create_packages" name="packages" template="unl/ship/shipment/create/packages.phtml" />
-                    <block type="unl_ship/shipment_create_items" name="order_items" template="unl/ship/shipment/create/items.phtml">
-                        <action method="addItemRender"><type>default</type><block>adminhtml/sales_items_renderer_default</block><template>unl/ship/shipment/create/items/renderer/default.phtml</template></action>
-                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>unl/ship/shipment/create/items/column/bundle/name.phtml</template><type>bundle</type></action>
-                        <!-- 
-                        <action method="addColumnRender"><column>qty</column><block>adminhtml/sales_items_column_qty</block><template>sales/items/column/qty.phtml</template></action>
-                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
-                        -->
-                    </block>
-                </block>
+    <adminhtml_sales_order_shipment_new>
+        <reference name="sales_shipment_create">
+            <block type="unl_ship/update" name="unl_ship_update">
+                <action method="addQueueButtons" />
             </block>
         </reference>
-    </adminhtml_sales_order_package_index>
-    
-    <adminhtml_sales_order_view>
-        <reference name="sales_order_edit">
-            <block type="unl_ship/update">
-                <action method="updateParentButtons" />
-            </block>
-        </reference>
-    </adminhtml_sales_order_view>
-    
-    <!--
-    Shipment Packages Display
-    -->
-    <adminhtml_sales_order_shipment_view>
-       <reference name="form">
-           <block type="unl_ship/shipment_view_packages" name="shipment_packages" template="sales/order/shipment/view/packages.phtml" />
-       </reference>
-    </adminhtml_sales_order_shipment_view>
+    </adminhtml_sales_order_shipment_new>
 </layout>

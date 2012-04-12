@@ -39,32 +39,33 @@
                 <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
                     (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
                 <?php endif; ?>
-                
+
                 <?php if ($_order->getAwDeliverydateDate()): ?>
                 <br/>
                 <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>:
                 <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
-                <?php endif; ?>         
-                
+                <?php endif; ?>
+
                 <?php if ($_order->getAwDeliverydateNotice()): ?>
                 <br/>
                 <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong>:
                 <?php echo nl2br(Mage::helper('deliverydate')->htmlEscape($_order->getAwDeliverydateNotice()));?>
                 <?php endif; ?>
             </div>
-            <?php if ($this->canCreateShippingLabel()): ?>
             <div style="text-align: center; margin: 10px 0;">
-                <?php echo $this->getCreateLabelButton()?>
-                <?php if ($this->getShipment()->getShippingLabel()): ?>
-                    <?php echo $this->getPrintLabelButton() ?>
-                <?php endif ?>
-                <?php if ($this->getShipment()->getPackages()): ?>
+                <?php Mage::helper('unl_ship')->loadUnlPackages($this->getShipment()); ?>
+                <?php if ($this->canCreateShippingLabel()): ?>
+                    <?php if ($this->getShipment()->getShippingLabel()): ?>
+                        <?php echo $this->getPrintLabelButton() ?>
+                    <?php elseif (!$this->getShipment()->getAddlPackages()): ?>
+                        <?php echo $this->getCreateLabelButton()?>
+                    <?php endif ?>
+                <?php endif; ?>
+                <?php if ($this->getShipment()->getPackages() || $this->getShipment()->getAddlPackages()): ?>
                     <?php echo $this->getShowPackagesButton() ?>
                 <?php endif ?>
             </div>
-            <?php endif ?>
             <div><?php echo $this->getChildHtml('shipment_tracking') ?></div>
-            <div><?php echo $this->getChildHtml('shipment_packages') ?></div>
         </fieldset>
     <?php echo $this->getChildHtml('shipment_packaging') ?>
     <script type="text/javascript">

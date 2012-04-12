@@ -1,0 +1,288 @@
+<?php /* @var $this Unl_Ship_Block_Sales_Order_Shipment_Packaging */ ?>
+
+<div id="packed_window" style="display:none;" class="packed-window">
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head fieldset-legend"><?php echo Mage::helper('sales')->__('Packages') ?></h4>
+        </div>
+        <div class="packed-content">
+            <?php
+            $oldPackages = array_values($this->getAdditionalPackages());
+            $i = 0;
+            ?>
+            <?php foreach ($this->getPackages() as $packageId => $package): ?>
+                <div class="package">
+                    <?php $package = new Varien_Object($package) ?>
+                    <?php $params = new Varien_Object($package->getParams()) ?>
+                    <h4><?php echo Mage::helper('sales')->__('Package') . ' ' . $packageId ?></h4>
+                    <div class="package-info">
+                        <table class="package-options" cellspacing="0">
+                            <colgroup>
+                                <col width="120" />
+                                <col width="*" />
+                                <col width="60" />
+                                <col width="70" />
+                                <col width="70" />
+                                <col width="*" />
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th><?php echo Mage::helper('sales')->__('Type') ?></th>
+                                    <td><?php echo $this->getContainerTypeByCode($params->getContainer()) ?></td>
+                                    <th><?php echo Mage::helper('sales')->__('Length') ?></th>
+                                    <td>
+                                        <?php if ($params->getLength() != null): ?>
+                                            <?php echo $params->getLength() .' '. Mage::helper('usa')->getMeasureDimensionName($params->getDimensionUnits()) ?>
+                                        <?php else: ?>
+                                            --
+                                        <?php endif; ?>
+                                    </td>
+                                    <?php if ($params->getDeliveryConfirmation() != null): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Signature Confirmation') ?></th>
+                                        <td><?php echo $this->getDeliveryConfirmationTypeByCode($params->getDeliveryConfirmation()) ?></td>
+                                    <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                    <?php endif; ?>
+                                </tr>
+                                <tr>
+                                    <?php if ($this->displayCustomsValue()): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Customs Value') ?></th>
+                                        <td><?php echo $this->displayPrice($params->getCustomsValue()) ?></td>
+                                    <?php else: ?>
+                                        <th><?php echo Mage::helper('sales')->__('Total Weight') ?></th>
+                                        <td><?php echo $params->getWeight() .' '. Mage::helper('usa')->getMeasureWeightName($params->getWeightUnits()) ?></td>
+                                    <?php endif; ?>
+                                    <th><?php echo Mage::helper('sales')->__('Width') ?></th>
+                                    <td>
+                                        <?php if ($params->getWidth() != null): ?>
+                                            <?php echo $params->getWidth() .' '. Mage::helper('usa')->getMeasureDimensionName($params->getDimensionUnits()) ?>
+                                        <?php else: ?>
+                                            --
+                                        <?php endif; ?>
+                                    </td>
+                                    <?php if ($params->getContentType() != null): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Contents') ?></th>
+                                        <?php if ($params->getContentType() == 'OTHER'): ?>
+                                            <td><?php echo $params->getContentTypeOther() ?></td>
+                                        <?php else: ?>
+                                            <td><?php echo $this->getContentTypeByCode($params->getContentType()) ?></td>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                    <?php endif; ?>
+                                </tr>
+                                <tr>
+                                    <?php if ($this->displayCustomsValue()): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Total Weight') ?></th>
+                                        <td><?php echo $params->getWeight() .' '. Mage::helper('usa')->getMeasureWeightName($params->getWeightUnits()) ?></td>
+                                    <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                    <?php endif; ?>
+                                    <th><?php echo Mage::helper('sales')->__('Height') ?></th>
+                                    <td>
+                                        <?php if ($params->getHeight() != null): ?>
+                                            <?php echo $params->getHeight() .' '. Mage::helper('usa')->getMeasureDimensionName($params->getDimensionUnits()) ?>
+                                        <?php else: ?>
+                                            --
+                                        <?php endif; ?>
+                                    </td>
+                                    <th>&nbsp;</th>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <?php if ($params->getSize()): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Size') ?></th>
+                                        <td><?php echo ucfirst(strtolower($params->getSize())) ?></td>
+                                    <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                    <?php endif; ?>
+                                    <?php if ($params->getGirth()): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Girth') ?></th>
+                                        <td><?php echo $params->getGirth() .' '. Mage::helper('usa')->getMeasureDimensionName($params->getGirthDimensionUnits()) ?></td>
+                                    <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                    <?php endif; ?>
+                                    <th>&nbsp;</th>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <?php if (isset($oldPackages[$i])): ?>
+                                    <tr>
+                                        <th><?php echo Mage::helper('sales')->__('Number') ?></th>
+                                        <td><?php echo $oldPackages[$i]->getTrackingNumber() ?></td>
+                                        <th><?php echo Mage::helper('sales')->__('Image') ?></th>
+                                        <td>
+                                            <a href="<?php echo $this->getUrl('*/sales_order_package/label', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('View') ?></a>
+                                        </td>
+                                        <th><?php echo Mage::helper('sales')->__('Label') ?></th>
+                                        <td>
+                                            <a href="<?php echo $this->getUrl('*/sales_order_package/labelPdf', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                                        </td>
+                                    </tr>
+                                    <?php if ($oldPackages[$i]->getInsDoc() || $oldPackages[$i]->getIntlDoc()): ?>
+                                        <tr>
+                                            <?php if ($oldPackages[$i]->getInsDoc()): ?>
+                                            <th><?php echo Mage::helper('sales')->__('High Value Report') ?></th>
+                                            <td>
+                                                <a href="<?php echo $this->getUrl('*/sales_order_package/highvalue', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                                            </td>
+                                            <?php else: ?>
+                                            <th>&nbsp;</th>
+                                            <td>&nbsp;</td>
+                                            <?php endif; ?>
+                                            <?php if ($oldPackages[$i]->getIntlDoc()): ?>
+                                            <th></th>
+                                            <td>
+                                                <a href="<?php echo $this->getUrl('*/sales_order_package/customs', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                                            </td>
+                                            <?php else: ?>
+                                            <th>&nbsp;</th>
+                                            <td>&nbsp;</td>
+                                            <?php endif; ?>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php endif;?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <strong><?php echo Mage::helper('sales')->__('Items in the Package') ?></strong>
+                    <div class="grid">
+                        <div class="hor-scroll">
+                            <table cellspacing="0" class="data">
+                                <colgroup>
+                                    <col />
+                                    <col width="100" />
+                                    <?php if ($this->displayCustomsValue()): ?>
+                                        <col width="100" />
+                                    <?php endif; ?>
+                                    <col width="100" />
+                                    <col width="100" />
+                                </colgroup>
+                                <thead>
+                                <tr class="headings">
+                                    <th class=" no-link"><span class="nobr"><?php echo Mage::helper('sales')->__('Product') ?></span></th>
+                                    <th class=" no-link"><span class="nobr"><?php echo Mage::helper('sales')->__('Weight') ?></span></th>
+                                    <?php if ($this->displayCustomsValue()): ?>
+                                        <th class=" no-link"><span class="nobr"><?php echo Mage::helper('sales')->__('Customs Value') ?></span></th>
+                                    <?php endif; ?>
+                                    <th class=" no-link"><span class="nobr"><?php echo Mage::helper('sales')->__('Qty Ordered') ?></span></th>
+                                    <th class=" no-link last"><span class="nobr"><?php echo Mage::helper('sales')->__('Qty') ?></span></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <?php foreach($package->getItems() as $itemId => $item) : ?>
+                                    <?php $item = new Varien_Object($item) ?>
+                                    <tr>
+                                        <td class="name">
+                                            <?php echo $item->getName(); ?>
+                                        </td>
+                                        <td class="a-center weight ">
+                                            <?php echo $item->getWeight(); ?>
+                                        </td>
+                                        <?php if ($this->displayCustomsValue()): ?>
+                                            <td class="a-right"><?php echo $this->displayPrice($item->getCustomsValue()) ?></td>
+                                        <?php endif; ?>
+                                        <td class="a-right">
+                                            <?php echo $this->getQtyOrderedItem($item->getOrderItemId()); ?>
+                                        </td>
+                                        <td class="a-right last">
+                                            <?php echo $item->getQty()*1; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <?php $i++; ?>
+            <?php endforeach; ?>
+            <?php for (; $i < count($oldPackages); $i++): ?>
+                <div class="package">
+                    <h4><?php echo Mage::helper('sales')->__('Package') . ' ' . ($i + 1) ?></h4>
+                    <div class="package-info">
+                        <table class="package-options" cellspacing="0">
+                            <colgroup>
+                                <col width="120" />
+                                <col width="*" />
+                                <col width="60" />
+                                <col width="70" />
+                                <col width="70" />
+                                <col width="*" />
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th><?php echo Mage::helper('sales')->__('Number') ?></th>
+                                    <td><?php echo $oldPackages[$i]->getTrackingNumber() ?></td>
+                                    <th><?php echo Mage::helper('sales')->__('Image') ?></th>
+                                    <td>
+                                        <a href="<?php echo $this->getUrl('*/sales_order_package/label', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('View') ?></a>
+                                    </td>
+                                    <th><?php echo Mage::helper('sales')->__('Label') ?></th>
+                                    <td>
+                                        <a href="<?php echo $this->getUrl('*/sales_order_package/labelPdf', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                                    </td>
+                                </tr>
+                                <?php if ($oldPackages[$i]->getInsDoc() || $oldPackages[$i]->getIntlDoc()): ?>
+                                    <tr>
+                                        <?php if ($oldPackages[$i]->getInsDoc()): ?>
+                                        <th><?php echo Mage::helper('sales')->__('High Value Report') ?></th>
+                                        <td>
+                                            <a href="<?php echo $this->getUrl('*/sales_order_package/highvalue', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                                        </td>
+                                        <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                        <?php endif; ?>
+                                        <?php if ($oldPackages[$i]->getIntlDoc()): ?>
+                                        <th></th>
+                                        <td>
+                                            <a href="<?php echo $this->getUrl('*/sales_order_package/customs', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
+                                        </td>
+                                        <?php else: ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                        <?php endif; ?>
+                                        <th>&nbsp;</th>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endfor; ?>
+        </div>
+        <div class="buttons-set a-right">
+            <?php if ($this->getPackages()): ?>
+            <?php echo $this->getPrintButton() ?>
+            <?php endif; ?>
+            <button type="button" class="scalable SavePackagesBtn" onclick="hidePackedWindow();">
+                <span><?php echo Mage::helper('sales')->__('OK') ?></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+    function showPackedWindow() {
+        var window = $('packed_window');
+        window.show().setStyle({
+            'marginLeft': -window.getDimensions().width/2 + 'px'
+        });
+        $('popup-window-mask').setStyle({
+            height: $('html-body').getHeight() + 'px'
+        }).show();
+    }
+    function hidePackedWindow() {
+        $('packed_window').hide();
+        $('popup-window-mask').hide();
+    }
+//]]>
+</script>
