@@ -59,14 +59,14 @@
     -->
     <adminhtml_catalog_product_new>
         <reference name="product_tabs">
-            <block type="unl_customertag/update">
+            <block type="unl_customertag/update" name="unl_customertag_update">
                 <action method="addParentProductTagsTab" />
             </block>
         </reference>
     </adminhtml_catalog_product_new>
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
-            <block type="unl_customertag/update">
+            <block type="unl_customertag/update" name="unl_customertag_update">
                 <action method="addParentProductTagsTab" />
             </block>
         </reference>
@@ -74,7 +74,7 @@
     
     <adminhtml_customer_edit>
         <reference name="customer_edit_tabs">
-            <block type="unl_customertag/update">
+            <block type="unl_customertag/update" name="unl_customertag_update">
                 <action method="addParentTagsTab" />
             </block>
         </reference>

@@ -41,7 +41,7 @@ Invoice Button (add-on)
 -->
     <adminhtml_sales_order_invoice_view>
         <reference name="sales_invoice_view">
-            <block type="unl_core/adminhtml_update">
+            <block type="unl_core/adminhtml_update" name="unl_core_update">
                 <action method="addParentButtons" />
             </block>
         </reference>

@@ -27,7 +27,7 @@
     -->
     <adminhtml_customer_edit>
         <reference name="customer_edit_tabs">
-            <block type="unl_comm/update">
+            <block type="unl_comm/update" name="unl_comm_update">
                 <action method="addParentCommTab" />
             </block>
         </reference>
