@@ -33,6 +33,19 @@ class Unl_Ship_Helper_Data extends Mage_Core_Helper_Abstract
         return $id;
     }
 
+    public function loadUnlPackages($shipment)
+    {
+        if (is_null($shipment->getAddlPackages())) {
+            /* @var $collection Unl_Ship_Model_Resource_Shipment_Package_Collection */
+            $collection = Mage::getModel('unl_ship/shipment_package')->getResourceCollection();
+            $collection->selectNoData();
+            $collection->addFieldToFilter('shipment_id', $shipment->getId());
+            $shipment->setAddlPackages($collection->getItems());
+        }
+
+        return $this;
+    }
+
     /**
      *
      * @param Mage_Shipping_Model_Rate_Request $request
