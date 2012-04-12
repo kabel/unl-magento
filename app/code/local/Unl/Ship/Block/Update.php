@@ -2,23 +2,21 @@
 
 class Unl_Ship_Block_Update extends Mage_Adminhtml_Block_Abstract
 {
-    public function updateParentButtons()
+    public function addQueueButtons()
     {
-        /* @var $block Mage_Adminhtml_Block_Sales_Order_View */
+        /* @var $block Mage_Adminhtml_Block_Sales_Order_Shipment_Create */
         $block = $this->getParentBlock();
-        $order = $block->getOrder();
 
-        if ($this->_isAllowedSalesAction('label_ship') && $order->canShip()
-            && Mage::helper('unl_ship')->isOrderSupportAutoShip($order)
-        ) {
-            $block->addButton('auto_ship', array(
-                'label'     => Mage::helper('unl_ship')->__('Auto Ship'),
-                'onclick'   => "setLocation('{$this->getUrl('*/sales_order_package/')}')",
-                'class'     => 'go',
+        if (!Mage::helper('unl_ship')->isUnlShipQueueEmpty()) {
+            $block->addButton('queue_next', array(
+                'label'     => Mage::helper('adminhtml')->__('Next in Queue'),
+                'onclick'   => "setLocation('{$this->getUrl('*/*/nextInQueue')}')",
+            ));
+            $block->addButton('queue_clear', array(
+                'label'     => Mage::helper('adminhtml')->__('Clear Queue'),
+                'onclick'   => "setLocation('{$this->getUrl('*/*/clearQueue')}')",
             ));
         }
-
-        return $this;
     }
 
     protected function _isAllowedSalesAction($action) {
