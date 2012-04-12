@@ -166,4 +166,55 @@ $installer->getConnection()->addForeignKey(
     'entity_id'
 );
 
+/**
+ * Remove old config
+ */
+$paths = array(
+    'carriers/ups/third_party',
+    'carriers/ups/shipping_xml_url',
+    'carriers/ups/default_length',
+    'carriers/ups/default_width',
+    'carriers/ups/default_height',
+    'carriers/ups/dimension_units',
+    'carriers/ups/shipper_attention',
+    'shipping/origin/address3',
+    'shipping/origin/phone',
+    'shipping/origin/attention',
+    'carriers/fedex/third_party',
+    'carriers/fedex/gateway_url',
+    'carriers/fedex/unit_of_measure',
+    'carriers/fedex/default_length',
+    'carriers/fedex/default_width',
+    'carriers/fedex/default_height',
+    'carriers/fedex/dimension_units',
+);
+$installer->getConnection()->delete($installer->getTable('core/config_data'), array('path IN (?)' => $paths));
+
+/**
+ * Rename new config
+ */
+$paths = array(
+    'carrier/fedex/meter' => 'carrier/fedex/meter_number',
+    'shipping/origin/address1' => 'shipping/origin/street_line1',
+    'shipping/origin/address2' => 'shipping/origin/street_line2',
+    'carriers/fedex/test_mode' => 'carriers/fedex/sandbox_mode',
+);
+foreach ($paths as $path => $newPath) {
+    $installer->getConnection()->update(
+        $installer->getTable('core/config_data'),
+        array('path' => $newPath),
+        array('path = ?' => $path)
+    );
+}
+
+$installer->getConnection()->update(
+    $installer->getTable('core/config_data'),
+    array(
+        'value' => 'UNL Marketplace'
+    ),
+    array(
+        'path = ?' => 'general/store_information/name'
+    )
+);
+
 $installer->endSetup();
