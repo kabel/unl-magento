@@ -2,174 +2,109 @@
 
 class Unl_Ship_Sales_Order_PackageController extends Mage_Adminhtml_Controller_Action
 {
-    protected function _initOrder()
+    /**
+     * Returns a UNL Package instance or collection from the id request param
+     *
+     * @param boolean $asCollection
+     * @return boolean|Unl_Ship_Model_Shipment_Package|Unl_Ship_Model_Resource_Shipment_Package_Collection
+     */
+    protected function _initPkg($asCollection = false)
     {
-        $this->_title($this->__('Sales'))->_title($this->__('Shipments'));
-        $id = $this->getRequest()->getParam('order_id');
-        $order = Mage::getModel('sales/order')->load($id);
+        $id = $this->getRequest()->getParam('id');
 
-        if (!$order->getId()) {
+        if (empty($id)) {
             return false;
         }
-        Mage::register('sales_order', $order);
-        Mage::register('current_order', $order);
 
-        $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
-        Mage::register('current_shipment', $shipment);
+        if ($asCollection) {
+            $pkg = Mage::getModel('unl_ship/shipment_package')->getCollection();
+            $pkg->addFieldToFilter('package_id', array('in' => explode('|', $id)));
 
-        return $order;
-    }
-
-    public function indexAction()
-    {
-        if ($order = $this->_initOrder()) {
-            if (!$order->canShip()) {
-                if (!Mage::helper('unl_ship')->isUnlShipQueueEmpty()) {
-                    $this->_getSession()->addError($this->__('Could not do shipment for order #%s. Skipped.', $order->getRealOrderId()));
-                    $this->_forward('nextInQueue');
-                } else {
-                    $this->_getSession()->addError($this->__('Cannot do shipment for this order.'));
-                    return $this->_redirect('adminhtml/sales_order/view', array('order_id'=>$this->getRequest()->getParam('order_id')));
-                }
-            }
-
-            $this->_title($this->__('Auto Ship'));
-
-            if (!Mage::helper('unl_ship')->isOrderSupportAutoShip($order)) {
-                $this->_getSession()->addError(Mage::helper('unl_ship')->__('This order cannot be processed because the shipping carrier does not support online label generation.'));
-            }
-
-            $this->loadLayout();
-            $this->_setActiveMenu('sales/order')
-                ->renderLayout();
-        } else {
-            $this->_redirect('adminhtml/sales_order/');
-        }
-    }
-
-    public function createAction()
-    {
-        if (($order = $this->_initOrder()) && $this->getRequest()->getParam('isAjax')) {
-            $resp = Mage::getSingleton('unl_ship/shipment_package_create')->createShipment($order, $this->getRequest()->getPost());
-            $this->getResponse()->setBody($resp);
-        } else {
-            $this->_forward('noRoute');
-        }
-    }
-
-    public function queueOrdersAction()
-    {
-        $orderIds = $this->getRequest()->getPost('order_ids');
-	    if (!empty($orderIds)) {
-	        $helper = Mage::helper('unl_ship');
-	        $queue = $helper->getUnlShipQueue();
-	        $count = 0;
-	        if (!$queue) {
-	            $queue = array();
-	        }
-
-	        $collection = Mage::getModel('sales/order')->getResourceCollection();
-	        $collection->addFieldToFilter('entity_id', array('in' => $orderIds));
-            foreach ($collection as $order) {
-                if ($order->canShip()) {
-                    $count++;
-                    $queue[] = $order->getId();
-                }
-            }
-            if ($count) {
-                $this->_getSession()->addSuccess($this->__('%s order(s) have been queued for auto ship.', $count));
-                $orderId = array_shift($queue);
-                $helper->setUnlShipQueue($queue);
-                return $this->_redirect('*/*/', array(
-                    'order_id' => $orderId
-                ));
-            } else {
-                $this->_getSession()->addError($this->__('There are no shippable orders in the selected orders.'));
-                return $this->_redirect('adminhtml/sales_order/');
-            }
-
+            return $pkg;
         }
 
-        $this->_redirect('adminhtml/sales_order/');
-    }
+        $pkg = Mage::getModel('unl_ship/shipment_package')->load($id);
 
-    public function nextInQueueAction()
-    {
-        $helper = Mage::helper('unl_ship');
-        if (!$helper->isUnlShipQueueEmpty()) {
-            $orderId = $helper->dequeueUnlShipQueue();
-            $this->_redirect('*/*/', array(
-                'order_id' => $orderId
-            ));
-        } else {
-            $this->_getSession()->addError($this->__('The auto ship queue is empty.'));
-            $this->_redirect('adminhtml/sales_order/');
+        if (!$pkg->getId()) {
+            return false;
         }
+
+        return $pkg;
     }
 
-    public function clearQueueAction()
+    protected function _initPkgs()
     {
-        Mage::helper('unl_ship')->getUnlShipQueue(true);
-	    $this->_getSession()->addSuccess($this->__('Successfully cleared the auto ship queue.'));
-	    $this->_redirect('adminhtml/sales_order/');
+        $id = $this->getRequest()->getParam('shipment_id');
+
+        if (empty($id)) {
+            return $this->_initPkg(true);
+        }
+
+        $pkgs = Mage::getModel('unl_ship/shipment_package')->getCollection();
+        $pkgs->addFieldToFilter('shipment_id', $id);
+
+        return $pkgs;
+    }
+
+    protected function _initShipment()
+    {
+        $shipment = false;
+        $shipmentId = $this->getRequest()->getParam('shipment_id');
+
+        if ($shipmentId) {
+            $shipment = Mage::getModel('sales/order_shipment')->load($shipmentId);
+        }
+
+        return $shipment;
     }
 
     public function highValueAction()
     {
-        $pkgid = $this->getRequest()->getParam('id');
-        if(empty($pkgid))  {
-            $this->_forward('noRoute');
+        $pkg = $this->_initPkg();
+        if (!$pkg)  {
+            $this->_redirect('*/sales_shipment/');
         }
 
-        $pkg = Mage::getModel('unl_ship/shipment_package')->load($pkgid);
         $img = $pkg->getInsDoc();
-
         if (empty($img)) {
-            $this->_forward('noRoute');
+            $this->_redirect('*/sales_shipment/');
         }
 
-        $this->getResponse()->setBody(base64_decode($img));
+        $this->_prepareInlineResponse('highValueReport' . $pkg->getTrackingNumber() . '.html', $img, 'text/html');
     }
 
     public function customsAction()
     {
-        $pkgid = $this->getRequest()->getParam('id');
-        if(empty($pkgid))  {
-            $this->_forward('noRoute');
+    $pkg = $this->_initPkg();
+        if (!$pkg)  {
+            $this->_redirect('*/sales_shipment/');
         }
 
-        $pkg = Mage::getModel('unl_ship/shipment_package')->load($pkgid);
         $img = $pkg->getIntlDoc();
-
         if (empty($img)) {
-            $this->_forward('noRoute');
+            $this->_redirect('*/sales_shipment/');
         }
 
-        $this->getResponse()->setHeader('Content-type', 'application/pdf');
-        $this->getResponse()->setBody(base64_decode($img));
+        $this->_prepareInlineResponse('customsForms' . $pkg->getTrackingNumber() . '.pdf', $img, 'application/pdf');
     }
 
     public function labelAction()
     {
-        $pkgid = $this->getRequest()->getParam('id');
-		if(empty($pkgid))  {
-			echo "Invalid package id";
-			exit();
-		}
+        $pkg = $this->_initPkg();
+        if (!$pkg)  {
+            $this->_redirect('*/sales_shipment/');
+        }
 
-		//get image details
-		$pkg = Mage::getModel('unl_ship/shipment_package')->load($pkgid);
+
 		$imgtype = strtolower($pkg->getLabelFormat());
 		$img = $pkg->getLabelImage();
 
-		if(empty($imgtype) || empty($img))  {
-			echo "Invalid package id";
-			exit();
+		if (empty($imgtype) || empty($img))  {
+			$this->_redirect('*/sales_shipment/');
 		}
 
 		//output image
-		$this->getResponse()->setHeader('Content-type', 'image/'.$imgtype);
-		$this->getResponse()->setBody(base64_decode($img));
+		$this->_prepareInlineResponse('label' . $pkg->getTrackingNumber() . '.' . $imgtype, $img, 'image/' . $imgtype);
     }
 
     public function labelPdfAction()
@@ -178,44 +113,75 @@ class Unl_Ship_Sales_Order_PackageController extends Mage_Adminhtml_Controller_A
 		$label4x6landscape = '432:288:';
 		$label4x6portrait = '288:432:';
 
-		$packageids = explode('|', $this->getRequest()->getParam('id'));
-		if(empty($packageids))  {
-			echo "Invalid package id.";
-			exit();
+		$pkgs = $this->_initPkgs();
+		if (!$pkgs)  {
+		    $this->_redirect('*/sales_shipment/');
 		}
 
 		//create a PDF of the label images to be printed
 		$pdf = new Zend_Pdf();
 
 		//add new page for each package id
-		foreach ($packageids as $pkgid)  {
-			//retrieve the package object
-			$pkg = Mage::getModel('unl_ship/shipment_package')->load($pkgid);
-			$imgformat = strtolower($pkg->getLabelFormat());
-			$imgstr = $pkg->getLabelImage();
+		while ($pkg = $pkgs->fetchItem())  {
+			$pdfimg = $pkg->getPdfImage();
 
 			//if id is invalid return error
-			if(empty($imgformat) || empty($imgstr))  {
-				echo "Invalid package id.";
-				exit();
+			if (empty($pdfimg))  {
+				continue;
 			}
 
+			$width = $pdfimg->getPixelWidth();
+			$height = $pdfimg->getPixelHeight();
+
+			// scale the image to proper width
+			$ratio = 288 / $width;
+			$width = $width * $ratio;
+			$height = $height * $ratio;
+			$offset = 432 - $height;
 
 			//add a new page with the label image
 			$layout = $label4x6portrait;
 			$pdfpage = $pdf->newPage($layout);
 
 			//get the image into a PdfImage object
-			$pngimagepath = $pkg->getLabelImagePngPath();
-			$pdfimg = new Zend_Pdf_Resource_Image_Png($pngimagepath);
-			$pdfpage->drawImage($pdfimg, 0, 0, $pdfpage->getWidth(), $pdfpage->getHeight());
+			$pdfpage->drawImage($pdfimg, 0, $offset, $width, $height + $offset);
 
 			$pdf->pages[] = $pdfpage;
+
+			$fileName = 'label' . $pkg->getTrackingNumber() . '.pdf';
+		}
+
+		if ($shipment = $this->_initShipment()) {
+		    $fileName = 'ShippingLabel(' . $shipment->getIncrementId() . ').pdf';
+		} else {
+    		$pageCount = count($pdf->pages);
+    		if ($pageCount > 1) {
+    		    $fileName = 'ShippingLabels.pdf';
+    		} elseif ($pageCount < 1) {
+    		    $this->_redirect('*/sales_shipment/');
+    		}
 		}
 
 		//output the PDF
-		$this->getResponse()->setHeader('Content-type', 'application/pdf');
-		$this->getResponse()->setBody($pdf->render());
+		$this->_prepareInlineResponse($fileName, $pdf->render(), 'application/pdf');
+    }
+
+    protected function _prepareInlineResponse(
+        $fileName,
+        $content,
+        $contentType = 'application/octet-stream',
+        $contentLength = null)
+    {
+        $this->getResponse()
+            ->setHeader('Pragma', 'public', true)
+            ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)
+            ->setHeader('Content-type', $contentType, true)
+            ->setHeader('Content-Length', is_null($contentLength) ? strlen($content) : $contentLength)
+            ->setHeader('Content-Disposition', 'inline; filename="'.$fileName.'"')
+            ->setHeader('Last-Modified', date('r'))
+            ->setBody($content);
+
+        return $this;
     }
 
     protected function _isAllowed()
