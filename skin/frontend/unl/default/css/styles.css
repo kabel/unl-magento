@@ -729,12 +729,24 @@ tr.summary-details-excluded { font-style:italic; }
 .block-wishlist .actions a { float:none; }
 
 /* Block: Related */
-.block-related .block-subtitle { font-size:11px; font-weight:bold; border:0; padding:0; margin:0 0 8px; text-transform:none; }
+.block-related .block-title { border: 0; margin: -1px -1px 0;
+  color: #050a03;
+  background: #6fbf4d;
+  background: -moz-linear-gradient(top, #6fbf4d 80%, #7e9b71 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(80%, #6fbf4d), color-stop(100%, #7e9b71));
+  background: -webkit-linear-gradient(top, #6fbf4d 80%, #7e9b71 100%);
+  background: -o-linear-gradient(top, #6fbf4d 80%, #7e9b71 100%);
+  background: -ms-linear-gradient(top, #6fbf4d 80%, #7e9b71 100%);
+  background: linear-gradient(top, #6fbf4d 80%, #7e9b71 100%);
+  text-shadow: 1px 1px 1px #acda98;
+}
+.block-related .block-subtitle { font-size:0.8em; font-weight:bold; border:0; padding:0; margin:0 0 8px; text-transform:none; }
 .block-related input.checkbox { float:right; }
 .block-related .product { margin-right:20px; }
+.block-related .product .link-wishlist { font-size: 0.8em; }
 
 /* Block: Compare Products */
-.block-compare .block-title {
+.block-compare .block-title { border: 0; margin: -1px -1px 0;
   background: #F2EDDE;
   background: -moz-linear-gradient(top, #F2EDDE 80%, #DEDCC9 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(80%, #F2EDDE), color-stop(100%, #DEDCC9));
@@ -836,8 +848,8 @@ tr.summary-details-excluded { font-style:italic; }
 .products-grid li.item.first,
 .products-grid li.item.last { width: 179px; }
 .products-grid .product-image { display:block; height:177px; border:1px solid #ddd; border-width:1px 1px 1px 0; margin:0 0 10px; }
-.products-grid .product-image img { width: auto; height: 100%; }
-.products-grid li.first .product-image { border-left-width:1px; }
+.products-grid .product-image img { width: auto; height: 100%; displa1y:block; }
+.products-grid .first .product-image { border-left-width:1px; }
 .products-grid.first .product-image { border-top:0; }
 #maincontent .products-grid .product-name { font-size:14px; margin:0 6px 6px 0; }
 .products-grid .product-name a { color:#444; text-decoration:underline; }
@@ -1187,6 +1199,16 @@ f/********** Product Prices > */
 /* Block: Upsell */
 .product-view .box-up-sell h2 { margin:0 0 8px; }
 #product_tabs_upsell_products_contents h2 { display:block; }
+.box-up-sell .products-grid { width:100%; }
+.box-up-sell .products-grid td { width:20%; }
+.box-up-sell .products-grid .product-image {
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-box-sizing:border-box;
+	width: 100%;
+	height: auto;
+}
+.box-up-sell .products-grid .product-image img { width:100%; height:auto; }
 
 /* Block: Tags */
 .product-view .box-tags { margin:0; }
