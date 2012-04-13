@@ -39,6 +39,11 @@ $installer->getConnection()->dropIndex(
 );
 
 /**
+ * Truncate boundary data for fast modification
+ */
+$installer->getConnection()->truncateTable($installer->getTable('unl_core/tax_boundary'));
+
+/**
  * Change columns
  */
 $tables = array(
