@@ -2,7 +2,20 @@ Index: .htaccess
 ===================================================================
 --- .htaccess	(revision 142292)
 +++ .htaccess	(working copy)
-@@ -34,6 +34,10 @@
+@@ -26,6 +26,12 @@
+ 
+     DirectoryIndex index.php
+ 
++############################################
++## UNL WDN Font types
++    AddType font/x-woff .woff
++    AddType image/svg+xml .svg
++    AddType application/vnd.ms-fontobject .eot
++
+ <IfModule mod_php5.c>
+ 
+ ############################################
+@@ -34,6 +40,10 @@
  #    php_value memory_limit 64M
      php_value memory_limit 256M
      php_value max_execution_time 18000
@@ -13,7 +26,7 @@ Index: .htaccess
  
  ############################################
  ## disable magic quotes for php request vars
-@@ -80,22 +84,22 @@
+@@ -80,22 +90,22 @@
      # Insert filter on all content
      ###SetOutputFilter DEFLATE
      # Insert filter on selected content types only
@@ -42,7 +55,7 @@ Index: .htaccess
  
  </IfModule>
  
-@@ -132,6 +136,7 @@
+@@ -132,6 +142,7 @@
  ## always send 404 on missing files in these folders
  
      RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
@@ -50,7 +63,7 @@ Index: .htaccess
  
  ############################################
  ## never rewrite for existing files, directories and links
-@@ -161,6 +166,7 @@
+@@ -161,6 +172,7 @@
  ## Add default Expires header
  ## http://developer.yahoo.com/performance/rules.html#expires
  
@@ -192,6 +205,25 @@ Index: js/mage/adminhtml/wysiwyg/tiny_mce/setup.js
  
          return settings;
      },
+Index: lib/Varien/Db/Adapter/Pdo/Mysql.php
+===================================================================
+--- lib/Varien/Db/Adapter/Pdo/Mysql.php	(revision 142292)
++++ lib/Varien/Db/Adapter/Pdo/Mysql.php	(working copy)
+@@ -2753,9 +2753,13 @@
+         switch ($column['DATA_TYPE']) {
+             case 'smallint':
+             case 'int':
+-            case 'bigint':
+                 $value = (int)$value;
+                 break;
++            case 'bigint':
++                if (!is_integer($value)) {
++                    $value = sprintf('%.0f', (float)$value);
++                }
++                break;
+ 
+             case 'decimal':
+                 $precision  = 10;
 Index: lib/Varien/Http/Adapter/Curl.php
 ===================================================================
 --- lib/Varien/Http/Adapter/Curl.php	(revision 142292)
