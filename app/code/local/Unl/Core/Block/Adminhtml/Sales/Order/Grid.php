@@ -40,7 +40,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
 
             if ($advfilter->getData('shipping_method')) {
                 $collection->addFieldToFilter('o.shipping_description',
-                    array('like' => $helper->addLikeEscape($advfilter->getData('shipping_method')))
+                    array('like' => $helper->addLikeEscape($advfilter->getData('shipping_method'), array('position' => 'any')))
                 );
             }
 
@@ -58,7 +58,7 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
 
                 if ($advfilter->getData('item_sku')) {
                     $select->where($adapter->prepareSqlCondition('sku',
-                        array('like' => $helper->addLikeEscape($advfilter->getData('item_sku')))
+                        array('like' => $helper->addLikeEscape($advfilter->getData('item_sku'), array('position' => 'any')))
                     ));
                 }
 
