@@ -2,6 +2,8 @@
 
 class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_Abstract
 {
+    protected $_pdoError = 'PDOStatement::execute(): LOAD DATA LOCAL INFILE forbidden';
+
     protected $_taxRateColumns = array(
         'code',
         'tax_country_id',
@@ -86,10 +88,22 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
         return $this->_loadLocalFile($filePath, $this->getTable('tax/tax_calculation_rate'), $this->getTaxRateColumns());
     }
 
+    public function supportsLoadFile()
+    {
+        $connConfig = Mage::getConfig()->getResourceConnectionConfig('core_setup')->asArray();
+
+        return strpos($connConfig['type'], 'mysql') !== false;
+    }
+
     protected function _loadLocalFile($filePath, $table, $fields = array())
     {
         $connConfig = Mage::getConfig()->getResourceConnectionConfig('core_setup')->asArray();
-        $adapter = new Varien_Db_Adapter_Mysqli($connConfig);
+
+        if (strpos($connConfig['type'], 'pdo') !== false) {
+            $connConfig['driver_options'][PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
+        }
+
+        $adapter = $this->_resources->createConnection('unl_tax_load', $connConfig['type'], $connConfig);
 
         $sql = sprintf('LOAD DATA LOCAL INFILE %s INTO TABLE %s FIELDS TERMINATED BY %s',
             $adapter->quote($filePath),
@@ -102,9 +116,37 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
             $sql .= sprintf(' (%s)', implode(', ', $columns));
         }
 
-        $result = $adapter->raw_query($sql);
+        $oldErrorHandler = set_error_handler(array($this, 'handleError'));
+
+        try {
+            $result = $adapter->raw_query($sql);
+        } catch (Exception $e) {
+            if ($e->getMessage() == $this->_pdoError) {
+                $adapter = new Varien_Db_Adapter_Mysqli($connConfig);
+                $result = $adapter->raw_query($sql);
+            } else {
+                set_error_handler($oldErrorHandler);
+                throw $e;
+            }
+        }
+
+        set_error_handler($oldErrorHandler);
 
         return $this;
+    }
+
+    public function handleError($errno, $errstr, $errfile, $errline)
+    {
+        $errno = $errno & error_reporting();
+        if ($errno == 0) {
+            return false;
+        }
+
+        if ($errno === E_WARNING && $errstr == $this->_pdoError) {
+            throw new Exception($errstr);
+        } else {
+            return mageCoreErrorHandler($errno, $errstr, $errfile, $errline);
+        }
     }
 
     /**

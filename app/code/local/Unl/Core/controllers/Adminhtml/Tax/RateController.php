@@ -83,8 +83,7 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
         /* @var $resource Unl_Core_Model_Resource_Tax_Boundary */
         $resource = Mage::getResourceModel('unl_core/tax_boundary');
         $resource->beginRateImport();
-        $dbConfig = Mage::getConfig()->getResourceConnectionConfig('core_setup')->asArray();
-        $isMysql = strpos($dbConfig['type'], 'mysql') !== false;
+        $isMysql = $resource->supportsLoadFile();
         $columns = $resource->getTaxRateColumns();
         $i = 0;
         $data = array();
@@ -154,8 +153,7 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
             /* @var $resource Unl_Core_Model_Resource_Tax_Boundary */
             $resource = Mage::getResourceModel('unl_core/tax_boundary');
             $resource->beginImport();
-            $dbConfig = Mage::getConfig()->getResourceConnectionConfig('core_setup')->asArray();
-            $isMysql = strpos($dbConfig['type'], 'mysql') !== false;
+            $isMysql = $resource->supportsLoadFile();
             $columns = $resource->getInsertColumns();
             $i = 0;
             $data = array();
