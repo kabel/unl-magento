@@ -96,7 +96,7 @@ class Unl_CustomerTag_Model_Observer
         $product = $observer->getEvent()->getProduct();
         /* @var $request Mage_Core_Controller_Request_Http */
         $request = $observer->getEvent()->getRequest();
-        $ids = $request->getPost($this->_getHelper()->getCategoryAccessStorageName());
+        $ids = $request->getPost($this->_getHelper()->getAccessStorageName());
 
         if ($ids !== null) {
             $product->setAccessTagIds(Mage::helper('adminhtml/js')->decodeGridSerializedInput($ids));
