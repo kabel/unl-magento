@@ -380,7 +380,7 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
                     $adapter->prepareSqlCondition('rt.code', array('like' => '%-Restaurant')),
                 )),
                 'customer' => 'Retail Customer',
-                'product'  => 'Taxable Goods',
+                'product'  => 'Force Lincoln Restaurant Taxable',
                 'straight' => true,
             ),
         );
