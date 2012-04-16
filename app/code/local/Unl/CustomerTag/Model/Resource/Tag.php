@@ -45,7 +45,7 @@ class Unl_CustomerTag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abs
     }
 
     /**
-     * Enter description here ...
+     * Retrieve the tag_ids or customer_ids for a given model
      *
      * @param string $type
      * @param Mage_Core_Model_Abstract $model
@@ -56,8 +56,11 @@ class Unl_CustomerTag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abs
         $col = 'tag_id';
         if ($model instanceof Unl_CustomerTag_Model_Tag) {
             $type = '';
-            $typeId = $model->getIdFieldName();
+            $typeId = 'tag_id';
             $col = 'customer_id';
+        } else if ($model instanceof Mage_Customer_Model_Customer) {
+            $type = '';
+            $typeId = 'customer_id';
         } else {
             $type = rtrim($type, '_') . '_';
         }
@@ -94,6 +97,9 @@ class Unl_CustomerTag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abs
             $type = '';
             $typeId = $model->getIdFieldName();
             $col = 'customer_id';
+        } else if ($model instanceof Mage_Customer_Model_Customer) {
+            $type = '';
+            $typeId = 'customer_id';
         } else {
             $type = rtrim($type, '_') . '_';
         }
