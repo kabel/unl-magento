@@ -388,26 +388,52 @@ class Unl_Core_Model_Sales_Observer
         $action = $paymentMethod->getConfigPaymentAction();
 
         if ($action == Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE) {
+            $authTransaction = $payment->getCreatedTransaction();
+            $payment->setParentTransactionId($authTransaction->getTxnId());
+
             if ($order->getIsVirtual()) {
                 $payment->capture(null);
+                $this->_onAfterAutoCapture($payment, $authTransaction);
                 return;
             }
 
+            $hasVirtual = false;
             $savedQtys = array();
             /* @var $item Mage_Sales_Model_Order_Item */
             foreach ($order->getAllItems() as $item) {
                 if ($item->getIsVirtual()) {
+                    $hasVirtual = true;
                     $savedQtys[$item->getId()] = $item->getQtyToInvoice();
+                } else {
+                    $savedQtys[$item->getId()] = 0;
                 }
             }
 
-            if (!empty($savedQtys)) {
+            if ($hasVirtual) {
+                $session = Mage::getSingleton('checkout/session')->setIsInvoiceAutoCapture(true);
                 $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice($savedQtys);
                 $invoice->register();
                 $invoice->capture();
 
+                $session->getIsInvoiceAutoCapture(true);
+
+                $this->_onAfterAutoCapture($payment, $authTransaction);
+
                 $order->addRelatedObject($invoice);
             }
+        }
+    }
+
+    /**
+     * Safely closes an unsaved AUTH transaction after an auto-capture.
+     *
+     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param Mage_Sales_Model_Order_Payment_Transaction $authTransaction
+     */
+    protected function _onAfterAutoCapture($payment, $authTransaction)
+    {
+        if ($payment->getShouldCloseParentTransaction() && !$authTransaction->getIsClosed()) {
+            $authTransaction->isFailsafe(true)->close(false);
         }
     }
 }

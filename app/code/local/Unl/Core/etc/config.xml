@@ -236,6 +236,8 @@
                     <order>Unl_Core_Model_Sales_Order</order>
                     <!-- Adds force pay abstaction for checkmo -->
                     <order_invoice>Unl_Core_Model_Sales_Order_Invoice</order_invoice>
+                    <!-- Extend shipping total for auto-capture orders -->
+                    <order_invoice_total_shipping>Unl_Core_Model_Sales_Order_Invoice_Total_Shipping</order_invoice_total_shipping>
                     <!-- Multiple Refunds per Capture -->
                     <order_payment>Unl_Core_Model_Sales_Order_Payment</order_payment>
                     <!-- Change size of order PDFs to US Letter -->
