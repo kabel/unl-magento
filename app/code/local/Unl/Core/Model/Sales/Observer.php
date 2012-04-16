@@ -338,6 +338,12 @@ class Unl_Core_Model_Sales_Observer
                                 }
                             }
                         }
+
+                        foreach ($order->getAllItems() as $item) {
+                            if (!isset($savedQtys[$item->getId()]) && $item->getQtyToInvoice()) {
+                                $savedQtys[$item->getId()] = 0;
+                            }
+                        }
                     }
 
                     /* @var $invoice Mage_Sales_Model_Order_Invoice */
