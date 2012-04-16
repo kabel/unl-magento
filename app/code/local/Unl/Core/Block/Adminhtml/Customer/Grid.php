@@ -45,7 +45,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
 
             if ($advfilter->getData('from_store') || $advfilter->getData('item_sku')) {
                 $addOrders = true;
-                $orders->join(array('oi' => $orders->getTable('sales/order_item')), 'main_table.entity_id = oi.order_id', array());
+                $orders->join(array('oi' => 'sales/order_item'), 'main_table.entity_id = oi.order_id', array());
 
                 if ($advfilter->getData('from_store')) {
                     $orders->addFieldToFilter('oi.source_store_view', $advfilter->getData('from_store'));
