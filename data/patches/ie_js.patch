@@ -1,0 +1,69 @@
+Index: js/mage/adminhtml/form.js
+===================================================================
+--- js/mage/adminhtml/form.js	(revision 142292)
++++ js/mage/adminhtml/form.js	(working copy)
+@@ -233,8 +233,8 @@
+                     option.value = regionId;
+                     option.text = region.name;
+ 
+-                    if (this.regionSelectEl.options.add) {
+-                        this.regionSelectEl.options.add(option);
++                    if (this.regionSelectEl.add) {
++                        this.regionSelectEl.add(option);
+                     } else {
+                         this.regionSelectEl.appendChild(option);
+                     }
+@@ -375,9 +375,9 @@
+             this.selected = false;
+         }
+ 
+-        if (select.options.add) {
+-            select.options.add(option);
+-        } else {
++        try {
++            select.add(option);
++        } catch (ex) {
+             select.appendChild(option);
+         }
+     }
+Index: js/mage/adminhtml/sales/packaging.js
+===================================================================
+--- js/mage/adminhtml/sales/packaging.js	(revision 142292)
++++ js/mage/adminhtml/sales/packaging.js	(working copy)
+@@ -573,7 +573,7 @@
+             option = document.createElement('OPTION');
+             option.value = '';
+             option.text = '';
+-            packageSize[0].options.add(option);
++            packageSize[0].add(option);
+             packageSize[0].value = '';
+             packageSize[0].disable();
+             packageSize[0].addClassName('disabled');
+@@ -609,7 +609,7 @@
+             return;
+         }
+ 
+-        currentNode.select(
++        Element.extend(currentNode).select(
+             'input[name=container_length],input[name=container_width],input[name=container_height],select[name=container_dimension_units]'
+         ).each(function(inputElement) {
+             if (disable) {
+Index: js/varien/form.js
+===================================================================
+--- js/varien/form.js	(revision 142292)
++++ js/varien/form.js	(working copy)
+@@ -201,10 +201,10 @@
+                 option.value = regionId;
+                 option.text = region.name;
+ 
+-                if (this.regionSelectEl.options.add) {
+-                    this.regionSelectEl.options.add(option);
+-                } else {
+-                    this.regionSelectEl.appendChild(option);
++                try {
++                    this.regionSelectEl.add(option);
++                } catch (ex) {
++                	this.regionSelectEl.appendChild(option);
+                 }
+ 
+                 if (regionId==def || region.name.toLowerCase()==def || region.code.toLowerCase()==def) {
