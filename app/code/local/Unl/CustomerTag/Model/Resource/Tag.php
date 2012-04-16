@@ -60,7 +60,6 @@ class Unl_CustomerTag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abs
             $col = 'customer_id';
         } else if ($model instanceof Mage_Customer_Model_Customer) {
             $type = '';
-            $typeId = 'customer_id';
         } else {
             $type = rtrim($type, '_') . '_';
         }
@@ -99,7 +98,6 @@ class Unl_CustomerTag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abs
             $col = 'customer_id';
         } else if ($model instanceof Mage_Customer_Model_Customer) {
             $type = '';
-            $typeId = 'customer_id';
         } else {
             $type = rtrim($type, '_') . '_';
         }
