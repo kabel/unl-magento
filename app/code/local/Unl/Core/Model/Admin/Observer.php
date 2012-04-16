@@ -204,7 +204,7 @@ class Unl_Core_Model_Admin_Observer
         $storeIds = Mage::helper('unl_core')->getScopeFilteredStores($storeIds);
 
         if (!empty($storeIds)) {
-            $reqeust->setParam('store_ids', $storeIds);
+            $reqeust->setParam('store_ids', implode(',', $storeIds));
         }
     }
 
