@@ -31,7 +31,7 @@ class Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid extends Mage_Adminhtml_Bloc
             $collection->addRevenueToSelect(true);
         }
 
-        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'order_id', true, $storeIds);
+        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', true, $storeIds);
 
         $this->setCollection($collection);
 
