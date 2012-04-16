@@ -74,7 +74,7 @@ class Unl_Core_Model_Tax_Resource_Report_Tax_Createdat extends Mage_Tax_Model_Re
                 'orders_count'          => 'SUM(orders_count)',
                 'tax_base_amount_sum'   => 'SUM(tax_base_amount_sum)',
                 // additional column
-                'base_sales_amount_sum' => 'SUM(tax_base_sales_amount_sum)'
+                'base_sales_amount_sum' => 'SUM(base_sales_amount_sum)'
             );
 
             $select
