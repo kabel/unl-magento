@@ -6,7 +6,12 @@
 <!--[if (gte IE 9)|(gt IEMobile 7) ]><html class="ie" lang="en"><![endif]-->
 <!--[if !(IEMobile) | !(IE)]><!--><html lang="en"><!-- InstanceBegin template="/Templates/php.local.dwt.php" codeOutsideHTMLIsLocked="false" --><!--<![endif]-->
 <head>
-<?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/metanfavico.html'); ?>
+<?php
+$docRoot = isset($_SERVER['DOCUMENT_ROOT'])
+    ? rtrim($_SERVER['DOCUMENT_ROOT'], '/')
+    : dirname(__FILE__) . '/../..';
+?>
+<?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/metanfavico.html'); ?>
 <!--
     Membership and regular participation in the UNL Web Developer Network
     is required to use the UNL templates. Visit the WDN site at
@@ -21,7 +26,7 @@
 
     $Id: php.local.dwt.php | d3b0e517ecafe3e1f81c45ddafa7a316adcc45dd | Fri Mar 9 11:41:56 2012 -0600 | Kevin Abel  $
 -->
-<?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/scriptsandstyles_local.html'); ?>
+<?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/scriptsandstyles_local.html'); ?>
 <!-- InstanceBeginEditable name="doctitle" -->
 <title><?php echo $this->pageTitle?> | UNL Marketplace</title>
 <!-- InstanceEndEditable -->
@@ -45,8 +50,8 @@
             <a id="logo" href="http://www.unl.edu/" title="UNL website">UNL</a>
             <span id="wdn_institution_title">University of Nebraska&ndash;Lincoln</span>
             <span id="wdn_site_title"><!-- InstanceBeginEditable name="titlegraphic" -->UNL Marketplace<!-- InstanceEndEditable --></span>
-            <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/idm.html'); ?>
-            <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/wdnTools.html'); ?>
+            <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/idm.html'); ?>
+            <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/wdnTools.html'); ?>
         </header>
         <div id="wdn_navigation_bar">
             <nav id="breadcrumbs">
@@ -79,14 +84,14 @@
                 <?php require_once $contentTemplate; ?>
                 <!-- InstanceEndEditable -->
                 <div class="clear"></div>
-                <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/noscript.html'); ?>
+                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/noscript.html'); ?>
                 <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
             </div>
         </div>
         <footer id="footer">
             <div id="footer_floater"></div>
             <div class="footer_col" id="wdn_footer_feedback">
-                <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/feedback.html'); ?>
+                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/feedback.html'); ?>
             </div>
             <div class="footer_col" id="wdn_footer_related">
                 <!-- InstanceBeginEditable name="leftcollinks" -->
@@ -95,7 +100,7 @@
                 <!-- InstanceBeginEditable name="contactinfo" -->
                 <!-- InstanceEndEditable --></div>
             <div class="footer_col" id="wdn_footer_share">
-                <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/socialmediashare.html'); ?>
+                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/socialmediashare.html'); ?>
             </div>
             <!-- InstanceBeginEditable name="optionalfooter" -->
             <!-- InstanceEndEditable -->
@@ -104,9 +109,9 @@
                     <!-- InstanceBeginEditable name="footercontent" -->
                     &copy; <?php echo date('Y')?> University of Nebraska&ndash;Lincoln
                     <!-- InstanceEndEditable -->
-                    <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/wdn.html'); ?>
+                    <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/wdn.html'); ?>
                 </div>
-                <?php echo file_get_contents(rtrim($_SERVER['DOCUMENT_ROOT'],'/') . '/wdn/templates_3.1/includes/logos.html'); ?>
+                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/logos.html'); ?>
             </div>
         </footer>
     </div>
