@@ -59,3 +59,9 @@
 	margin: 10px -16px -11px;
 	padding: 12px 20px;
 }
+
+.packaging-window,
+.packed-window {
+	width: 98%;
+	margin-left: -49%;
+}

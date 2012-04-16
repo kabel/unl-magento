@@ -273,9 +273,7 @@
 //<![CDATA[
     function showPackedWindow() {
         var window = $('packed_window');
-        window.show().setStyle({
-            'marginLeft': -window.getDimensions().width/2 + 'px'
-        });
+        window.show();
         $('popup-window-mask').setStyle({
             height: $('html-body').getHeight() + 'px'
         }).show();
