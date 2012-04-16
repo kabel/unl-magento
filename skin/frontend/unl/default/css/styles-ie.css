@@ -6,6 +6,8 @@
 
 /* inline-block fix */
 .cart-table .product-image { float:none; }
+button.button > span { display:inline; zoom:1; overflow:visible; }
+button.button > span span { zoom:1; }
 
 select { margin-bottom:1px; }
 input.radio { width:13px; height:13px; }
@@ -21,6 +23,8 @@ button.btn-checkout { height:28px; }
 .block button.button,
 .product-view .box-tags .form-add button.button,
 .footer .form-subscribe button.button { height:23px; }
+
+.block-cart.hover-menu { left: 191px; top:33px; }
 
 .cart .discount .buttons-set button.button,
 .cart .shipping .buttons-set button.button { height:19px; }

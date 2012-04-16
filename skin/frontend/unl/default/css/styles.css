@@ -893,6 +893,7 @@ tr.summary-details-excluded { font-style:italic; }
 /* Featured Product ====================================================================== */
 .featured {}
 .featured .product-image { display: block; float: left; border: 1px solid #ddd; background-color: #fff; }
+.ie8 .featured .product-image { width:179px; }
 .featured .product-image img { display: block; width: 177px; }
 .featured .product-shop { margin-left: 203px; }
 #maincontent .featured .product-name { font-size: 1.3em; }

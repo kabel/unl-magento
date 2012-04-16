@@ -26,6 +26,7 @@
 #maincontent .store-directory ul { padding:0 6px 0 0; margin:0; list-style:none; height:400px; overflow:auto; }
 #maincontent .store-directory ul.auto-scroll { padding:0; overflow:hidden; }
 .store-directory .store {
+	overflow:auto;
 	border:1px solid #ccc;
     padding:5px;
     margin-bottom: 15px;
@@ -41,7 +42,6 @@
 #maincontent .store-directory .store h3 { padding:0; margin-bottom: 4px; border-bottom: 1px solid #cecece; }
 #maincontent .store-directory .store h3 a { color:#333; }
 #maincontent > .std {
-	background: url("../images/bg/bg-40.png");
     background-image:
         url("../images/bg/l6-40.png"),
         url("../images/bg/l5-40.png"),
@@ -59,6 +59,10 @@
     -webkit-animation-duration: 7s;
     -webkit-animation-name: bgslide;
     -webkit-animation-timing-function: ease-in-out;
+}
+.ie7 #maincontent > .std,
+.ie8 #maincontent > .std {
+	background: url("../images/bg/bg-40.png");
 }
 @-moz-keyframes bgslide {
     0% {
