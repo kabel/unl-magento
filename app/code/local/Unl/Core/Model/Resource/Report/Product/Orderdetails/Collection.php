@@ -54,6 +54,8 @@ class Unl_Core_Model_Resource_Report_Product_Orderdetails_Collection extends Mag
             'canceled' => 'qty_canceled'
         ));
 
+        $this->addFieldToFilter('qty_adjusted', array('gt' => 0));
+
         $this->addFieldToFilter('is_dummy', false);
 
         Mage::helper('unl_core')->addProductAdminScopeFilters($this);
