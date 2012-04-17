@@ -1401,8 +1401,8 @@ f/********** Product Prices > */
 /* Shopping Cart Collateral boxes */
 .cart .cart-collaterals { padding:25px 0 0; clear:both; }
 .cart .cart-collaterals .col3-set .col-1 { min-height: 1px; }
-.cart .cart-collaterals .col3-set .col-2 { width:28%; min-height: 1px; }
-.cart .cart-collaterals .col3-set .col-3 { width:36%; }
+.cart .cart-collaterals .col3-set .col-2 { min-height: 1px; }
+.cart .cart-collaterals .col3-set .col-3 { }
 
 .cart .crosssell { border:1px solid #ddd; background:#f7f7f7; padding:10px; }
 #maincontent .cart .crosssell h2 { font-size:12px; font-weight:bold; }
