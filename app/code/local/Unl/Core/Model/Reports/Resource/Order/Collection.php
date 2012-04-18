@@ -196,7 +196,7 @@ class Unl_Core_Model_Reports_Resource_Order_Collection extends Mage_Reports_Mode
             $taxExp = sprintf('%s - (%s / %s)',
 				$adapter->getIfNullSql('oi.base_tax_invoiced', 0),
 				$adapter->getIfNullSql('oi.tax_refunded', 0),
-				$adapter->getIfNullSql('o.base_to_order_rate', 1)
+				$adapter->getIfNullSql('main_table.base_to_order_rate', 1)
 			);
 			$shippingExp = '0';
             $this->addFilterToMap('created_at', 'main_table.created_at')
