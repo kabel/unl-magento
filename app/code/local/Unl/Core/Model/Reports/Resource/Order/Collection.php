@@ -38,6 +38,7 @@ class Unl_Core_Model_Reports_Resource_Order_Collection extends Mage_Reports_Mode
 				$adapter->getIfNullSql('oi.base_discount_invoiced', 0),
 				$adapter->getIfNullSql('oi.base_amount_refunded', 0)
 			);
+
             $this->addFilterToMap('created_at', 'main_table.created_at')
                 ->addFilterToMap('store_id', 'oi.source_store_view');
 			$this->getSelect()
@@ -52,7 +53,7 @@ class Unl_Core_Model_Reports_Resource_Order_Collection extends Mage_Reports_Mode
         $dateRange = $this->getDateRange($range, $customStart, $customEnd);
 
         $tzRangeOffsetExpression = $this->_getTZRangeOffsetExpression(
-            $range, 'created_at', $dateRange['from'], $dateRange['to']
+            $range, 'main_table.created_at', $dateRange['from'], $dateRange['to']
         );
 
         $this->getSelect()
