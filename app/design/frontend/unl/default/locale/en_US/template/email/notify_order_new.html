@@ -49,7 +49,7 @@ td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Gran
                         </td>
                         <td width="556" style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;" colspan="2" valign="top">
                             <p style="margin:1.1em 0;"><strong>Greetings:</strong></p>
-                            <p style="margin:1.1em 0;">You are receiving this message because a store manager has listed you as a person to notify when the following product is orded on the UNL Marketplace. If you feel this is an error, please contact the store manager or contact <a style="color:#ba0000;" href="mailto:storefront@unl.edu">storefront@unl.edu</a>.</p>
+                            <p style="margin:1.1em 0;">You are receiving this message because a store manager has listed you as a person to notify when the following product is orded on the UNL Marketplace. If you feel this is an error, please contact the store manager or contact <a style="color:#ba0000;" href="mailto:{{config path='trans_email/ident_general/email'}}">{{config path='trans_email/ident_general/email'}}</a>.</p>
                             <hr />
                             <p style="margin:1.1em 0;">On {{var order.getCreatedAtFormated('long')}}, customer {{htmlescape var=$customer_name}} &lt;<a href="mailto:{{htmlescape var=$order.customer_email}}">{{htmlescape var=$order.customer_email}}</a>&gt; ordered the following item with order #{{var order.increment_id}}.</p>
                             <h3 style="border-bottom:2px solid #eee;color:#494949;font-size:1.05em;padding-bottom:1px;">Billing Information:</h3>
