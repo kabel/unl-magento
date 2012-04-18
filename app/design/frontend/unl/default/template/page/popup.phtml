@@ -14,7 +14,7 @@
 <?php echo $this->getChildHtml('head') ?>
 <!-- InstanceParam name="class" type="text" value="popup" -->
 </head>
-<body class="popup<?php echo $this->getBodyClass() ? ' ' . $this->getBodyClass() : '' ?>" data-version="3.1">
+<body class=" popup <?php echo $this->getBodyClass() ? $this->getBodyClass() : '' ?>" data-version="3.1">
     <?php echo $this->getChildHtml('after_body_start') ?>
     <nav class="skipnav">
         <a class="skipnav" href="#maincontent">Skip Navigation</a>

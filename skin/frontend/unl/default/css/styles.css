@@ -4,6 +4,23 @@ tbody { vertical-align: middle; }
 #maincontent dd                          { padding: 0 }
 body.fixed #maincontent { overflow: visible; }
 
+/* Popup Template */
+body.popup #wdn_search,
+body.popup #wdn_identity_management,
+body.popup #wdn_tool_links,
+body.popup #wdn_navigation_bar,
+body.popup .footer_sep,
+body.popup .opfooter,
+body.popup #footer .footer_col { display: none; }
+
+body.popup #header { background:none; }
+body.popup #wdn_content_wrapper { margin:0; border-top:3px solid #b70302; }
+@media (min-width: 768px) {
+	body.popup #wdn_content_wrapper { border:0; }
+}
+
+body.popup #wdn_copyright { margin-top:15px; }
+
 /* Footer */
 #footer .contact .links                  { list-style: none; padding: 0; }
 #footer .footer_sep { clear:both; border-bottom: 1px solid #888; box-shadow: 0 1px 0 #fff; margin: 20px 0; }
