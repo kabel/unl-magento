@@ -42,19 +42,7 @@ General > Design (left tab)
         Default Title: UNL | Marketplace
         Default Keywords: E-commerce
     Footer:
-        Copyright: &copy; 2010 University of Nebraska&ndash;Lincoln | Lincoln, NE 68588 | 402-472-7211 | <a href="http://www.unl.edu/ucomm/aboutunl/" title="Click here to know more about UNL">About UNL</a> | <a href="http://www1.unl.edu/comments/" title="Click here to direct your comments and questions">comments?</a>
-
-General > Store Email Addresses
-    General contact
-        Sender email: storefront@unl.edu
-    Sales representative
-        Sender email: storefront@unl.edu
-    Customer Support:
-        Sender email: storefront@unl.edu
-        
-General > Contacts
-    Email Options:
-        Send Emails To: storefront@unl.edu
+        Copyright: University of Nebraska&ndash;Lincoln
 
 Catalog > Catalog
     Search Engine Optimizations:
@@ -102,7 +90,7 @@ Sales > Payment Methods
 
 Advanced > Developer
     JavaScript Settings:
-        Merge JavaScript Files (beta): Yes
+        Merge JavaScript Files: Yes
 
 
 == MAINTENANCE ==
