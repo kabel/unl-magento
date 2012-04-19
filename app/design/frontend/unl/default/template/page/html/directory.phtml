@@ -8,33 +8,25 @@
 ?>
 <div class="store-directory">
     <h2><?php echo $this->__('Store Directory') ?></h2>
-    <?php
-    $groups = $this->getGroups();
-    if ($this->hasData('shuffle')) {
-        shuffle($groups);
-    }
-    ?>
-    <?php if(count($groups)>1): ?>
+    <?php if ($groups = $this->getGroups()): ?>
     <ul>
         <?php foreach ($groups as $_group): ?>
         <?php /* @var $_group Mage_Core_Model_Store_Group */ ?>
-        <?php if (!$_group->getIsHidden() && !in_array('default', $_group->getStoreCodes())): ?>
-            <li>
-                <div class="store">
-                    <?php if ($this->hasStoreIcon($_group->getDefaultStore()->getCode())): ?>
-                    <a class="store-icon" href="<?php echo $_group->getHomeUrl() ?>">
-                        <img src="<?php echo $this->getStoreIconUrl($_group->getDefaultStore()->getCode()) ?>" alt="<?php echo $this->escapeHtml($_group->getName()) ?> <?php echo $this->__('icon') ?>" />
-                    </a>
-                    <?php endif; ?>
-                    <h3><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->escapeHtml($_group->getName()) ?></a></h3>
-                    <div class="store-shop">
-                        <div class="f-fix">
-                            <p><?php echo $this->htmlEscape($_group->getDescription()) ?></p>
-                        </div>
+        <li>
+            <div class="store">
+                <?php if ($imgSrc = $this->getStoreIconUrl($_group->getDefaultStore()->getCode())): ?>
+                <a class="store-icon" href="<?php echo $_group->getHomeUrl() ?>">
+                    <img src="<?php echo $imgSrc ?>" alt="<?php echo $this->escapeHtml($_group->getName()) ?> <?php echo $this->__('icon') ?>" />
+                </a>
+                <?php endif; ?>
+                <h3><a href="<?php echo $_group->getHomeUrl() ?>"><?php echo $this->escapeHtml($_group->getName()) ?></a></h3>
+                <div class="store-shop">
+                    <div class="f-fix">
+                        <p><?php echo $this->htmlEscape($_group->getDescription()) ?></p>
                     </div>
                 </div>
-            </li>
-        <?php endif; ?>
+            </div>
+        </li>
         <?php endforeach; ?>
     </ul>
     <?php endif; ?>

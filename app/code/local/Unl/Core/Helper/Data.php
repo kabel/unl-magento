@@ -517,6 +517,24 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * A sort callback for comparing store group models
+     *
+     * @param Mage_Core_Model_Store_Group $a
+     * @param Mage_Core_Model_Store_Group $b
+     * @return int
+     */
+    public function compareStoreGroups($a, $b)
+    {
+        $sortA = $a->getDefaultStore()->getSortOrder();
+        $sortB = $b->getDefaultStore()->getSortOrder();
+
+        if ($sortA == $sortB) {
+            return 0;
+        }
+        return ($sortA > $sortB) ? 1 : -1;
+    }
+
+    /**
      * Returns the store_ids of all the items in the quote
      *
      * @param Mage_Sales_Model_Quote $quote
