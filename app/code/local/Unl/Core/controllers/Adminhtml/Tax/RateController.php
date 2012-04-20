@@ -4,35 +4,11 @@ require_once 'Mage/Adminhtml/controllers/Tax/RateController.php';
 
 class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateController
 {
-    protected $_prevMaintenanceState;
-
-    protected function _toggleMaintenance($flag = true)
-    {
-        global $maintenanceFile;
-        if (empty($maintenanceFile)) {
-            return $this;
-        }
-
-        if ($flag) {
-            if (is_null($this->_prevMaintenanceState)) {
-                $this->_prevMaintenanceState = file_exists($maintenanceFile);
-            }
-
-            if (!file_exists($maintenanceFile)) {
-                touch($maintenanceFile);
-            }
-        } else if (!$this->_prevMaintenanceState && file_exists($maintenanceFile)) {
-            unlink($maintenanceFile);
-        }
-
-        return $this;
-    }
-
     public function boundaryImportPostAction()
     {
         if ($this->getRequest()->isPost() && !empty($_FILES['import_boundary_file']['tmp_name'])) {
             try {
-                $this->_importBoundaries();
+                $this->_import('boundaries');
 
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tax')->__('The tax boundaries have been imported.'));
             } catch (Mage_Core_Exception $e) {
@@ -50,7 +26,7 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
     {
         if ($this->getRequest()->isPost() && !empty($_FILES['import_rates_file']['tmp_name'])) {
             try {
-                $this->_fullRateImport();
+                $this->_import('rates');
 
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tax')->__('The tax rates have been imported.'));
             } catch (Mage_Core_Exception $e) {
@@ -64,81 +40,26 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
         $this->_redirect('*/*/importExport');
     }
 
-    protected function _fullRateImport()
+    protected function _import($type)
     {
-        $fileName = $tmpName = $_FILES['import_rates_file']['tmp_name'];
-        $pathinfo = pathinfo($_FILES['import_rates_file']['name']);
-
-        if ($pathinfo['extension'] == 'zip') {
-            $fileName = 'zip://' . $fileName . '#rates.csv';
-        } else if ($pathinfo['extension'] == 'gz') {
-            $fileName = 'compress.zlib://' . $fileName;
-        }
-
-        $fh = @fopen($fileName, 'r');
-        if (!$fh) {
-            throw new Exception('Failed to open stream');
-        }
-
-        /* @var $resource Unl_Core_Model_Resource_Tax_Boundary */
-        $resource = Mage::getResourceModel('unl_core/tax_boundary');
-        $resource->beginRateImport();
-        $isMysql = $resource->supportsLoadFile();
-        $columns = $resource->getTaxRateColumns();
-        $i = 0;
-        $data = array();
-
-        while ($rowData = fgetcsv($fh)) {
-            if (empty($rowData) || empty($rowData[0])) {
-                continue;
-            }
-
-            if (count($rowData) != count($columns)) {
-                if ($isMysql) {
-                    throw new Exception('Invalid column count in rate import');
-                } else {
-                    continue;
-                }
-            }
-
-            if ($isMysql) {
-                if ($fileName != $tmpName) {
-                    $tmpName = tempnam(sys_get_temp_dir(), 'unltaxrate_');
-                    copy($fileName, $tmpName);
-                }
-                chmod($tmpName, 0644);
-
-                $resource->loadLocalRateFile($tmpName);
-
-                if ($fileName != $tmpName) {
-                    unlink($tmpName);
-                }
-
+        switch ($type) {
+            case 'rates':
+                $fileOffset = 'import_rates_file';
+                $zipOffset  = '#rates.csv';
                 break;
-            } else {
-                if ($i < 10000) {
-                    $data[] = $rowData;
-                    $i++;
-                } else {
-                    $resource->insertTaxRates($data);
-                    $i = 0;
-                    $data = array();
-                }
-            }
+            case 'boundaries':
+                $fileOffset = 'import_boundary_file';
+                $zipOffset  = '#NEB.txt';
+                break;
+            default:
+                return $this;
         }
 
-        fclose($fh);
-
-        $resource->rebuildTaxCalculation();
-    }
-
-    protected function _importBoundaries()
-    {
-        $fileName = $tmpName = $_FILES['import_boundary_file']['tmp_name'];
-        $pathinfo = pathinfo($_FILES['import_boundary_file']['name']);
+        $fileName = $tmpName = $_FILES[$fileOffset]['tmp_name'];
+        $pathinfo = pathinfo($_FILES[$fileOffset]['name']);
 
         if ($pathinfo['extension'] == 'zip') {
-            $fileName = 'zip://' . $fileName . '#NEB.txt';
+            $fileName = 'zip://' . $fileName . $zipOffset;
         } else if ($pathinfo['extension'] == 'gz') {
             $fileName = 'compress.zlib://' . $fileName;
         }
@@ -146,17 +67,33 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
         $fh = @fopen($fileName, 'r');
         if (!$fh) {
             throw new Exception('Failed to open stream');
+        }
+
+        if ($this->getRequest()->getParam('maintenance_mode')) {
+            $maint = Mage::helper('backup')->turnOnMaintenanceMode();
+            if (!$maint) {
+                Mage::throwException(Mage::helper('backup')->__('You do not have sufficient permissions to enable Maintenance Mode during this operation.')
+                    . ' ' . Mage::helper('backup')->__('Please either unselect the "Put store on the maintenance mode" checkbox or update your permissions to proceed with the backup."'));
+            }
         }
 
         try {
-            $this->_toggleMaintenance();
             /* @var $resource Unl_Core_Model_Resource_Tax_Boundary */
             $resource = Mage::getResourceModel('unl_core/tax_boundary');
-            $resource->beginImport();
-            $isMysql = $resource->supportsLoadFile();
-            $columns = $resource->getInsertColumns();
+            $canLoad = $resource->supportsLoadFile();
             $i = 0;
             $data = array();
+            if ($type == 'rates') {
+                $resource->beginRateImport();
+                $columns = $resource->getTaxRateColumns();
+                $tmpPrefix = 'unltaxrate_';
+                $rowLimit = 10000;
+            } else {
+                $resource->beginImport();
+                $columns = $resource->getInsertColumns();
+                $tmpPrefix = 'unltaxboundary_';
+                $rowLimit = 1000;
+            }
 
             while ($rowData = fgetcsv($fh)) {
                 if (empty($rowData) || empty($rowData[0])) {
@@ -166,21 +103,25 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
                 $rowData = array_slice($rowData, 0, count($columns));
 
                 if (count($rowData) != count($columns)) {
-                    if ($isMysql) {
-                        throw new Exception('Invalid column count in boundary import');
+                    if ($canLoad) {
+                        throw new Exception('Invalid column count in import');
                     } else {
                         continue;
                     }
                 }
 
-                if ($isMysql) {
+                if ($canLoad) {
                     if ($fileName != $tmpName) {
-                        $tmpName = tempnam(sys_get_temp_dir(), 'unltaxboundary_');
+                        $tmpName = tempnam(sys_get_temp_dir(), $tmpPrefix);
                         copy($fileName, $tmpName);
                     }
                     chmod($tmpName, 0644);
 
-                    $resource->loadLocalFile($tmpName);
+                    if ($type == 'rates') {
+                        $resource->loadLocalRateFile($tmpName);
+                    } else {
+                        $resource->loadLocalFile($tmpName);
+                    }
 
                     if ($fileName != $tmpName) {
                         unlink($tmpName);
@@ -188,11 +129,15 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
 
                     break;
                 } else {
-                    if ($i < 1000) {
+                    if ($i < $rowLimit) {
                         $data[] = $rowData;
                         $i++;
                     } else {
-                        $resource->insertArray($data);
+                        if ($type == 'rates') {
+                            $resource->insertTaxRates($data);
+                        } else {
+                            $resource->insertArray($data);
+                        }
                         $i = 0;
                         $data = array();
                     }
@@ -200,9 +145,24 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
             }
 
             fclose($fh);
+
+            if ($type == 'rates') {
+                $resource->rebuildTaxCalculation();
+            }
         } catch (Exception $e) {
-            $this->_toggleMaintenance(false);
+            $this->_endMaintenance();
             throw $e;
         }
+
+        $this->_endMaintenance();
+    }
+
+    protected function _endMaintenance()
+    {
+        if ($this->getRequest()->getParam('maintenance_mode')) {
+            Mage::helper('backup')->turnOffMaintenanceMode();
+        }
+
+        return $this;
     }
 }
