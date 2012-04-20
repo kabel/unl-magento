@@ -437,19 +437,32 @@
                     <show_in_default>1</show_in_default>
                     <show_in_website>0</show_in_website>
                     <show_in_store>0</show_in_store>
+                    <comment>After enabling, a RSA key pair will be generated. The public key must be installed on the remote host for rsync to work.</comment>
                     <fields>
                         <enabled translate="label">
                             <label>Enable RSYNC backup</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <backend_model>unl_core/backup_config_backend_rsync</backend_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </enabled>
+                        <retain translate="label">
+                            <label>Retain Count</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>unl_core/backup_config_source_rsyncRetain</source_model>
+                            <sort_order>10</sort_order>
+                            <depends><enabled>1</enabled></depends>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </retain>
                         <user translate="label">
                             <label>Remote Username</label>
                             <frontend_type>obscure</frontend_type>
                             <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <depends><enabled>1</enabled></depends>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
@@ -459,6 +472,7 @@
                             <label>Remote Host</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>30</sort_order>
+                            <depends><enabled>1</enabled></depends>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -467,6 +481,7 @@
                             <label>Remote Backup Path</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
+                            <depends><enabled>1</enabled></depends>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>

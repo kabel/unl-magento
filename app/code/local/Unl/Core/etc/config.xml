@@ -93,6 +93,12 @@
                     <dashboard_order>Unl_Core_Helper_Adminhtml_Dashboard_Order</dashboard_order>
                 </rewrite>
             </adminhtml>
+            <backup>
+                <rewrite>
+                    <!-- Customize maintenance flag logic -->
+                    <data>Unl_Core_Helper_Backup_Data</data>
+                </rewrite>
+            </backup>
             <catalog>
                 <rewrite>
                     <!-- Add ACL check when getting categories -->
@@ -147,12 +153,14 @@
                     <system_config_source_catalog_listMode>Unl_Core_Model_Adminhtml_System_Config_Source_Catalog_ListMode</system_config_source_catalog_listMode>
                 </rewrite>
             </adminhtml>
-            <backup_resource>
+            <backup>
                 <rewrite>
-                    <!-- Excludes certain backup tables -->
-                    <db>Unl_Core_Model_Backup_Resource_Db</db>
+                    <!-- Add extra ignore tables -->
+                    <db>Unl_Core_Model_Backup_Db</db>
+                    <!-- Override the backup cron to support rsync -->
+                    <observer>Unl_Core_Model_Backup_Observer</observer>
                 </rewrite>
-            </backup_resource>
+            </backup>
             <catalog>
                 <rewrite>
                     <!-- Fix upload exception logging when no upload occurs -->
@@ -468,14 +476,6 @@
                 </observers>
             </sales_shipment_item_save_before>
             
-            <admin_system_config_changed_section_system>
-                <observers>
-                    <check_rsync>
-                        <class>unl_core/backup_rsync</class>
-                        <method>onSystemConfigSave</method>
-                    </check_rsync>
-                </observers>
-            </admin_system_config_changed_section_system>
         </events>
         
         <sales>
@@ -959,14 +959,6 @@
     
     <crontab>
         <jobs>
-            <unl_core_nightly_backup>
-                <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
-                <run><model>unl_core/observer::generateNightlyBackup</model></run>
-            </unl_core_nightly_backup>
-            <unl_core_nightly_rsync>
-                <schedule><cron_expr>0 3 * * *</cron_expr></schedule>
-                <run><model>unl_core/backup_rsync::doRsyncBackup</model></run>
-            </unl_core_nightly_rsync>
             <unl_core_block_cache_autoclean>
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
                 <run><model>unl_core/observer::autoCleanBlockHtmlCache</model></run>
@@ -1052,6 +1044,7 @@
         <system>
             <rsync>
                 <user backend_model="adminhtml/system_config_backend_encrypted"></user>
+                <retain>7</retain>
             </rsync>
         </system>
     </default>

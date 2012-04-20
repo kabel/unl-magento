@@ -134,38 +134,6 @@ class Unl_Core_Model_Observer
     }
 
     /**
-     * Daily DB backup (called from cron)
-     *
-     * @param   Varien_Event_Observer $observer
-     * @return  Unl_Core_Model_Observer
-     */
-    public function generateNightlyBackup($observer)
-    {
-        try {
-            // clear previous backups
-            $collection = Mage::getSingleton('backup/fs_collection');
-            foreach ($collection as $backupFile) {
-                $backup = Mage::getModel('backup/backup', $backupFile->getData());
-                $backup->setType($backupFile->getType());
-                $backup->deleteFile();
-            }
-
-            $backupDb = Mage::getModel('backup/db');
-            $backup   = Mage::getModel('backup/backup')
-                ->setTime(time())
-                ->setType('db')
-                ->setPath(Mage::getBaseDir("var") . DS . "backups");
-
-            $backupDb->createBackup($backup);
-        }
-        catch (Exception  $e) {
-            Mage::logException($e);
-        }
-
-        return $this;
-    }
-
-    /**
      * An event observer for the <code>core_block_abstract_prepare_layout_before</code>
      * event. It removes the checkout session message, if the session is marked to be
      * consumed.
