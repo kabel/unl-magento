@@ -23,6 +23,9 @@
             var importForm = new varienForm('import_form');
         </script>
 
+        <h4>Warning</h4>
+        <p>The following import processes will take some time to complete. You will need to wait for everything to finish.</p>
+
         <form id="full_import_form" action="<?php echo $this->getUrl('*/*/fullImportPost') ?>" method="post" enctype="multipart/form-data">
             <?php echo $this->getBlockHtml('formkey')?>
             <div class="entry-edit-head">
@@ -32,6 +35,9 @@
                 <legend><?php echo Mage::helper('tax')->__('Full Tax Rates Import') ?></legend>
                 <input type="file" name="import_rates_file" class="input-file required-entry"/>
                 <?php echo $this->getButtonHtml('Import Tax Rates', "this.form.submit()") ?>
+                <br />
+                <input type="checkbox" id="rates_maintenance_mode" value="1" name="maintenance_mode" class="" />
+                <label for="rates_maintenance_mode"><?php echo Mage::helper('unl_core')->__('Turn on maintenance mode during import') ?></label>
             </fieldset>
         </form>
         <script type="text/javascript">
@@ -47,6 +53,9 @@
                 <legend><?php echo Mage::helper('tax')->__('Import NE Tax Boundaries') ?></legend>
                 <input type="file" name="import_boundary_file" class="input-file required-entry"/>
                 <?php echo $this->getButtonHtml('Import Boundaries', "this.form.submit()") ?>
+                <br />
+                <input type="checkbox" id="boundaries_maintenance_mode" value="1" name="maintenance_mode" class="" />
+                <label for="boundaries_maintenance_mode"><?php echo Mage::helper('unl_core')->__('Turn on maintenance mode during import') ?></label>
             </fieldset>
         </form>
         <script type="text/javascript">
