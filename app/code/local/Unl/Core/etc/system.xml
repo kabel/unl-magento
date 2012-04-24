@@ -451,7 +451,7 @@
                         <retain translate="label">
                             <label>Retain Count</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>unl_core/backup_config_source_rsyncRetain</source_model>
+                            <source_model>unl_core/backup_config_source_rsync_retain</source_model>
                             <sort_order>10</sort_order>
                             <depends><enabled>1</enabled></depends>
                             <show_in_default>1</show_in_default>

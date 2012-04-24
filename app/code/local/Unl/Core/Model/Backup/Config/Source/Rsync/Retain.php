@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Model_Backup_Config_Source_RsyncRetain
+class Unl_Core_Model_Backup_Config_Source_Rsync_Retain
 {
     /**
      * return possible options
