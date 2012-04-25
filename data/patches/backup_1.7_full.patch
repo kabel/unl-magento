@@ -5316,6 +5316,564 @@ Index: lib/Mage/Backup/Filesystem/Helper.php
 +        return $info;
 +    }
 +}
+Index: lib/Mage/Backup/Filesystem/Iterator/File.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Iterator/File.php	(revision 0)
++++ lib/Mage/Backup/Filesystem/Iterator/File.php	(revision 0)
+@@ -0,0 +1,112 @@
++<?php
++/**
++ * Magento
++ *
++ * NOTICE OF LICENSE
++ *
++ * This source file is subject to the Open Software License (OSL 3.0)
++ * that is bundled with this package in the file LICENSE.txt.
++ * It is also available through the world-wide-web at this URL:
++ * http://opensource.org/licenses/osl-3.0.php
++ * If you did not receive a copy of the license and are unable to
++ * obtain it through the world-wide-web, please send an email
++ * to license@magentocommerce.com so we can send you a copy immediately.
++ *
++ * DISCLAIMER
++ *
++ * Do not edit or add to this file if you wish to upgrade Magento to newer
++ * versions in the future. If you wish to customize Magento for your
++ * needs please refer to http://www.magentocommerce.com for more information.
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
++ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
++ */
++
++
++/**
++ * File lines iterator
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @author      Magento Core Team <core@magentocommerce.com>
++ */
++class Mage_Backup_Filesystem_Iterator_File extends SplFileObject
++{
++    /**
++     * The statement that was last read during iteration
++     *
++     * @var string
++     */
++    protected $_currentStatement = '';
++
++    /**
++     * Return current sql statement
++     *
++     * @return string
++     */
++    public function current()
++    {
++        return $this->_currentStatement;
++    }
++
++    /**
++     * Iterate to next sql statement in file
++     */
++    public function next()
++    {
++        $this->_currentStatement = '';
++        while (!$this->eof()) {
++            $line = $this->fgets();
++            if (strlen(trim($line))) {
++                $this->_currentStatement .= $line;
++                if ($this->_isLineLastInCommand($line)) {
++                    break;
++                }
++            }
++        }
++    }
++
++    /**
++     * Return to first statement
++     */
++    public function rewind()
++    {
++        parent::rewind();
++        $this->next();
++    }
++
++    /**
++     * Check whether provided string is comment
++     *
++     * @param string $line
++     * @return bool
++     */
++    protected function _isComment($line)
++    {
++        return $line[0] == '#' || substr($line, 0, 2) == '--';
++    }
++
++    /**
++     * Check is line a last in sql command
++     *
++     * @param string $line
++     * @return bool
++     */
++    protected function _isLineLastInCommand($line)
++    {
++        $cleanLine = trim($line);
++        $lineLength = strlen($cleanLine);
++
++        $returnResult = false;
++        if ($lineLength > 0) {
++            $lastSymbolIndex = $lineLength - 1;
++            if ($cleanLine[$lastSymbolIndex] == ';') {
++                $returnResult = true;
++            }
++        }
++
++        return $returnResult;
++    }
++}
+Index: lib/Mage/Backup/Filesystem/Iterator/Filter.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Iterator/Filter.php	(revision 0)
++++ lib/Mage/Backup/Filesystem/Iterator/Filter.php	(revision 0)
+@@ -0,0 +1,84 @@
++<?php
++/**
++ * Magento
++ *
++ * NOTICE OF LICENSE
++ *
++ * This source file is subject to the Open Software License (OSL 3.0)
++ * that is bundled with this package in the file LICENSE.txt.
++ * It is also available through the world-wide-web at this URL:
++ * http://opensource.org/licenses/osl-3.0.php
++ * If you did not receive a copy of the license and are unable to
++ * obtain it through the world-wide-web, please send an email
++ * to license@magentocommerce.com so we can send you a copy immediately.
++ *
++ * DISCLAIMER
++ *
++ * Do not edit or add to this file if you wish to upgrade Magento to newer
++ * versions in the future. If you wish to customize Magento for your
++ * needs please refer to http://www.magentocommerce.com for more information.
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
++ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
++ */
++
++/**
++ * Recursive Directory Filter Iterator
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @author      Magento Core Team <core@magentocommerce.com>
++ *
++ * @method RecursiveDirectoryIterator getInnerIterator()
++ * @method SplFileInfo current()
++ */
++class Mage_Backup_Filesystem_Iterator_Filter extends RecursiveFilterIterator
++{
++    /**
++     * Array that is used for filtering
++     *
++     * @var array
++     */
++    protected $_filters;
++
++    /**
++     * Constructor
++     *
++     * @param RecursiveDirectoryIterator $iterator
++     * @param array $filters list of files to skip
++     */
++    public function __construct(RecursiveDirectoryIterator $iterator, array $filters)
++    {
++        parent::__construct($iterator);
++        $this->_filters = $filters;
++    }
++
++    /**
++     * Check whether the current element of the iterator is acceptable
++     *
++     * @return bool
++     */
++    public function accept()
++    {
++        $currentFilename = $this->current()->getFilename();
++
++        if ($currentFilename == '.' || $currentFilename == '..') {
++            return false;
++        }
++
++        foreach ($this->_filters as $filter) {
++            if (false !== strpos($this->current(), $filter)) {
++                return false;
++            }
++        }
++
++        return true;
++    }
++
++    public function getChildren()
++    {
++        return new self($this->getInnerIterator()->getChildren(), $this->_filters);
++    }
++}
+Index: lib/Mage/Backup/Filesystem/Rollback/Abstract.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Rollback/Abstract.php	(revision 0)
++++ lib/Mage/Backup/Filesystem/Rollback/Abstract.php	(revision 0)
+@@ -0,0 +1,57 @@
++<?php
++/**
++ * Magento
++ *
++ * NOTICE OF LICENSE
++ *
++ * This source file is subject to the Open Software License (OSL 3.0)
++ * that is bundled with this package in the file LICENSE.txt.
++ * It is also available through the world-wide-web at this URL:
++ * http://opensource.org/licenses/osl-3.0.php
++ * If you did not receive a copy of the license and are unable to
++ * obtain it through the world-wide-web, please send an email
++ * to license@magentocommerce.com so we can send you a copy immediately.
++ *
++ * DISCLAIMER
++ *
++ * Do not edit or add to this file if you wish to upgrade Magento to newer
++ * versions in the future. If you wish to customize Magento for your
++ * needs please refer to http://www.magentocommerce.com for more information.
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
++ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
++ */
++
++/**
++ * Filesystem rollback workers abstract class
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @author      Magento Core Team <core@magentocommerce.com>
++ */
++abstract class Mage_Backup_Filesystem_Rollback_Abstract
++{
++    /**
++     * Snapshot object
++     *
++     * @var Mage_Backup_Filesystem
++     */
++    protected $_snapshot;
++
++    /**
++     * Default worker constructor
++     *
++     * @param Mage_Backup_Filesystem $snapshotObject
++     */
++    public function __construct(Mage_Backup_Filesystem $snapshotObject)
++    {
++        $this->_snapshot = $snapshotObject;
++    }
++
++    /**
++     * Main worker's function that makes files rollback
++     */
++    abstract public function run();
++}
+Index: lib/Mage/Backup/Filesystem/Rollback/Fs.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Rollback/Fs.php	(revision 0)
++++ lib/Mage/Backup/Filesystem/Rollback/Fs.php	(revision 0)
+@@ -0,0 +1,78 @@
++<?php
++/**
++ * Magento
++ *
++ * NOTICE OF LICENSE
++ *
++ * This source file is subject to the Open Software License (OSL 3.0)
++ * that is bundled with this package in the file LICENSE.txt.
++ * It is also available through the world-wide-web at this URL:
++ * http://opensource.org/licenses/osl-3.0.php
++ * If you did not receive a copy of the license and are unable to
++ * obtain it through the world-wide-web, please send an email
++ * to license@magentocommerce.com so we can send you a copy immediately.
++ *
++ * DISCLAIMER
++ *
++ * Do not edit or add to this file if you wish to upgrade Magento to newer
++ * versions in the future. If you wish to customize Magento for your
++ * needs please refer to http://www.magentocommerce.com for more information.
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
++ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
++ */
++
++/**
++ * Rollback worker for rolling back via local filesystem
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @author      Magento Core Team <core@magentocommerce.com>
++ */
++class Mage_Backup_Filesystem_Rollback_Fs extends Mage_Backup_Filesystem_Rollback_Abstract
++{
++    /**
++     * Files rollback implementation via local filesystem
++     *
++     * @see Mage_Backup_Filesystem_Rollback_Abstract::run()
++     * @throws Mage_Exception
++     */
++    public function run()
++    {
++        $snapshotPath = $this->_snapshot->getBackupPath();
++
++        if (!is_file($snapshotPath) || !is_readable($snapshotPath)) {
++            throw new Mage_Backup_Exception_CantLoadSnapshot('Cant load snapshot archive');
++        }
++
++        $fsHelper = new Mage_Backup_Filesystem_Helper();
++
++        $filesInfo = $fsHelper->getInfo(
++            $this->_snapshot->getRootDir(),
++            Mage_Backup_Filesystem_Helper::INFO_WRITABLE,
++            $this->_snapshot->getIgnorePaths()
++        );
++
++        if (!$filesInfo['writable']) {
++            throw new Mage_Backup_Exception_NotEnoughPermissions(
++                'Unable to make rollback because not all files are writable'
++            );
++        }
++
++        $archiver = new Mage_Archive();
++
++        /**
++         * we need these fake initializations because all magento's files in filesystem will be deleted and autoloader
++         * wont be able to load classes that we need for unpacking
++         */
++        new Mage_Archive_Tar();
++        new Mage_Archive_Gz();
++        new Mage_Archive_Helper_File('');
++        new Mage_Archive_Helper_File_Gz('');
++
++        $fsHelper->rm($this->_snapshot->getRootDir(), $this->_snapshot->getIgnorePaths());
++        $archiver->unpack($snapshotPath, $this->_snapshot->getRootDir());
++    }
++}
+Index: lib/Mage/Backup/Filesystem/Rollback/Ftp.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Rollback/Ftp.php	(revision 0)
++++ lib/Mage/Backup/Filesystem/Rollback/Ftp.php	(revision 0)
+@@ -0,0 +1,202 @@
++<?php
++/**
++ * Magento
++ *
++ * NOTICE OF LICENSE
++ *
++ * This source file is subject to the Open Software License (OSL 3.0)
++ * that is bundled with this package in the file LICENSE.txt.
++ * It is also available through the world-wide-web at this URL:
++ * http://opensource.org/licenses/osl-3.0.php
++ * If you did not receive a copy of the license and are unable to
++ * obtain it through the world-wide-web, please send an email
++ * to license@magentocommerce.com so we can send you a copy immediately.
++ *
++ * DISCLAIMER
++ *
++ * Do not edit or add to this file if you wish to upgrade Magento to newer
++ * versions in the future. If you wish to customize Magento for your
++ * needs please refer to http://www.magentocommerce.com for more information.
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
++ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
++ */
++
++/**
++ * Rollback worker for rolling back via ftp
++ *
++ * @category    Mage
++ * @package     Mage_Backup
++ * @author      Magento Core Team <core@magentocommerce.com>
++ */
++class Mage_Backup_Filesystem_Rollback_Ftp extends Mage_Backup_Filesystem_Rollback_Abstract
++{
++    /**
++     * Ftp client
++     *
++     * @var Mage_System_Ftp
++     */
++    protected $_ftpClient;
++
++    /**
++     * Files rollback implementation via ftp
++     *
++     * @see Mage_Backup_Filesystem_Rollback_Abstract::run()
++     * @throws Mage_Exception
++     */
++    public function run()
++    {
++        $snapshotPath = $this->_snapshot->getBackupPath();
++
++        if (!is_file($snapshotPath) || !is_readable($snapshotPath)) {
++            throw new Mage_Backup_Exception_CantLoadSnapshot('Cant load snapshot archive');
++        }
++
++        $this->_initFtpClient();
++        $this->_validateFtp();
++
++        $tmpDir = $this->_createTmpDir();
++        $this->_unpackSnapshot($tmpDir);
++
++        $fsHelper = new Mage_Backup_Filesystem_Helper();
++
++        $this->_cleanupFtp();
++        $this->_uploadBackupToFtp($tmpDir);
++
++        $fsHelper->rm($tmpDir, array(), true);
++    }
++
++    /**
++     * Initialize ftp client and connect to ftp
++     *
++     * @throws Mage_Backup_Exception_FtpConnectionFailed
++     */
++    protected function _initFtpClient()
++    {
++        try {
++            $this->_ftpClient = new Mage_System_Ftp();
++            $this->_ftpClient->connect($this->_snapshot->getFtpConnectString());
++        } catch (Exception $e) {
++            throw new Mage_Backup_Exception_FtpConnectionFailed($e->getMessage());
++        }
++    }
++
++    /**
++     * Perform ftp validation. Check whether ftp account provided points to current magento installation
++     *
++     * @throws Mage_Exception
++     */
++    protected function _validateFtp()
++    {
++        $validationFilename = '~validation-' . microtime(true) . '.tmp';
++        $validationFilePath = $this->_snapshot->getBackupsDir() . DS . $validationFilename;
++
++        $fh = @fopen($validationFilePath, 'w');
++        @fclose($fh);
++
++        if (!is_file($validationFilePath)) {
++            throw new Mage_Exception('Unable to validate ftp account');
++        }
++
++        $rootDir = $this->_snapshot->getRootDir();
++        $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($rootDir, '', $validationFilePath);
++
++        $fileExistsOnFtp = $this->_ftpClient->fileExists($ftpPath);
++        @unlink($validationFilePath);
++
++        if (!$fileExistsOnFtp) {
++            throw new Mage_Backup_Exception_FtpValidationFailed('Failed to validate ftp account');
++        }
++    }
++
++    /**
++     * Unpack snapshot
++     *
++     * @param string $tmpDir
++     */
++    protected function _unpackSnapshot($tmpDir)
++    {
++        $snapshotPath = $this->_snapshot->getBackupPath();
++
++        $archiver = new Mage_Archive();
++        $archiver->unpack($snapshotPath, $tmpDir);
++    }
++
++    /**
++     * @throws Mage_Exception
++     * @return string
++     */
++    protected function _createTmpDir()
++    {
++        $tmpDir = $this->_snapshot->getBackupsDir() . DS . '~tmp-' . microtime(true);
++
++        $result = @mkdir($tmpDir);
++
++        if (false === $result) {
++            throw new Mage_Backup_Exception_NotEnoughPermissions('Failed to create directory ' . $tmpDir);
++        }
++
++        return $tmpDir;
++    }
++
++    /**
++     * Delete magento and all files from ftp
++     */
++    protected function _cleanupFtp()
++    {
++        $rootDir = $this->_snapshot->getRootDir();
++
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(
++                new RecursiveDirectoryIterator($rootDir),
++                $this->_snapshot->getIgnorePaths()
++            ),
++            RecursiveIteratorIterator::CHILD_FIRST
++        );
++
++        foreach ($iterator as $item) {
++            $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($rootDir, '', $item);
++            $ftpPath = str_replace(DS, '/', $ftpPath);
++
++            $this->_ftpClient->delete($ftpPath);
++        }
++    }
++
++    /**
++     * Perform files rollback
++     *
++     * @param string $tmpDir
++     * @throws Mage_Exception
++     */
++    protected function _uploadBackupToFtp($tmpDir)
++    {
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(
++                new RecursiveDirectoryIterator($tmpDir),
++                $this->_snapshot->getIgnorePaths()
++            ),
++            RecursiveIteratorIterator::SELF_FIRST
++        );
++
++        foreach ($iterator as $item) {
++            $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($tmpDir, '', $item);
++            $ftpPath = str_replace(DS, '/', $ftpPath);
++
++            if ($item->isLink()) {
++                continue;
++            }
++
++            if ($item->isDir()) {
++                $this->_ftpClient->mkdirRecursive($ftpPath);
++            } else {
++                $result = $this->_ftpClient->put($ftpPath, $item);
++                if (false === $result) {
++                    throw new Mage_Backup_Exception_NotEnoughPermissions('Failed to upload file '
++                        . $item . ' to ftp');
++                }
++            }
++        }
++    }
++}
 Index: lib/Mage/System/Ftp.php
 ===================================================================
 --- lib/Mage/System/Ftp.php	(revision 0)
