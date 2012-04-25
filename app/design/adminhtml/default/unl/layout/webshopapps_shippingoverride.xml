@@ -15,9 +15,9 @@
         </reference>
     </adminhtml_shippingoverride_edit>
     
-    <adminhtml_report_shippingoverride>
+    <adminhtml_report_shippingoverride_index>
        <reference name="content">
             <block type="shippingoverride/adminhtml_report_shippingoverride" name="sales.report.grid.container"/>
         </reference>
-    </adminhtml_report_shippingoverride>
+    </adminhtml_report_shippingoverride_index>
 </layout>
