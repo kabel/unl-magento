@@ -51,6 +51,14 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'index'     => 'sku',
         ));
 
+        $this->addColumn('source_store', array(
+            'header'    => Mage::helper('sales')->__('Source Store'),
+            'width'     => '100px',
+            'index'     => 'source_store_view',
+            'type'      => 'options',
+            'options'   => Mage::getModel('unl_core/store_source_filter')->toOptionArray(),
+        ));
+
         $this->addColumn('name', array(
             'header'    => Mage::helper('sales')->__('Product Name'),
             'index'     => 'name',
