@@ -97,7 +97,7 @@ class Unl_Comm_Model_Resource_Queue_Collection extends Mage_Core_Model_Resource_
                 Unl_Comm_Model_Queue::STATUS_SENDING,
                 Unl_Comm_Model_Queue::STATUS_NEVER
             ))))
-            ->where($this->_getConditionSql('main_table.queue_start_at', array('from' => Mage::getSingleton('core/date')->gmtdate())))
+            ->where($this->_getConditionSql('main_table.queue_start_at', array('to' => Mage::getSingleton('core/date')->gmtdate())))
             ->where($this->_getConditionSql('main_table.queue_start_at', array('notnull' => true)));
 
         return $this;
