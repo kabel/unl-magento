@@ -53,7 +53,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
 
                 if ($advfilter->getData('item_sku')) {
                     $orders->addFieldToFilter('oi.sku', array('like' =>
-                        $helper->addLikeEscape($this->getValue(), array('position' => 'any'))));
+                        $helper->addLikeEscape($advfilter->getData('item_sku'), array('position' => 'any'))));
                 }
             }
 
