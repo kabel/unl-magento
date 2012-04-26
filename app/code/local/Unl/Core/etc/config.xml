@@ -161,6 +161,12 @@
                     <observer>Unl_Core_Model_Backup_Observer</observer>
                 </rewrite>
             </backup>
+            <backup_resource>
+                <rewrite>
+                    <db>Unl_Core_Model_Backup_Resource_Db</db>
+                    <helper_mysql4>Unl_Core_Model_Backup_Resource_Helper_Mysql4</helper_mysql4>
+                </rewrite>
+            </backup_resource>
             <catalog>
                 <rewrite>
                     <!-- Fix upload exception logging when no upload occurs -->
