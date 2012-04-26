@@ -35,7 +35,7 @@ class Unl_Comm_Block_Queue_Preview extends Mage_Adminhtml_Block_Widget
         $template->revertDesign();
 
         if ($queue->isPlain()) {
-            $templateProcessed = '<pre>' . htmlspecialchars($templateProcessed) . '</pre>';
+            $templateProcessed = '<pre style="white-space:pre-wrap;">' . htmlspecialchars($templateProcessed) . '</pre>';
         }
 
         Varien_Profiler::stop("comm_queue_proccessing");
