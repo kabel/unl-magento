@@ -21,7 +21,7 @@
                     <dashboard_orders_grid>Unl_Core_Block_Adminhtml_Dashboard_Orders_Grid</dashboard_orders_grid>
                     <dashboard_sales>Unl_Core_Block_Adminhtml_Dashboard_Sales</dashboard_sales>
                     <dashboard_searches_top>Unl_Core_Block_Adminhtml_Dashboard_Searches_Top</dashboard_searches_top>
-                    <dashboard_searches_last>Unl_Core_Block_Adminhtml_Dashboard_Searches_Top</dashboard_searches_last>
+                    <dashboard_searches_last>Unl_Core_Block_Adminhtml_Dashboard_Searches_Last</dashboard_searches_last>
                     <dashboard_tab_customers_most>Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most</dashboard_tab_customers_most>
                     <dashboard_tab_products_ordered>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Ordered</dashboard_tab_products_ordered>
                     <dashboard_tab_products_viewed>Unl_Core_Block_Adminhtml_Dashboard_Tab_Products_Viewed</dashboard_tab_products_viewed>
