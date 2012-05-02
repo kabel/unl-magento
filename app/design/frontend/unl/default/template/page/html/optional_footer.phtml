@@ -1,0 +1,15 @@
+<div class="footer_sep"></div>
+<div class="opfooter grid9 first">
+    <div class="link-col first">
+        <div><strong>This Store</strong></div>
+        <?php echo $this->getChildHtml('footer_links') ?>
+    </div>
+    <div class="link-col">
+        <div><strong>UNL Marketplace</strong></div>
+        <?php echo $this->getChildHtml('marketplace_links') ?>
+    </div>
+</div>
+<div class="opfooter grid3 footer-payment">
+    <a href="<?php echo $this->getUrl('', array('_direct' => 'about-us', '_fragment' => 'payment')) ?>"><img src="<?php echo $this->getSkinUrl('images/payment_methods.png')?>" alt="Accepted Credit Cards: Visa, MasterCard, Discover" /></a>
+</div>
+<div class="clear"></div>

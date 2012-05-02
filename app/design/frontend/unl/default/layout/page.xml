@@ -99,9 +99,11 @@ Default layout, loads most of the pages
             </block>
 
             <block type="page/html_footer" name="footer" as="footer" template="page/html/footer.phtml">
-                <block type="page/template_links" name="footer_links" as="footer_links" template="page/template/links.phtml"/>
-                <block type="page/template_links" name="marketplace_links" as="marketplace_links" template="page/template/links.phtml"/>
                 <block type="page/template_links" name="contact_link" as="contact_link" template="page/template/links.phtml"/>
+                <block type="core/template" name="optional_footer" template="page/html/optional_footer.phtml">
+                    <block type="page/template_links" name="footer_links" as="footer_links" template="page/template/links.phtml"/>
+                    <block type="page/template_links" name="marketplace_links" as="marketplace_links" template="page/template/links.phtml"/>
+                </block>
             </block>
 
             <block type="core/text_list" name="before_body_end" as="before_body_end" translate="label">
