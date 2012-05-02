@@ -7,7 +7,7 @@ class Unl_Core_Block_Adminhtml_Report_Sales_Bursar_Co_Shipping_Paid
     {
         parent::_construct();
         $this->_resourceCollectionName = 'unl_core/report_bursar_co_shipping_paid';
-        $this->_exportExcelUrl = '*/*/exportExcelCoShippinPaid';
+        $this->_exportExcelUrl = '*/*/exportExcelCoShippingPaid';
         $this->_exportCsvUrl   = '*/*/exportCsvCoShippingPaid';
     }
 
