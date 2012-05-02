@@ -14,7 +14,7 @@
                 <?php $_votes = $_review->getRatingVotes(); ?>
                 <?php if (count($_votes)): ?>
                 <table class="ratings-table">
-                    <col width="1" />
+                    <col style="width:1px" />
                     <col />
                     <tbody>
                         <?php foreach ($_votes as $_vote): ?>
@@ -22,7 +22,7 @@
                             <th><?php echo $this->escapeHtml($_vote->getRatingCode()) ?></th>
                             <td>
                                 <div class="rating-box">
-                                    <div class="rating" style="width:<?php echo $_vote->getPercent() ?>%;"></div>
+                                    <div title="<?php echo $this->helper('unl_core')->getRatingSummaryTitle($_vote->getPercent()) ?>" class="rating" style="width:<?php echo $_vote->getPercent() ?>%;"></div>
                                 </div>
                             </td>
                         </tr>

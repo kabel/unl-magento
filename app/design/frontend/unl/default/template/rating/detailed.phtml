@@ -1,0 +1,20 @@
+<?php if(!empty($collection) && $collection->getSize()): ?>
+    <table class="ratings-table">
+        <col style="width:1px" />
+        <col />
+        <tbody>
+            <?php foreach ($collection as $_rating): ?>
+                <?php if($_rating->getSummary()): ?>
+                    <tr>
+                        <th><?php echo $this->__($this->escapeHtml($_rating->getRatingCode())) ?></th>
+                        <td>
+                            <div class="rating-box">
+                                <div title="<?php echo $this->helper('unl_core')->getRatingSummaryTitle($_rating->getSummary()) ?>" class="rating" style="width:<?php echo ceil($_rating->getSummary()) ?>%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>

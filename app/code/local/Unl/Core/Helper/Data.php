@@ -63,6 +63,11 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $options;
     }
 
+    public function getRatingSummaryTitle($summary)
+    {
+        return $this->__('%s out of %s stars', round($summary / 100 * 5), 5);
+    }
+
     public function getAdminUserScope($asGroups = false)
     {
         $user = Mage::getSingleton('admin/session')->getUser();
