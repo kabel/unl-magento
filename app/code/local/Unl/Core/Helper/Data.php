@@ -197,6 +197,11 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $storeIds;
     }
 
+    public function getNoMobileUrl()
+    {
+        return $this->_getUrl('') . '?mobile=no';
+    }
+
     public function isCustomerAllowedCategory($category, $addNotice=false, $reload=true, $action=null)
     {
         $result = $this->_getCustomerAllowedCategory($category);
