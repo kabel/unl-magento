@@ -42,6 +42,21 @@ class Unl_Core_Block_Page_Template_Links extends Mage_Page_Block_Template_Links
         return $this;
     }
 
+    public function removeLinkBlock($name)
+    {
+        if ($this->getChild($name)) {
+            foreach ($this->_links as $k => $v) {
+                if ($v instanceof Mage_Core_Block_Abstract && $v->getNameInLayout() == $name) {
+                    unset($this->_links[$k]);
+                }
+            }
+
+            $this->unsetChild($name);
+        }
+
+        return $this;
+    }
+
     /* Overrides
      * @see Mage_Page_Block_Template_Links::_beforeToHtml()
      * to add sorting
