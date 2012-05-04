@@ -145,7 +145,7 @@ class Unl_Core_Adminhtml_Report_Sales_TaxController extends Mage_Adminhtml_Contr
         $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
     }
 
-    protected function _exportExcel($gridId, $aciton, $report = false)
+    protected function _exportExcel($gridId, $action, $report = false)
     {
         $fileName   = "tax_{$action}_{$gridId}.xml";
         $grid       = $this->getLayout()->createBlock("unl_core/adminhtml_report_sales_tax_{$action}_{$gridId}");
@@ -164,7 +164,7 @@ class Unl_Core_Adminhtml_Report_Sales_TaxController extends Mage_Adminhtml_Contr
                 return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/taxroot/' . $act);
                 break;
             default:
-                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/taxroot/');
+                return Mage::getSingleton('admin/session')->isAllowed('report/salesroot/taxroot');
                 break;
         }
     }
