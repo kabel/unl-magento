@@ -759,7 +759,7 @@ input[type="checkbox"]:checked {
 
 /* Catalog List
 -----------------------------*/
-.category-description { display:none; margin:0; padding:10px; }
+.category-description { margin:0; padding:8px; }
 
 .more { padding:15px 10px; text-align:center; }
 .more-button { background:url(../images/bg_gradient.png) repeat-x #1394ca center; color:#fff; font-size:21px; line-height:25px; display:inline-block; padding:5px 25px; position:relative; vertical-align:top; }
