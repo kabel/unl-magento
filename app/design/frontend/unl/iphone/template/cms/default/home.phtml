@@ -1,0 +1,13 @@
+<div class="page-nav">
+<?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+    <h1><?php echo $this->__('Store Directory') ?></h1>
+    <?php echo $this->getChildHtml('store_switcher') ?>
+<?php else: ?>
+    <h1><?php echo $this->__('Browse by category') ?></h1>
+    <?php echo $this->getChildHtml('hp_nav') ?>
+<?php endif; ?>
+</div>
+
+<?php if (Mage::app()->getStore()->getCode() == 'default'): ?>
+<?php echo $this->getChildHtml('featured_global') ?>
+<?php endif; ?>
