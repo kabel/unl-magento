@@ -2,7 +2,7 @@
 <?php $_product = $this->getProduct() ?>
 
 <?php if ($_product->isSalable()): ?>
-    <p class="availability in-stock"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('In stock') ?></span></p>
+    <p class="availability in-stock"><?php echo $this->__('Availability:') ?> <span><?php echo $_product->getStockItem()->getManageStock() ? $this->__('In stock') : $this->__('Stock status cannot be guaranteed') ?></span></p>
 <?php elseif ($_product->getNoSale()): ?>
     <p class="availability no-sale"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Not available online') ?></span></p>
 <?php else: ?>
