@@ -34,7 +34,6 @@
 <?php
     $_helper    = $this->helper('catalog/output');
     $_category  = $this->getCurrentCategory();
-    $_categoryTitle = '<div class="category-title page-title"><h1>'.$_helper->categoryAttribute($_category, $_category->getName(), 'name').'</h1></div>';
     $_imgUrl = $_category->getImageUrl();
     $_imgHtml   = '';
     if ($_imgUrl) {
@@ -44,6 +43,10 @@
 ?>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <div class="category-view">
+    <div class="category-title page-title">
+        <h1><?php echo $_helper->categoryAttribute($_category, $_category->getName(), 'name') ?></h1>
+    </div>
+
     <?php if($_imgUrl): ?>
         <?php echo $_imgHtml ?>
     <?php endif; ?>
@@ -55,16 +58,13 @@
     <?php endif; ?>
 
     <?php if($this->isContentMode()): ?>
-        <?php echo $_categoryTitle ?>
         <?php echo $this->getCmsBlockHtml() ?>
 
     <?php elseif($this->isMixedMode()): ?>
         <?php echo $this->getCmsBlockHtml() ?>
-        <?php echo $_categoryTitle ?>
         <?php echo $this->getProductListHtml() ?>
 
     <?php else: ?>
-        <?php echo $_categoryTitle ?>
         <?php echo $this->getProductListHtml() ?>
     <?php endif; ?>
 </div>
