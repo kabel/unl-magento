@@ -173,9 +173,9 @@
         
         <unl_adminlog>
             <log_events>
-                <adminhtml_customertag_index translate="label">
+                <adminhtml_customertag translate="label">
                     <label>Customer Tags</label>
-                </adminhtml_customertag_index>
+                </adminhtml_customertag>
             </log_events>
         </unl_adminlog>
     </adminhtml>
