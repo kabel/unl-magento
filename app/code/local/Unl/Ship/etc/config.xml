@@ -110,7 +110,7 @@
         
         <unl_adminlog>
             <log_events>
-                <unl_ship_index translate="label">
+                <adminhtml_sales_order_package translate="label">
                     <label>Sales Shipping Labels</label>
                     <view_actions>
                         <customs />
@@ -118,13 +118,10 @@
                         <label />
                         <labelpdf />
                     </view_actions>
-                    <save_actions>
-                        <create />
-                    </save_actions>
                     <alt_params>
-                        <order_id />
+                        <shipment_id />
                     </alt_params>
-                </unl_ship_index>
+                </adminhtml_sales_order_package>
             </log_events>
         </unl_adminlog>
     </adminhtml>
