@@ -1,12 +1,15 @@
 <?php
 
-class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adminhtml_Block_Widget_Grid
+class Unl_Core_Block_Adminhtml_Report_Product_Reconcile_Paid extends Mage_Adminhtml_Block_Widget_Grid
 {
+    protected $_collectionClassName;
+
     public function __construct()
     {
         parent::__construct();
-        $this->setId('orderdetailsProductsGrid');
-        $this->setDefaultSort('order_date');
+        $this->setId('productReconcilePaidGrid');
+        $this->_collectionClassName = 'unl_core/report_product_reconcile_paid';
+        $this->setDefaultSort('paid_date');
         $this->setDefaultDir('desc');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
@@ -14,7 +17,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
 
     protected function _prepareCollection()
     {
-        $collection = Mage::getResourceModel('unl_core/report_product_orderdetails_collection');
+        $collection = Mage::getResourceModel($this->_collectionClassName);
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -22,27 +25,18 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
 
     protected function _prepareColumns()
     {
-        $this->addColumn('real_order_id', array(
-            'header'    => Mage::helper('sales')->__('Order #'),
+        $this->addColumn('parent_number', array(
+            'header'    => Mage::helper('sales')->__('Entity #'),
             'width'     => '80px',
             'type'      => 'text',
-            'index'     => 'ordernum',
-            'renderer'  => 'unl_core/adminhtml_report_product_orderdetails_grid_renderer_action'
+            'index'     => 'parent_number',
         ));
 
-        $this->addColumn('order_date', array(
-            'header'    => Mage::helper('sales')->__('Purchased On'),
-            'index'     => 'order_date',
+        $this->addColumn('paid_date', array(
+            'header'    => Mage::helper('sales')->__('Processed On'),
+            'index'     => 'paid_date',
+            'width'     => '160px',
             'type'      => 'datetime',
-            'width'     => '170px',
-        ));
-
-        $this->addColumn('status', array(
-            'header'    => Mage::helper('sales')->__('Order Status'),
-            'index'     => 'order_status',
-            'type'      => 'options',
-            'width'     => '110px',
-            'options'   => Mage::getSingleton('sales/order_config')->getStatuses(),
         ));
 
         $this->addColumn('sku', array(
@@ -66,10 +60,10 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
         ));
 
         $this->addColumn('qty', array(
-            'header'    => Mage::helper('reports')->__('Qty Ordered'),
+            'header'    => Mage::helper('reports')->__('Qty'),
             'width'     => '100px',
             'align'     => 'right',
-            'index'     => 'qty_adjusted',
+            'index'     => 'qty',
             'type'      => 'number',
         ));
 
@@ -81,26 +75,45 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'index'         => 'base_price',
         ));
 
-        $this->addColumn('customer_firstname', array(
-            'header'    => Mage::helper('sales')->__('Customer First Name'),
-            'index'     => 'customer_firstname',
+        $this->addColumn('base_discount', array(
+            'header'        => Mage::helper('reports')->__('Discount'),
+            'type'          => 'currency',
+            'currency_code' => $currencyCode,
+            'index'         => 'base_discount_amount',
         ));
 
-        $this->addColumn('customer_lastname', array(
-            'header'    => Mage::helper('sales')->__('Customer Last Name'),
-            'index'     => 'customer_lastname',
+        $this->addColumn('base_row_gross', array(
+            'header'        => Mage::helper('reports')->__('Total Gross'),
+            'type'          => 'currency',
+            'currency_code' => $currencyCode,
+            'index'         => 'base_row_gross',
         ));
 
-        $this->addExportType('*/*/exportOrderdetailsCsv', Mage::helper('reports')->__('CSV'));
-        $this->addExportType('*/*/exportOrderdetailsExcel', Mage::helper('reports')->__('Excel XML'));
+        $this->addExportType($this->_getCsvUrl(), Mage::helper('sales')->__('CSV'));
+        $this->addExportType($this->_getExcelUrl(), Mage::helper('sales')->__('Excel XML'));
 
         Mage::dispatchEvent('adminhtml_grid_prepare_columns', array('grid' => $this));
 
         return parent::_prepareColumns();
     }
 
+    protected function _getCsvUrl()
+    {
+        return '*/*/exportReconcilePaidCsv';
+    }
+
+    protected function _getExcelUrl()
+    {
+        return '*/*/exportReconcilePaidExcel';
+    }
+
+    public function getGridUrl()
+    {
+        return $this->getUrl('*/*/reconcilePaidGrid', array('_current'=>true));
+    }
+
     public function getRowUrl($item)
     {
-        return $this->getUrl('*/sales_order/view', array('order_id' => $item->getOrderId()));
+        return $this->getUrl('*/sales_invoice/view', array('invoice_id' => $item->getParentId()));
     }
 }

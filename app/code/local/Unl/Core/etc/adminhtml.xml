@@ -65,6 +65,10 @@
                             <title>Customized</title>
                             <action>adminhtml/report_product/customized</action>
                         </customized>
+                        <reconcile translate="title" module="unl_core">
+                            <title>Reconcile</title>
+                            <action>adminhtml/report_product/reconcile</action>
+                        </reconcile>
                     </children>
                 </products>
                 <customers>
@@ -149,6 +153,9 @@
                                     <customized translate="title">
                                         <title>Customized</title>
                                     </customized>
+                                    <reconcile translate="title">
+                                        <title>Reconcile</title>
+                                    </reconcile>
                                 </children>
                             </products>
                             <customers>

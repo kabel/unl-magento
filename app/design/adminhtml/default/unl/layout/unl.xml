@@ -100,6 +100,12 @@ Custom Product Reports
             <block type="unl_core/adminhtml_report_product_customized" name="sales.grid.container"/>
         </reference>
     </adminhtml_report_product_customized>
+    
+    <adminhtml_report_product_reconcile>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_product_reconcile" name="sales.grid.container"/>
+        </reference>
+    </adminhtml_report_product_reconcile>
 	
 <!--
 Custom Customer Reports

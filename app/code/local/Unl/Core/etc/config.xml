@@ -959,6 +959,7 @@
                     <view_actions>
                         <customized />
                         <orderdetails />
+                        <reconcile />
                     </view_actions>
                 </adminhtml_report_product>
                 <adminhtml_sales_order_view_externalid translate="label">

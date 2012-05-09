@@ -4,6 +4,79 @@ require_once 'Mage/Adminhtml/controllers/Report/ProductController.php';
 
 class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_ProductController
 {
+    public function reconcileAction()
+    {
+        $this->_title($this->__('Reports'))
+            ->_title($this->__('Products'))
+            ->_title($this->__('Reconcile'));
+
+        $this->_initAction()
+            ->_setActiveMenu('report/product/reconcile')
+            ->_addBreadcrumb(Mage::helper('reports')->__('Reconcile'), Mage::helper('reports')->__('Reconcile'));
+
+        $this->renderLayout();
+    }
+
+    public function reconcilePaidGridAction()
+    {
+        $this->loadLayout();
+        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_reconcile_paid')->toHtml();
+        $this->getResponse()->setBody($grid);
+    }
+
+    public function reconcileRefundedGridAction()
+    {
+        $this->loadLayout();
+        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_reconcile_refunded')->toHtml();
+        $this->getResponse()->setBody($grid);
+    }
+
+    public function exportReconcilePaidCsvAction()
+    {
+        $this->_exportCsv('paid', 'reconcile');
+    }
+
+    public function exportReconcilePaidExcelAction()
+    {
+        $this->_exportExcel('paid', 'reconcile');
+    }
+
+    public function exportReconcileRefundedCsvAction()
+    {
+        $this->_exportCsv('refunded', 'reconcile');
+    }
+
+    public function exportReconcileRefundedExcelAction()
+    {
+        $this->_exportExcel('refunded', 'reconcile');
+    }
+
+    protected function _exportCsv($gridId, $action)
+    {
+        $fileName = "products_{$action}";
+        if (empty($gridId)) {
+            $gridId = 'grid';
+        } else {
+            $fileName .= "_{$gridId}";
+        }
+        $fileName .= '.csv';
+        $grid = $this->getLayout()->createBlock("unl_core/adminhtml_report_product_{$action}_{$gridId}");
+        $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
+    }
+
+    protected function _exportExcel($gridId, $action)
+    {
+        $fileName = "products_{$action}";
+        if (empty($gridId)) {
+            $gridId = 'grid';
+        } else {
+            $fileName .= "_{$gridId}";
+        }
+        $fileName .= '.xml';
+        $grid = $this->getLayout()->createBlock("unl_core/adminhtml_report_product_{$action}_{$gridId}");
+        $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+    }
+
     public function orderdetailsAction()
     {
         if ($this->getRequest()->getQuery('ajax')) {
@@ -31,16 +104,12 @@ class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_
 
     public function exportOrderdetailsCsvAction()
     {
-        $fileName = 'products_orderdetails.csv';
-        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_orderdetails_grid');
-        $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
+        $this->_exportCsv('', 'orderdetails');
     }
 
     public function exportOrderdetailsExcelAction()
     {
-        $fileName = 'products_orderdetails.xml';
-        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_orderdetails_grid');
-        $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+        $this->_exportExcel('', 'orderdetails');
     }
 
     public function customizedAction()
@@ -70,16 +139,12 @@ class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_
 
     public function exportCustomizedCsvAction()
     {
-        $fileName   = 'products_customized.csv';
-        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_customized_grid');
-        $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
+        $this->_exportCsv('', 'customized');
     }
 
     public function exportCustomizedExcelAction()
     {
-        $fileName   = 'products_customized.xml';
-        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_customized_grid');
-        $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+        $this->_exportExcel('', 'customized');
     }
 
     protected function _isAllowed()
@@ -88,6 +153,7 @@ class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_
         switch ($act) {
             case 'orderdetails':
             case 'customized':
+            case 'reconcile':
                 return Mage::getSingleton('admin/session')->isAllowed('report/products/' . $act);
                 break;
             default:
