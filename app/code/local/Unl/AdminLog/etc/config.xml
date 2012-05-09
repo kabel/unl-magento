@@ -611,6 +611,9 @@
                     <save_actions>
                         <create />
                     </save_actions>
+                    <utility_actions>
+                        <rollback />
+                    </utility_actions>
                     <view_actions>
                         <download />
                     </view_actions>
