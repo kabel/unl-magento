@@ -167,15 +167,15 @@
         
         <unl_adminlog>
             <log_events>
-                <unl_inventory_index translate="label">
+                <adminhtml_catalog_inventory translate="label">
                     <label>Catalog Product Inventory</label>
-                </unl_inventory_index>
-                <unl_inventory_report translate="label">
+                </adminhtml_catalog_inventory>
+                <adminhtml_report_inventory translate="label">
                     <label>Reporting: Inventory</label>
                     <view_actions>
                         <valuation />
                     </view_actions>
-                </unl_inventory_report>
+                </adminhtml_report_inventory>
             </log_events>
         </unl_adminlog>
     </adminhtml>
