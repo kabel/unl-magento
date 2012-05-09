@@ -941,6 +941,13 @@
                         <nocap />
                     </view_actions>
                 </adminhtml_report_sales_reconcile>
+                <adminhtml_report_sales_tax translate="label">
+                    <label>Reporting: Sales - Tax</label>
+                    <view_actions>
+                        <reconcile />
+                        <totals />
+                    </view_actions>
+                </adminhtml_report_sales_tax>
                 <adminhtml_report_customer translate="label">
                     <label>Reporting: Customer Info</label>
                     <view_actions>
@@ -957,6 +964,12 @@
                 <adminhtml_sales_order_view_externalid translate="label">
                     <label>Sales Order External Id</label>
                 </adminhtml_sales_order_view_externalid>
+                <adminhtml_tax_rate>
+                    <save_actions>
+                        <boundaryimportpost />
+                        <fullimportpost />
+                    </save_actions>
+                </adminhtml_tax_rate>
                 <adminhtml_warehouse translate="label">
                     <label>Manage Warehouses</label>
                 </adminhtml_warehouse>

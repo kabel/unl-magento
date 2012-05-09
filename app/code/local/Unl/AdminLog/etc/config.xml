@@ -713,6 +713,9 @@
                     <view_actions>
                         <importexport />
                     </view_actions>
+                    <save_actions>
+                        <importpost />
+                    </save_actions>
                     <alt_params>
                         <tax_calculation_rate_id />
                     </alt_params>
