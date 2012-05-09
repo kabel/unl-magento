@@ -528,13 +528,17 @@
                     <label>Sales Order Shipments</label>
                     <id_param>shipment_id</id_param>
                     <view_actions>
+                        <massprintshippinglabel />
                         <pdfshipments />
                         <print />
+                        <printlabel />
+                        <printpackage />
                         <start />
                     </view_actions>
                     <save_actions>
                         <addcomment />
                         <addtrack />
+                        <createlabel />
                     </save_actions>
                     <delete_actions>
                         <removetrack />
@@ -545,6 +549,7 @@
                     <alt_params>
                         <id />
                         <shipment_ids />
+                        <order_ids />
                     </alt_params>
                 </adminhtml_sales_order_shipment>
                 <adminhtml_sales_order_status translate="label">
