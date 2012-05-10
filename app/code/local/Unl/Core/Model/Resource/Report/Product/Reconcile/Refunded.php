@@ -17,7 +17,8 @@ class Unl_Core_Model_Resource_Report_Product_Reconcile_Refunded extends Mage_Sal
             ->addFilterToMap('parent_number', 'c.increment_id')
             ->addFilterToMap('parent_state', 'c.state')
             ->addFilterToMap('unl_payment_account', 'oi.unl_payment_account')
-            ->addFilterToMap('source_store_view', 'oi.source_store_view');
+            ->addFilterToMap('source_store_view', 'oi.source_store_view')
+            ->addFilterToMap('payment_method', 'p.method');
 
         $this->getSelect()
             ->join(array('c' => $this->getTable('sales/creditmemo')),
@@ -27,6 +28,10 @@ class Unl_Core_Model_Resource_Report_Product_Reconcile_Refunded extends Mage_Sal
             ->join(array('oi' => $this->getTable('sales/order_item')),
                 '(main_table.order_item_id = oi.item_id)',
                 array('unl_payment_account', 'source_store_view')
+            )
+            ->join(array('p' => $this->getTable('sales/order_payment')),
+                'c.order_id = p.parent_id',
+                array('payment_method' => 'method')
             );
 
         $grossExpr = '(main_table.base_row_total - IFNULL(main_table.base_discount_amount, 0))';

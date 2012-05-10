@@ -39,6 +39,13 @@ class Unl_Core_Block_Adminhtml_Report_Product_Reconcile_Paid extends Mage_Adminh
             'type'      => 'datetime',
         ));
 
+        $this->addColumn('payment_method', array(
+            'header'    => Mage::helper('sales')->__('Payment Method'),
+            'index'     => 'payment_method',
+            'type'      => 'options',
+            'options'   => Mage::helper('unl_core')->getActivePaymentMethodOptions(false),
+        ));
+
         $this->addColumn('sku', array(
             'header'    => Mage::helper('sales')->__('SKU'),
             'type'      => 'text',
