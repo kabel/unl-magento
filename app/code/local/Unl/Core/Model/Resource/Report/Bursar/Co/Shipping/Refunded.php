@@ -18,7 +18,7 @@ class Unl_Core_Model_Resource_Report_Bursar_Co_Shipping_Refunded extends Unl_Cor
 
     protected function _initSelect()
     {
-        $this->_initSelectForShipping(true);
+        $this->_initSelectForShipping(true, true);
         Mage::helper('unl_core/report_bursar')->joinBillingNameToCollection($this);
 
         return $this;

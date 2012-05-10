@@ -13,6 +13,6 @@ class Unl_Core_Model_Resource_Report_Reconcile_Collection_Shipping_Paid
 
     protected  function _initSelect()
     {
-        return $this->_initSelectForShipping(true);
+        return $this->_initSelectForShipping(true, true);
     }
 }

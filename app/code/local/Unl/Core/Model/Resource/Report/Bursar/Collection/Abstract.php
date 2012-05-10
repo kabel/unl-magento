@@ -75,7 +75,7 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
 
     protected function _initSelectForProducts($groupOrder = false)
     {
-        $this->_initSelectForShipping($groupOrder);
+        $this->_initSelectForShipping(false, $groupOrder);
 
         $this->getSelect()
             ->join(array('ei' => $this->_getMainItemTable()), 'ei.parent_id = e.entity_id AND ei.is_dummy = 0', array())
@@ -91,12 +91,16 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
         return $this;
     }
 
-    protected function _initSelectForShipping($groupOrder = false)
+    protected function _initSelectForShipping($filterShipping = true, $groupOrder = false)
     {
         $this->getSelect()
             ->from(array('e' => $this->getResource()->getMainTable()), $this->_getSelectedColumns())
             ->join(array('p' => $this->getTable('sales/order_payment')), 'e.order_id = p.parent_id', array())
             ->where('p.method IN (?)', $this->_paymentMethodCodes);
+
+        if ($filterShipping) {
+            $this->getSelect()->where(Mage::helper('unl_core/report_bursar')->getShippingFilter());
+        }
 
         if (!$this->isTotals()) {
             $this->getSelect()->group($this->_periodFormat);

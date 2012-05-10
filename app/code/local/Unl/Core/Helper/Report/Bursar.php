@@ -29,6 +29,11 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
         );
     }
 
+    public function getShippingFilter()
+    {
+        return '(e.shipping_amount + e.shipping_tax_amount) > 0';
+    }
+
     public function getPaymentMethodCodes($type)
     {
         if (isset($this->_paymentTypeMap[$type])) {
