@@ -9,6 +9,13 @@ class Unl_Core_Block_Adminhtml_Report_Product_Reconcile_Refunded extends Unl_Cor
         $this->_collectionClassName = 'unl_core/report_product_reconcile_refunded';
     }
 
+    public function _prepareColumns()
+    {
+        parent::_prepareColumns();
+        $this->getColumn('paid_date')->setData('header', Mage::helper('sales')->__('Refunded On'));
+        return $this;
+    }
+
     protected function _getCsvUrl()
     {
         return '*/*/exportReconcileRefundedCsv';

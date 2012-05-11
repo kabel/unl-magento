@@ -21,13 +21,13 @@ class Unl_Core_Model_Resource_Report_Product_Reconcile_Paid extends Mage_Sales_M
             ->addFilterToMap('payment_method', 'p.method');
 
         $this->getSelect()
-            ->join(array('i' => $this->getTable('sales/invoice')),
+            ->join(array('i' => $this->getTable('sales/invoice_grid')),
                 '(main_table.parent_id = i.entity_id AND ' .
                     $adapter->prepareSqlCondition('i.state', array('nin' => array(
                         Mage_Sales_Model_Order_Invoice::STATE_OPEN,
                         Mage_Sales_Model_Order_Invoice::STATE_CANCELED
                     ))) . ')',
-                array('parent_number' => 'increment_id', 'paid_date' => 'paid_at', 'parent_state' => 'state')
+                array('parent_number' => 'increment_id', 'paid_date' => 'paid_at', 'parent_state' => 'state', 'order_number' => 'order_increment_id')
             )
             ->join(array('oi' => $this->getTable('sales/order_item')),
                 '(main_table.order_item_id = oi.item_id)',

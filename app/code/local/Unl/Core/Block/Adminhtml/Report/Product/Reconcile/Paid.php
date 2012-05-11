@@ -25,15 +25,15 @@ class Unl_Core_Block_Adminhtml_Report_Product_Reconcile_Paid extends Mage_Adminh
 
     protected function _prepareColumns()
     {
-        $this->addColumn('parent_number', array(
-            'header'    => Mage::helper('sales')->__('Entity #'),
+        $this->addColumn('order_number', array(
+            'header'    => Mage::helper('sales')->__('Order #'),
             'width'     => '80px',
             'type'      => 'text',
-            'index'     => 'parent_number',
+            'index'     => 'order_number',
         ));
 
         $this->addColumn('paid_date', array(
-            'header'    => Mage::helper('sales')->__('Processed On'),
+            'header'    => Mage::helper('sales')->__('Paid On'),
             'index'     => 'paid_date',
             'width'     => '160px',
             'type'      => 'datetime',

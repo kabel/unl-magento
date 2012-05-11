@@ -21,9 +21,9 @@ class Unl_Core_Model_Resource_Report_Product_Reconcile_Refunded extends Mage_Sal
             ->addFilterToMap('payment_method', 'p.method');
 
         $this->getSelect()
-            ->join(array('c' => $this->getTable('sales/creditmemo')),
+            ->join(array('c' => $this->getTable('sales/creditmemo_grid')),
                 '(main_table.parent_id = c.entity_id)',
-                array('parent_number' => 'increment_id', 'paid_date' => 'refunded_at', 'parent_state' => 'state')
+                array('parent_number' => 'increment_id', 'paid_date' => 'refunded_at', 'parent_state' => 'state', 'order_number' => 'order_increment_id')
             )
             ->join(array('oi' => $this->getTable('sales/order_item')),
                 '(main_table.order_item_id = oi.item_id)',
