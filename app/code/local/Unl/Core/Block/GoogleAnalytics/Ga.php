@@ -14,6 +14,8 @@ class Unl_Core_Block_GoogleAnalytics_Ga extends Mage_GoogleAnalytics_Block_Ga
             return '';
         }
         $accountId = Mage::getStoreConfig(Mage_GoogleAnalytics_Helper_Data::XML_PATH_ACCOUNT);
+        $altAccountId = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_ALT_ACCOUNT);
+        $altDomain = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_ALT_DOMAIN);
         return '
 <!-- BEGIN GOOGLE ANALYTICS CODE -->
 <script type="text/javascript">
@@ -21,9 +23,42 @@ class Unl_Core_Block_GoogleAnalytics_Ga extends Mage_GoogleAnalytics_Block_Ga
     var _gaq = _gaq || [];
 ' . $this->_getPageTrackingCode($accountId) . '
 ' . $this->_getOrdersTrackingCode() . '
+' . ($altAccountId ? $this->_getPageTrackingCode($altAccountId, 'alt', $altDomain) : '') . '
 //]]>
 </script>
 <!-- END GOOGLE ANALYTICS CODE -->';
+    }
+
+    /* Overrides
+     * @see Mage_GoogleAnalytics_Block_Ga::_getPageTrackingCode()
+     * by allowing a named tracker and domain to set (linker)
+     */
+    protected function _getPageTrackingCode($accountId, $trackerName = '', $domain = '')
+    {
+        $pageName   = trim($this->getPageName());
+        $optPageURL = '';
+        if ($pageName && preg_match('/^\/.*/i', $pageName)) {
+            $optPageURL = ", '{$this->jsQuoteEscape($pageName)}'";
+        }
+
+        if (!empty($trackerName)) {
+            $trackerName = $this->jsQuoteEscape($trackerName) . '.';
+        }
+
+        $code = "
+_gaq.push(['{$trackerName}_setAccount', '{$this->jsQuoteEscape($accountId)}']);";
+
+        if (!empty($domain)) {
+            $code .= "
+_gaq.push(['{$trackerName}_setDomainName', '{$this->jsQuoteEscape($domain)}']);
+_gaq.push(['{$trackerName}_setAllowLinker', true]);";
+        }
+
+        $code .= "
+_gaq.push(['{$trackerName}_trackPageview'{$optPageURL}]);
+";
+
+        return $code;
     }
 
     protected function _getAnalyticsScriptCode()

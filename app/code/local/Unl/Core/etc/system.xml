@@ -85,6 +85,22 @@
             <groups>
                 <analytics>
                     <fields>
+                        <alt_account translate="label">
+                            <label>Alternate Account Number</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>21</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </alt_account>
+                        <alt_domain translate="label">
+                            <label>Alternate Account Domain</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>22</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </alt_domain>
                         <output_script>
                             <label>Output Library Script</label>
                             <frontend_type>select</frontend_type>
