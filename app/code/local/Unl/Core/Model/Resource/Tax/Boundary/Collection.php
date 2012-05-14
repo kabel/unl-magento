@@ -1021,7 +1021,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         if ($count) {
             $item = $this->getFirstItem();
 
-            return $item['zip_code'] . '-' . $item['plus_4'];
+            return sprintf('%05s-%04s', $item['zip_code'], $item['plus_4']);
         } elseif ($fromZip) {
             return $this->_getHighestRate($address, false);
         }
@@ -1063,7 +1063,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
                 $item = current($this->getItems());
             }
 
-            return $item['zip_code'] . '-' . $item['plus_4'];
+            return sprintf('%05s-%04s', $item['zip_code'], $item['plus_4']);
         } else {
             if (!$strict) {
                 return $this->_runOnMatch($address, $matches, $secondaryOffset, true, $zipInstead);
