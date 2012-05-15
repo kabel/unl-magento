@@ -817,82 +817,84 @@ INSERT INTO `region` (`region_id`,`code`) VALUES (63,'WV');
 INSERT INTO `region` (`region_id`,`code`) VALUES (64,'WI');
 INSERT INTO `region` (`region_id`,`code`) VALUES (65,'WY');
 
-DROP procedure IF EXISTS `fetch_city_plus_rates`;
+DROP PROCEDURE IF EXISTS `fetch_city_plus_rates`;
 
 DELIMITER $$
-CREATE PROCEDURE `fetch_city_plus_rates`(IN city varchar(28), IN plus_info VARCHAR(100), IN rate DECIMAL(6,5))
+CREATE PROCEDURE `fetch_city_plus_rates`(IN city varchar(28), IN plus_info VARCHAR(100), IN rate DECIMAL(6,5), IN start_from DATE)
 BEGIN
+SET start_from = IFNULL(start_from, NOW());
 SELECT 
-  CONCAT('US-NE-', CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR), '-CityFips+-', b.fips_place_number, '-', plus_info) AS code,
+  CONCAT('US-NE-CityFips+-', b.fips_place_number, '-', plus_info) AS code,
   'US' AS country,
   s.region_id AS state,
-  CONCAT(CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR)) AS postal_code,
+  CONCAT('~~', b.fips_place_number, '-', b.fips_county_code) AS postal_code,
   rate * 100 AS rate
 FROM boundaries b
 JOIN place p ON b.fips_place_number = p.fips_place_number
 JOIN region s ON s.code = 'NE'
-WHERE record_type = 'A'
-  AND NOW() BETWEEN b.begin_date AND b.end_date
+WHERE record_type = '4'
+  AND start_from BETWEEN b.begin_date AND b.end_date
   AND p.name = city
-ORDER BY b.zip_code, b.plus_4;
+GROUP BY b.fips_place_number, b.fips_county_code;
 END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_city_rates`;
+DROP PROCEDURE IF EXISTS `fetch_city_rates`;
 
 DELIMITER $$
-CREATE PROCEDURE `fetch_city_rates`()
+CREATE PROCEDURE `fetch_city_rates`(IN start_from DATE)
 BEGIN
-SELECT 
-  CONCAT('US-NE-', CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR), '-CityFips-', b.fips_place_number) AS code,
+SET start_from = IFNULL(start_from, NOW());
+SELECT
+  CONCAT('US-NE-CityFips-', b.fips_place_number) AS code,
   'US' AS country,
   s.region_id AS state,
-  CONCAT(CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR)) AS postal_code,
+  CONCAT('~~', b.fips_place_number, '-', b.fips_county_code) AS postal_code,
   r.general_tax_rate_intra * 100 AS rate
 FROM boundaries b
 JOIN rates r ON b.fips_place_number = r.jurisdiction_fips_code AND r.jurisdiction_type = 01
 JOIN region s ON s.code = 'NE'
-WHERE record_type = 'A'
-  AND NOW() BETWEEN b.begin_date AND b.end_date
-  AND NOW() BETWEEN r.begin_date AND r.end_date
+WHERE record_type = '4'
+  AND start_from BETWEEN b.begin_date AND b.end_date
+  AND start_from BETWEEN r.begin_date AND r.end_date
   AND b.fips_place_number <> ''
-
-ORDER BY b.zip_code, b.plus_4, b.fips_place_number DESC;
+GROUP BY b.fips_place_number, b.fips_county_code;
 END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_county_rates`;
+DROP PROCEDURE IF EXISTS `fetch_county_rates`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `fetch_county_rates`()
+CREATE PROCEDURE `fetch_county_rates`(IN start_from DATE)
 BEGIN
+SET start_from = IFNULL(start_from, NOW());
 SELECT 
-  CONCAT('US-NE-', CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR), '-CountyFips-', b.fips_county_code) AS code,
+  CONCAT('US-NE-CountyFips-', b.fips_county_code) AS code,
   'US' AS country,
   s.region_id AS state,
-  CONCAT(CAST(b.zip_code AS CHAR), '-', CAST(b.plus_4 AS CHAR)) AS postal_code,
+  CONCAT('~~', b.fips_place_number, '-', b.fips_county_code) AS postal_code,
   r.general_tax_rate_intra * 100 AS rate
 FROM boundaries b
 JOIN rates r ON b.fips_county_code = r.jurisdiction_fips_code AND r.jurisdiction_type = 00
 JOIN region s ON s.code = 'NE'
-WHERE record_type = 'A'
-  AND NOW() BETWEEN b.begin_date AND b.end_date
-  AND NOW() BETWEEN r.begin_date AND r.end_date
+WHERE record_type = '4'
+  AND start_from BETWEEN b.begin_date AND b.end_date
+  AND start_from BETWEEN r.begin_date AND r.end_date
   AND b.fips_county_code <> ''
-
-ORDER BY b.zip_code, b.plus_4, b.fips_county_code DESC;
+GROUP BY b.fips_place_number, b.fips_county_code;
 END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_force_state_rate`;
+DROP PROCEDURE IF EXISTS `fetch_force_state_rate`;
 
 DELIMITER $$
-CREATE PROCEDURE `fetch_force_state_rate` ()
+CREATE PROCEDURE `fetch_force_state_rate`(IN start_from DATE)
 BEGIN
+SET start_from = IFNULL(start_from, NOW());
 SELECT
   CONCAT('US-', s.code) AS code,
   'US' AS county,
@@ -900,35 +902,39 @@ SELECT
   '*' AS postal_code,
   r.general_tax_rate_intra * 100 AS rate
 FROM region s
-JOIN rates r ON s.code = 'NE' AND r.jurisdiction_fips_code = 31 AND r.jurisdiction_type = 45;
+JOIN rates r ON s.code = 'NE' AND r.jurisdiction_fips_code = 31 AND r.jurisdiction_type = 45
+WHERE start_from BETWEEN r.begin_date AND r.end_date;
 END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_force_city_rate`;
+DROP PROCEDURE IF EXISTS `fetch_force_city_rate`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `fetch_force_city_rate` (IN city varchar(28))
+CREATE PROCEDURE `fetch_force_city_rate`(IN city varchar(28), IN start_from DATE)
 BEGIN
+SET start_from = IFNULL(start_from, NOW());
 SELECT
-  CONCAT('US-NE-*-CityFips-', CAST(p.fips_place_number AS CHAR)) AS code,
+  CONCAT('US-NE-CityFips-', CAST(p.fips_place_number AS CHAR)) AS code,
   'US' AS country,
   0 AS state,
   '*' AS postal_code,
   r.general_tax_rate_intra * 100 AS rate
 FROM place p
 JOIN rates r ON p.fips_place_number = r.jurisdiction_fips_code AND r.jurisdiction_type = 01
-WHERE p.name = city;
+WHERE p.name = city
+  AND start_from BETWEEN r.begin_date AND r.end_date;
 END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_state_rates`;
+DROP PROCEDURE IF EXISTS `fetch_state_rates`;
 
 DELIMITER $$
-CREATE PROCEDURE `fetch_state_rates` ()
+CREATE PROCEDURE `fetch_state_rates`(IN start_from DATE)
 BEGIN
+SET start_from = IFNULL(start_from, NOW());
 SELECT
   CONCAT('US-', s.code, '-*') AS code,
   'US' AS county,
@@ -936,19 +942,20 @@ SELECT
   '*' AS postal_code,
   IFNULL(r.general_tax_rate_intra, 0.000) * 100 AS rate
 FROM region s
-LEFT JOIN rates r ON IF(s.code = 'NE', r.jurisdiction_fips_code = 31 AND r.jurisdiction_type = 45, false);
+LEFT JOIN rates r ON IF(s.code = 'NE', r.jurisdiction_fips_code = 31 AND r.jurisdiction_type = 45, false)
+WHERE (start_from BETWEEN r.begin_date AND r.end_date OR r.begin_date IS NULL);
 END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_force_city_plus_rate`;
+DROP PROCEDURE IF EXISTS `fetch_force_city_plus_rate`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `fetch_force_city_plus_rate` (IN city varchar(28), IN plus_info VARCHAR(100), IN rate DECIMAL(6,5))
+CREATE PROCEDURE `fetch_force_city_plus_rate`(IN city varchar(28), IN plus_info VARCHAR(100), IN rate DECIMAL(6,5))
 BEGIN
 SELECT
-  CONCAT('US-NE-*-CityFips+-', CAST(p.fips_place_number AS CHAR), '-', plus_info) AS code,
+  CONCAT('US-NE-CityFips+-', CAST(p.fips_place_number AS CHAR), '-', plus_info) AS code,
   'US' AS country,
   0 AS state,
   '*' AS postal_code,
@@ -959,11 +966,11 @@ END$$
 
 DELIMITER ;
 
-DROP procedure IF EXISTS `fetch_exempt_rates`;
+DROP PROCEDURE IF EXISTS `fetch_exempt_rates`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `fetch_exempt_rates` ()
+CREATE PROCEDURE `fetch_exempt_rates`()
 BEGIN
 SELECT
   c.code AS code,
@@ -980,6 +987,8 @@ JOIN (
   SELECT 'Exempt Carrier'
   UNION
   SELECT 'Gov\'t Agency'
+  UNION
+  SELECT 'Exempt Food'
   UNION
   SELECT 'Nontaxable Services'
   UNION
