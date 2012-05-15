@@ -874,7 +874,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
                     $street_name[] = $possib['secondary_addr'];
                     unset($possib['secondary_addr']);
                     $addr2Swap = true;
-                    $street_name[] = $piece;
+                    $street_name[] = $this->_reverseSuffix($temp);
                 } else {
                     $possib['street_suffix'] = $temp;
                 }
@@ -1003,72 +1003,81 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         }
     }
 
-    protected function _getHighestRate($address, $fromZip = true)
+    protected function _formatZip($code, $ext)
     {
-        $this->_reset();
-        $select = $this->getSelect()->where('record_type = ?', 'A')
-            ->where('NOW() BETWEEN begin_date AND end_date')
-            ->where('fips_place_number != ?', '')
-            ->limit(1);
-
-        if ($fromZip) {
-            $select->where('zip_code = ?', $address->getPostcode());
-        } else {
-            $select->where('city_name = ?', $address->getCity());
-        }
-
-        $count = count($this);
-        if ($count) {
-            $item = $this->getFirstItem();
-
-            return sprintf('%05s-%04s', $item['zip_code'], $item['plus_4']);
-        } elseif ($fromZip) {
-            return $this->_getHighestRate($address, false);
-        }
-
-        return '';
+        return sprintf('%05s-%04s', $code, $ext);
     }
 
-    protected function _runOnMatch($address, $matches, $secondaryOffset, $strict = false, $zipInstead = false)
+    protected function _runOnMatch($address, $matches, $secondaryOffset)
     {
-        $this->_reset();
-        $addr = $address->getStreet();
-        $search = array('address' => $matches[1]);
-        $possib = array();
+        $correctCity = false;
+        $strict = false;
+        $adapter = $this->getConnection();
 
-        $pre = trim($matches[2]);
-        if (!empty($pre)) {
-            $possib = array('pre-directional' => $pre);
-        }
-
-        $street_pieces = explode(' ', $matches[3]);
-        $this->_processPieces($street_pieces, $search, $possib, $strict);
-
-        $select = $this->getSelect()->where('record_type = ?', 'A')
+        $select = clone $this->getSelect()
+            ->columns(array(new Zend_Db_Expr('COUNT(*)')))
+            ->where('record_type = ?', 'A')
             ->where('NOW() BETWEEN begin_date AND end_date')
-            ->where('? BETWEEN low_address_range AND high_address_range', $search['address'])
-            ->where('street_name LIKE ?', implode(' ', $search['street_name']) . '%');
+            ->where('city_name = ?', $address->getCity());
+        $cityCount = $adapter->fetchOne($select);
 
-        if ($zipInstead) {
-            $select->where('zip_code = ?', $address->getPostcode());
-        } else {
-            $select->where('city_name = ?', $address->getCity());
+        if (!$cityCount) {
+            $select = clone $this->getSelect()
+                ->columns(array(new Zend_Db_Expr('COUNT(*)')))
+                ->where('record_type = ?', 'A')
+                ->where('NOW() BETWEEN begin_date AND end_date')
+                ->where('zip_code = ?', $address->getPostcode());
+            $zipCount = $adapter->fetchOne($select);
+
+            if ($zipCount) {
+                $correctCity = true;
+            }
         }
 
-        $count = count($this);
-        if ($count) {
-            if ($count > 1) {
-                $item = $this->_runFilters($this->getItems(), isset($addr[$secondaryOffset]) ? $addr[$secondaryOffset] : '', $possib, $search);
-            } else {
-                $item = current($this->getItems());
+        while ($cityCount || $zipCount) {
+            $this->_reset();
+            $addr = $address->getStreet();
+            $search = array('address' => $matches[1]);
+            $possib = array();
+
+            $pre = trim($matches[2]);
+            if (!empty($pre)) {
+                $possib = array('pre-directional' => $pre);
             }
 
-            return sprintf('%05s-%04s', $item['zip_code'], $item['plus_4']);
-        } else {
-            if (!$strict) {
-                return $this->_runOnMatch($address, $matches, $secondaryOffset, true, $zipInstead);
-            } elseif (!$zipInstead) {
-                return $this->_runOnMatch($address, $matches, $secondaryOffset, false, true);
+            $street_pieces = explode(' ', $matches[3]);
+            $this->_processPieces($street_pieces, $search, $possib, $strict);
+
+            $select = $this->getSelect()->where('record_type = ?', 'A')
+                ->where('NOW() BETWEEN begin_date AND end_date')
+                ->where('? BETWEEN low_address_range AND high_address_range', $search['address'])
+                ->where('street_name LIKE ?', implode(' ', $search['street_name']) . '%');
+
+            if (!$cityCount) {
+                $select->where('zip_code = ?', $address->getPostcode());
+            } else {
+                $select->where('city_name = ?', $address->getCity());
+            }
+
+            $count = count($this);
+            if ($count) {
+                if ($count > 1) {
+                    $item = $this->_runFilters($this->getItems(), isset($addr[$secondaryOffset]) ? $addr[$secondaryOffset] : '', $possib, $search);
+                } else {
+                    $item = current($this->getItems());
+                }
+
+                if ($correctCity) {
+                    $address->setCity($item['city_name']);
+                }
+
+                return $this->_formatZip($item['zip_code'], $item['plus_4']);
+            } else {
+                if ($strict) {
+                    break;
+                } else {
+                    $strict = true;
+                }
             }
         }
 
@@ -1081,7 +1090,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
      * @param Mage_Customer_Model_Address_Abstract $address
      * @return Unl_Core_Model_Resource_Tax_Boundary_Collection
      */
-    public function validateAddressZip($address, $store = null)
+    public function validateAddressZip($address)
     {
         if (preg_match('/^(\d{5})(?:-(\d{4}))$/', $address->getPostcode(), $matches)) {
             if ($address->getValidatedZip() == $address->getPostcode()) {
@@ -1093,6 +1102,15 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
 
         $zip = '';
         $addr = $address->getStreet();
+
+        foreach ($addr as $line) {
+            if (preg_match('/(?:P\.?\s*O\.?\s*)?Box\s+(\d+)/i', $line, $matches)) {
+                $zip = $this->_formatZip($address->getPostcode(), substr($matches[1], -4));
+                $address->setPostcode($zip);
+
+                return $this;
+            }
+        }
 
         for ($i = 0; $i < count($addr); $i++) {
             if ($i == 1) {
@@ -1113,15 +1131,10 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             }
         }
 
-        // If we can't zip plus4 using the street address, grab it from the first available FIPS (zip first, then city)
         if (!$zip) {
-            $zip = $this->_getHighestRate($address);
-        }
-
-        // This should never happen given a valid zip OR NE city
-        if (!$zip) {
-            Mage::log('NE tax boundary validation failed for address: ' . $address->format('oneline'));
-            $zip = Mage::getModel('unl_core/tax_config')->getFallbackZip($store);
+            try{
+                Mage::log('NE tax boundary validation failed for address: ' . $address->format('oneline'), Zend_Log::NOTICE, 'unl_tax.log');
+            } catch (Exception $ex) {}
         }
 
         if ($zip) {
@@ -1129,5 +1142,75 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         }
 
         return $this;
+    }
+
+    /**
+     * Returns a string formated for fetching tax rates
+     *
+     * @param Varien_Object $item
+     * @return string
+     */
+    protected function _formatBoundaryFips($item)
+    {
+        $city = $item->getData('fips_place_number');
+        $county = $item->getData('fips_county_code');
+        $format = '~~';
+
+        if (empty($city) && empty($county)) {
+            return $format;
+        }
+
+        if (!empty($city)) {
+            $format .= sprintf('%05s', $city);
+        }
+
+        $format .= '-';
+
+        if (!empty($county)) {
+            $format .= sprintf('%03s', $county);
+        }
+
+        return $format;
+    }
+
+    public function translateZip($zip)
+    {
+        if (null === Mage::helper('unl_core/tax')->zipRegistry($zip)) {
+            $result = false;
+            $originalZip = $zip;
+
+            if (preg_match('/^(\d{5})(?:-(\d{4}))$/', $zip, $matches)) {
+                $this->_reset();
+                $this->getSelect()->where('record_type = ?', '4')
+                    ->where('NOW() BETWEEN begin_date AND end_date')
+                    ->where('? BETWEEN zip_code_low AND zip_code_high', $matches[1])
+                    ->where('? BETWEEN zip_ext_low AND zip_ext_high', $matches[2]);
+
+                if (count($this)) {
+                    $result = $this->_formatBoundaryFips($this->getFirstItem());
+                } else {
+                    $zip = $matches[1];
+                }
+            }
+
+            if (!$result) {
+                $this->_reset();
+
+                $this->getSelect()->where('record_type = ?', 'Z')
+                    ->where('NOW() BETWEEN begin_date AND end_date')
+                    ->where('? BETWEEN zip_code_low AND zip_code_high', $zip);
+
+                if (count($this)) {
+                    $result = $this->_formatBoundaryFips($this->getFirstItem());
+                } else {
+                    // LOG ERROR
+                    Mage::log('NE tax boundary could not translate zip: ' . $originalZip, Zend_Log::NOTICE, 'unl_tax.log');
+                }
+            }
+
+            Mage::helper('unl_core/tax')->zipRegister($zip, $result);
+        }
+
+        return Mage::helper('unl_core/tax')->zipRegistry($zip);
     }
 }
