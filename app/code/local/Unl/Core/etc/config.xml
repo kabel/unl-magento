@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.2.1</version>
+            <version>0.2.2</version>
         </Unl_Core>
     </modules>
     
@@ -1045,14 +1045,6 @@
                 <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
             </pickup>
         </carriers>
-        <tax>
-            <classes>
-                <exempt_shipping_tax_class></exempt_shipping_tax_class>
-            </classes>
-            <defaults>
-                <fallback_zip>68508-1651</fallback_zip>
-            </defaults>
-        </tax>
         <dev>
             <template>
                 <allow_symlink>1</allow_symlink>
