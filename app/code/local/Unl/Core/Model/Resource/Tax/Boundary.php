@@ -105,10 +105,11 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
 
         $adapter = $this->_resources->createConnection('unl_tax_load', $connConfig['type'], $connConfig);
 
-        $sql = sprintf('LOAD DATA LOCAL INFILE %s INTO TABLE %s FIELDS TERMINATED BY %s',
+        $sql = sprintf('LOAD DATA LOCAL INFILE %s INTO TABLE %s FIELDS TERMINATED BY %s OPTIONALLY ENCLOSED BY %s',
             $adapter->quote($filePath),
             $adapter->quoteIdentifier($table),
-            $adapter->quote(',')
+            $adapter->quote(','),
+            $adapter->quote('"')
         );
 
         if ($fields) {
