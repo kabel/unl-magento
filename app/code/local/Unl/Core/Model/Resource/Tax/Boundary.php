@@ -55,6 +55,13 @@ class Unl_Core_Model_Resource_Tax_Boundary extends Mage_Core_Model_Resource_Db_A
         return $this;
     }
 
+    public function cleanCache()
+    {
+        Mage::helper('unl_core/tax')->cleanCache();
+
+        return $this;
+    }
+
     public function beginRateImport()
     {
         $this->_beginImport($this->getTable('tax/tax_calculation_rate'), false);

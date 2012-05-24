@@ -486,6 +486,16 @@
             
         </events>
         
+        <cache>
+            <types>
+                <unl_tax translate="label,description" module="core">
+                    <label>UNL Tax</label>
+                    <description>ZIP+4 Validation Lookups and ZIP to FIPS translations.</description>
+                    <tags>UNL_TAX_BOUNDARY,UNL_TAX_TRANSLATE</tags>
+                </unl_tax>
+            </types>
+        </cache>
+        
         <sales>
             <quote>
                 <item>

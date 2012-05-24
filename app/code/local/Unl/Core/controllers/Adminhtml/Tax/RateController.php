@@ -148,6 +148,8 @@ class Unl_Core_Adminhtml_Tax_RateController extends Mage_Adminhtml_Tax_RateContr
 
             if ($type == 'rates') {
                 $resource->rebuildTaxCalculation();
+            } else {
+                $resource->cleanCache();
             }
         } catch (Exception $e) {
             $this->_endMaintenance();

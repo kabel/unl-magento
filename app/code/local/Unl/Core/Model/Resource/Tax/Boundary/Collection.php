@@ -2,6 +2,52 @@
 
 class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
+    /**
+     * Official/Common directional abbreviations.
+     * Official list from USPS.
+     *
+     * @var array
+     */
+    protected $_directionalAbbr = array(
+        'N' => array(
+            'NORTH'
+        ),
+        'S' => array(
+            'SOUTH',
+            'SO' // unofficial
+        ),
+        'E' => array(
+            'EAST'
+        ),
+        'W' => array(
+            'WEST'
+        ),
+        'NE' => array(
+            'NORTHEAST'
+        ),
+        'NW' => array(
+            'NORTHWEST'
+        ),
+        'SE' => array(
+            'SOUTHEAST'
+        ),
+        'SW' => array(
+            'SOUTHWEST'
+        ),
+    );
+
+    /**
+     * A regular expression for matching a directional
+     *
+     * @var string
+     */
+    protected $_directionalRegExp = '[ns][ew]?|[ew]|(?:north|so(?:uth)?)(?:east|west)?|east|west';
+
+    /**
+     * Official street suffix abbreviations from the USPS.
+     *
+     * @var array
+     */
     protected $_streetSuffixes = array(
         'ALY' => array(
             'ALLEY',
@@ -785,6 +831,11 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         )
     );
 
+    /**
+     * Official secondary address indentifier abbreviations from the USPS.
+     *
+     * @var array
+     */
     protected $_secondaryAbbr = array(
         'APT'  => 'APARTMENT',
         'BSMT' => 'BASEMENT',
@@ -816,44 +867,177 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         $this->_init('unl_core/tax_boundary');
     }
 
-    protected function _matchesSecondaryAbbr($piece)
+    /**
+     * Searches for and returns the matching abbreviation from a given
+     * dictionary.
+     *
+     * Returns false if no abbreviation is found.
+     *
+     * @param string $token The token to check for abbreviations
+     * @param array $search An array with string keys and an array of strings or string values
+     * @param boolean $recursive If the passed $seach array contains array values
+     * @return string|boolean Returns the corresponding $token abbreviation
+     */
+    protected function _matchesAbbrArray($token, $search, $recursive = true)
     {
-        if (array_key_exists($piece, $this->_secondaryAbbr)) {
-            return $piece;
+        if (array_key_exists($token, $search)) {
+            return $token;
         } else {
-            return array_search($piece, $this->_secondaryAbbr);
-        }
-    }
-
-    protected function _matchesStreetSuffix($piece)
-    {
-        if (array_key_exists($piece, $this->_streetSuffixes)) {
-            return $piece;
-        } else {
-            foreach ($this->_streetSuffixes as $suffix => $alts) {
-                if (in_array($piece, $alts)) {
-                    return $suffix;
+            if ($recursive) {
+                foreach ($search as $abbr => $alts) {
+                    if (in_array($token, $alts)) {
+                        return $abbr;
+                    }
                 }
+            } else {
+                return array_search($token, $search);
             }
         }
 
         return false;
     }
 
+    /**
+     * Returns the official un-abbreviated version of an abbreviation.
+     *
+     * @param string $abbr
+     * @param array $search An array of arrays of strings, with the first index as the un-abbreviated version
+     * @return string
+     */
+    protected function _reverseAbbr($abbr, $search)
+    {
+        if (!empty($search[$abbr])) {
+            return $search[$abbr][0];
+        }
+
+        return $abbr;
+    }
+
+    protected function _matchesSecondaryAbbr($piece)
+    {
+        return $this->_matchesAbbrArray($piece, $this->_secondaryAbbr, false);
+    }
+
+    protected function _matchesDirectional($piece)
+    {
+        return $this->_matchesAbbrArray($piece, $this->_directionalAbbr);
+    }
+
+    protected function _reverseDirectional($piece)
+    {
+        return $this->_reverseAbbr($piece, $this->_directionalAbbr);
+    }
+
+    protected function _matchesStreetSuffix($piece)
+    {
+        return $this->_matchesAbbrArray($piece, $this->_streetSuffixes);
+    }
+
     protected function _reverseSuffix($suffix)
     {
-        if (!empty($this->_streetSuffixes[$suffix])) {
-            return $this->_streetSuffixes[$suffix][0];
+        return $this->_reverseAbbr($suffix, $this->_streetSuffixes);
+    }
+
+    /**
+     * Returns a formated ZIP+4, given possibly unpadded inputs.
+     *
+     * @param string|int $code
+     * @param string|int $ext
+     * @return string
+     */
+    protected function _formatZip($code, $ext)
+    {
+        return sprintf('%05s-%04s', $code, $ext);
+    }
+
+    /**
+     * Removes unecessary characters from a string of an address line
+     *
+     * @param string $address
+     * @return string
+     */
+    public function sanitizeAddress($address)
+    {
+        $address = str_replace(array('#', '.', ','), '', $address);
+        $address = str_replace(array("\n", "\r", "\t"), ' ', $address);
+        $address = str_replace(array('   ', '  '), ' ', $address);
+
+        return $address;
+    }
+
+    /**
+     * Removes elements from the $filtered array that do not match
+     * the provided $name (key) and $value.
+     *
+     * @param string $name
+     * @param mixed $value
+     * @param array $filtered
+     * @param string $name2
+     */
+    protected function _applyFilter($name, $value, &$filtered, $name2 = null)
+    {
+        foreach ($filtered as $key => $item) {
+            $keep = false;
+            if (!empty($name2)) {
+                $keep = ($item[$name] <= $value && $value <= $item[$name2]);
+            } else {
+                if (is_array($value)) {
+                    $keep = in_array($item[$name], $value);
+                } else {
+                    $keep = ($item[$name] == $value);
+                }
+            }
+
+            if (!$keep) {
+                unset($filtered[$key]);
+            }
         }
     }
 
-    protected function _processPieces($pieces, &$search, &$possib, $strict = false)
+    /**
+     * Parses a given string for possible tokens to filter by a secondary address
+     *
+     * @param string $secondary A line of text to match against the secondary address
+     * @param array $possib The array of possible search filters to add to
+     */
+    public function parseSecondary($secondary, &$possib)
+    {
+        $secondary = $this->sanitizeAddress($secondary);
+
+        $pieces = explode(' ', $secondary);
+
+        foreach ($pieces as $piece) {
+            $piece = strtoupper(trim($piece));
+            if (empty($piece)) { continue; }
+
+            if ($temp = $this->_matchesSecondaryAbbr($piece)) {
+                $possib['secondary_abbr'] = $temp;
+            } else {
+                $possib['secondary_addr'] = $piece;
+            }
+        }
+    }
+
+    /**
+     * Parses the passed $pieces (tokens) into arrays of searchable filters
+     * ($search) and possible additional filters ($possib).
+     *
+     * @param array $pieces An array of string tokens
+     * @param array $search An array to fill with searchable filters
+     * @param array $possib An array to fill with possible additional filters
+     * @param boolean $strict A flag to enfore strict parsing rules
+     */
+    public function parsePieces($pieces, &$search, &$possib, $strict = false)
     {
         $street_name = array();
         $addr2Swap = false;
+
         for ($i = count($pieces) - 1; $i >= 0; $i--) {
             $piece = strtoupper(trim($pieces[$i]));
-            if (empty($piece)) { continue; }
+
+            if (empty($piece)) {
+                continue;
+            }
 
             if ($temp = $this->_matchesSecondaryAbbr($piece)) {
                 if (!empty($street_name) || !empty($possib['street_suffix']) || !empty($possib['post-directional'])) {
@@ -861,15 +1045,23 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
                 } else {
                     $possib['secondary_abbr'] = $temp;
                 }
-            } elseif (preg_match('/^([ns][ew]?|[ew])$/i', $piece)) {
+            } elseif ($temp = $this->_matchesDirectional($piece)) {
                 if (!empty($street_name) || !empty($possib['street_suffix']) && empty($possib['post-directional'])) {
-                    $street_name[] = $piece;
+                    $street_name[] = $this->_reverseDirectional($temp);
                 } else {
-                    $possib['post-directional'] = $piece;
+                    $possib['post-directional'] = $temp;
                 }
             } elseif ($temp = $this->_matchesStreetSuffix($piece)) {
-                if (!empty($street_name) || !empty($possib['street_suffix'])) {
+                if (!empty($possib['street_suffix'])) {
                     $street_name[] = $piece;
+                } elseif (!$strict && $i > 0 && !empty($street_name)) {
+                    $possib['trash'] = $street_name;
+                    if (isset($possib['secondary_addr']) && empty($possib['secondary_abbr'])) {
+                        $possib['trash'] = array_merge(array($possib['secondary_addr']), $possib['trash']);
+                        unset($possib['secondary_addr']);
+                    }
+                    $street_name = array();
+                    $possib['street_suffix'] = $temp;
                 } elseif ($strict && isset($possib['secondary_addr']) && empty($possib['secondary_abbr'])) {
                     $street_name[] = $possib['secondary_addr'];
                     unset($possib['secondary_addr']);
@@ -908,40 +1100,37 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             } elseif (isset($possib['pre-directional'])) {
                 $street_name[] = $possib['pre-directional'];
                 unset($possib['pre-directional']);
+            } elseif (isset($possib['trash'])) {
+                $street_name = $possib['trash'];
             }
         }
 
-        if ($strict && !$addr2Swap && !empty($possib['secondary_addr'])) {
-            array_unshift($street_name, $possib['secondary_addr']);
-            unset($possib['secondary_addr']);
-        }
+//         if ($strict && !$addr2Swap && !empty($possib['secondary_addr'])) {
+//             array_unshift($street_name, $possib['secondary_addr']);
+//             unset($possib['secondary_addr']);
+//         }
 
         $search['street_name'] = array_reverse($street_name);
     }
 
-    protected function _processSecondary($addr2, &$possib)
-    {
-        $addr2 = str_replace(array('#', '.', ','), '', $addr2);
-        $addr2 = str_replace(array("\n", "\r", "\t"), ' ', $addr2);
-        $pieces = explode(' ', $addr2);
-
-        foreach ($pieces as $piece) {
-            $piece = strtoupper(trim($piece));
-            if (empty($piece)) { continue; }
-
-            if ($temp = $this->_matchesSecondaryAbbr($piece)) {
-                $possib['secondary_abbr'] = $temp;
-            } else {
-                $possib['secondary_addr'] = $piece;
-            }
-        }
-    }
-
-    protected function _runFilters($items, $addr2, $possib, $search)
+    /**
+     * Filters loaded items by additional parsed conditions ($possib).
+     *
+     * Returns the closest matched item OR the first item if the conditions
+     * are too specific.
+     *
+     * @param array $items
+     * @param string $secondary An optional secondary address line to parse (ignored if empty)
+     * @param array $possib An array of additional conditions
+     * @param array $search The array of conditions that returned $items
+     * @return mixed
+     */
+    protected function _runFilters($items, $secondary, $possib, $search)
     {
         $filtered = $items;
-        if (!empty($addr2)) {
-            $this->_processSecondary($addr2, $possib);
+
+        if (!empty($secondary)) {
+            $this->parseSecondary($secondary, $possib);
         }
 
         if (!empty($possib)) {
@@ -983,32 +1172,38 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         }
     }
 
-    protected function _applyFilter($name, $value, &$filtered, $name2 = null)
+    public function initSearchArrays($matches, &$search, &$possib)
     {
-        foreach ($filtered as $key => $item) {
-            $keep = false;
-            if (!empty($name2)) {
-                $keep = ($item[$name] <= $value && $value <= $item[$name2]);
-            } else {
-                if (is_array($value)) {
-                    $keep = in_array($item[$name], $value);
-                } else {
-                    $keep = ($item[$name] == $value);
-                }
-            }
+        $search['address'] = $matches[1];
 
-            if (!$keep) {
-                unset($filtered[$key]);
-            }
+        $pre = $this->_matchesDirectional(strtoupper(trim($matches[2])));
+        if (!empty($pre)) {
+            $possib = array('pre-directional' => $pre);
         }
+
+        return explode(' ', $matches[3]);
     }
 
-    protected function _formatZip($code, $ext)
-    {
-        return sprintf('%05s-%04s', $code, $ext);
-    }
-
-    protected function _runOnMatch($address, $matches, $secondaryOffset)
+    /**
+     * Parses an street address line into a searchable format and attempts
+     * to load a matching "address record type" row.
+     *
+     * Returns the closest matching row's formatted ZIP+4 or an empty string.
+     *
+     * $matches is an array of strings that holds to results of pre-matching:
+     * <code>Array(
+     *   [0]: full line matched
+     *   [1]: primary address number
+     *   [2]: [optional] predirectional
+     *   [3]: remaining address line tokens
+     * )</code>
+     *
+     * @param Varien_Object $address The address object representing the entire address
+     * @param array $matches
+     * @param string $secondary
+     * @return string
+     */
+    protected function _runOnMatch($address, $matches, $secondary)
     {
         $correctCity = false;
         $strict = false;
@@ -1036,17 +1231,11 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
 
         while ($cityCount || $zipCount) {
             $this->_reset();
-            $addr = $address->getStreet();
-            $search = array('address' => $matches[1]);
+            $search = array();
             $possib = array();
+            $street_pieces = $this->initSearchArrays($matches, $search, $possib);
 
-            $pre = trim($matches[2]);
-            if (!empty($pre)) {
-                $possib = array('pre-directional' => $pre);
-            }
-
-            $street_pieces = explode(' ', $matches[3]);
-            $this->_processPieces($street_pieces, $search, $possib, $strict);
+            $this->parsePieces($street_pieces, $search, $possib, $strict);
 
             $select = $this->getSelect()->where('record_type = ?', 'A')
                 ->where('NOW() BETWEEN begin_date AND end_date')
@@ -1062,7 +1251,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             $count = count($this);
             if ($count) {
                 if ($count > 1) {
-                    $item = $this->_runFilters($this->getItems(), isset($addr[$secondaryOffset]) ? $addr[$secondaryOffset] : '', $possib, $search);
+                    $item = $this->_runFilters($this->getItems(), $secondary, $possib, $search);
                 } else {
                     $item = current($this->getItems());
                 }
@@ -1085,6 +1274,21 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
     }
 
     /**
+     * Get the tax helper instance
+     *
+     * @return Unl_Core_Helper_Tax
+     */
+    protected function _getHelper()
+    {
+        return Mage::helper('unl_core/tax');
+    }
+
+    public function getPreMatchExpression()
+    {
+        return '/(\d+)\s+(?:(' . $this->_directionalRegExp . ')\s+)?([^\W_][a-z\d\-\/\s]*)/i';
+    }
+
+    /**
      * Try to find and return the Zip+4 for the provided address
      *
      * @param Mage_Customer_Model_Address_Abstract $address
@@ -1100,10 +1304,14 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             $address->setPostcode($matches[1]);
         }
 
-        $zip = '';
-        $addr = $address->getStreet();
+        $zip   = '';
+        $lines = $address->getStreet();
 
-        foreach ($addr as $line) {
+        if (empty($lines)) {
+            return $this;
+        }
+
+        foreach ($lines as $line) {
             if (preg_match('/(?:P\.?\s*O\.?\s*)?Box\s+(\d+)/i', $line, $matches)) {
                 $zip = $this->_formatZip($address->getPostcode(), substr($matches[1], -4));
                 $address->setPostcode($zip);
@@ -1112,21 +1320,38 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             }
         }
 
-        for ($i = 0; $i < count($addr); $i++) {
-            if ($i == 1) {
-                $secondaryOffset = 0;
-            } else {
-                $secondaryOffset = 1;
+        $cacheKey = sha1(implode('|', array(
+            implode(' ', $lines),
+            $address->getCity(),
+            $address->getPostcode()
+        )));
+        $cachedZip = $this->_getHelper()->loadAddressCache($cacheKey);
+
+        if ($cachedZip !== false) {
+            if ($cachedZip) {
+                $address->setValidatedZip($cachedZip)
+                    ->setPostcode($cachedZip);
             }
 
-            $addr[$i] = str_replace(array('#', '.', ','), '', $addr[$i]);
-            $addr[$i] = str_replace(array("\n", "\r", "\t"), ' ', $addr[$i]);
-            if (preg_match('/(\d+)\s([ns][ew]?\s|[ew]\s)?([^\W_][a-z\d\-\/\s]*)/i', $addr[$i], $matches)) {
-                $zip = $this->_runOnMatch($address, $matches, $secondaryOffset);
+            return $this;
+        }
+
+        foreach ($lines as $i => $line) {
+            if ($i == 1) {
+                $secondary = $lines[0];
+            } else {
+                $secondary = isset($lines[1]) ? $lines[1] : '';
+            }
+
+            $line = $this->sanitizeAddress($line);
+
+            if (preg_match($this->getPreMatchExpression(), $line, $matches)) {
+                $zip = $this->_runOnMatch($address, $matches, $secondary);
             }
 
             if ($zip) {
-                $address->setValidatedZip($zip);
+                $address->setValidatedZip($zip)
+                    ->setPostcode($zip);
                 break;
             }
         }
@@ -1137,9 +1362,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             } catch (Exception $ex) {}
         }
 
-        if ($zip) {
-            $address->setPostcode($zip);
-        }
+        $this->_getHelper()->saveAddressCache($cacheKey, $zip);
 
         return $this;
     }
@@ -1173,10 +1396,21 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         return $format;
     }
 
+    /**
+     * Translates a given $zip string by search for a matching
+     * row with the "zip record type" and/or "zip+4 record type".
+     *
+     * If the $zip cannot be translated, a notice is logged.
+     *
+     * The result is cached into memory.
+     *
+     * @param string $zip
+     */
     public function translateZip($zip)
     {
-        if (null === Mage::helper('unl_core/tax')->zipRegistry($zip)) {
-            $result = false;
+        $result = Mage::helper('unl_core/tax')->zipRegistry($zip);
+        if (false === $result) {
+            $result = '';
             $originalZip = $zip;
 
             if (preg_match('/^(\d{5})(?:-(\d{4}))$/', $zip, $matches)) {
