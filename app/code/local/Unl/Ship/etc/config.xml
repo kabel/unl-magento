@@ -42,7 +42,7 @@
             	<rewrite>
             		<shipping_carrier_fedex>Unl_Ship_Model_Shipping_Carrier_Fedex</shipping_carrier_fedex>
             		<shipping_carrier_ups>Unl_Ship_Model_Shipping_Carrier_Ups</shipping_carrier_ups>
-                    <shipping_cardier_usps>Unl_Ship_Model_Shipping_Carrier_Usps</shipping_cardier_usps>
+                    <shipping_carrier_usps>Unl_Ship_Model_Shipping_Carrier_Usps</shipping_carrier_usps>
             	</rewrite>
             </usa>
         </models>
