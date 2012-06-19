@@ -12,9 +12,9 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
     {
         return array(
             'orders_count'    => 'COUNT(DISTINCT e.order_id)',
-            'total_tax'       => 'SUM(e.shipping_tax_amount * e.store_to_base_rate * e.base_to_global_rate)',
+            'total_tax'       => 'SUM(IFNULL(e.shipping_tax_amount, 0) * e.store_to_base_rate * e.base_to_global_rate)',
             'total_shipping'  => 'SUM(e.shipping_amount * e.store_to_base_rate * e.base_to_global_rate)',
-            'total_revenue'   => 'SUM((e.shipping_amount + e.shipping_tax_amount) * e.store_to_base_rate * e.base_to_global_rate)'
+            'total_revenue'   => 'SUM((e.shipping_amount + IFNULL(e.shipping_tax_amount, 0)) * e.store_to_base_rate * e.base_to_global_rate)'
         );
     }
 
@@ -31,7 +31,7 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
 
     public function getShippingFilter()
     {
-        return '(e.shipping_amount + e.shipping_tax_amount) > 0';
+        return '(e.shipping_amount + IFNULL(e.shipping_tax_amount, 0)) > 0';
     }
 
     public function getPaymentMethodCodes($type)
