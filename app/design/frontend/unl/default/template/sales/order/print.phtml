@@ -23,11 +23,11 @@
 <div class="col2-set">
     <div class="col-1">
         <h2><?php echo $this->__('Shipping Method') ?></h2>
-         <?php echo $_order->getShippingDescription() ?>
+         <?php echo $this->escapeHtml($_order->getShippingDescription()) ?>
 
          <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
             <p><strong><?php echo $this->__('Pickup Location:') ?></strong><br />
-            <?php echo nl2br(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($_order->getShippingMethod(), $_order->getAllItems())) ?></p>
+            <?php echo nl2br($this->escapeHtml(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($_order->getShippingMethod(), $_order->getAllItems()))) ?></p>
         <?php endif; ?>
 
         <?php if ($_order->getAwDeliverydateDate()): ?>
@@ -41,7 +41,7 @@
         <br/>
         <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong><br/>
         &nbsp;
-        <?php echo $_order->getAwDeliverydateNotice();?>
+        <?php echo $this->escapeHtml($_order->getAwDeliverydateNotice());?>
         <?php endif; ?>
     </div>
 <?php endif; ?>

@@ -61,18 +61,18 @@
                     var trs = $('product-review-table').select('tr');
                     var inputs;
                     var error = 1;
-
+    
                     for( var j=0; j < trs.length; j++ ) {
                         var tr = trs[j];
                         if( j > 0 ) {
                             inputs = tr.select('input');
-
+    
                             for( i in inputs ) {
                                 if( inputs[i].checked == true ) {
                                     error = 0;
                                 }
                             }
-
+    
                             if( error == 1 ) {
                                 return false;
                             } else {

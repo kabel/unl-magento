@@ -18,7 +18,7 @@
                     <h2><?php echo $this->__('UNL Students, Faculty, Staff') ?></h2>
                     <p><?php echo $this->__('Login with the UNL Centralized Authentication Service. If this is your first time shopping with us, you will be prompted to create an account after logging in.') ?></p>
                     <div class="buttons-set">
-                        <button type="button" class="button" title="<?php echo $this->__('UNL Login') ?>" onclick="setLocation('<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
+                        <button type="button" class="button btn-unl-login" title="<?php echo $this->__('UNL Login') ?>" onclick="setLocation('<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');"><span><span><?php echo $this->__('UNL Login') ?></span></span></button>
                     </div>
                 </div>
                 <div class="content new-users">
@@ -46,6 +46,7 @@
                                 <input type="password" name="login[password]" class="input-text required-entry validate-password" id="pass" title="<?php echo $this->__('Password') ?>" />
                             </div>
                         </li>
+                        <?php echo $this->getChildHtml('form.additional.info'); ?>
                         <?php echo $this->getChildHtml('persistent.remember.me'); ?>
                     </ul>
                     <?php echo $this->getChildHtml('persistent.remember.me.tooltip'); ?>

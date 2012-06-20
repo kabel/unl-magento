@@ -31,6 +31,8 @@
                 </p>
             </div>
         </div>
+        <?php /* Extensions placeholder */ ?>
+        <?php echo $this->getChildHtml('customer.account.dashboard.info.extra')?>
     </div>
     <?php endif; ?>
     <?php if (Mage::helper('unl_cas')->isCustomerCasUser()): ?>

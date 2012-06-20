@@ -10,8 +10,6 @@ if(!window.toogleVisibilityOnObjects) {
                     item.removeClassName('validation-passed');
                 });
             });
-
-
         } else {
             objects.each(function(item){
                 if ($(item)) {
@@ -33,11 +31,10 @@ if(!window.toogleVisibilityOnObjects) {
                     });
                 }
             });
-
         }
-
     }
 }
+
 if(!window.toogleRequired) {
     var toogleRequired = function (source, objects)
     {
@@ -91,7 +88,7 @@ billing.onSave = function(evt){
                     <input type="checkbox" name="allow_gift_messages_for_order" id="allow_gift_messages_for_order" value="1" onclick="toogleVisibilityOnObjects(this, ['allow-gift-messages-for-order-container']);"<?php if($this->getEntityHasMessage()): ?> checked="checked"<?php endif; ?> class="checkbox" />
                     <label for="allow_gift_messages_for_order"><?php echo $this->__('Add gift options for the Entire Order') ?></label>
                 </p>
-                <div class="allow-gift-messages-for-order-container">
+                <div class="allow-gift-messages-for-order-container" id="allow-gift-messages-for-order-container" style="display:none">
                     <p><?php echo $this->__('You can leave this box blank if you do not wish to add a gift message for whole order.') ?></p>
                     <input type="hidden" name="giftmessage[<?php echo $this->getEntity()->getId() ?>][type]"  value="quote" />
                     <ul class="form-list">

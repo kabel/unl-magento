@@ -15,7 +15,9 @@
         <?php else: echo $_item->getLabel() ?>
         <?php endif; ?>
         </span>
+        <?php if ($this->shouldDisplayProductCount()): ?>
         <span class="filter-count">(<?php echo $_item->getCount() ?>)</span>
+        <?php endif; ?>
     </li>
 <?php endforeach ?>
 </ol>
