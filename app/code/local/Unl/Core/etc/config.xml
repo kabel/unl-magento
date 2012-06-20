@@ -57,7 +57,6 @@
                     <product_gallery>Unl_Core_Block_Catalog_Product_Gallery</product_gallery>
                     <!-- Add text list mode -->
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
-                    <product_view_media>Unl_Core_Block_Catalog_Product_View_Media</product_view_media>
                 </rewrite>
             </catalog>
             <customer>

@@ -52,6 +52,7 @@ class Unl_Core_Block_Adminhtml_Notification_Security extends Mage_Adminhtml_Bloc
 
         $http = new Varien_Http_Adapter_Curl();
         $http->setConfig(array('timeout' => $this->_verificationTimeOut));
+        $http->addOption(CURLOPT_NOBODY, true);
         $http->write(Zend_Http_Client::HEAD, $defaultUnsecureBaseURL . $this->_filePath);
         $responseBody = $http->read();
         $responseCode = Zend_Http_Response::extractCode($responseBody);

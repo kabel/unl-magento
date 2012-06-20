@@ -3,9 +3,9 @@
 class Unl_Ship_Model_Shipping_Carrier_Fedex extends Mage_Usa_Model_Shipping_Carrier_Fedex
 {
     /* Overrides
-    * @see Mage_Shipping_Model_Carrier_Abstract::getTotalNumOfBoxes()
-    * by adding extra logic for multiple items
-    */
+     * @see Mage_Shipping_Model_Carrier_Abstract::getTotalNumOfBoxes()
+     * by adding extra logic for multiple items
+     */
     public function getTotalNumOfBoxes($weight, $items = null)
     {
         if (empty($items)) {
