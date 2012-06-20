@@ -32,71 +32,18 @@
         </div>
         <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 
-        <form id="wishlist-view-form" action="<?php echo $this->getUrl('*/*/update') ?>" method="post">
+        <form id="wishlist-view-form" action="<?php echo $this->getUrl('*/*/update', array('wishlist_id' => $this->getWishlistInstance()->getId())) ?>" method="post">
             <?php echo $this->getChildHtml('top'); ?>
             <fieldset>
                 <?php if ($this->hasWishlistItems()): ?>
                     <?php echo $this->getBlockHtml('formkey');?>
-                    <table class="data-table" id="wishlist-table">
-                        <tbody>
-                            <?php foreach ($this->getWishlistItems() as $item): ?>
-                                <?php $product = $item->getProduct(); ?>
-                                <tr id="item_<?php echo $item->getId();?>">
-                                    <td>
-                                        <a href="<?php echo $this->getItemRemoveUrl($item); ?>" onclick="return confirmRemoveWishlistItem();" title="<?php echo $this->__('Remove Item') ?>"class="btn-remove btn-remove2"><?php echo $this->__('Remove item');?></a>
-                                        <div class="product-image">
-                                            <a href="<?php echo $this->getProductUrl($item) ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>">
-                                                <img src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize(226); ?>" width="113" alt="<?php echo $this->escapeHtml($product->getName()) ?>" />
-                                            </a>
-                                            <?php if ($product->isVisibleInSiteVisibility()): ?>
-                                                <a class="link-edit" href="<?php echo $this->getItemConfigureUrl($item) ?>"><?php echo $this->__('Edit') ?></a>
-                                            <?php endif ?>
-                                        </div>
-                                        <div class="description std"><div class="inner"><?php echo $this->escapeHtml($this->stripTags($product->getShortDescription()));?></div></div>
-                                        <textarea name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5" onfocus="focusComment(this)" onblur="focusComment(this)" placeholder="<?php echo $this->__('Comment') ?>"><?php echo ($this->escapeHtml($item->getDescription())) ?></textarea>
-                                    </td>
-                                </tr>
-                            <?php endforeach ?>
-                        </tbody>
-                    </table>
-                    <script type="text/javascript">
-                    //<![CDATA[
-                    function confirmRemoveWishlistItem() {
-                        return confirm('<?php echo $this->__('Are you sure you want to remove this product from your wishlist?') ?>');
-                    }
-                    function focusComment(obj) {
-                        if( obj.value == '<?php echo $this->helper('wishlist')->defaultCommentString() ?>' ) {
-                            obj.value = '';
-                        } else if( obj.value == '' ) {
-                            obj.value = '<?php echo $this->helper('wishlist')->defaultCommentString() ?>';
-                        }
-                    }
-                    function addWItemToCart(itemId) {
-                        var url = '<?php echo $this->getItemAddToCartUrl('%item%') ?>';
-                        url = url.gsub('%item%', itemId);
-                        var form = $('wishlist-view-form');
-                        if (form) {
-                            var input = form['qty[' + itemId + ']'];
-                            if (input) {
-                                var separator = (url.indexOf('?') >= 0) ? '&' : '?';
-                                url += separator + input.name + '=' + encodeURIComponent(input.value);
-                            }
-                        }
-                        setLocation(url);
-                    }
-                    //]]>
-                    </script>
+                    <?php $this->getChild('items')->setItems($this->getWishlistItems()); ?>
+                    <?php echo $this->getChildHtml('items');?>
                 <?php else: ?>
                     <p class="wishlist-empty"><?php echo $this->__('You have no items in your wishlist.') ?></p>
                 <?php endif ?>
                 <div class="buttons-set">
-                    <?php if ($this->hasWishlistItems()): ?>
-                        <button type="submit" name="save_and_share" title="<?php echo $this->__('Share Wishlist') ?>" class="button btn-share"><span><span><?php echo $this->__('Share Wishlist') ?></span></span></button>
-                        <?php if ($this->isSaleable()): ?>
-                            <button type="button" title="<?php echo $this->__('Add All to Cart') ?>" onclick="addAllWItemsToCart()" class="button btn-add"><span><span><?php echo $this->__('Add All to Cart') ?></span></span></button>
-                        <?php endif;?>
-                        <button type="submit" name="do" title="<?php echo $this->__('Update Wishlist') ?>" class="button btn-update"><span><span><?php echo $this->__('Update Wishlist') ?></span></span></button>
-                    <?php endif;?>
+                    <?php echo $this->getChild('control_buttons')->toHtml();?>
                 </div>
             </fieldset>
         </form>
@@ -105,7 +52,7 @@
         //<![CDATA[
         var wishlistForm = new Validation($('wishlist-view-form'));
         function addAllWItemsToCart() {
-            var url = '<?php echo $this->getUrl('*/*/allcart') ?>';
+            var url = '<?php echo $this->getUrl('*/*/allcart', array('wishlist_id' => $this->getWishlistInstance()->getId())) ?>';
             var separator = (url.indexOf('?') >= 0) ? '&' : '?';
             $$('#wishlist-view-form .qty').each(
                 function (input, index) {
