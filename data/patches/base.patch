@@ -1,6 +1,79 @@
+Index: js/mage/adminhtml/sales/packaging.js
+===================================================================
+--- js/mage/adminhtml/sales/packaging.js	(revision 155730)
++++ js/mage/adminhtml/sales/packaging.js	(working copy)
+@@ -584,7 +584,7 @@
+             option = document.createElement('OPTION');
+             option.value = '';
+             option.text = '';
+-            packageSize[0].options.add(option);
++            packageSize[0].add(option);
+             packageSize[0].value = '';
+             packageSize[0].disable();
+             packageSize[0].addClassName('disabled');
+Index: js/mage/adminhtml/wysiwyg/tiny_mce/setup.js
+===================================================================
+--- js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(revision 155730)
++++ js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(working copy)
+@@ -164,6 +164,18 @@
+         if (this.config.height) {
+             settings.height = this.config.height;
+         }
++        
++        if (this.config.extended_valid_elements) {
++        	settings.extended_valid_elements = this.config.extended_valid_elements;
++        }
++        
++        if (this.config.body_id) {
++        	settings.body_id = this.config.body_id;
++        }
++        
++        if (this.config.body_class) {
++        	settings.body_class = this.config.body_class;
++        }
+ 
+         return settings;
+     },
+Index: js/mage/adminhtml/form.js
+===================================================================
+--- js/mage/adminhtml/form.js	(revision 155730)
++++ js/mage/adminhtml/form.js	(working copy)
+@@ -438,9 +438,9 @@
+             this.selected = false;
+         }
+ 
+-        if (select.options.add) {
+-            select.options.add(option);
+-        } else {
++        try {
++            select.add(option);
++        } catch (ex) {
+             select.appendChild(option);
+         }
+     }
+Index: lib/Varien/Image/Adapter/Abstract.php
+===================================================================
+--- lib/Varien/Image/Adapter/Abstract.php	(revision 155730)
++++ lib/Varien/Image/Adapter/Abstract.php	(working copy)
+@@ -81,13 +81,11 @@
+ 
+     public function getMimeType()
+     {
+-        if( $this->_fileType ) {
+-            return $this->_fileType;
+-        } else {
++        if( $this->_fileType === null ) {
+             list($this->_imageSrcWidth, $this->_imageSrcHeight, $this->_fileType, ) = getimagesize($this->_fileName);
+             $this->_fileMimeType = image_type_to_mime_type($this->_fileType);
+-            return $this->_fileMimeType;
+         }
++        return $this->_fileMimeType;
+     }
+ 
+     /**
 Index: .htaccess
 ===================================================================
---- .htaccess	(revision 142292)
+--- .htaccess	(revision 155730)
 +++ .htaccess	(working copy)
 @@ -26,6 +26,12 @@
  
@@ -22,7 +95,7 @@ Index: .htaccess
 +    php_value max_input_time 9000
 +    php_value upload_max_filesize 700M
 +    php_value post_max_size 700M
-+	php_value auto_detect_line_endings 1
++    php_value auto_detect_line_endings 1
  
  ############################################
  ## disable magic quotes for php request vars
@@ -31,7 +104,7 @@ Index: .htaccess
      ###SetOutputFilter DEFLATE
      # Insert filter on selected content types only
 -    #AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
-+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
++    #AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
  
      # Netscape 4.x has some problems...
 -    #BrowserMatch ^Mozilla/4 gzip-only-text/html
@@ -55,7 +128,15 @@ Index: .htaccess
  
  </IfModule>
  
-@@ -132,6 +142,7 @@
+@@ -152,9 +162,15 @@
+     #RewriteRule ^(.*)$ /mobiledirectoryhere/ [L,R=302]
+ 
+ ############################################
++## redirects for production purposes
++
++    #RewriteRule ^tcd(?:/(.*))? tmfd/$1 [L,R=301]
++
++############################################
  ## always send 404 on missing files in these folders
  
      RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
@@ -63,7 +144,7 @@ Index: .htaccess
  
  ############################################
  ## never rewrite for existing files, directories and links
-@@ -161,6 +172,7 @@
+@@ -184,6 +200,7 @@
  ## Add default Expires header
  ## http://developer.yahoo.com/performance/rules.html#expires
  
@@ -73,7 +154,7 @@ Index: .htaccess
  </IfModule>
 Index: get.php
 ===================================================================
---- get.php	(revision 142292)
+--- get.php	(revision 155730)
 +++ get.php	(working copy)
 @@ -32,7 +32,6 @@
          . 'target="">Find out</a> how to install</a> Magento using PHP-CGI as a work-around.</p></div>';
@@ -83,7 +164,7 @@ Index: get.php
  /**
   * Error reporting
   */
-@@ -138,31 +137,32 @@
+@@ -138,31 +137,31 @@
      checkResource($relativeFilename, $allowedResources);
  }
  
@@ -102,7 +183,12 @@ Index: get.php
 -    $directory = dirname($filePath);
 -    if (!is_dir($directory)) {
 -        mkdir($directory, 0777, true);
-+
+-    }
+ 
+-    $fp = fopen($filePath, 'w');
+-    if (flock($fp, LOCK_EX | LOCK_NB)) {
+-        ftruncate($fp, 0);
+-        fwrite($fp, $databaseFileSotrage->getContent());
 +    if ($databaseFileSotrage->getId()) {
 +        $directory = dirname($filePath);
 +        if (!is_dir($directory)) {
@@ -116,23 +202,17 @@ Index: get.php
 +        }
 +        flock($fp, LOCK_UN);
 +        fclose($fp);
++        sendFile($filePath);
      }
- 
--    $fp = fopen($filePath, 'w');
--    if (flock($fp, LOCK_EX | LOCK_NB)) {
--        ftruncate($fp, 0);
--        fwrite($fp, $databaseFileSotrage->getContent());
--    }
 -    flock($fp, LOCK_UN);
 -    fclose($fp);
-+    sendFile($filePath);
  }
  
 -sendFile($filePath);
  sendNotFoundPage();
  
  /**
-@@ -186,6 +186,7 @@
+@@ -186,6 +185,7 @@
      foreach ($allowedResources as $allowedResource) {
          if (0 === stripos($resource, $allowedResource)) {
              $isResourceAllowed = true;
@@ -142,18 +222,18 @@ Index: get.php
  
 Index: index.php
 ===================================================================
---- index.php	(revision 142292)
+--- index.php	(revision 155730)
 +++ index.php	(working copy)
-@@ -43,7 +43,7 @@
+@@ -50,7 +50,7 @@
  }
  
- $mageFilename = 'app/Mage.php';
+ $mageFilename = MAGENTO_ROOT . '/app/Mage.php';
 -$maintenanceFile = 'maintenance.flag';
 +$maintenanceFile = '.htmaint';
  
  if (!file_exists($mageFilename)) {
      if (is_dir('downloader')) {
-@@ -55,8 +55,13 @@
+@@ -62,8 +62,13 @@
  }
  
  if (file_exists($maintenanceFile)) {
@@ -169,93 +249,3 @@ Index: index.php
  }
  
  require_once $mageFilename;
-Index: app/code/core/Mage/XmlConnect/Model/Preview/Abstract.php
-===================================================================
---- app/code/core/Mage/XmlConnect/Model/Preview/Abstract.php	(revision 142292)
-+++ app/code/core/Mage/XmlConnect/Model/Preview/Abstract.php	(working copy)
-@@ -226,7 +226,7 @@
- 
-             $hex    = str_replace('#', '', $this->getData('conf/categoryItem/tintColor'));
-             $hex2   = '';
--            $_rgb   = array();
-+            $_rgb   = array(0, 0, 0);
- 
-             $hexChars = '[a-fA-F0-9]';
- 
-Index: js/mage/adminhtml/wysiwyg/tiny_mce/setup.js
-===================================================================
---- js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(revision 142292)
-+++ js/mage/adminhtml/wysiwyg/tiny_mce/setup.js	(working copy)
-@@ -163,6 +163,18 @@
-         if (this.config.height) {
-             settings.height = this.config.height;
-         }
-+        
-+        if (this.config.extended_valid_elements) {
-+        	settings.extended_valid_elements = this.config.extended_valid_elements;
-+        }
-+        
-+        if (this.config.body_id) {
-+        	settings.body_id = this.config.body_id;
-+        }
-+        
-+        if (this.config.body_class) {
-+        	settings.body_class = this.config.body_class;
-+        }
- 
-         return settings;
-     },
-Index: lib/Varien/Db/Adapter/Pdo/Mysql.php
-===================================================================
---- lib/Varien/Db/Adapter/Pdo/Mysql.php	(revision 142292)
-+++ lib/Varien/Db/Adapter/Pdo/Mysql.php	(working copy)
-@@ -2753,9 +2753,13 @@
-         switch ($column['DATA_TYPE']) {
-             case 'smallint':
-             case 'int':
--            case 'bigint':
-                 $value = (int)$value;
-                 break;
-+            case 'bigint':
-+                if (!is_integer($value)) {
-+                    $value = sprintf('%.0f', (float)$value);
-+                }
-+                break;
- 
-             case 'decimal':
-                 $precision  = 10;
-Index: lib/Varien/Http/Adapter/Curl.php
-===================================================================
---- lib/Varien/Http/Adapter/Curl.php	(revision 142292)
-+++ lib/Varien/Http/Adapter/Curl.php	(working copy)
-@@ -122,9 +122,10 @@
-         if ($method == Zend_Http_Client::POST) {
-             curl_setopt($this->_getResource(), CURLOPT_POST, true);
-             curl_setopt($this->_getResource(), CURLOPT_POSTFIELDS, $body);
--        }
--        elseif ($method == Zend_Http_Client::GET) {
-+        } elseif ($method == Zend_Http_Client::GET) {
-             curl_setopt($this->_getResource(), CURLOPT_HTTPGET, true);
-+        } elseif ($method == Zend_Http_Client::HEAD) {
-+            curl_setopt($this->_getResource(), CURLOPT_NOBODY, true);
-         }
- 
-         if( is_array($headers) ) {
-Index: lib/Varien/Image/Adapter/Gd2.php
-===================================================================
---- lib/Varien/Image/Adapter/Gd2.php	(revision 142292)
-+++ lib/Varien/Image/Adapter/Gd2.php	(working copy)
-@@ -129,8 +129,12 @@
- 
-     public function display()
-     {
--        header("Content-type: ".$this->getMimeType());
-+        $resp = Mage::app()->getResponse();
-+        $this->getMimeType();
-+        $resp->setHeader('Content-type', $this->_fileMimeType);
-+        ob_start();
-         call_user_func($this->_getCallback('output'), $this->_imageHandler);
-+        $resp->setBody(ob_get_clean());
-     }
- 
-     /**

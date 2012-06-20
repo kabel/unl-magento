@@ -1,0 +1,188 @@
+Index: lib/Mage/Backup/Archive/Tar.php
+===================================================================
+--- lib/Mage/Backup/Archive/Tar.php	(revision 153067)
++++ lib/Mage/Backup/Archive/Tar.php	(working copy)
+@@ -52,12 +52,11 @@
+     {
+         $path = $this->_getCurrentFile();
+ 
+-        $filesystemIterator = new RecursiveIteratorIterator(
+-            new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(new RecursiveDirectoryIterator($path), $this->_skipFiles),
++            RecursiveIteratorIterator::SELF_FIRST
+         );
+ 
+-        $iterator = new Mage_Backup_Filesystem_Iterator_Filter($filesystemIterator, $this->_skipFiles);
+-
+         foreach ($iterator as $item) {
+             $this->_setCurrentFile($item->getPathname());
+             $this->_packAndWriteCurrentFile();
+Index: lib/Mage/Backup/Filesystem/Helper.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Helper.php	(revision 153067)
++++ lib/Mage/Backup/Filesystem/Helper.php	(working copy)
+@@ -75,14 +75,17 @@
+      */
+     public function rm($path, $skipPaths = array(), $removeRoot = false)
+     {
+-        $filesystemIterator = new RecursiveIteratorIterator(
+-            new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::CHILD_FIRST
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(
++                new RecursiveDirectoryIterator($path),
++                $skipPaths
++            ),
++            RecursiveIteratorIterator::CHILD_FIRST
+         );
+ 
+-        $iterator = new Mage_Backup_Filesystem_Iterator_Filter($filesystemIterator, $skipPaths);
+ 
+         foreach ($iterator as $item) {
+-            $item->isDir() ? @rmdir($item->__toString()) : @unlink($item->__toString());
++            $item->isDir() ? @rmdir($item) : @unlink($item);
+         }
+ 
+         if ($removeRoot && is_dir($path)) {
+@@ -112,11 +115,14 @@
+             $info['size'] = 0;
+         }
+ 
+-        $filesystemIterator = new RecursiveIteratorIterator(
+-            new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::CHILD_FIRST
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(
++                new RecursiveDirectoryIterator($path),
++                $skipFiles
++            ),
++            RecursiveIteratorIterator::CHILD_FIRST
+         );
+ 
+-        $iterator = new Mage_Backup_Filesystem_Iterator_Filter($filesystemIterator, $skipFiles);
+ 
+         foreach ($iterator as $item) {
+             if (($infoOptions & self::INFO_WRITABLE) && !$item->isWritable()) {
+Index: lib/Mage/Backup/Filesystem/Iterator/Filter.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Iterator/Filter.php	(revision 153067)
++++ lib/Mage/Backup/Filesystem/Iterator/Filter.php	(working copy)
+@@ -25,13 +25,16 @@
+  */
+ 
+ /**
+- * Filter Iterator
++ * Recursive Directory Filter Iterator
+  *
+  * @category    Mage
+  * @package     Mage_Backup
+  * @author      Magento Core Team <core@magentocommerce.com>
++ *
++ * @method RecursiveDirectoryIterator getInnerIterator()
++ * @method SplFileInfo current()
+  */
+-class Mage_Backup_Filesystem_Iterator_Filter extends FilterIterator
++class Mage_Backup_Filesystem_Iterator_Filter extends RecursiveFilterIterator
+ {
+     /**
+      * Array that is used for filtering
+@@ -43,10 +46,10 @@
+     /**
+      * Constructor
+      *
+-     * @param Iterator $iterator
++     * @param RecursiveDirectoryIterator $iterator
+      * @param array $filters list of files to skip
+      */
+-    public function __construct(Iterator $iterator, array $filters)
++    public function __construct(RecursiveDirectoryIterator $iterator, array $filters)
+     {
+         parent::__construct($iterator);
+         $this->_filters = $filters;
+@@ -59,7 +62,6 @@
+      */
+     public function accept()
+     {
+-        $current = $this->current()->__toString();
+         $currentFilename = $this->current()->getFilename();
+ 
+         if ($currentFilename == '.' || $currentFilename == '..') {
+@@ -67,11 +69,16 @@
+         }
+ 
+         foreach ($this->_filters as $filter) {
+-            if (false !== strpos($current, $filter)) {
++            if (false !== strpos($this->current(), $filter)) {
+                 return false;
+             }
+         }
+ 
+         return true;
+     }
++
++    public function getChildren()
++    {
++        return new self($this->getInnerIterator()->getChildren(), $this->_filters);
++    }
+ }
+Index: lib/Mage/Backup/Filesystem/Rollback/Ftp.php
+===================================================================
+--- lib/Mage/Backup/Filesystem/Rollback/Ftp.php	(revision 153067)
++++ lib/Mage/Backup/Filesystem/Rollback/Ftp.php	(working copy)
+@@ -148,14 +148,16 @@
+     {
+         $rootDir = $this->_snapshot->getRootDir();
+ 
+-        $filesystemIterator = new RecursiveIteratorIterator(
+-            new RecursiveDirectoryIterator($rootDir), RecursiveIteratorIterator::CHILD_FIRST
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(
++                new RecursiveDirectoryIterator($rootDir),
++                $this->_snapshot->getIgnorePaths()
++            ),
++            RecursiveIteratorIterator::CHILD_FIRST
+         );
+ 
+-        $iterator = new Mage_Backup_Filesystem_Iterator_Filter($filesystemIterator, $this->_snapshot->getIgnorePaths());
+-
+         foreach ($iterator as $item) {
+-            $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($rootDir, '', $item->__toString());
++            $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($rootDir, '', $item);
+             $ftpPath = str_replace(DS, '/', $ftpPath);
+ 
+             $this->_ftpClient->delete($ftpPath);
+@@ -170,14 +172,16 @@
+      */
+     protected function _uploadBackupToFtp($tmpDir)
+     {
+-        $filesystemIterator = new RecursiveIteratorIterator(
+-            new RecursiveDirectoryIterator($tmpDir), RecursiveIteratorIterator::SELF_FIRST
++        $iterator = new RecursiveIteratorIterator(
++            new Mage_Backup_Filesystem_Iterator_Filter(
++                new RecursiveDirectoryIterator($tmpDir),
++                $this->_snapshot->getIgnorePaths()
++            ),
++            RecursiveIteratorIterator::SELF_FIRST
+         );
+ 
+-        $iterator = new Mage_Backup_Filesystem_Iterator_Filter($filesystemIterator, $this->_snapshot->getIgnorePaths());
+-
+-        foreach ($filesystemIterator as $item) {
+-            $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($tmpDir, '', $item->__toString());
++        foreach ($iterator as $item) {
++            $ftpPath = $this->_snapshot->getFtpPath() . DS . str_replace($tmpDir, '', $item);
+             $ftpPath = str_replace(DS, '/', $ftpPath);
+ 
+             if ($item->isLink()) {
+@@ -187,10 +191,10 @@
+             if ($item->isDir()) {
+                 $this->_ftpClient->mkdirRecursive($ftpPath);
+             } else {
+-                $result = $this->_ftpClient->put($ftpPath, $item->__toString());
++                $result = $this->_ftpClient->put($ftpPath, $item);
+                 if (false === $result) {
+                     throw new Mage_Backup_Exception_NotEnoughPermissions('Failed to upload file '
+-                        . $item->__toString() . ' to ftp');
++                        . $item . ' to ftp');
+                 }
+             }
+         }
