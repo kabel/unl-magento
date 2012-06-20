@@ -1,7 +1,8 @@
 <!--@subject Take a look at {{var customer.name}}'s wishlist @-->
 <!--@vars
 {"store url=\"\"":"Store Url",
-"skin url=\"images/logo_email.gif\" _area='frontend'":"Email Logo Image",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
 "var message":"Wishlist Message",
 "var items":"Wishlist Items"}
 @-->
@@ -14,7 +15,7 @@ Take a look at my wishlist from UNL Marketplace
 {{block type='core/template' area='frontend' template='email/common/body.phtml'}}
 <div style="width:556px;">
   <p style="margin:1.1em 0;">{{var message}}</p>
-</div>                              
+</div>
 {{var items}}
 <br />
 <p style="margin:1.1em 0;">
