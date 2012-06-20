@@ -129,7 +129,7 @@ Bundle.Option.prototype = {
              * Hide/Show (user defined qty select box)
              */
             inputs = $A($$('#' + bSelection.idLabel + '_box_' + i + ' .qty-box'));
-            if (element.value == 'multi') { 
+            if (element.value == 'multi') {
                 inputs.each(
                     function(elem){
                         elem.hide();
@@ -194,6 +194,7 @@ bOption = new Bundle.Option(optionTemplate);
 optionIndex = bOption.add(<?php echo $_option->toJson() ?>);
 <?php if ($_option->getSelections()):?>
     <?php foreach ($_option->getSelections() as $_selection): ?>
+    <?php $_selection->setName($this->escapeHtml($_selection->getName())); ?>
 bSelection.addRow(optionIndex, <?php echo $_selection->toJson() ?>);
     <?php endforeach; ?>
 <?php endif; ?>

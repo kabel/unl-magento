@@ -34,7 +34,7 @@
                 <br/>
                 <?php endif; ?>
                 <?php if ($_order->getShippingDescription()): ?>
-                    <strong><?php echo $_order->getShippingDescription() ?></strong>
+                    <strong><?php echo $this->escapeHtml($_order->getShippingDescription()) ?></strong>
 
                     <?php if ($this->helper('tax')->displayShippingPriceIncludingTax()): ?>
                         <?php $_excl = $this->displayShippingPriceInclTax($_order); ?>
