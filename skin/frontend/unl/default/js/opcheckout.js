@@ -14,17 +14,37 @@ Checkout.prototype = {
         this.loadWaiting = false;
         this.steps = ['login', 'billing', 'shipping', 'shipping_method', 'payment', 'review'];
 
-        //this.onSetMethod = this.nextStep.bindAsEventListener(this);
+        this.accordion.sections.each(function(section) {
+            Event.observe($(section).down('.step-title'), 'click', this._onSectionClick.bindAsEventListener(this));
+        }.bind(this));
 
         this.accordion.disallowAccessToNextSections = true;
+    },
+
+    /**
+     * Section header click handler
+     *
+     * @param event
+     */
+    _onSectionClick: function(event) {
+        var section = $(Event.element(event).up().up());
+        if (section.hasClassName('allow')) {
+            Event.stop(event);
+            this.gotoSection(section.readAttribute('id').replace('opc-', ''));
+            return false;
+        }
     },
 
     ajaxFailure: function(){
         location.href = this.failureUrl;
     },
 
-    reloadProgressBlock: function(){
-        var updater = new Ajax.Updater('checkout-progress-wrapper', this.progressUrl, {method: 'get', onFailure: this.ajaxFailure.bind(this)});
+    reloadProgressBlock: function(toStep) {
+        var updater = new Ajax.Updater('checkout-progress-wrapper', this.progressUrl, {
+            method: 'get',
+            onFailure: this.ajaxFailure.bind(this),
+            parameters: toStep ? {toStep: toStep} : null
+        });
     },
 
     reloadReviewBlock: function(){
@@ -70,9 +90,10 @@ Checkout.prototype = {
             _gaq.push(['_trackPageview', '/checkout/onepage/' + section + '/']);
         }
         
-        section = $('opc-'+section);
-        section.addClassName('allow');
-        this.accordion.openSection(section);
+        var sectionElement = $('opc-'+section);
+        sectionElement.addClassName('allow');
+        this.accordion.openSection('opc-'+section);
+        this.reloadProgressBlock(section);
     },
 
     setMethod: function(){
@@ -95,9 +116,10 @@ Checkout.prototype = {
             this.gotoSection('billing');
         }
         else{
-            alert(Translator.translate('Please choose to register or to checkout as a guest'));
+            alert(Translator.translate('Please choose to register or to checkout as a guest').stripTags());
             return false;
         }
+        document.body.fire('login:setMethod', {method : this.method});
     },
 
     setBilling: function() {
@@ -114,7 +136,6 @@ Checkout.prototype = {
         }
 
         // this refreshes the checkout progress column
-        this.reloadProgressBlock();
 
 //        if ($('billing:use_for_shipping') && $('billing:use_for_shipping').checked){
 //            shipping.syncWithBilling();
@@ -131,21 +152,18 @@ Checkout.prototype = {
     },
 
     setShipping: function() {
-        this.reloadProgressBlock();
         //this.nextStep();
         this.gotoSection('shipping_method');
         //this.accordion.openNextSection(true);
     },
 
     setShippingMethod: function() {
-        this.reloadProgressBlock();
         //this.nextStep();
         this.gotoSection('payment');
         //this.accordion.openNextSection(true);
     },
 
     setPayment: function() {
-        this.reloadProgressBlock();
         //this.nextStep();
         this.gotoSection('review');
         //this.accordion.openNextSection(true);
@@ -178,7 +196,6 @@ Checkout.prototype = {
         }
 
         if (response.goto_section) {
-            this.reloadProgressBlock();
             this.gotoSection(response.goto_section);
             return true;
         }
@@ -188,7 +205,7 @@ Checkout.prototype = {
         }
         return false;
     }
-};
+}
 
 // billing
 var Billing = Class.create();
@@ -227,7 +244,7 @@ Billing.prototype = {
     },
 
     resetSelectedAddress: function(){
-        var selectElement = $('billing-address-select');
+        var selectElement = $('billing-address-select')
         if (selectElement) {
             selectElement.value='';
         }
@@ -288,6 +305,7 @@ Billing.prototype = {
 
     resetLoadWaiting: function(transport){
         checkout.setLoadWaiting(false);
+        document.body.fire('billing-request:completed', {transport: transport});
     },
 
     /**
@@ -325,7 +343,7 @@ Billing.prototype = {
         // This moves the accordion panels of one page checkout and updates the checkout progress
         //checkout.setBilling();
     }
-};
+}
 
 // shipping
 var Shipping = Class.create();
@@ -366,7 +384,7 @@ Shipping.prototype = {
     },
 
     resetSelectedAddress: function(){
-        var selectElement = $('shipping-address-select');
+        var selectElement = $('shipping-address-select')
         if (selectElement) {
             selectElement.value='';
         }
@@ -488,7 +506,7 @@ Shipping.prototype = {
         */
         //checkout.setShipping();
     }
-};
+}
 
 // shipping method
 var ShippingMethod = Class.create();
@@ -507,7 +525,7 @@ ShippingMethod.prototype = {
     validate: function() {
         var methods = document.getElementsByName('shipping_method');
         if (methods.length==0) {
-            alert(Translator.translate('Your order cannot be completed at this time as there is no shipping methods available for it. Please make necessary changes in your shipping address.'));
+            alert(Translator.translate('Your order cannot be completed at this time as there is no shipping methods available for it. Please make necessary changes in your shipping address.').stripTags());
             return false;
         }
 
@@ -520,7 +538,7 @@ ShippingMethod.prototype = {
                 return true;
             }
         }
-        alert(Translator.translate('Please specify shipping method.'));
+        alert(Translator.translate('Please specify shipping method.').stripTags());
         return false;
     },
 
@@ -579,7 +597,7 @@ ShippingMethod.prototype = {
 
         checkout.setShippingMethod();
     }
-};
+}
 
 
 // payment
@@ -694,7 +712,7 @@ Payment.prototype = {
         }
         var methods = document.getElementsByName('payment[method]');
         if (methods.length==0) {
-            alert(Translator.translate('Your order cannot be completed at this time as there is no payment methods available for it.'));
+            alert(Translator.translate('Your order cannot be completed at this time as there is no payment methods available for it.').stripTags());
             return false;
         }
         for (var i=0; i<methods.length; i++) {
@@ -706,7 +724,7 @@ Payment.prototype = {
         if (result) {
             return true;
         }
-        alert(Translator.translate('Please specify payment method.'));
+        alert(Translator.translate('Please specify payment method.').stripTags());
         return false;
     },
 
@@ -788,7 +806,7 @@ Payment.prototype = {
             Event.observe(element, 'click', toggleToolTip);
         });
     }
-};
+}
 
 var Review = Class.create();
 Review.prototype = {
@@ -857,10 +875,9 @@ Review.prototype = {
 
             if (response.goto_section) {
                 checkout.gotoSection(response.goto_section);
-                checkout.reloadProgressBlock();
             }
         }
     },
 
     isSuccess: false
-};
+}

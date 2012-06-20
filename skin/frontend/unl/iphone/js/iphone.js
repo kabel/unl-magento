@@ -66,7 +66,7 @@ document.observe("dom:loaded", function() {
         //codeLatLng();
 
     }
-    
+
     var loadMore = Class.create({
         initialize: function (list, href, pattern) {
             var that = this;
