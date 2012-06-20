@@ -6,7 +6,7 @@ class Unl_BundlePlus_Model_Product_Type extends Mage_Bundle_Model_Product_Type
      * @see Mage_Bundle_Model_Product_Type::_prepareProduct($buyRequest, $product, $processMode)
      * by allowing each bundle option selection to have a user-defined qty
      */
-protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
+    protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
     {
         // completely bypass the parent:: call
         $result = Mage_Catalog_Model_Product_Type_Abstract::_prepareProduct($buyRequest, $product, $processMode);
@@ -18,7 +18,9 @@ protected function _prepareProduct(Varien_Object $buyRequest, $product, $process
         $selections = array();
         $product = $this->getProduct($product);
         $isStrictProcessMode = $this->_isStrictProcessMode($processMode);
-        $_appendAllSelections = (bool)$product->getSkipCheckRequiredOption();
+
+        $skipSaleableCheck = Mage::helper('catalog/product')->getSkipSaleableCheck();
+        $_appendAllSelections = (bool)$product->getSkipCheckRequiredOption() || $skipSaleableCheck;
 
         $options = $buyRequest->getBundleOption();
         if (is_array($options)) {
@@ -65,7 +67,7 @@ protected function _prepareProduct(Varien_Object $buyRequest, $product, $process
 
                 // Check if added selections are still on sale
                 foreach ($selections->getItems() as $key => $selection) {
-                    if (!$selection->isSalable()) {
+                    if (!$selection->isSalable() && !$skipSaleableCheck) {
                         $_option = $optionsCollection->getItemById($selection->getOptionId());
                         if (is_array($options[$_option->getId()]) && count($options[$_option->getId()]) > 1) {
                             $moreSelections = true;
@@ -122,13 +124,11 @@ protected function _prepareProduct(Varien_Object $buyRequest, $product, $process
             foreach ($selections as $selection) {
                 if ($selection->getSelectionCanChangeQty() && isset($qtys[$selection->getOptionId()])) {
                     // allow options to have multiple qtys (for each selection)
-                    if (is_array($qtys[$selection->getOptionId()])) {
-                        if (isset($qtys[$selection->getOptionId()][$selection->getSelectionId()])) {
-                            $qty = (float)$qtys[$selection->getOptionId()][$selection->getSelectionId()] > 0
-                                ? $qtys[$selection->getOptionId()][$selection->getSelectionId()] : 1;
-                        } else {
-                            $qty = (float)$selection->getSelectionQty() ? $selection->getSelectionQty() : 1;
-                        }
+                    if (is_array($qtys[$selection->getOptionId()])
+                        && isset($qtys[$selection->getOptionId()][$selection->getSelectionId()])
+                    ) {
+                        $qty = (float)$qtys[$selection->getOptionId()][$selection->getSelectionId()] > 0
+                            ? $qtys[$selection->getOptionId()][$selection->getSelectionId()] : 1;
                     } else {
                         // original logic
                         $qty = (float)$qtys[$selection->getOptionId()] > 0 ? $qtys[$selection->getOptionId()] : 1;
@@ -153,7 +153,7 @@ protected function _prepareProduct(Varien_Object $buyRequest, $product, $process
                  * Create extra attributes that will be converted to product options in order item
                  * for selection (not for all bundle)
                  */
-                $price = $product->getPriceModel()->getSelectionPrice($product, $selection, $qty);
+                $price = $product->getPriceModel()->getSelectionFinalTotalPrice($product, $selection, 0, $qty);
                 $attributes = array(
                     'price'         => Mage::app()->getStore()->convertPrice($price),
                     'qty'           => $qty,
