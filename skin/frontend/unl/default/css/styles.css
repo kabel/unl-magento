@@ -1421,7 +1421,8 @@ f/********** Product Prices > */
 .cart-table .btn-continue:active > span { color:#cc0000; top:0; }
 .cart-table .btn-continue:hover > span:before { content: none; }
 .cart-table .btn-update { }
-.cart-table .btn-update > span {
+.cart-table .btn-update > span,
+.cart-table .btn-empty > span {
 	line-height: 1;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
