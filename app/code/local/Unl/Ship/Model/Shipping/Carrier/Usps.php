@@ -60,6 +60,35 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         return $this;
     }
 
+    public function proccessAdditionalValidation(Mage_Shipping_Model_Rate_Request $request)
+    {
+        $result = parent::proccessAdditionalValidation($request);
+
+        if (false === $result || $result instanceof Mage_Shipping_Model_Rate_Result_Error) {
+            return $result;
+        }
+
+        //Skip by item validation if there is no items in request
+        if(!count($this->getAllItems($request))) {
+            return $this;
+        }
+
+        $oldStore = $this->getStore();
+        $stores = Mage::helper('unl_core')->getStoresFromItems($this->getAllItems($request));
+
+        foreach ($stores as $store) {
+            $this->setStore($store);
+            if (!$this->isActive()) {
+                $this->setStore($oldStore);
+                return false;
+            }
+        }
+
+        $this->setStore($oldStore);
+
+        return $this;
+    }
+
     public function requestToShipment(Mage_Shipping_Model_Shipment_Request $request)
     {
         $packages = $request->getPackages();

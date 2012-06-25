@@ -280,6 +280,7 @@
                     <fields>
                         <active>
                             <sort_order>1</sort_order>
+                            <show_in_store>1</show_in_store>
                         </active>
                         <title>
                             <sort_order>5</sort_order>
