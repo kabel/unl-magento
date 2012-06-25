@@ -81,6 +81,16 @@
     
     <adminhtml>
         <events>
+            <admin_system_config_changed_section_carriers>
+                <observers>
+                    <unl_ship_endicia>
+                        <type>singleton</type>
+                        <class>unl_ship/system_config_backend_endicia_observer</class>
+                        <method>afterEndiciaChanges</method>
+                    </unl_ship_endicia>
+                </observers>
+            </admin_system_config_changed_section_carriers>
+            
             <adminhtml_block_html_before>
                 <observers>
                     <ship_correct_admin>
@@ -139,6 +149,12 @@
                 <ship_request_option>nonvalidate</ship_request_option>
                 <gateway_xml_url>https://onlinetools.ups.com/ups.app/xml/Rate</gateway_xml_url>
             </ups>
+            <usps>
+                <endicia_requester_id backend_model="adminhtml/system_config_backend_encrypted"></endicia_requester_id>
+                <endicia_account_id backend_model="adminhtml/system_config_backend_encrypted"></endicia_account_id>
+                <endicia_passphrase backend_model="adminhtml/system_config_backend_encrypted"></endicia_passphrase>
+                <endicia_max_postage>500</endicia_max_postage>
+            </usps>
         </carriers>
     </default>
 </config>

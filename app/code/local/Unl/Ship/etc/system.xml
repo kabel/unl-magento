@@ -48,19 +48,19 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                         </heading_api>
-                        <sandbox_mode translate="label">
+                        <sandbox_mode>
                             <sort_order>105</sort_order>
                         </sandbox_mode>
                         <account>
                             <sort_order>110</sort_order>
                         </account>
-                        <meter_number translate="label">
+                        <meter_number>
                             <sort_order>111</sort_order>
                         </meter_number>
-                        <key translate="label">
+                        <key>
                             <sort_order>120</sort_order>
                         </key>
-                        <password translate="label">
+                        <password>
                             <sort_order>122</sort_order>
                         </password>
                         
@@ -276,6 +276,230 @@
                         
                     </fields>
                 </ups>
+                <usps>
+                    <fields>
+                        <active>
+                            <sort_order>1</sort_order>
+                        </active>
+                        <title>
+                            <sort_order>5</sort_order>
+                        </title>
+                        <sort_order>
+                            <sort_order>10</sort_order>
+                        </sort_order>
+                        <debug>
+                            <sort_order>15</sort_order>
+                        </debug>
+                        
+                        <heading_api translate="label">
+                            <label>API/Integration</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </heading_api>
+                        <mode>
+                            <sort_order>101</sort_order>
+                        </mode>
+                        <userid>
+                            <sort_order>110</sort_order>
+                        </userid>
+                        <password>
+                            <sort_order>111</sort_order>
+                        </password>
+                        <gateway_url>
+                            <sort_order>120</sort_order>
+                        </gateway_url>
+                        <gateway_secure_url>
+                            <sort_order>121</sort_order>
+                        </gateway_secure_url>
+                        <endicia_enabled translate="label">
+                            <label>Enable Endicia Label Server</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </endicia_enabled>
+                        <endicia_test_mode traslate="label">
+                            <label>Endicia Test Mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>131</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_test_mode>
+                        <endicia_requester_id traslate="label">
+                            <label>Endicia Requester ID</label>
+                            <frontend_type>obscure</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_requester_id>
+                        <endicia_account_id traslate="label">
+                            <label>Endicia Account ID</label>
+                            <frontend_type>obscure</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>141</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_account_id>
+                        <endicia_els_url traslate="label">
+                            <label>Endicia ELS URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>142</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_els_url>
+                        <endicia_change_passphrase traslate="label">
+                            <label>Change Endicia Pass Phrase</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <backend_model>unl_ship/system_config_backend_endicia_changepassphrase</backend_model>
+                            <sort_order>145</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_change_passphrase>
+                        <endicia_old_passphrase traslate="label">
+                            <label>Old Endicia Pass Phrase</label>
+                            <frontend_type>obscure</frontend_type>
+                            <backend_model>unl_ship/system_config_backend_endicia_oldpassphrase</backend_model>
+                            <sort_order>146</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_change_passphrase>1</endicia_change_passphrase></depends>
+                        </endicia_old_passphrase>
+                        <endicia_passphrase translate="label">
+                            <label>Endicia Pass Phrase</label>
+                            <frontend_type>obscure</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <sort_order>147</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_passphrase>
+                        <endicia_max_postage translate="label">
+                            <label>Max Endicia Postage Balence</label>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits</validate>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_max_postage>
+                        <endicia_auto_purchase_threshold translate="label comment">
+                            <label>Endicia Postage Auto Purchase Threshold</label>
+                            <comment>Leave empty to disable automatically purchasing postage.</comment>
+                            <sort_order>151</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_auto_purchase_threshold>
+                        <endicia_force_postage_purchase tranlate="label">
+                            <label>Force an Endicia Postage Purchase</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <backend_model>unl_ship/system_config_backend_endicia_purchase</backend_model>
+                            <sort_order>152</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_force_postage_purchase>
+                        
+                        <heading_defaults translate="label">
+                            <label>Units/Defaults</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </heading_defaults>
+                        <container>
+                            <sort_order>210</sort_order>
+                        </container>
+                        <size>
+                            <sort_order>211</sort_order>
+                        </size>
+                        <length>
+                            <sort_order>212</sort_order>
+                        </length>
+                        <width>
+                            <sort_order>213</sort_order>
+                        </width>
+                        <height>
+                            <sort_order>214</sort_order>
+                        </height>
+                        <girth>
+                            <sort_order>215</sort_order>
+                        </girth>
+                        <machinable>
+                            <sort_order>220</sort_order>
+                        </machinable>
+                        <max_package_weight>
+                            <sort_order>230</sort_order>
+                        </max_package_weight>
+                        
+                        <heading_options>
+                            <label>Options/Restrictions</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>300</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </heading_options>
+                        <allowed_methods>
+                            <sort_order>301</sort_order>
+                        </allowed_methods>
+                        <showmethod>
+                            <sort_order>302</sort_order>
+                        </showmethod>
+                        <specificerrmsg>
+                            <sort_order>303</sort_order>
+                        </specificerrmsg>
+                        <handling_type>
+                            <sort_order>310</sort_order>
+                        </handling_type>
+                        <handling_action>
+                            <sort_order>311</sort_order>
+                        </handling_action>
+                        <handling_fee>
+                            <sort_order>312</sort_order>
+                        </handling_fee>
+                        <free_method>
+                            <sort_order>320</sort_order>
+                        </free_method>
+                        <free_shipping_enable>
+                            <sort_order>321</sort_order>
+                        </free_shipping_enable>
+                        <free_shipping_subtotal>
+                            <sort_order>322</sort_order>
+                            <depends><free_shipping_enable>1</free_shipping_enable></depends>
+                        </free_shipping_subtotal>
+                        <sallowspecific>
+                            <sort_order>341</sort_order>
+                        </sallowspecific>
+                        <specificcountry>
+                            <sort_order>342</sort_order>
+                            <depends><sallowspecific>1</sallowspecific></depends>
+                        </specificcountry>
+                    </fields>
+                </usps>
             </groups>
         </carriers>
     </sections>
