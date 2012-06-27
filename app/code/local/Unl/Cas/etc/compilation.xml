@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+    <includes>
+        <default>
+            <Zend_Http_Client/>
+        
+            <Unl_Cas_Helper_Data/>
+            <Unl_Cas_Helper_Rss/>
+            <Unl_Cas_Model_Observer/>
+        
+            <UNL_Auth/>
+            <UNL_Auth_SimpleCAS/>
+        </default>
+    </includes>
+</config>

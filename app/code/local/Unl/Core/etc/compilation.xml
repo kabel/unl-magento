@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<config>
+    <includes>
+        <default>
+            <!-- Additions to Core -->
+            <Zend_Uri/>
+            
+            <Varien_Cache_Core/>
+            <Varien_Date/>
+            <Varien_Db_Ddl_Table/>
+            <Varien_Profiler/>
+            
+            <Mage_Core_Model_Cache/>
+            <Mage_Core_Helper_Http/>
+            <!-- END -->
+            
+            <Unl_Core_Model_Catalog_Observer/>
+            <Unl_Core_Model_Core_Translate/>
+            <Unl_Core_Model_Core_Design_Package/>
+            <Unl_Core_Model_Observer/>
+            <Unl_Core_Block_Update/>
+            <Unl_Core_Block_Page_Template_Links/>
+            <Unl_Core_Block_Page_Html_Contentnotices/>
+            <Unl_Core_Block_Page_Html_Titlegraphic/>
+            <Unl_Core_Block_GoogleAnalytics_Ga/>
+            <Unl_Core_Helper_Data/>
+        </default>
+        
+        <cms>
+            <Mage_Cms_Helper_Data/>
+        </cms>
+        
+        <catalog>
+            <Varien_Data_Tree/>
+            <Varien_Data_Tree_Node/>
+            
+            <Unl_Core_Model_Catalog_Observer/>
+            <Unl_Core_Model_Catalog_Resource_Product_Collection/>
+            <Mage_Catalog_Helper_Product/>
+            <Unl_Core_Helper_Catalog_Product/>
+        </catalog>
+        
+        <checkout>
+            <Unl_Core_Model_Catalog_Observer/>
+            <Unl_Core_Model_Catalog_Resource_Product_Collection/>
+            <Unl_Core_Model_Catalog_Resource_Product_Link_Product_Collection/>
+            <Unl_Core_Helper_Catalog_Product />
+        
+            <Unl_Core_Model_Sales_Observer/>
+            <Unl_Core_Model_Sales_Quote_Address/>
+            <Unl_Core_Model_Sales_Quote_Config/>
+            <Unl_Core_Model_Tax_Calculation/>
+            <Unl_Core_Model_Tax_Config/>
+        </checkout>
+    </includes>
+</config>

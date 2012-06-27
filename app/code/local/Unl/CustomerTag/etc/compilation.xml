@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <includes>
+        <default>
+            <Unl_CustomerTag_Block_Catalog_Navigation/>
+            <Unl_CustomerTag_Model_Observer/>
+            <Unl_CustomerTag_Model_Resource_Tag/>
+            <Unl_CustomerTag_Model_Resource_Tag_Collection/>
+            <Unl_CustomerTag_Block_Catalog_Navigation/>
+        </default>
+    </includes>
+</config>
