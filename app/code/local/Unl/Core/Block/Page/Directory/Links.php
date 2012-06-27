@@ -4,6 +4,15 @@ class Unl_Core_Block_Page_Directory_Links extends Mage_Core_Block_Template
 {
     protected $_urlCache = array();
 
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->addData(array(
+            'cache_lifetime' => false
+        ));
+    }
+
+
     public function getCacheKeyInfo()
     {
         $info = parent::getCacheKeyInfo();

@@ -6,6 +6,18 @@ class Unl_Core_Block_Page_Html_Directory extends Mage_Page_Block_Switch
     {
         parent::_construct();
         $this->setTemplate('page/html/directory.phtml');
+        $this->setCacheLifetime(false);
+    }
+
+    public function getCacheKeyInfo()
+    {
+        return array(
+            'PAGE_STORE_DIRECTORY',
+            Mage::app()->getStore()->getId(),
+            (int)Mage::app()->getStore()->isCurrentlySecure(),
+            Mage::getDesign()->getPackageName(),
+            Mage::getDesign()->getTheme('template'),
+        );
     }
 
     /**

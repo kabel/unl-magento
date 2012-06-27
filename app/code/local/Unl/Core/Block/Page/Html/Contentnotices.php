@@ -2,6 +2,23 @@
 
 class Unl_Core_Block_Page_Html_Contentnotices extends Mage_Core_Block_Template
 {
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->addData(array(
+            'cache_lifetime' => false
+        ));
+    }
+
+    public function getCacheKeyInfo()
+    {
+        return array(
+            'PAGE_CONTENT_NOTICES',
+            Mage::app()->getStore()->getId(),
+            (int)Mage::app()->getStore()->isCurrentlySecure(),
+        );
+    }
+
     /**
      * Check if the content notice is enabled
      *
