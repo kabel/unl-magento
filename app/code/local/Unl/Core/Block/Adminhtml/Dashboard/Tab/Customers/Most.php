@@ -29,7 +29,7 @@ class Unl_Core_Block_Adminhtml_Dashboard_Tab_Customers_Most extends Mage_Adminht
         $collection->addSumAvgTotals($storeFilter)
             ->orderByTotalAmount();
 
-        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'order_id', false, $storeIds);
+        Mage::helper('unl_core')->addAdminScopeFilters($collection, 'entity_id', false, $storeIds);
 
         $this->setCollection($collection);
 
