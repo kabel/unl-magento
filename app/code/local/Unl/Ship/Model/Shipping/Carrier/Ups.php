@@ -494,7 +494,7 @@ XMLRequest;
             // UPS Print Return Label
             $returnPart->addChild('Code', '9');
         }
-        $shipmentPart->addChild('Description', substr(implode(' ', $itemsDesc), 0, 35));//empirical
+        $shipmentPart->addChild('Description', htmlspecialchars(substr(implode(' ', $itemsDesc), 0, 35)));//empirical
 
         $shipperPart = $shipmentPart->addChild('Shipper');
         if ($request->getIsReturn()) {
@@ -532,7 +532,7 @@ XMLRequest;
         $shipToPart = $shipmentPart->addChild('ShipTo');
         $shipToPart->addChild('AttentionName', $request->getRecipientContactPersonName());
         $shipToPart->addChild('CompanyName', $request->getRecipientContactCompanyName()
-            ? $request->getRecipientContactCompanyName()
+            ? htmlspecialchars($request->getRecipientContactCompanyName())
             : 'N/A');
         $shipToPart->addChild('PhoneNumber', $request->getRecipientContactPhoneNumber());
 
@@ -582,7 +582,7 @@ XMLRequest;
         $servicePart = $shipmentPart->addChild('Service');
         $servicePart->addChild('Code', $request->getShippingMethod());
         $packagePart = $shipmentPart->addChild('Package');
-        $packagePart->addChild('Description', substr(implode(' ', $itemsDesc), 0, 35));//empirical
+        $packagePart->addChild('Description', htmlspecialchars(substr(implode(' ', $itemsDesc), 0, 35)));//empirical
         $packagePart->addChild('PackagingType')
             ->addChild('Code', $request->getPackagingType());
         $packageWeight = $packagePart->addChild('PackageWeight');
