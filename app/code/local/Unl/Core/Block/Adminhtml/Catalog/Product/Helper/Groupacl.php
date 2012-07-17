@@ -23,7 +23,7 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Helper_Groupacl extends Varien_Da
             $html .= ' disabled="disabled"';
         }
 
-        $html .= 'onclick="toggleValueElements(this, this.parentNode);" class="checkbox" type="checkbox">';
+        $html .= ' onclick="toggleValueElements(this, this.parentNode);" class="checkbox" type="checkbox"/>';
 
         $html .= ' <label for="'.$htmlId.'" class="normal">'
             . Mage::helper('adminhtml')->__('Use No Restriction').'</label>';
