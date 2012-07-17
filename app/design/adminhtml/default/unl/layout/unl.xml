@@ -1,15 +1,25 @@
 <?xml version="1.0"?>
 <layout>
 
-<default>
-	<reference name="head">
-		<action method="addCss"><name>unl_boxes.css</name></action>
-        <action method="setTitle" translate="title"><title>Magento Admin / UNL Marketplace</title></action>
-	</reference>
-    <reference name="notifications">
-        <block type="unl_core/adminhtml_notification_maintenance" name="notification_maintenance" template="notification/maintenance.phtml" />
-    </reference>
-</default>
+    <default>
+    	<reference name="head">
+    		<action method="addCss"><name>unl_boxes.css</name></action>
+            <action method="setTitle" translate="title"><title>Magento Admin / UNL Marketplace</title></action>
+    	</reference>
+        <reference name="notifications">
+            <block type="unl_core/adminhtml_notification_maintenance" name="notification_maintenance" template="notification/maintenance.phtml" />
+        </reference>
+    </default>
+    
+    <editor>
+        <reference name="head">
+            <action method="removeItem"><type>js</type><script>lib/flex.js</script></action>
+            <action method="removeItem"><type>js</type><script>lib/FABridge.js</script></action>
+            <action method="removeItem"><type>js</type><script>mage/adminhtml/flexuploader.js</script></action>
+            <action method="addJs"><script>unl/plupload.full.js</script></action>
+            <action method="addJs"><script>unl/pluploader.js</script></action>
+        </reference>
+    </editor>
 
 <!--
 Advanced Filters (add-on)
@@ -84,7 +94,7 @@ Misc. Admin Updates
     <adminhtml_system_config_edit>
         <remove name="moneybookers_jsinit"/>
     </adminhtml_system_config_edit>
-
+    
 <!--
 Custom Product Reports
 -->

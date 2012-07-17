@@ -1,3 +1,10 @@
+button.hover {
+    background: url("../default/images/btn_over_bg.gif") repeat-x scroll 0 0 #F77C16;
+}
+button.active {
+    background: url("../default/images/btn_on_bg.gif") repeat-x scroll 0 0 #F77C16;
+}
+
 .multigrid .content-header {
 	border-bottom: 4px double #DFDFDF;
     margin-bottom: 5px;

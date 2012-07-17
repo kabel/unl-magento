@@ -36,6 +36,7 @@ else
         "errors/unl"
         "errors/local.xml"
 #       "js/xajax_js"
+        "js/unl"
         "lib/SimpleCAS"
         "lib/SimpleCAS.php"
         "lib/UNL"

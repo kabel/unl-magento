@@ -10,6 +10,10 @@
         <blocks>
             <adminhtml>
                 <rewrite>
+                    <!-- Plupload for uploads -->
+                    <catalog_product_helper_form_gallery_content>Unl_Core_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content</catalog_product_helper_form_gallery_content>
+                    <cms_wysiwyg_images_content_uploader>Unl_Core_Block_Adminhtml_Cms_Wysiwyg_Images_Content_Uploader</cms_wysiwyg_images_content_uploader>
+                    <media_uploader>Unl_Core_Block_Adminhtml_Media_Uploader</media_uploader>
                     <!-- Adds scope filter -->
                     <catalog_category_tree>Unl_Core_Block_Adminhtml_Catalog_Category_Tree</catalog_category_tree>
                     <catalog_product_grid>Unl_Core_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
