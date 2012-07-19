@@ -87,14 +87,26 @@ class Unl_Cas_Model_Observer
         $result = $observer->getEvent()->getResult();
         $quote  = $observer->getEvent()->getQuote();
 
+        if (!$result->isAvailable) {
+            return $this;
+        }
+
         if ($method instanceof Mage_Payment_Model_Method_Purchaseorder) {
             $customer = $quote->getCustomer();
             if (!$customer->getId()) {
                 $result->isAvailable = false;
                 return;
-            } else {
-                $result->isAvailable = Mage::helper('unl_cas')->isCustomerCostObjectAuthorized($customer);
-                return;
+            }
+
+            $result->isAvailable = Mage::helper('unl_cas')->isCustomerCostObjectAuthorized($customer);
+            if ($result->isAvailable) {
+                foreach (Mage::helper('unl_core')->getStoresFromQuote($quote) as $store) {
+                    if (!$method->getConfigData('active_per_item', $store)) {
+                        $result->isAvailable = false;
+                        Mage::register('payment_method_alert', Mage::helper('unl_cas')->__('Payment method "%s" has been disabled because some of your items are not eligble with it.', $method->getTitle()));
+                        break;
+                    }
+                }
             }
         }
     }

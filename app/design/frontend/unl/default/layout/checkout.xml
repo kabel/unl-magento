@@ -243,6 +243,7 @@ Multi address shipping checkout billing information
         <reference name="content">
             <block type="checkout/multishipping_billing" name="checkout_billing" template="checkout/multishipping/billing.phtml">
                 <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
+                <block type="core/template" name="payment.alerts" template="checkout/multishipping/billing/alerts.phtml"/>
 
                 <!--<block type="checkout/multishipping_billing_items" name="checkout_billing_items" template="checkout/multishipping/billing/items.phtml">
                     <action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>checkout/multishipping/item/default.phtml</template></action>
@@ -331,6 +332,9 @@ One page checkout main layout
                 <block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="checkout/onepage/payment.phtml">
                     <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/methods.phtml">
                         <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
+                        <block type="core/text_list" name="checkout.onepage.payment.additional" as="additional">
+                            <block type="core/template" name="checkout.onepage.payment.alerts" template="checkout/onepage/payment/alerts.phtml"/>
+                        </block>
                     </block>
                 </block>
                 <block type="checkout/onepage_review" name="checkout.onepage.review" as="review" template="checkout/onepage/review.phtml"/>
@@ -363,6 +367,9 @@ One page checkout payment methods block
 
         <block type="checkout/onepage_payment_methods" name="root" output="toHtml" template="checkout/onepage/payment/methods.phtml">
             <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
+            <block type="core/text_list" name="checkout.onepage.payment.additional" as="additional">
+                <block type="core/template" name="checkout.onepage.payment.alerts" template="checkout/onepage/payment/alerts.phtml"/>
+            </block>
         </block>
     </checkout_onepage_paymentmethod>
 

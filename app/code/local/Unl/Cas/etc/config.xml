@@ -166,5 +166,10 @@
                 <bindpw backend_model="adminhtml/system_config_backend_encrypted"/>
             </unl_ldap>
         </admin>
+        <payment>
+            <purchaseorder>
+                <active_per_item>1</active_per_item>
+            </purchaseorder>
+        </payment>
     </default>
 </config>

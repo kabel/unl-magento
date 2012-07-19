@@ -1,0 +1,3 @@
+<?php if ($msg = Mage::registry('payment_method_alert')): ?>
+<ul class="messages"><li class="note-msg"><ul><li><?php echo $this->escapeHtml($msg) ?></li></ul></li></ul>
+<?php endif; ?>
