@@ -45,11 +45,15 @@ class Unl_Cas_Model_Observer
      */
     public function onAfterAdminLogout()
     {
+        $savedMessages = Mage::getSingleton('adminhtml/session')->getMessages();
+
         /* @var $session Mage_Core_Model_Session_Abstract */
         foreach (array('core/session', 'adminhtml/session', 'unl_cas/session') as $sessionModel) {
             $session = Mage::getSingleton($sessionModel);
             $session->clear();
         }
+
+        Mage::getSingleton('adminhtml/session')->setMessages($savedMessages);
     }
 
     /**

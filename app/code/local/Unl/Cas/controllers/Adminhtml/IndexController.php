@@ -4,16 +4,6 @@ require_once "Mage/Adminhtml/controllers/IndexController.php";
 
 class Unl_Cas_Adminhtml_IndexController extends Mage_Adminhtml_IndexController
 {
-    /* Extends
-     * @see Mage_Adminhtml_IndexController::_outTemplate()
-     * by also init'ing admin/session message
-     */
-    protected function _outTemplate($tplName, $data = array())
-    {
-        $this->_initLayoutMessages('admin/session');
-        parent::_outTemplate($tplName, $data);
-    }
-
     /* Overrides
      * @see Mage_Adminhtml_IndexController::logoutAction()
      * by using custom session logic
@@ -26,10 +16,10 @@ class Unl_Cas_Adminhtml_IndexController extends Mage_Adminhtml_IndexController
         $isCAS = $user ? $user->getIsCas() : false;
         $adminSession->unsetAll();
         $adminSession->renewSession();
-        $adminSession->addSuccess(Mage::helper('adminhtml')->__('You have logged out.'));
+        $this->_getSession()->addSuccess(Mage::helper('adminhtml')->__('You have logged out.'));
         if ($isCAS) {
             $auth = Mage::helper('unl_cas')->getAuth();
-            $adminSession->addSuccess($this->__(
+            $this->_getSession()->addSuccess($this->__(
                 'If you are finished with all UNL services, please remember to <a href="%s">logout of your UNL session</a>.',
                 $auth->getProtocol()->getLogoutUrl($this->getUrl('*'))
             ));
