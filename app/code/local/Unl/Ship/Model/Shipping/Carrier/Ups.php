@@ -706,50 +706,106 @@ XMLRequest;
             $xmlResponse = '';
         }
 
+        $result = new Varien_Object();
         try {
             $response = new SimpleXMLElement($xmlResponse);
         } catch (Exception $e) {
             $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
+            $result->setErrors($e->getMessage());
         }
 
-        $result = new Varien_Object();
-        if (isset($response->Error)) {
-            $result->setErrors((string)$response->Error->ErrorDescription);
-        } else {
-            $shippingLabelContent = (string)$response->ShipmentResults->PackageResults->LabelImage->GraphicImage;
-            $trackingNumber       = (string)$response->ShipmentResults->PackageResults->TrackingNumber;
+        if (!$result->hasErrors()) {
+            if (isset($response->Response->Error)
+                && in_array($response->Response->Error->ErrorSeverity, array('Hard', 'Transient'))
+            ) {
+                $result->setErrors((string)$response->Response->Error->ErrorDescription);
+            } else {
+                $shippingLabelContent = (string)$response->ShipmentResults->PackageResults->LabelImage->GraphicImage;
+                $trackingNumber       = (string)$response->ShipmentResults->PackageResults->TrackingNumber;
 
-            $result->setShippingLabelContent(base64_decode($shippingLabelContent));
-            $result->setTrackingNumber($trackingNumber);
+                $result->setShippingLabelContent(base64_decode($shippingLabelContent));
+                $result->setTrackingNumber($trackingNumber);
 
-            $pkg = Mage::getModel('unl_ship/shipment_package')
-                ->setCarrierShipmentId((string)$response->ShipmentResults->ShipmentIdentificationNumber)
-                ->setWeightUnits((string)$response->ShipmentResults->BillingWeight->UnitOfMeasurement->Code)
-                ->setWeight((string)$response->ShipmentResults->BillingWeight->Weight)
-                ->setTrackingNumber($trackingNumber)
-                ->setCurrencyUnits((string)$response->ShipmentResults->ShipmentCharges->TotalCharges->CurrencyCode)
-                ->setShippingTotal((string)$response->ShipmentResults->ShipmentCharges->TotalCharges->MonetaryValue)
-                ->setTransportationCharge((string)$response->ShipmentResults->ShipmentCharges->TransportationCharges->MonetaryValue)
-                ->setServiceOptionCharge((string)$response->ShipmentResults->ShipmentCharges->ServiceOptionsCharges->MonetaryValue)
-                ->setLabelFormat((string)$response->ShipmentResults->PackageResults->LabelImage->LabelImageFormat->Code)
-                ->setHtmlLabelImage(base64_decode((string)$response->ShipmentResults->PackageResults->LabelImage->HTMLImage));
+                $pkg = Mage::getModel('unl_ship/shipment_package')
+                    ->setCarrierShipmentId((string)$response->ShipmentResults->ShipmentIdentificationNumber)
+                    ->setWeightUnits((string)$response->ShipmentResults->BillingWeight->UnitOfMeasurement->Code)
+                    ->setWeight((string)$response->ShipmentResults->BillingWeight->Weight)
+                    ->setTrackingNumber($trackingNumber)
+                    ->setCurrencyUnits((string)$response->ShipmentResults->ShipmentCharges->TotalCharges->CurrencyCode)
+                    ->setShippingTotal((string)$response->ShipmentResults->ShipmentCharges->TotalCharges->MonetaryValue)
+                    ->setTransportationCharge((string)$response->ShipmentResults->ShipmentCharges->TransportationCharges->MonetaryValue)
+                    ->setServiceOptionCharge((string)$response->ShipmentResults->ShipmentCharges->ServiceOptionsCharges->MonetaryValue)
+                    ->setLabelFormat((string)$response->ShipmentResults->PackageResults->LabelImage->LabelImageFormat->Code)
+                    ->setHtmlLabelImage(base64_decode((string)$response->ShipmentResults->PackageResults->LabelImage->HTMLImage));
 
-            if (isset($response->ShipmentResults->NegotiatedRates)) {
-                $pkg->setNegotiatedTotal((string)$response->ShipmentResults->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue);
+                if (isset($response->ShipmentResults->NegotiatedRates)) {
+                    $pkg->setNegotiatedTotal((string)$response->ShipmentResults->NegotiatedRates->NetSummaryCharges->GrandTotal->MonetaryValue);
+                }
+
+                if (isset($response->ShipmentResults->ControlLogReceipt)) {
+                    $pkg->setInsDoc(base64_decode((string)$response->ShipmentResults->ControlLogReceipt->GraphicImage));
+                }
+
+                if (isset($response->ShipmentResults->Form)) {
+                    $pkg->setIntlDoc(base64_decode((string)$response->ShipmentResults->Form->Image->GraphicImage));
+                }
+
+                $result->setPackage($pkg);
             }
-
-            if (isset($response->ShipmentResults->ControlLogReceipt)) {
-                $pkg->setInsDoc(base64_decode((string)$response->ShipmentResults->ControlLogReceipt->GraphicImage));
-            }
-
-            if (isset($response->ShipmentResults->Form)) {
-                $pkg->setIntlDoc(base64_decode((string)$response->ShipmentResults->Form->Image->GraphicImage));
-            }
-
-            $result->setPackage($pkg);
         }
 
         $this->_debug($debugData);
         return $result;
+    }
+
+    protected function _doShipmentRequest(Varien_Object $request)
+    {
+        $this->_prepareShipmentRequest($request);
+        $result = new Varien_Object();
+        $xmlRequest = $this->_formShipmentRequest($request);
+
+        if ($xmlResponse === null) {
+            $url = $this->getConfigData('url');
+            if (!$url) {
+                $url = $this->_defaultUrls['ShipConfirm'];
+            }
+
+            $debugData = array('request' => $xmlRequest);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
+            $xmlResponse = curl_exec($ch);
+            if ($xmlResponse === false) {
+                throw new Exception(curl_error($ch));
+            } else {
+                $debugData['result'] = $xmlResponse;
+            }
+        }
+
+        try {
+            $response = new SimpleXMLElement($xmlResponse);
+        } catch (Exception $e) {
+            $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
+            $result->setErrors($e->getMessage());
+        }
+
+        if (isset($response->Response->Error)
+            && in_array($response->Response->Error->ErrorSeverity, array('Hard', 'Transient'))
+        ) {
+            $result->setErrors((string)$response->Response->Error->ErrorDescription);
+        }
+
+        $this->_debug($debugData);
+
+        if ($result->hasErrors() || empty($response)) {
+            return $result;
+        } else {
+            return $this->_sendShipmentAcceptRequest($response);
+        }
     }
 }
