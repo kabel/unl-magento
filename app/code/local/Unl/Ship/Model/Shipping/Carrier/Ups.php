@@ -403,6 +403,20 @@ XMLRequest;
         return $this;
     }
 
+    /* Extends
+     * @see Mage_Usa_Model_Shipping_Carrier_Abstract::_prepareShipmentRequest()
+     * by escaping XML entities
+     */
+    protected function _prepareShipmentRequest(Varien_Object $request)
+    {
+        parent::_prepareShipmentRequest($request);
+        foreach ($request->getData() as $key => $data) {
+            if ((strpos($key, 'shipper') === 0 || strpos($key, 'recipient') === 0) && is_string($data)) {
+                $request->setData($key, htmlspecialchars($data));
+            }
+        }
+    }
+
     public function requestToShipment(Mage_Shipping_Model_Shipment_Request $request)
     {
         $packages = $request->getPackages();
@@ -530,10 +544,14 @@ XMLRequest;
         }
 
         $shipToPart = $shipmentPart->addChild('ShipTo');
-        $shipToPart->addChild('AttentionName', $request->getRecipientContactPersonName());
+        if ($request->getShipperContactCompanyName() || $request->getShippingMethod() == '14' ||
+            $request->getShipperAddressCountryCode() != $request->getRecipientAddressCountryCode()
+        ) {
+            $shipToPart->addChild('AttentionName', $request->getRecipientContactPersonName());
+        }
         $shipToPart->addChild('CompanyName', $request->getRecipientContactCompanyName()
             ? $request->getRecipientContactCompanyName()
-            : 'N/A');
+            : $request->getRecipientContactPersonName());
         $shipToPart->addChild('PhoneNumber', $request->getRecipientContactPhoneNumber());
 
         $addressPart = $shipToPart->addChild('Address');
