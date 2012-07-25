@@ -14,6 +14,7 @@ class Unl_Core_Model_Resource_Report_Product_Reconcile_Paid extends Mage_Sales_M
             ->addFilterToMap('base_price', 'main_table.base_price')
             ->addFilterToMap('is_dummy', 'main_table.is_dummy')
             ->addFilterToMap('paid_date', 'i.paid_at')
+            ->addFilterToMap('order_number', 'i.order_increment_id')
             ->addFilterToMap('invoice_number', 'i.increment_id')
             ->addFilterToMap('invoice_state', 'i.state')
             ->addFilterToMap('unl_payment_account', 'oi.unl_payment_account')

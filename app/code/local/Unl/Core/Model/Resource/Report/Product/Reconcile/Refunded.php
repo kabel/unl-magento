@@ -14,6 +14,7 @@ class Unl_Core_Model_Resource_Report_Product_Reconcile_Refunded extends Mage_Sal
             ->addFilterToMap('base_price', 'main_table.base_price')
             ->addFilterToMap('is_dummy', 'main_table.is_dummy')
             ->addFilterToMap('paid_date', 'c.refunded_at')
+            ->addFilterToMap('order_number', 'c.order_increment_id')
             ->addFilterToMap('parent_number', 'c.increment_id')
             ->addFilterToMap('parent_state', 'c.state')
             ->addFilterToMap('unl_payment_account', 'oi.unl_payment_account')
