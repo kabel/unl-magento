@@ -362,6 +362,15 @@
                             <show_in_store>0</show_in_store>
                             <depends><endicia_enabled>1</endicia_enabled></depends>
                         </endicia_els_url>
+                        <endicia_els_int_url traslate="label">
+                            <label>Endicia ELS Internal URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>142</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><endicia_enabled>1</endicia_enabled></depends>
+                        </endicia_els_int_url>
                         <endicia_change_passphrase traslate="label">
                             <label>Change Endicia Pass Phrase</label>
                             <frontend_type>select</frontend_type>

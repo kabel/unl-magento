@@ -421,4 +421,57 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
 
         return $result;
     }
+
+    public function doRefundRequest($usps, $trackingNumber)
+    {
+        $result = new Varien_Object();
+        $xmlRequest = new SimpleXMLElement('<RefundRequest/>');
+        $xmlRequest->addChild('AccountID', $usps->getConfigData('endicia_account_id'));
+        $xmlRequest->addChild('PassPhrase', $usps->getConfigData('endicia_passphrase'));
+
+        if ($usps->getConfigFlag('endicia_test_mode')) {
+            $xmlRequest->addChild('Test', 'Y');
+        }
+
+        $refundList = $xmlRequest->addChild('RefundList');
+        $refundList->addChild('PICNumber', $trackingNumber);
+
+        $debugData = array('request' => $xmlRequest->asXML());
+
+        $url = $usps->getConfigData('endicia_els_int_url') . '&method=RefundRequest';
+
+        $client = new Zend_Http_Client();
+        $client->setUri($url);
+        $client->setConfig(array('maxredirects' => 0, 'timeout' => 30));
+        $client->setParameterPost('XMLInput', $xmlRequest->asXML());
+
+        $response = $client->request(Zend_Http_Client::POST);
+        $xmlResponse = $response->getBody();
+
+        if ($response->getStatus() != 200) {
+            $debugData['result'] = array('error' => 'Invalid Request: ' . $xmlResponse);
+            $result->setErrors('Invalid Request');
+        } else {
+            try {
+                $xml = @new SimpleXMLElement($xmlResponse);
+            } catch (Exception $e) {
+                $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
+                $result->setErrors('Bad Response');
+            }
+        }
+
+        if (!$result->hasErrors()) {
+            if ((string)$xml->ErrorMsg != '') {
+                $result->setErrors((string)$xml->ErrorMsg);
+                $debugData['result'] = array('error' => $result->getErrors());
+            } elseif ($xml->RefundList->PICNumber->IsApproved != 'YES') {
+                $result->setErrors((string)$xml->RefundList->PICNumber->ErrorMsg);
+                $debugData['result'] = array('error' => $result->getErrors());
+            }
+        }
+
+        $usps->debugData($debugData);
+
+        return $result;
+    }
 }

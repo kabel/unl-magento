@@ -45,6 +45,12 @@
                     <shipping_carrier_usps>Unl_Ship_Model_Shipping_Carrier_Usps</shipping_carrier_usps>
             	</rewrite>
             </usa>
+            <sales>
+                <rewrite>
+                    <order_shipment>Unl_Ship_Model_Sales_Order_Shipment</order_shipment>
+                    <order_shipment_item>Unl_Ship_Model_Sales_Order_Shipment_Item</order_shipment_item>
+                </rewrite>
+            </sales>
         </models>
         
         <resources>

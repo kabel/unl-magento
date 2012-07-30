@@ -19,6 +19,25 @@ class Unl_Ship_Block_Update extends Mage_Adminhtml_Block_Abstract
         }
     }
 
+    public function addVoidButton()
+    {
+        /* @var $block Mage_Adminhtml_Block_Sales_Order_Shipment_View */
+        $block = $this->getParentBlock();
+
+        $shipment = $block->getShipment();
+        $carrier  = $shipment->getOrder()->getShippingCarrier();
+        if ($this->_isAllowedSalesAction('void_shipment') && $carrier
+            && is_callable(array($carrier, 'isVoidAvailable')) && $carrier->isVoidAvailable()
+        ) {
+            $block->addButton('void', array(
+                'label'     => Mage::helper('adminhtml')->__('Void'),
+                'class'     => 'delete',
+                'onclick'   => 'deleteConfirm(\''. Mage::helper('adminhtml')->__('This will permanently remove this shipment and void the associated tracking numbers. Are you sure you want to do this?')
+                .'\', \'' . $this->getUrl('*/*/void', array('shipment_id' => $shipment->getId())) . '\')',
+            ));
+        }
+    }
+
     protected function _isAllowedSalesAction($action) {
         return Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/' . $action);
     }

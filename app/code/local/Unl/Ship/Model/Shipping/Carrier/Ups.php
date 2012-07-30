@@ -2,12 +2,23 @@
 
 class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrier_Ups
 {
+    public function isVoidAvailable()
+    {
+        return true;
+    }
+
+    protected function _construct()
+    {
+        $this->_defaultUrls['Void'] = 'https://wwwcie.ups.com/ups.app/xml/Void';
+    }
+
     public function getConfigData($field)
     {
         if ($field == 'url') {
             if (parent::getConfigData('mode_xml')) {
                 $this->_defaultUrls['ShipConfirm'] = 'https://onlinetools.ups.com/ups.app/xml/ShipConfirm';
                 $this->_defaultUrls['ShipAccept']  = 'https://onlinetools.ups.com/ups.app/xml/ShipAccept';
+                $this->_defaultUrls['Void']        = 'https://onlinetools.ups.com/ups.app/xml/Void';
             }
         }
 
@@ -825,5 +836,83 @@ XMLRequest;
         } else {
             return $this->_sendShipmentAcceptRequest($response);
         }
+    }
+
+    public function rollBack($data)
+    {
+        return $this->requestToVoid($data, true);
+    }
+
+    public function requestToVoid($data, $quiet = false)
+    {
+        $this->setXMLAccessRequest();
+
+        foreach ($data as $info) {
+            $result = $this->_sendVoidRequest($info['tracking_number']);
+
+            if ($result->hasErrors()) {
+                if ($quiet) {
+                    Mage::log('Tracking Number: ' . $info['tracking_number'], Zend_Log::INFO, 'unl_ship.log');
+                    Mage::log($result->getErrors(), Zend_Log::WARN, 'unl_ship.log');
+                    return false;
+                } else {
+                    Mage::throwException($result->getErrors());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    protected function _sendVoidRequest($trackingNumber)
+    {
+        $result = new Varien_Object();
+        $xmlRequest = new SimpleXMLElement('<?xml version = "1.0" ?><VoidShipmentRequest/>');
+        $request = $xmlRequest->addChild('Request');
+        $request->addChild('RequestAction', '1');
+
+        $transRefPart = $request->addChild('TransactionReference');
+        $transRefPart->addChild('CustomerContext', 'Void request for ' . $trackingNumber);
+
+        $xmlRequest->addChild('ShipmentIdentificationNumber', $trackingNumber);
+
+        $debugData = array('request' => $xmlRequest->asXML());
+        try {
+            $url = $this->getConfigData('url');
+            if (!$url) {
+                $url = $this->_defaultUrls['Void'];
+            }
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_xmlAccessRequest . $xmlRequest->asXML());
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
+            $xmlResponse = curl_exec ($ch);
+
+            $debugData['result'] = $xmlResponse;
+        } catch (Exception $e) {
+            $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
+            $xmlResponse = '';
+        }
+
+        try {
+            $response = new SimpleXMLElement($xmlResponse);
+        } catch (Exception $e) {
+            $debugData['result'] = array('error' => $e->getMessage(), 'code' => $e->getCode());
+            $result->setErrors($e->getMessage());
+        }
+
+        if (isset($response->Response->Error)
+            && in_array($response->Response->Error->ErrorSeverity, array('Hard', 'Transient'))
+        ) {
+            $result->setErrors((string)$response->Response->Error->ErrorDescription);
+        }
+
+        $this->_debug($debugData);
+
+        return $result;
     }
 }

@@ -3,6 +3,15 @@
     <!-- 
     Ship Module
     -->
+    
+    <adminhtml_sales_order_shipment_view>
+        <reference name="sales_shipment_view">
+            <block type="unl_ship/update" name="unl_ship_update">
+                <action method="addVoidButton" />
+            </block>
+        </reference>
+    </adminhtml_sales_order_shipment_view>
+    
     <adminhtml_sales_order_shipment_new>
         <reference name="sales_shipment_create">
             <block type="unl_ship/update" name="unl_ship_update">

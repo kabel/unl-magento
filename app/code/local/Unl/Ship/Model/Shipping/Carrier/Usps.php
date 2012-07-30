@@ -2,6 +2,11 @@
 
 class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carrier_Usps
 {
+    public function isVoidAvailable()
+    {
+        return (bool)$this->getConfigData('endicia_enabled');
+    }
+
     /* Overrides
      * @see Mage_Shipping_Model_Carrier_Abstract::getTotalNumOfBoxes()
      * by adding extra logic for multiple items
@@ -89,6 +94,20 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         return $this;
     }
 
+    /* Extends
+     * @see Mage_Usa_Model_Shipping_Carrier_Abstract::_prepareShipmentRequest()
+     * by escaping XML entities
+     */
+    protected function _prepareShipmentRequest(Varien_Object $request)
+    {
+        parent::_prepareShipmentRequest($request);
+        foreach ($request->getData() as $key => $data) {
+            if ((strpos($key, 'shipper') === 0 || strpos($key, 'recipient') === 0) && is_string($data)) {
+                $request->setData($key, htmlspecialchars($data));
+            }
+        }
+    }
+
     public function requestToShipment(Mage_Shipping_Model_Shipment_Request $request)
     {
         $packages = $request->getPackages();
@@ -162,5 +181,34 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         $endicia = Mage::getSingleton('unl_ship/shipping_carrier_usps_endicia');
 
         return $endicia->doShipmentRequest($this, $request, $this->_isUSCountry($request->getRecipientAddressCountryCode()));
+    }
+
+    public function rollBack($data)
+    {
+        return $this->requestToVoid($data, true);
+    }
+
+    public function requestToVoid($data, $quiet)
+    {
+        if (!$this->getConfigData('endicia_enabled')) {
+            return parent::rollBack($data);
+        }
+
+        $endicia = Mage::getSingleton('unl_ship/shipping_carrier_usps_endicia');
+        foreach ($data as $info) {
+            $result = $endicia->doRefundRequest($this, $info['tracking_number']);
+
+            if ($result->hasErrors()) {
+                if ($quiet) {
+                    Mage::log('Tracking Number: ' . $info['tracking_number'], Zend_Log::INFO, 'unl_ship.log');
+                    Mage::log($result->getErrors(), Zend_Log::WARN, 'unl_ship.log');
+                    return false;
+                } else {
+                    Mage::throwException($result->getErrors());
+                }
+            }
+        }
+
+        return true;
     }
 }

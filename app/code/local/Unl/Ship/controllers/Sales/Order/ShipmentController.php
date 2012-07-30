@@ -126,4 +126,50 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
         $this->_getSession()->addSuccess($this->__('Successfully cleared the auto ship queue.'));
         $this->_redirect('adminhtml/sales_order/');
     }
+
+    public function voidAction()
+    {
+        try {
+            $shipment = $this->_initShipment();
+            if (!$shipment) {
+                $this->_forward('noRoute');
+                return;
+            }
+
+            $carrier = $shipment->getOrder()->getShippingCarrier();
+
+            $data = array();
+            foreach ($shipment->getAllTracks() as $track) {
+                if ($track->getCarrierCode() == $carrier->getCarrierCode()) {
+                    $data[] = array('tracking_number' => $track->getTrackNumber());
+                }
+            }
+
+            if ($data) {
+                if (!$carrier || !is_callable(array($carrier, 'isVoidAvailable')) || !$carrier->isVoidAvailable()) {
+                    Mage::throwException($this->__('The shipping carrier does not support voiding shipments.'));
+                }
+
+                if (!$carrier->requestToVoid($data)) {
+                    Mage::throwException($this->__('Failed to void a tracking number from the shipping carrier'));
+                }
+            }
+
+            $shipment->unregister();
+
+            $shipment->getOrder()->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $this->__('Voided and deleted a shipment for reprocessing.'));
+            $this->_saveShipment($shipment);
+            $this->_getSession()->addSuccess($this->__('Successfully voided and deleted shipment.'));
+        } catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError($e->getMessage());
+            $this->_redirect('*/*/view', array('shipment_id' => $this->getRequest()->getParam('shipment_id')));
+            return;
+        } catch (Exception $e) {
+            $this->_getSession()->addError($this->__('Cannot void shipment.'));
+            $this->_redirect('*/*/view', array('shipment_id' => $this->getRequest()->getParam('shipment_id')));
+            return;
+        }
+
+        $this->_redirect('*/sales_order/view', array('order_id' => $shipment->getOrderId()));
+    }
 }
