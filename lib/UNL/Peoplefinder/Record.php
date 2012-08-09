@@ -43,6 +43,7 @@ class UNL_Peoplefinder_Record
 //    public $unlSISPermState;
 //    public $unlSISPermZip;
     public $unlSISMajor;
+    public $unlSISMinor;
     public $unlEmailAlias;
 
     function __construct($options = array())
@@ -110,31 +111,24 @@ class UNL_Peoplefinder_Record
     {
 
         $c = new UNL_Cache_Lite();
-        if ($subject_xml = $c->get('catalog subjects')) {
+        $majors = $c->get('catalog majors');
 
-        } else {
-            if ($subject_xml = file_get_contents('http://bulletin.unl.edu/?view=subjects&format=xml')) {
-                $c->save($subject_xml);
+        if (!$majors) {
+            if ($majors = file_get_contents('http://bulletin.unl.edu/undergraduate/majors/lookup/?format=json')) {
+                $c->save($majors);
             } else {
                 $c->extendLife();
-                $c->get('catalog subjects');
+                $c->get('catalog majors');
             }
         }
 
-        $d = new DOMDocument();
-        $d->loadXML($subject_xml);
-        if ($subject_el = $d->getElementById($subject)) {
-            return $subject_el->textContent;
+        $majors = json_decode($majors, true);
+
+        if (array_key_exists($subject, $majors)) {
+            return $majors[$subject];
         }
 
-        switch ($subject) {
-            case 'UNDL':
-                return 'Undeclared';
-            case 'PBAC':
-                return 'Non-Degree Post-Baccalaureate';
-            default:
-                return $subject;
-        }
+        return $subject;
     }
 
     /**
@@ -165,6 +159,7 @@ class UNL_Peoplefinder_Record
         switch ($size) {
             case 'large':
             case 'medium':
+            case 'small':
             case 'tiny':
             case 'topbar':
                 break;
@@ -173,11 +168,6 @@ class UNL_Peoplefinder_Record
         }
 
         return 'http://planetred.unl.edu/pg/icon/unl_'.str_replace('-', '_', $this->uid).'/'.$size.'/';
-    }
-
-    function getRoles()
-    {
-        return new UNL_Peoplefinder_Person_Roles(array('dn'=>$this->dn));
     }
 
     function __toString()

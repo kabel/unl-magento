@@ -20,6 +20,7 @@ class UNL_Peoplefinder_Driver_LDAP_AffiliationFilter extends UNL_Peoplefinder_Dr
     {
         $this->addExcludedRecords();
         $this->_filter = '(&'.$this->_filter.'(eduPersonAffiliation='.$this->affiliation.'))';
+        $this->_filter = UNL_Peoplefinder_Driver_LDAP_Util::wrapGlobalExclusions($this->_filter);
         return $this->_filter;
     }
 }

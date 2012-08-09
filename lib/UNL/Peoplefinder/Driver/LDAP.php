@@ -23,7 +23,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
      * @ignore
      */
     static public $bindPW             = 'putyourpasswordhere';
-    static public $baseDN             = 'dc=unl,dc=edu';
+    static public $baseDN             = 'ou=people,dc=unl,dc=edu';
     static public $ldapTimeout        = 10;
     
     /**
@@ -109,15 +109,27 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     function bind()
     {
         $this->linkID = ldap_connect(self::$ldapServer);
-        if ($this->linkID) {
-            $this->connected = ldap_bind($this->linkID,
-                                         self::$bindDN,
-                                         self::$bindPW);
-            if ($this->connected) {
-                return $this->connected;
-            }
+
+        if (!ldap_set_option($this->linkID, LDAP_OPT_PROTOCOL_VERSION, 3)) {
+            throw new Exception('Could not set LDAP_OPT_PROTOCOL_VERSION to 3', 500);
         }
-        throw new Exception('Cound not connect to the LDAP directory.', 500);
+
+        if (!$this->linkID) {
+            throw new Exception('ldap_connect failed! Cound not connect to the LDAP directory.', 500);
+        }
+
+        if (!ldap_start_tls($this->linkID)) {
+            throw new Exception('Could not connect using StartTLS!', 500);
+        }
+
+        $this->connected = ldap_bind($this->linkID,
+                                     self::$bindDN,
+                                     self::$bindPW);
+        if (!$this->connected) {
+            throw new Exception('ldap_bind failed! Could not connect to the LDAP directory.', 500);
+        }
+
+        return $this->connected;
     }
     
     /**
@@ -171,10 +183,16 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         }
         // sort the results
         for ($i=0; $i<$result['count']; $i++) {
-            $name = $result[$i]['sn'][0];
+            $name = '';
+
+            if (isset($result[$i]['sn'])) {
+                $name = $result[$i]['sn'][0];
+            }
+
             if (isset($result[$i]['givenname'])) {
                 $name .= ', ' . $result[$i]['givenname'][0];
             }
+
             $result[$i]['insensitiveName'] = strtoupper($name);
         }
         reset($result);
@@ -284,13 +302,25 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
      */
     function getUID($uid)
     {
-        $r = $this->query("(&(uid=$uid))", $this->detailAttributes, false);
-        if (isset($r[0])) {
-            return self::recordFromLDAPEntry($r[0]);
-        } else {
+        $filter = new UNL_Peoplefinder_Driver_LDAP_UIDFilter($uid);
+        $r = $this->query($filter->__toString(), $this->detailAttributes, false);
+        if (!isset($r[0])) {
             throw new Exception('Cannot find that UID.', 404);
         }
+        return self::recordFromLDAPEntry($r[0]);
     }
+
+    function getRoles($dn)
+    {
+        $ldap   = UNL_LDAP::getConnection(
+                      array('uri'           => self::$ldapServer,
+                            'base'          => self::$baseDN,
+                            'suffix'        => 'ou=People,dc=unl,dc=edu',
+                            'bind_dn'       => self::$bindDN,
+                            'bind_password' => self::$bindPW));
+        return new UNL_Peoplefinder_Person_Roles(array('iterator'=>$ldap->search($dn, '(&(objectClass=unlRole)(!(unlListingOrder=NL)))')));
+    }
+    
     
     public static function recordFromLDAPEntry(array $entry)
     {
