@@ -5,11 +5,8 @@
     </div>
     <?php echo $this->getChildHtml('order_info') ?>
     <input type="hidden" name="order_id" value="<?php echo $_order->getId() ?>"/>
-    <?php if ($_order->getIsVirtual()): ?>
-    <div class="box-right">
-    <?php else: ?>
-    <div class="box-left">
-    <?php endif; ?>
+
+    <div class="<?php echo $_order->getIsVirtual() ? 'box-right' : 'box-left' ?>">
         <!--Payment Method-->
         <div class="entry-edit">
             <div class="entry-edit-head">

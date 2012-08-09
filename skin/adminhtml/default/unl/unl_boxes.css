@@ -79,3 +79,15 @@ button.active {
     color: #000;
     padding: 3px;
 }
+
+.externalid-popup label {
+	float: left;
+	width: 25%;
+}
+.externalid-popup .field .input-text {
+    width: 98%;
+}
+.externalid-popup .form-list .input-box {
+	float: left;
+	width: 75%;
+}
