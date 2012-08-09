@@ -1,0 +1,74 @@
+<?php /* @var $this Mage_Bundle_Block_Adminhtml_Catalog_Product_Composite_Fieldset_Bundle */ ?>
+<?php $options = Mage::helper('core')->decorateArray($this->getOptions()); ?>
+<?php if (count($options)): ?>
+<div id="catalog_product_composite_configure_fields_bundle" class="<?php echo $this->getIsLastFieldset() ? 'last-fieldset' : '' ?>">
+    <h4><?php echo Mage::helper('catalog')->__('Bundle Items') ?></h4>
+    <div class="product-options">
+        <dl>
+            <?php foreach ($options as $option) : ?>
+                <?php if ($option->getSelections()) : ?>
+                    <?php echo $this->getOptionHtml($option); ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </dl>
+    </div>
+</div>
+
+<script>
+var BundleControl = Class.create();
+BundleControl.prototype = {
+    initialize: function (config) {
+        this.config = config;
+    },
+
+    changeSelection: function (selection) {
+        if (selection.multiple) {
+            return;
+        }
+        var parts = selection.id.split('-'), optionId = parts[2],
+            showQtyInput, qtyId = optionId,
+            options = this.config.options[optionId],
+            selectionOptions = options && options.selections && options.selections[selection.value] || {};
+
+        if (selection.tagName == 'INPUT') {
+            showQtyInput = selection.value && selection.checked;
+            qtyId += '-' + selection.value;
+        } else {
+            showQtyInput = selection.value && selection.value != 'none';
+        }
+
+        this.updateQtyInput(qtyId, selectionOptions.default_qty, Number(selectionOptions.can_change_qty) && showQtyInput);
+    },
+
+    updateQtyInput: function(optionId, value, canEdit) {
+        var elem = $('bundle-option-' + optionId + '-qty-input'),
+            default_qty = Number(value);
+        if (!elem) {
+            return;
+        }
+        if (canEdit) {
+            elem.removeClassName('qty-disabled');
+            elem.disabled = false;
+            if (elem.value == '0') {
+                elem.value = default_qty || 1;
+            }
+        } else {
+            elem.addClassName('qty-disabled');
+            elem.disabled = true;
+            elem.value = 0;
+        }
+    },
+
+    updateForDefaults: function () {
+        for (var optionId in this.config.options) {
+            var selection = $('bundle-option-' + optionId);
+            if (selection) {
+                this.changeSelection(selection);
+            }
+        }
+    }
+}
+ProductConfigure.bundleControl = new BundleControl(<?php echo $this->getJsonConfig() ?>);
+</script>
+
+<?php endif; ?>
