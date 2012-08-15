@@ -63,6 +63,12 @@
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
                 </rewrite>
             </catalog>
+            <downloadable>
+                <rewrite>
+                    <adminhtml_catalog_product_edit_tab_downloadable_links>Unl_Core_Block_Downloadable_Adminhtml_Catalog_Product_Edit_Tab_Downloadable_Links</adminhtml_catalog_product_edit_tab_downloadable_links>
+                    <adminhtml_catalog_product_edit_tab_downloadable_samples>Unl_Core_Block_Downloadable_Adminhtml_Catalog_Product_Edit_Tab_Downloadable_Samples</adminhtml_catalog_product_edit_tab_downloadable_samples>
+                </rewrite>
+            </downloadable>
             <customer>
                 <rewrite>
                     <address_renderer_default>Unl_Core_Block_Customer_Address_Renderer_Default</address_renderer_default>

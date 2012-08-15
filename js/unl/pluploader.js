@@ -26,7 +26,14 @@ Pluploader.prototype = {
             this.templatesPattern
         );
         
-        this.getInnerElement('upload').hide();
+        if (!this.config.hide_upload_button) {
+        	this.getInnerElement('upload').hide();
+        }
+        
+        if (this.config.replace_browse_with_remove) {
+        	this.getInnerElement('remove').observe('click', this.removeAllFiles.bind(this));
+        	this.getInnerElement('remove').hide();
+        }
         
         this.uploader = new plupload.Uploader(config);
         
@@ -68,6 +75,14 @@ Pluploader.prototype = {
         this.uploader.start();
     },
     
+    destroy: function() {
+    	if (this.config.replace_browse_with_remove) {
+    		this.getInnerElement('remove').stopObserving('click');
+    	}
+    	
+    	this.uploader.destroy();
+    },
+    
     removeFile: function(id) {
     	var file = this.uploader.getFile(id), fileDOM = $(this.getFileId(id));
     	if (file) {
@@ -93,13 +108,19 @@ Pluploader.prototype = {
         	fileDOM.remove();
         });
         this.updateFiles();
+        
+        if (this.onFileRemoveAll) {
+        	this.onFileRemoveAll();
+        }
     },
     
     handleSelect: function (up, files) {
     	files.each(function(file) {
             this.updateFile(file);
         }.bind(this));
-        this.getInnerElement('upload').show();
+    	if (!this.config.hide_upload_button) {
+    		this.getInnerElement('upload').show();
+    	}
         if (this.onFileSelect) {
             this.onFileSelect();
         }
@@ -145,7 +166,13 @@ Pluploader.prototype = {
         }.bind(this));
         
         if (!this.uploader.files.length) {
-        	this.getInnerElement('upload').hide();
+        	if (!this.config.hide_upload_button) {
+        		this.getInnerElement('upload').hide();
+        	}
+        	if (this.config.replace_browse_with_remove) {
+        		this.getInnerElement('browse').show();
+        		this.getInnerElement('remove').hide();
+        	}
         }
     },
     
@@ -156,6 +183,7 @@ Pluploader.prototype = {
                 $(this.containerId+'-new').innerHTML = this.fileRowTemplate.evaluate(this.getFileVars(file));
                 $(this.containerId+'-old').hide();
                 this.getInnerElement('browse').hide();
+                this.getInnerElement('remove').show();
             } else {
                 Element.insert(this.container, {bottom: this.fileRowTemplate.evaluate(this.getFileVars(file))});
             }
@@ -214,7 +242,7 @@ Pluploader.prototype = {
             $(this.getFileId(file)).addClassName('complete');
             $(this.getFileId(file)).removeClassName('progress');
             $(this.getFileId(file)).removeClassName('error');
-            if (this.config.replace_browse_with_remove) {
+            if (!this.config.replace_browse_with_remove) {
                 this.getDeleteButton(file).remove();
             }
             progress.update(this.translate('Complete'));
@@ -315,9 +343,9 @@ Pluploader.prototype = {
     checkAllComplete: function() {
         if (this.uploader.files.length) {
             return !this.uploader.files.any(function(file) {
-                return (file.status !== plupload.DONE)
+                return (file.status !== plupload.DONE);
             });
         }
         return true;
     }
-}
+};

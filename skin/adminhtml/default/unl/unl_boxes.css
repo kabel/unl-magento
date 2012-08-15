@@ -91,3 +91,26 @@ button.active {
 	float: left;
 	width: 75%;
 }
+.files .uploader {
+	width: 140px;
+}
+.files-wide .uploader {
+	width: 300px;
+}
+
+.files .uploader .buttons, 
+.files-wide .uploader .buttons {
+	float: right;
+}
+
+.files .uploader .file-row-info {
+	width: 104px;
+}
+.files-wide .uploader .file-row-info {
+    width: 264px;
+}
+
+.files .uploader .file-row-narrow,
+.files-wide .uploader .file-row-narrow {
+	overflow: auto;
+}
