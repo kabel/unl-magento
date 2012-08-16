@@ -1,0 +1,23 @@
+Index: lib/Varien/Autoload.php
+===================================================================
+--- lib/Varien/Autoload.php	(revision 157611)
++++ lib/Varien/Autoload.php	(working copy)
+@@ -33,6 +33,7 @@
+ 
+     static protected $_instance;
+     static protected $_scope = 'default';
++    static protected $_scopeRegister = array();
+ 
+     protected $_isIncludePathDefined= null;
+     protected $_collectClasses      = false;
+@@ -103,8 +104,9 @@
+     static public function registerScope($code)
+     {
+         self::$_scope = $code;
+-        if (defined('COMPILER_INCLUDE_PATH')) {
++        if (defined('COMPILER_INCLUDE_PATH') && !in_array($code, self::$_scopeRegister)) {
+             @include COMPILER_INCLUDE_PATH . DIRECTORY_SEPARATOR . self::SCOPE_FILE_PREFIX.$code.'.php';
++            self::$_scopeRegister[] = $code;
+         }
+     }
+ 
