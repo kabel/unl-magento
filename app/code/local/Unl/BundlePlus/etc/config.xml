@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_BundlePlus>
-            <version>0.2.1</version>
+            <version>0.2.2</version>
         </Unl_BundlePlus>
     </modules>
     
@@ -10,6 +10,8 @@
         <blocks>
             <bundle>
                 <rewrite>
+                    <!-- Fix Composite Product Configuration -->
+                    <adminhtml_catalog_product_composite_fieldset_options_type_checkbox>Unl_BundlePlus_Block_Adminhtml_Catalog_Product_Composite_Fieldset_Options_Type_Checkbox</adminhtml_catalog_product_composite_fieldset_options_type_checkbox>
                     <!-- Fix Item Renders -->
                     <adminhtml_sales_order_items_renderer>Unl_BundlePlus_Block_Adminhtml_Sales_Order_Items_Renderer</adminhtml_sales_order_items_renderer>
                     <adminhtml_sales_order_view_items_renderer>Unl_BundlePlus_Block_Adminhtml_Sales_Order_View_Items_Renderer</adminhtml_sales_order_view_items_renderer>

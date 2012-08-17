@@ -3,7 +3,7 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
 {
     /**
      * The address to the webservice
-     *
+     * 
      * @var string
      */
     public $service_url = 'http://peoplefinder.unl.edu/service.php';
@@ -14,7 +14,7 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
             $this->service_url = $options['service_url'];
         }
     }
-
+    
     function getExactMatches($query, $affiliation = null)
     {
         $results = file_get_contents($this->service_url.'?q='.urlencode($query).'&format=php&affiliation='.urlencode($affiliation).'&method=getExactMatches');
@@ -39,7 +39,7 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
     function getLikeMatches($query, $affiliation = null, $excluded_records = array())
     {
         $results = file_get_contents($this->service_url.'?q='.urlencode($query).'&format=php&affiliation='.urlencode($affiliation).'&method=getLikeMatches');
-
+        
         if ($results) {
             $results = unserialize($results);
         }
@@ -60,10 +60,10 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
 
     /**
      * Get matches for a phone search
-     *
+     * 
      * @param string $query       Numerical search query
      * @param string $affiliation eduPersonAffiliation, eg, student, staff, faculty
-     *
+     * 
      * @return UNL_Peoplefinder_SearchResults
      */
     function getPhoneMatches($query, $affiliation = null)
@@ -77,9 +77,9 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
 
     /**
      * Get an individual's record within the directory.
-     *
+     * 
      * @param string $uid Unique ID for the user, eg: bbieber2
-     *
+     * 
      * @return UNL_Peoplefinder_Record
      */
     function getUID($uid)
@@ -90,7 +90,22 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
             throw new Exception('Could not find that user!', 404);
         }
 
-        return unserialize($record);
+        if (!$record = unserialize($record)) {
+            throw new Exception('Error retrieving the data from the web service');
+        }
+
+        return $record;
+    }
+
+    function getRoles($dn)
+    {
+        $url = $this->service_url.'?view=roles&format=php&&dn='.urlencode($dn);
+        $results = @file_get_contents($url);
+        if ($results) {
+            $results = unserialize($results);
+        }
+        
+        return new UNL_Peoplefinder_Person_Roles(array('iterator'=>new ArrayIterator($results)));
     }
 
     function getHRPrimaryDepartmentMatches($query, $affiliation = null)
@@ -101,9 +116,13 @@ class UNL_Peoplefinder_Driver_WebService implements UNL_Peoplefinder_DriverInter
         }
         return $results;
     }
-
+    
     public function getHROrgUnitNumberMatches($query, $affiliation = null)
     {
-        throw new Exception('Not implemented yet!');
+        $results = @file_get_contents('http://directory.unl.edu/departments/?view=deptlistings&org_unit='.urlencode($query).'&format=php');
+        if ($results) {
+            $results = unserialize($results);
+        }
+        return new UNL_Peoplefinder_Department_Personnel($results);
     }
 }

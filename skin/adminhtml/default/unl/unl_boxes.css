@@ -73,6 +73,24 @@ button.active {
 	margin-left: -49%;
 }
 
+.product-options dd .qty-disabled {
+    background: none;
+    border: 0;
+    color: #000;
+    padding: 3px;
+}
+
+.externalid-popup label {
+	float: left;
+	width: 25%;
+}
+.externalid-popup .field .input-text {
+    width: 98%;
+}
+.externalid-popup .form-list .input-box {
+	float: left;
+	width: 75%;
+}
 .files .uploader {
 	width: 140px;
 }

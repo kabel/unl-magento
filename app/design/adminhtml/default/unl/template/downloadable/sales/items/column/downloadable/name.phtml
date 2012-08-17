@@ -1,0 +1,39 @@
+<?php if ($_item = $this->getItem()): ?>
+    <h5 class="title"><?php echo $_item->getName() ?></h5>
+    <div><strong><?php echo $this->helper('sales')->__('SKU') ?>:</strong> <?php echo implode('<br />', Mage::helper('catalog')->splitSku($this->htmlEscape($this->getSku()))); ?></div>
+    <?php if ($this->getOrderOptions()): ?>
+        <dl class="item-options">
+        <?php foreach ($this->getOrderOptions() as $_option): ?>
+            <dt><?php echo $_option['label'] ?></dt>
+            <dd>
+            <?php if (isset($_option['custom_view']) && $_option['custom_view']): ?>
+                <?php echo $_option['value'];?>
+            <?php else: ?>
+                <?php echo Mage::helper('core/string')->truncate($_option['value'], 55, '', $_remainder);?>
+                <?php if ($_remainder):?>
+                    ... <span id="<?php echo $_id = 'id' . uniqid()?>"><?php echo $_remainder ?></span>
+                    <script type="text/javascript">
+                    $('<?php echo $_id ?>').hide();
+                    $('<?php echo $_id ?>').up().observe('mouseover', function(){$('<?php echo $_id ?>').show();});
+                    $('<?php echo $_id ?>').up().observe('mouseout',  function(){$('<?php echo $_id ?>').hide();});
+                    </script>
+                <?php endif;?>
+            <?php endif;?>
+            </dd>
+        <?php endforeach; ?>
+        </dl>
+    <?php endif; ?>
+    <?php if ($this->getLinks()): ?>
+        <dl class="item-options">
+            <dt><?php echo $this->getLinksTitle(); ?></dt>
+            <?php foreach ($this->getLinks()->getPurchasedItems() as $_link): ?>
+                <dd><?php echo $this->escapeHtml($_link->getLinkTitle()) ?> (<?php echo $_link->getNumberOfDownloadsUsed() . ' / ' . ($_link->getNumberOfDownloadsBought()?$_link->getNumberOfDownloadsBought():Mage::helper('downloadable')->__('U')) ?>)</dd>
+                <?php if ($_link->getNumberOfDownloadsBought() && $_link->getStatus() == Mage_Downloadable_Model_Link_Purchased_Item::LINK_STATUS_EXPIRED): ?>
+                <dd><strong><a href="#" onclick="confirmSetLocation('<?php echo Mage::helper('unl_core')->__('This will reset the number of downloads used for this link to zero, allowing the customer to download the product again. Do you wish to proceed?') ?>', '<?php echo $this->getUrl('*/downloadable_link_purchased/resetUse', array('order_id' => $this->getItem()->getOrder()->getId(), 'item_id' => $_link->getId())) ?>')">
+                    <?php echo Mage::helper('unl_core')->__('Reset Download Use') ?></a></strong></dd>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </dl>
+    <?php endif; ?>
+    <?php echo $this->htmlEscape($_item->getDescription()) ?>
+<?php endif; ?>

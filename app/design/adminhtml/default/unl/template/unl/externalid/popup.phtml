@@ -1,0 +1,35 @@
+<div class="action-link-holder">
+    <strong><a class="action-link-ext" href="#"><?php echo $this->helper('unl_core')->__('Change') ?></a></strong>
+</div>
+<div id="externalid_window_mask" class="popup-window-mask" style="display: none;"></div>
+<div id="externalid_configure_new" class="externalid-popup product-configure-popup" style="display: none;">
+    <div id="externalid_form_contents">
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4 class="icon-head fieldset-legend"><?php echo Mage::helper('unl_core')->__('External # for Order'); ?></h4>
+            </div>
+            <div class="content">
+                <ul class="form-list">
+                    <li class="fields">
+                        <div class="field">
+                            <label for="externalid_value"><?php echo Mage::helper('unl_core')->__('External #'); ?></label>
+                            <div class="input-box">
+                                <input type="text" class="input-text" name="external_id" id="externalid_value" />
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="buttons-set a-right">
+                <button type="button" class="scalable" id="externalid_cancel_button"><span><span><span><?php echo Mage::helper('unl_core')->__('Cancel'); ?></span></span></span></button>
+                <button type="button" class="scalable" id="externalid_ok_button"><span><span><span><?php echo Mage::helper('unl_core')->__('OK'); ?></span></span></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var _externalIdPopup = new ExternalIdPopup('<?php echo $this->getUrl('*/sales_order_view_externalid/save', array('order_id' => Mage::registry('current_order')->getId())) ?>');
+//]]>
+</script>

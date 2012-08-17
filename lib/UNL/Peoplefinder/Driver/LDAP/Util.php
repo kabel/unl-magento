@@ -102,4 +102,18 @@ class UNL_Peoplefinder_Driver_LDAP_Util
         eval($msortline);
         return $marray;
     }
+
+    /**
+     * This is used to wrap filters in global exclusion clauses.
+     *
+     * @param $filter
+     */
+    public static function wrapGlobalExclusions($filter)
+    {
+        return 
+            '(&'
+            . $filter
+            . '(!(|(eduPersonPrimaryAffiliation=guest)(uid=msanders3)))' .
+            ')';
+    }
 }

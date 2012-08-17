@@ -793,27 +793,25 @@ XMLRequest;
         $result = new Varien_Object();
         $xmlRequest = $this->_formShipmentRequest($request);
 
-        if ($xmlResponse === null) {
-            $url = $this->getConfigData('url');
-            if (!$url) {
-                $url = $this->_defaultUrls['ShipConfirm'];
-            }
+        $url = $this->getConfigData('url');
+        if (!$url) {
+            $url = $this->_defaultUrls['ShipConfirm'];
+        }
 
-            $debugData = array('request' => $xmlRequest);
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
-            $xmlResponse = curl_exec($ch);
-            if ($xmlResponse === false) {
-                throw new Exception(curl_error($ch));
-            } else {
-                $debugData['result'] = $xmlResponse;
-            }
+        $debugData = array('request' => $xmlRequest);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (boolean)$this->getConfigFlag('mode_xml'));
+        $xmlResponse = curl_exec($ch);
+        if ($xmlResponse === false) {
+            throw new Exception(curl_error($ch));
+        } else {
+            $debugData['result'] = $xmlResponse;
         }
 
         try {

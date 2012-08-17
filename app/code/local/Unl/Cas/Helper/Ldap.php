@@ -57,7 +57,9 @@ class Unl_Cas_Helper_Ldap extends Mage_Core_Helper_Abstract
             }
 
             $ldap = ldap_connect($config['server']);
-            if (!$ldap) {
+            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+            if (!$ldap || !ldap_start_tls($ldap)) {
                 Mage::throwException($this->__('LDAP Authentication Server Connection Error'));
             }
 

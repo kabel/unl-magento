@@ -34,11 +34,10 @@ class UNL_Peoplefinder_Driver_LDAP_TelephoneFilter
     
     function __toString()
     {
-        $this->_filter = '(&'.$this->_filter.'(!(|(ou=org)(eduPersonPrimaryAffiliation=guest)))';
         if ($this->affiliation) {
-            $this->_filter .= '(eduPersonAffiliation='.$this->affiliation.')';
+            $this->_filter = '(&'.$this->_filter.'(eduPersonAffiliation='.$this->affiliation.'))';
         }
-        $this->_filter .= ')';
+        $this->_filter = UNL_Peoplefinder_Driver_LDAP_Util::wrapGlobalExclusions($this->_filter);
         return $this->_filter;
     }
 }

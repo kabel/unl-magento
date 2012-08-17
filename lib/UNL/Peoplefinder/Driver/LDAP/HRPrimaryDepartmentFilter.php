@@ -31,6 +31,7 @@ class UNL_Peoplefinder_Driver_LDAP_HRPrimaryDepartmentFilter
 
     function __toString()
     {
+        $this->_filter = UNL_Peoplefinder_Driver_LDAP_Util::wrapGlobalExclusions($this->_filter);
         return $this->_filter;
     }
 }

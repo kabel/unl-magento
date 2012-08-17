@@ -61,4 +61,11 @@ interface UNL_Peoplefinder_DriverInterface
      * @param string $uid The unique user id eg: bbieber2
      */
     function getUID($uid);
+
+    /**
+     * Get the roles/appointments for a person
+     *
+     * @param $uid The unique user id eg: bbieber2
+     */
+    function getRoles($uid);
 }
