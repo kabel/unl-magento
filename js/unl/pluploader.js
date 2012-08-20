@@ -242,8 +242,8 @@ Pluploader.prototype = {
             $(this.getFileId(file)).addClassName('complete');
             $(this.getFileId(file)).removeClassName('progress');
             $(this.getFileId(file)).removeClassName('error');
-            if (!this.config.replace_browse_with_remove) {
-                this.getDeleteButton(file).remove();
+            if (!this.config.replace_browse_with_remove && this.getDeleteButton(file)) {
+            	this.getDeleteButton(file).remove();
             }
             progress.update(this.translate('Complete'));
         }
