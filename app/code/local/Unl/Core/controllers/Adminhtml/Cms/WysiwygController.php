@@ -14,7 +14,6 @@ class Unl_Core_Adminhtml_Cms_WysiwygController extends Mage_Adminhtml_Cms_Wysiwy
         try {
             $image->open($url);
             $response->setHeader('Content-type', $image->getMimeType())->setBody($image->getImage());
-            $image->display();
         } catch (Exception $e) {
             $image->open(Mage::getSingleton('cms/wysiwyg_config')->getSkinImagePlaceholderUrl());
             $response->setHeader('Content-type', $image->getMimeType())->setBody($image->getImage());
