@@ -1,6 +1,7 @@
 <?php
 
 class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carrier_Usps
+    implements Unl_Ship_Model_Shipping_Carrier_VoidInterface
 {
     public function isVoidAvailable()
     {

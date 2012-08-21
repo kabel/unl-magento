@@ -26,8 +26,8 @@ class Unl_Ship_Block_Update extends Mage_Adminhtml_Block_Abstract
 
         $shipment = $block->getShipment();
         $carrier  = $shipment->getOrder()->getShippingCarrier();
-        if ($this->_isAllowedSalesAction('void_shipment') && $carrier
-            && is_callable(array($carrier, 'isVoidAvailable')) && $carrier->isVoidAvailable()
+        if ($this->_isAllowedSalesAction('void_shipment') && $carrier instanceof Unl_Ship_Model_Shipping_Carrier_VoidInterface
+            && $carrier->isVoidAvailable()
         ) {
             $block->addButton('void', array(
                 'label'     => Mage::helper('adminhtml')->__('Void'),

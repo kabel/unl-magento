@@ -146,7 +146,7 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             }
 
             if ($data) {
-                if (!$carrier || !is_callable(array($carrier, 'isVoidAvailable')) || !$carrier->isVoidAvailable()) {
+                if (!$carrier || !$carrier instanceof Unl_Ship_Model_Shipping_Carrier_VoidInterface || !$carrier->isVoidAvailable()) {
                     Mage::throwException($this->__('The shipping carrier does not support voiding shipments.'));
                 }
 
