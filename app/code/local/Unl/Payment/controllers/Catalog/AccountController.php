@@ -82,6 +82,20 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
         $this->renderLayout();
     }
 
+    public function assignedAction()
+    {
+        $this->_initAccount();
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    public function assignedGridOnlyAction()
+    {
+        $this->_initAccount();
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
     public function saveAction()
     {
         if ($postData = $this->getRequest()->getPost()) {
@@ -117,6 +131,13 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
             try {
                 $model->save();
 
+                if (isset($postData['account_assigned_products'])) {
+                    $productIds = Mage::helper('adminhtml/js')->decodeGridSerializedInput(
+                        $postData['account_assigned_products']
+                    );
+                    $model->addRelations($productIds);
+                }
+
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('The account has been saved.'));
                 Mage::getSingleton('adminhtml/session')->setPaymentAccountData(false);
             } catch (Exception $e) {
@@ -151,6 +172,18 @@ class Unl_Payment_Catalog_AccountController extends Mage_Adminhtml_Controller_Ac
         }
 
         $this->_redirect('*/*/');
+    }
+
+    public function unassignedAction()
+    {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    public function unassignedGridAction()
+    {
+        $this->loadLayout();
+        $this->renderLayout();
     }
 
     protected function _isAllowed()
