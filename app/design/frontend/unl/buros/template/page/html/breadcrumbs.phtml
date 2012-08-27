@@ -1,0 +1,37 @@
+<?php /* @var $this Mage_Page_Block_Html_Breadcrumbs */ ?>
+<div id="wdn_navigation_bar">
+    <nav id="breadcrumbs">
+        <!-- WDN: see glossary item 'breadcrumbs' -->
+        <h3 class="wdn_list_descriptor hidden">Breadcrumbs</h3>
+        <!-- InstanceBeginEditable name="breadcrumbs" -->
+        <ul>
+            <?php echo $this->getChildHtml('affiliatecrumbs') ?>
+            <li class="selected">
+                <a href="<?php echo $this->getBaseUrl(); ?>"><?php echo $this->escapeHtml(Mage::app()->getGroup()->getName()) ?></a>
+            </li>
+            <?php if($crumbs && is_array($crumbs)): ?>
+            <?php foreach($crumbs as $_crumbName => $_crumbInfo): ?>
+                <?php if ($_crumbName === 'home') { continue; } ?>
+                <li class="<?php echo $_crumbName ?>">
+                <?php if($_crumbInfo['link']): ?>
+                    <a href="<?php echo $_crumbInfo['link'] ?>" title="<?php echo $this->escapeHtml($_crumbInfo['title']) ?>"><?php echo $this->escapeHtml($_crumbInfo['label']) ?></a>
+                    <div class="storednav">
+                        <?php echo $this->getChildHtml('topMenu') ?>
+                    </div>
+                <?php else: ?>
+                    <?php echo $this->escapeHtml($_crumbInfo['label']) ?>
+                <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+        <!-- InstanceEndEditable -->
+    </nav>
+    <div id="wdn_navigation_wrapper">
+        <nav id="navigation" role="navigation">
+            <!-- InstanceBeginEditable name="navlinks" -->
+            <?php echo $this->getChildHtml('topMenu') ?>
+            <!-- InstanceEndEditable -->
+        </nav>
+    </div>
+</div>

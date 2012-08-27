@@ -7,6 +7,30 @@
             <action method="addLink" translate="label title"><label>Payment</label><url/><title>Payment</title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>payment</_fragment></urlParams></action>
         </reference>
     </default>
+    
+    <STORE_buros>
+        <reference name="head">
+            <action method="addLinkRel"><rel>shortcut icon</rel><href>http://www.buros.org/sites/unl.edu.office-of-university-communications.buros/files/favicon%20%283%29.ico</href></action>
+            <action method="addCss"><name>buros.css</name></action>
+        </reference>
+        <reference name="header">
+            <block type="unl_core/page_html_affiliateheader" name="affiliateheader">
+                <action method="setLogoLink"><value>http://www.buros.org/</value></action>
+                <action method="setLogoLabel"><value>Buros Center for Testing</value></action>
+            </block>
+        </reference>
+        <reference name="breadcrumbs">
+            <block type="unl_core/page_html_affiliatecrumbs" name="affiliatecrumbs">
+                <action method="addCrumb"><name>root</name><info>
+                    <label>Buros</label>
+                    <title>Buros Center for Testing</title>
+                    <link>http://www.buros.org/</link>
+                </info></action>
+            </block>
+        </reference>
+        
+    </STORE_buros>
+    
     <STORE_dairystore>
 	    <reference name="contact_link">
 	        <action method="addLink" module="contacts"><label>http://dairystore.unl.edu/</label><url>http://dairystore.unl.edu/</url><title>Dairy Store Website</title></action>

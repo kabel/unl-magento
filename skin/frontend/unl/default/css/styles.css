@@ -919,7 +919,7 @@ tr.summary-details-excluded { font-style:italic; }
 .products-text .product-shop {  }
 .products-text .product-shop .right-info { float:right; }
 /* .products-text .product-shop .right-info button.button span { height:23px; line-height:18px; background-image:url(../images/bkg_btn-small.png); } */
-#maincontent .products-text .product-name { font-size:16px; margin:0 0 2px; }
+#maincontent .products-text .product-name { font-size:16px; padding:0; margin:0 0 2px; }
 .products-text .price-box { float:left; margin:4px 13px 0 0; }
 .products-text .availability { float:left; margin:3px 0 0; }
 .products-text .product-shop .ratings { margin:0; }
@@ -1430,7 +1430,8 @@ f/********** Product Prices > */
     background: #444;
     border-color: #444;
 }
-.cart-table .btn-update:active > span { top:0; border-color: #fff; }
+.cart-table .btn-update:active > span,
+.cart-table .btn-empty:active > span { top:0; border-color: #fff; }
 
 #maincontent .cart .cart-tools { list-style:circle; }
 .cart .cart-tools li { float:right; margin-left: 25px; }
@@ -1816,8 +1817,8 @@ f/********** Product Prices > */
 .ui-modal .ui-modal-body a.button:hover:before {
     -moz-animation: button-highlight 2s infinite;
     -webkit-animation: button-highlight 2s infinite;
-    -moz-transform: skew(-20deg);
-    -webkit-transform: skew(-20deg);
+    -moz-transform: skewX(-20deg);
+    -webkit-transform: skewX(-20deg);
     background: -moz-linear-gradient(top,  rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255, 255, 255, 0.8)), color-stop(100%,rgba(255, 255, 255, 0.2))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(255, 255, 255, 0.8) 0%,rgba(255, 255, 255, 0.2) 100%); /* Chrome10+,Safari5.1+ */

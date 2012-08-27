@@ -1,0 +1,135 @@
+@import url("http://www.buros.org/sites/unl.edu.office-of-university-communications.buros/files/custom/custom.css");
+
+#footer_floater, 
+#wdn_copyright #wdn_logos,
+#footer .footer_sep {
+    display: none;
+}
+
+dt:before, dd:before {
+	content:"";
+	display:none;
+}
+dt, dd {
+	font-size: inherit;
+	line-height: inherit;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	min-height: 0;
+}
+
+#maincontent h1, #maincontent h2, #maincontent h3, #maincontent h4 {
+	text-transform: none;
+}
+
+#header #logo {
+	width: 30%;
+}
+
+#header #wdn_site_title {
+	display: block;
+	margin: 4px 0 0;
+	color: #fff;
+}
+
+#maincontent .button {
+	padding:0;
+	color:inherit;
+	border-radius: 0;
+	background: none;
+}
+
+.subnav ul.toplinks > li.menu.over {
+	background: #005288;
+}
+
+@media (min-width: 768px) {
+	#header #logo {
+	    width: 184px;
+	}
+	
+	#header #wdn_site_title {
+	    margin: 0;
+	    color: #535353;
+	}
+	
+	#breadcrumbs {
+	    display: block;
+	}
+	
+	/* multi-bar nav */
+	#navigation > ul > li:nth-child(n+7) {
+        border-top: 1px solid #0063A0;
+        box-shadow: 0 -1px 0 #00446E;
+	}
+}
+
+@media (min-width: 1040px) {
+	#header #wdn_site_title {
+	    margin: 48px 0 18px 220px;
+	}
+}
+
+/** Marketplace Overrides **/
+body.popup #wdn_content_wrapper {
+	border-color: #005288
+}
+
+button.button > span {
+	border-color: #00446E;
+	background: #005288; /* Old browsers */
+	background: -moz-linear-gradient(top, #005288 0%, #003e64 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#005288), color-stop(100%,#003e64)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #005288 0%,#003e64 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #005288 0%,#003e64 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #005288 0%,#003e64 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #005288 0%,#003e64 100%); /* W3C */
+}
+button.btn-checkout > span {
+	border-color: #60A642;
+	background: #76cc52; /* Old browsers */
+	background: -moz-linear-gradient(top, #76cc52 0%, #60a642 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#76cc52), color-stop(100%,#60a642)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #76cc52 0%,#60a642 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #76cc52 0%,#60a642 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #76cc52 0%,#60a642 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #76cc52 0%,#60a642 100%); /* W3C */
+}
+
+.regular-price .price,
+.old-price .price,
+.special-price .price {
+	color: #008A17;
+}
+
+.mini-products-list .product-details {
+	margin-left: 0;
+}
+
+.cart-table .btn-continue > span {
+	color: #005288;
+}
+.cart-table .btn-continue:active > span {
+	color: #0d0d0d;
+}
+.cart .totals tfoot th strong, .cart .totals tfoot td strong {
+	color: #008A17;
+}
+
+.product-view .product-shop {
+	float: none;
+	width: auto;
+}
+
+.product-view .product-img-box {
+	display: none;
+}
+
+#footer .opfooter a, #footer .opfooter a:link, #footer .opfooter a:visited {
+	color: #fff;
+}
+#footer .opfooter a:hover {
+	color: #b3b3b3;
+	text-decoration: none;
+}

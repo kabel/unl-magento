@@ -1,0 +1,45 @@
+<?php /* @var $this Mage_Page_Block_Html_Head */ ?>
+<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/metanfavico.html'); ?>
+<!--
+    Membership and regular participation in the UNL Web Developer Network
+    is required to use the UNL templates. Visit the WDN site at
+    http://wdn.unl.edu/. Click the WDN Registry link to log in and
+    register your unl.edu site.
+    All UNL template code is the property of the UNL Web Developer Network.
+    The code seen in a source code view is not, and may not be used as, a
+    template. You may not use this code, a reverse-engineered version of
+    this code, or its associated visual presentation in whole or in part to
+    create a derivative work.
+    This message may not be removed from any pages based on the UNL site template.
+
+    $Id: php.unlaffiliate_local.dwt.php | d3b0e517ecafe3e1f81c45ddafa7a316adcc45dd | Fri Mar 9 11:41:56 2012 -0600 | Kevin Abel  $
+-->
+<?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/scriptsandstyles_local.html'); ?>
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>
+<?php if (substr($this->getTitle(), 0, 3) == 'UNL'): ?>
+    <?php echo $this->getTitle() ?>
+<?php else: ?>
+    <?php echo $this->getTitle() ?><?php if (Mage::app()->getStore()->getCode() != 'default'): ?> | <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?><?php endif; ?> | UNL Marketplace
+<?php endif; ?>
+</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- Place optional header elements here -->
+<meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+<meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
+<?php if (Mage::helper('unl_cas')->getAuth()->isLoggedIn()): ?>
+<script type="text/javascript">
+//<![CDATA[
+    WDN.setPluginParam('idm', 'logout', '<?php echo $this->getUrl('customer/account/logout') ?>');
+//]]>
+</script>
+<?php endif; ?>
+
+<?php echo $this->getCssJsHtml() ?>
+<?php echo $this->getChildHtml() ?>
+<?php //echo $this->helper('core/js')->getTranslatorScript() ?>
+<?php echo $this->getIncludes() ?>
+<!-- TemplateEndEditable -->
