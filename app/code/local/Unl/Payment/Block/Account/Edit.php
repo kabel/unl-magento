@@ -13,6 +13,20 @@ class Unl_Payment_Block_Account_Edit extends Mage_Adminhtml_Block_Widget_Form_Co
     }
 
     /**
+     * Add child HTML to layout
+     *
+     * @return Unl_Payment_Block_Account_Edit
+     */
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
+
+        $this->setChild('assign_accordion', $this->getLayout()->createBlock('unl_payment/account_edit_assigned'));
+
+        return $this;
+    }
+
+    /**
      * Retrieve Header text
      *
      * @return string
@@ -33,5 +47,15 @@ class Unl_Payment_Block_Account_Edit extends Mage_Adminhtml_Block_Widget_Form_Co
     public function getSaveUrl()
     {
         return $this->getUrl('*/*/save', array('_current'=>true));
+    }
+
+    /**
+     * Retrieve Assigned Products Accordion HTML
+     *
+     * @return string
+     */
+    public function getAssignAccordionHtml()
+    {
+        return $this->getChildHtml('assign_accordion');
     }
 }

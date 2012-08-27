@@ -10,7 +10,34 @@
     </adminhtml_catalog_account_index>
     <adminhtml_catalog_account_edit>
         <reference name="content">
-            <block type="unl_payment/account_edit" name="account_edit"/>
+            <block type="unl_payment/account_edit" name="account_edit" template="unl/payment/account/edit/container.phtml"/>
         </reference>
     </adminhtml_catalog_account_edit>
+    <adminhtml_catalog_account_assigned>
+        <remove name="root"/>
+        <block type="unl_payment/account_grid_products" name="account_assigned_grid" output="toHtml" />
+        <block type="adminhtml/widget_grid_serializer" name="account_grid_serializer" output="toHtml">
+            <reference name="account_grid_serializer">
+                <action method="initSerializerBlock">
+                    <grid_block_name>account_assigned_grid</grid_block_name>
+                    <data_callback>getRelatedProducts</data_callback>
+                    <hidden_input_name>account_assigned_products</hidden_input_name>
+                    <reload_param_name>assigned_products</reload_param_name>
+                </action>
+            </reference>
+        </block>
+    </adminhtml_catalog_account_assigned>
+    <adminhtml_catalog_account_assignedgridonly>
+        <remove name="root"/>
+        <block type="unl_payment/account_grid_products" name="assigned_grid" output="toHtml"/>
+    </adminhtml_catalog_account_assignedgridonly>
+    <adminhtml_catalog_account_unassigned>
+        <reference name="content">
+            <block type="unl_payment/account_unassigned" name="unassigned_products"/>
+        </reference>
+    </adminhtml_catalog_account_unassigned>
+    <adminhtml_catalog_account_unassignedgrid>
+        <remove name="root"/>
+        <block type="unl_payment/account_unassigned_grid" name="unassigned_grid" output="toHtml"/> 
+    </adminhtml_catalog_account_unassignedgrid>
 </layout>

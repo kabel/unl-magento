@@ -19,6 +19,11 @@ class Unl_Payment_Block_Account_Edit_Form extends Mage_Adminhtml_Block_Widget_Fo
 
         $fieldset = $form->addFieldset('base_fieldset', array('legend'=>Mage::helper('unl_payment')->__('General Information')));
 
+        $fieldset->addField('form_key', 'hidden', array(
+            'name'  => 'form_key',
+            'value' => Mage::getSingleton('core/session')->getFormKey(),
+        ));
+
         $fieldset->addField('group_id', 'select', array(
             'name' => 'group_id',
             'label' => Mage::helper('unl_payment')->__('Merchant'),
@@ -40,7 +45,6 @@ class Unl_Payment_Block_Account_Edit_Form extends Mage_Adminhtml_Block_Widget_Fo
             $form->addValues($model->getData());
         }
 
-        $form->setUseContainer(true);
         $this->setForm($form);
         return parent::_prepareForm();
     }
