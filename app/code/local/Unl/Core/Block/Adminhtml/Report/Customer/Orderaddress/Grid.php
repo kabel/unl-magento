@@ -6,7 +6,7 @@ class Unl_Core_Block_Adminhtml_Report_Customer_Orderaddress_Grid extends Mage_Ad
     {
         parent::__construct();
         $this->setId('orderaddressGrid');
-        $this->setDefaultSort('order_date');
+        $this->setDefaultSort('created_at');
         $this->setDefaultDir('desc');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
@@ -20,6 +20,15 @@ class Unl_Core_Block_Adminhtml_Report_Customer_Orderaddress_Grid extends Mage_Ad
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel('unl_core/report_customer_orderaddress_collection');
+
+        $filter = $this->getRequest()->getParam($this->getVarNameFilter());
+        if ($filter === '') {
+            $this->getRequest()->setParam('order_ids', false);
+        }
+
+        if ($this->getParam('order_ids')) {
+            $collection->addFieldToFilter('parent_id', array('in' => $this->getParam('order_ids')));
+        }
 
         $this->setCollection($collection);
         return parent::_prepareCollection();

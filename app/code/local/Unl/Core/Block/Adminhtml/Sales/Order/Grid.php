@@ -137,4 +137,20 @@ class Unl_Core_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Block_Sal
 
         return $this;
     }
+
+    /* Extends
+     * @see Mage_Adminhtml_Block_Sales_Order_Grid::_prepareMassaction()
+     * by adding a mass action to submit as filter to order address report
+     */
+    protected function _prepareMassaction()
+    {
+        parent::_prepareMassaction();
+
+        $this->getMassactionBlock()->addItem('filter_address_report', array(
+            'label'=> Mage::helper('sales')->__('Filter Address Report'),
+            'url'  => $this->getUrl('*/report_customer/orderaddress'),
+        ));
+
+        return $this;
+    }
 }
