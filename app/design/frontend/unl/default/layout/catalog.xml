@@ -69,7 +69,6 @@ Category default layout
 
     <catalog_category_default translate="label">
         <label>Catalog Category (Non-Anchor)</label>
-        <update handle="page_two_columns_left"/>
         <reference name="left">
             <block type="catalog/navigation" name="catalog.leftnav" after="currency" template="catalog/navigation/left.phtml"/>
         </reference>
@@ -107,7 +106,6 @@ Category layered navigation layout
 
     <catalog_category_layered translate="label">
         <label>Catalog Category (Anchor)</label>
-        <update handle="page_two_columns_left"/>
         <reference name="left">
             <block type="catalog/layer_view" name="catalog.leftnav" after="currency" template="catalog/layer/view.phtml"/>
         </reference>
