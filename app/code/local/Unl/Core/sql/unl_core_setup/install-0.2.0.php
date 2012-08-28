@@ -552,7 +552,7 @@ $catalogInstaller = Mage::getResourceModel('catalog/setup', 'catalog_setup');
  */
 $catalogInstaller->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'custom_design', 'is_visible', false)
     ->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'custom_design_from', 'is_visible', false)
-    ->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'custom_design_from', 'is_visible', false)
+    ->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'custom_design_to', 'is_visible', false)
     ->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'page_layout', 'is_visible', false)
     ->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'is_recurring', 'is_visible', false)
     ->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'recurring_profile', 'is_visible', false)
