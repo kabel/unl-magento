@@ -1705,7 +1705,8 @@ input[type="checkbox"]:checked {
 #checkout-step-login .buttons-set button { margin: 0 0 15px; }
 #checkout-step-login p,
 #checkout-step-login ul { display:none; }
-#checkout-step-login .login-set p { display:block; }
+#checkout-step-login .login-set p,
+#checkout-step-login .login-set ul { display:block; }
 #login-form-wrapper.invisible { height:0; }
 #login-form-wrapper { overflow:hidden; height:330px; -webkit-transition:height 200ms ease-out;  -moz-transition:height 200ms ease-out; }
 
