@@ -329,9 +329,9 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             $customsItems = $customsInfo->addChild('CustomsItems');
             foreach ($request->getPackageItems() as $item) {
                 $cItem = $customsItems->addChild('CustomsItem');
-                $cItem->addChild('Description', $item['name']);
+                $cItem->addChild('Description', substr($item['name'], 0, 50));
                 $cItem->addChild('Quantity', $item['qty']);
-                $cItem->addChild('Weight', round(Mage::helper('usa')->convertMeasureWeight(
+                $cItem->addChild('Weight', floor(Mage::helper('usa')->convertMeasureWeight(
                     $item['weight'],
                     Zend_Measure_Weight::POUND,
                     Zend_Measure_Weight::OUNCE
