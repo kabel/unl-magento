@@ -463,7 +463,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
                 ->setServiceOptionCharge((string)$xml->PostagePrice->Fees['TotalAmount'])
                 ->setLabelFormat($labelFormat);
 
-            if (count($intlDoc->pages)) {
+            if (isset($intlDoc) && count($intlDoc->pages)) {
                 $pkg->setIntlDoc($intlDoc->render());
             }
 
