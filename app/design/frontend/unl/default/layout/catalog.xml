@@ -69,7 +69,6 @@ Category default layout
 
     <catalog_category_default translate="label">
         <label>Catalog Category (Non-Anchor)</label>
-        <update handle="page_two_columns_left"/>
         <reference name="left">
             <block type="catalog/navigation" name="catalog.leftnav" after="currency" template="catalog/navigation/left.phtml"/>
         </reference>
@@ -90,11 +89,12 @@ Category default layout
                             <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
                             <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
                     </block>
-                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
+                    <!-- <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
                     <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
                     <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
                     <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
-                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>-->
+                    <action method="setColumnCount"><count>4</count></action>
                     <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
                 </block>
             </block>
@@ -107,7 +107,6 @@ Category layered navigation layout
 
     <catalog_category_layered translate="label">
         <label>Catalog Category (Anchor)</label>
-        <update handle="page_two_columns_left"/>
         <reference name="left">
             <block type="catalog/layer_view" name="catalog.leftnav" after="currency" template="catalog/layer/view.phtml"/>
         </reference>
@@ -129,11 +128,12 @@ Category layered navigation layout
                             <action method="addPagerLimit"><mode>list</mode><limit>40</limit></action>
                             <action method="addPagerLimit"><mode>list</mode><limit>all</limit><label>All</label></action>
                     </block>
-                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
+                    <!-- <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
                     <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
                     <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
                     <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
-                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
+                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>-->
+                    <action method="setColumnCount"><count>4</count></action>
                     <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
                 </block>
             </block>

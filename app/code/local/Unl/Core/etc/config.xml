@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Core>
-            <version>0.2.2</version>
+            <version>0.2.3</version>
         </Unl_Core>
     </modules>
     
@@ -198,6 +198,17 @@
                     <product_link_product_collection>Unl_Core_Model_Catalog_Resource_Product_Link_Product_Collection</product_link_product_collection>
                 </rewrite>
             </catalog_resource>
+            <catalogsearch>
+                <rewrite>
+                    <layer>Unl_Core_Model_CatalogSearch_Layer</layer>
+                </rewrite>
+            </catalogsearch>
+            <catalogsearch_resource>
+                <rewrite>
+                    <helper_mysql4>Unl_Core_Model_CatalogSearch_Resource_Helper_Mysql4</helper_mysql4>
+                    <fulltext>Unl_Core_Model_CatalogSearch_Resource_Fulltext</fulltext>
+                </rewrite>
+            </catalogsearch_resource>
             <cms>
             	<rewrite>
             		<!-- Fix skin URL -->

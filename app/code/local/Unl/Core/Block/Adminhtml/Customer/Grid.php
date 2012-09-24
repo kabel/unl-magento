@@ -66,6 +66,19 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
     }
 
     /* Extends
+     * @see Mage_Adminhtml_Block_Customer_Grid::_prepareCollection()
+     * by removing the default sort column, after the collection is prepared
+     */
+    protected function _prepareCollection()
+    {
+        parent::_prepareCollection();
+
+        $this->removeColumn('entity_id');
+
+        return $this;
+    }
+
+    /* Extends
      * @see Mage_Adminhtml_Block_Customer_Grid::_prepareColumns()
      * by customizing the rendered columns
      */
@@ -84,8 +97,7 @@ class Unl_Core_Block_Adminhtml_Customer_Grid extends Mage_Adminhtml_Block_Custom
 
         parent::_prepareColumns();
 
-        $this->removeColumn('entity_id')
-            ->removeColumn('billing_country_id')
+        $this->removeColumn('billing_country_id')
             ->removeColumn('website_id')
             ->removeColumn('customer_since');
         $this->getColumn('action')->unsWidth();

@@ -14,6 +14,19 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
     }
 
     /* Extends
+     * @see Mage_Adminhtml_Block_Catalog_Product_Grid::_prepareCollection()
+     * by removing the default sort column, after the collection is prepared
+     */
+    protected function _prepareCollection()
+    {
+        parent::_prepareCollection();
+
+        $this->removeColumn('entity_id');
+
+        return $this;
+    }
+
+    /* Extends
      * @see Mage_Adminhtml_Block_Catalog_Product_Grid::_prepareColumns()
      * by changing columns
      */
@@ -31,8 +44,7 @@ class Unl_Core_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_Block
 
         parent::_prepareColumns();
 
-        $this->removeColumn('entity_id')
-            ->removeColumn('websites');
+        $this->removeColumn('websites');
 
         return $this;
     }

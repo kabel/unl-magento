@@ -1,4 +1,22 @@
+<?php /* @var $this Mage_Core_Block_Template */ ?>
 <div class="search-suggestion zenbox">
     <h2>Are you looking for informational pages?</h2>
     <p>The following results are only from our product database. If you'd like to search for information/pages related to this store, please use the red search box at the top of the page or do a <a href="http://www1.unl.edu/search/?u=<?php echo urlencode(Mage::getBaseUrl()) ?>&amp;q=<?php echo urlencode(Mage::helper('catalogsearch')->getQueryText()) ?>">web search now</a>.</p>
+</div>
+<div class="search-depth">
+<?php
+$query = array(
+    Mage::getBlockSingleton('page/html_pager')->getPageVarName() => null // exclude current page from urls
+);
+?>
+<?php if ($this->getRequest()->getParam('deep')): ?>
+    <?php $query['deep'] = null; ?>
+    <?php $searchIn = 'only this store'; ?>
+    <p>You are currently searching in all UNL Marketplace stores.</p>
+<?php else: ?>
+    <?php $query['deep'] = 1; ?>
+    <?php $searchIn = 'all stores'; ?>
+    <p>You are currently searching only in this store.</p>
+<?php endif; ?>
+    <p><button class="button btn-skinny btn-neutral" onclick="setLocation('<?php echo $this->getUrl('*/*/*', array('_current'=>true, '_use_rewrite'=>true, '_query'=>$query)) ?>')"><span><span>Search <?php echo $searchIn ?></span></span></button>
 </div>

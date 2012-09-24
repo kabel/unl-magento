@@ -67,6 +67,9 @@
             <log_events>
                 <adminhtml_catalog_account translate="label">
                     <label>Payment Accounts</label>
+                    <view_actions>
+                        <unassigned />
+                    </view_actions>
                 </adminhtml_catalog_account>
             </log_events>
         </unl_adminlog>

@@ -109,10 +109,6 @@ class Unl_Ship_Sales_Order_PackageController extends Mage_Adminhtml_Controller_A
 
     public function labelPdfAction()
     {
-        //label size in a pts (1/72 inch) - 6" x 4"
-		$label4x6landscape = '432:288:';
-		$label4x6portrait = '288:432:';
-
 		$pkgs = $this->_initPkgs();
 		if (!$pkgs)  {
 		    $this->_redirect('*/sales_shipment/');
@@ -130,23 +126,7 @@ class Unl_Ship_Sales_Order_PackageController extends Mage_Adminhtml_Controller_A
 				continue;
 			}
 
-			$width = $pdfimg->getPixelWidth();
-			$height = $pdfimg->getPixelHeight();
-
-			// scale the image to proper width
-			$ratio = 288 / $width;
-			$width = $width * $ratio;
-			$height = $height * $ratio;
-			$offset = 432 - $height;
-
-			//add a new page with the label image
-			$layout = $label4x6portrait;
-			$pdfpage = $pdf->newPage($layout);
-
-			//get the image into a PdfImage object
-			$pdfpage->drawImage($pdfimg, 0, $offset, $width, $height + $offset);
-
-			$pdf->pages[] = $pdfpage;
+			Mage::helper('unl_ship/pdf')->attachImagePage($pdf, $pdfimg);
 
 			$fileName = 'label' . $pkg->getTrackingNumber() . '.pdf';
 		}

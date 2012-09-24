@@ -123,9 +123,9 @@
                                             <a href="<?php echo $this->getUrl('*/sales_order_package/labelPdf', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
                                         </td>
                                     </tr>
-                                    <?php if ($oldPackages[$i]->getInsDoc() || $oldPackages[$i]->getIntlDoc()): ?>
+                                    <?php if ($oldPackages[$i]->getShowInsDoc() || $oldPackages[$i]->getShowIntlDoc()): ?>
                                         <tr>
-                                            <?php if ($oldPackages[$i]->getInsDoc()): ?>
+                                            <?php if ($oldPackages[$i]->getShowInsDoc()): ?>
                                             <th><?php echo Mage::helper('sales')->__('High Value Report') ?></th>
                                             <td>
                                                 <a href="<?php echo $this->getUrl('*/sales_order_package/highvalue', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
@@ -134,8 +134,8 @@
                                             <th>&nbsp;</th>
                                             <td>&nbsp;</td>
                                             <?php endif; ?>
-                                            <?php if ($oldPackages[$i]->getIntlDoc()): ?>
-                                            <th></th>
+                                            <?php if ($oldPackages[$i]->getShowIntlDoc()): ?>
+                                            <th><?php echo Mage::helper('sales')->__('Customs Documents') ?></th>
                                             <td>
                                                 <a href="<?php echo $this->getUrl('*/sales_order_package/customs', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
                                             </td>
@@ -228,9 +228,9 @@
                                         <a href="<?php echo $this->getUrl('*/sales_order_package/labelPdf', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
                                     </td>
                                 </tr>
-                                <?php if ($oldPackages[$i]->getInsDoc() || $oldPackages[$i]->getIntlDoc()): ?>
+                                <?php if ($oldPackages[$i]->getShowInsDoc() || $oldPackages[$i]->getShowIntlDoc()): ?>
                                     <tr>
-                                        <?php if ($oldPackages[$i]->getInsDoc()): ?>
+                                        <?php if ($oldPackages[$i]->getShowInsDoc()): ?>
                                         <th><?php echo Mage::helper('sales')->__('High Value Report') ?></th>
                                         <td>
                                             <a href="<?php echo $this->getUrl('*/sales_order_package/highvalue', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
@@ -239,8 +239,8 @@
                                         <th>&nbsp;</th>
                                         <td>&nbsp;</td>
                                         <?php endif; ?>
-                                        <?php if ($oldPackages[$i]->getIntlDoc()): ?>
-                                        <th></th>
+                                        <?php if ($oldPackages[$i]->getShowIntlDoc()): ?>
+                                        <th><?php echo Mage::helper('sales')->__('Customs Documents') ?></th>
                                         <td>
                                             <a href="<?php echo $this->getUrl('*/sales_order_package/customs', array('id' => $oldPackages[$i]->getId())) ?>"><?php echo Mage::helper('sales')->__('Print') ?></a>
                                         </td>

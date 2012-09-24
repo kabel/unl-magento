@@ -259,10 +259,21 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             $packageWeight = round($packageWeight, 1);
         }
 
+        $labelFormat = 'PNG';
+
         $xmlRequest = new SimpleXMLElement('<LabelRequest/>');
-        $xmlRequest->addAttribute('LabelType', 'Default');
-        $xmlRequest->addAttribute('LabelSize', '4x6');
-        $xmlRequest->addAttribute('ImageFormat', 'PNG');
+
+        if ($domestic) {
+            $xmlRequest->addAttribute('LabelType', 'Default');
+            $xmlRequest->addAttribute('LabelSize', '4x6');
+            $xmlRequest->addAttribute('ImageFormat', $labelFormat);
+        } else {
+            $xmlRequest->addAttribute('LabelType', 'International');
+            $xmlRequest->addAttribute('LabelSubtype', 'Integrated');
+            $xmlRequest->addAttribute('LabelSize', '4x6c');
+            $xmlRequest->addAttribute('ImageFormat', $labelFormat);
+            $xmlRequest->addAttribute('ImageRotation', 'Rotate270');
+        }
 
         if ($usps->getConfigFlag('endicia_test_mode')) {
             $xmlRequest->addAttribute('Test', 'YES');
@@ -279,7 +290,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             $xmlRequest->addChild('MailpieceShape', $mailinfo[1]);
         }
 
-        if (!$domestic) {
+        if ($packageParams->getLength() || $packageParams->getWidth() || $packageParams->getHeight()) {
             if ($packageParams->getDimensionUnits() != Zend_Measure_Length::INCH) {
                 $length = round(Mage::helper('usa')->convertMeasureDimension(
                     $packageParams->getLength(),
@@ -296,6 +307,10 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
                     $packageParams->getDimensionUnits(),
                     Zend_Measure_Length::INCH
                 ));
+            } else {
+                $length = round($packageParams->getLength());
+                $width = round($packageParams->getWidth());
+                $height = round($packageParams->getHeight());
             }
             $dimensions = $xmlRequest->addChild('MailpieceDimensions');
             $dimensions->addChild('Length', $length);
@@ -303,11 +318,35 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             $dimensions->addChild('Height', $height);
         }
 
+        if (!$domestic) {
+            $xmlRequest->addChild('IntegratedFormType', 'FORM2976A');
+            $customsInfo = $xmlRequest->addChild('CustomsInfo');
+            $customsInfo->addChild('ContentsType', $packageParams->getContentType());
+            if ($packageParams->getContentType() == 'OTHER') {
+                $customsInfo->addChild('ContentsExplanation', $packageParams->getContentTypeOther());
+            }
+
+            $customsItems = $customsInfo->addChild('CustomsItems');
+            foreach ($request->getPackageItems() as $item) {
+                $cItem = $customsItems->addChild('CustomsItem');
+                $cItem->addChild('Description', substr($item['name'], 0, 50));
+                $cItem->addChild('Quantity', $item['qty']);
+                $cItem->addChild('Weight', floor(Mage::helper('usa')->convertMeasureWeight(
+                    $item['weight'],
+                    Zend_Measure_Weight::POUND,
+                    Zend_Measure_Weight::OUNCE
+                )));
+                $cItem->addChild('Value', round($item['customs_value'] * $item['qty'], 2));
+            }
+
+            //$xmlRequest->addChild('Value', $packageParams->getCustomsValue());
+            //$xmlRequest->addChild('Description', 'Order # ' . $request->getOrderShipment()->getOrder()->getIncrementId());
+        }
+
         if ($packageParams->getDeliveryConfirmation() === 'False') {
             $xmlRequest->addChild('Services')
                 ->addAttribute('SignatureConfirmation', 'ON');
         }
-
 
         $xmlRequest->addChild('ReferenceID', $request->getOrderShipment()->getOrder()->getIncrementId());
         $xmlRequest->addChild('RubberStamp1', 'Order # ' . $request->getOrderShipment()->getOrder()->getIncrementId());
@@ -345,12 +384,16 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         $xmlRequest->addChild('ToAddress1', $request->getRecipientAddressStreet1());
         $xmlRequest->addChild('ToAddress2', $request->getRecipientAddressStreet2());
         $xmlRequest->addChild('ToCity', $request->getRecipientAddressCity());
-        $xmlRequest->addChild('ToState', $request->getRecipientAddressStateOrProvinceCode());
+        if ($request->getRecipientAddressStateOrProvinceCode()) {
+            $xmlRequest->addChild('ToState', $request->getRecipientAddressStateOrProvinceCode());
+        }
         $xmlRequest->addChild('ToPostalCode', $domestic ? $toZip5 : $postalCode);
         if ($domestic && $toZip4) {
             $xmlRequest->addChild('ToZip4', $toZip4);
         }
         if ($request->getRecipientAddressCountryCode() != 'US') {
+            //$toCountry = Mage::getModel('directory/country')->loadByCode($request->getRecipientAddressCountryCode());
+            //$xmlRequest->addChild('ToCountry', $toCountry->getName());
             $xmlRequest->addChild('ToCountryCode', $request->getRecipientAddressCountryCode());
         }
         $xmlRequest->addChild('ToPhone', $request->getRecipientContactPhoneNumber());
@@ -391,7 +434,19 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         } else {
             $debugData['result'] = $xmlResponse;
 
-            $labelContent = base64_decode((string)$xml->Base64LabelImage);
+            if (isset($xml->Base64LabelImage)) {
+                $labelContent = base64_decode((string)$xml->Base64LabelImage);
+            } else {
+                $intlDoc = new Zend_Pdf();
+                foreach ($xml->Label->Image as $img) {
+                    if ((string)$img['PartNumber'] == '1') {
+                        $labelContent = base64_decode((string)$img);
+                    } else {
+                        Mage::helper('unl_ship/pdf')->attachImagePage($intlDoc, new Zend_Pdf_Resource_Image_Png('data://image/png;base64,' . (string)$img));
+                    }
+                }
+            }
+
             $trackingNumber = (string)$xml->TrackingNumber;
 
             $result->setShippingLabelContent($labelContent);
@@ -406,7 +461,11 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
                 ->setShippingTotal((string)$xml->PostagePrice['TotalAmount'])
                 ->setTransportationCharge(0)
                 ->setServiceOptionCharge((string)$xml->PostagePrice->Fees['TotalAmount'])
-                ->setLabelFormat('PNG');
+                ->setLabelFormat($labelFormat);
+
+            if (isset($intlDoc) && count($intlDoc->pages)) {
+                $pkg->setIntlDoc($intlDoc->render());
+            }
 
             $result->setPackage($pkg);
 
