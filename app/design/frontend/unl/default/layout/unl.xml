@@ -10,8 +10,8 @@
     
     <STORE_buros>
         <reference name="head">
-            <action method="addLinkRel"><rel>shortcut icon</rel><href>http://www.buros.org/sites/unl.edu.office-of-university-communications.buros/files/favicon%20%283%29.ico</href></action>
-            <action method="addCss"><name>buros.css</name></action>
+            <action method="addLinkRel"><rel>shortcut icon</rel><href>//buros-apps.unl.edu/templates/html/css/favicon.ico</href></action>
+            <action method="addCss"><name>css/buros.css</name></action>
         </reference>
         <reference name="header">
             <block type="unl_core/page_html_affiliateheader" name="affiliateheader">
