@@ -16,7 +16,7 @@
         <ul class="form-list" id="advanced-search-list">
             <?php foreach ($this->getSearchableAttributes() as $_attribute): ?>
             <?php $_code = $_attribute->getAttributeCode() ?>
-            <?php if (!in_array($_code, array('name', 'description', 'sku', 'price', 'short_description')) && !preg_match('/^buros_/', $_code)) {
+            <?php if (!in_array($_code, array('name', 'price')) && !preg_match('/^buros_/', $_code)) {
                 continue;
             } ?>
             <li>
