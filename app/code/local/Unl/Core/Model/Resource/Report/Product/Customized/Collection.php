@@ -2,6 +2,20 @@
 
 class Unl_Core_Model_Resource_Report_Product_Customized_Collection extends Unl_Core_Model_Resource_Report_Product_Orderdetails_Collection
 {
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+
+        $this->addFilterToMap('customer_email', 'order.customer_email');
+
+        $this->getSelect()->columns(
+            array('customer_email'),
+            'order'
+        );
+
+        return $this;
+    }
+
     /* PHP required logic to remove items from the collection after load.
      * @see Mage_Sales_Model_Resource_Order_Item_Collection::_afterLoad()
      * WARNING: This breaks the standard paging mechanisms of the collection
