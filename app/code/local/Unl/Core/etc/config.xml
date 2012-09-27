@@ -61,6 +61,8 @@
                     <product_gallery>Unl_Core_Block_Catalog_Product_Gallery</product_gallery>
                     <!-- Add text list mode -->
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
+                    <!-- Do not display empty attributes -->
+                    <product_view_attributes>Unl_Core_Block_Catalog_Product_View_Attributes</product_view_attributes>
                 </rewrite>
             </catalog>
             <downloadable>
@@ -552,7 +554,7 @@
                     <font_size>10</font_size>
                 </shipping>
                 <tax>
-                    <title>Tax (may include shipping)</title>
+                    <title>Tax</title>
                     <sort_order>400</sort_order>
                     <font_size>10</font_size>
                 </tax>
