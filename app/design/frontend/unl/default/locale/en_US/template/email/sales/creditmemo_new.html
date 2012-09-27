@@ -1,4 +1,4 @@
-<!--@subject UNL Marketplace: Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_id}} @-->
+<!--@subject {{var store.getFrontendName()}}: Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_id}} @-->
 <!--@vars
 {"store url=\"\"":"Store Url",
 "var logo_url":"Email Logo Image Url",
@@ -9,14 +9,14 @@
 "var creditmemo.increment_id":"Credit Memo Id",
 "var order.increment_id":"Order Id",
 "var order.billing_address.format('html')":"Billing Address",
-"payment_html":"Payment Details",
+"var payment_html":"Payment Details",
 "var order.shipping_address.format('html')":"Shipping Address",
 "var order.shipping_description":"Shipping Description",
 "layout handle=\"sales_email_order_creditmemo_items\" creditmemo=$creditmemo order=$order":"Credit Memo Items Grid",
 "var comment":"Credit Memo Comment"}
 @-->
 <!--@styles
-td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+
 @-->
 
 {{block type='core/template' area='frontend' template='email/common/header.phtml'}}
@@ -24,29 +24,29 @@ Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_
 {{block type='core/template' area='frontend' template='email/common/body.phtml'}}
 <p style="margin:1.1em 0;"><strong>Hello {{htmlescape var=$order.getCustomerName()}}:</strong></p>
 <p style="margin:1.1em 0;">
-    Thank you for your order from the UNL Marketplace.
-    You can check the status of your order by <a href="{{store url='customer/account/'}}" style="color:#b70302;">logging into your account</a>. 
-    If you have any questions about your order please contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#b70302;">{{config path='trans_email/ident_support/email'}}</a> or call us at <span class="nobr">{{config path='general/store_information/phone'}}</span> Monday - Friday, 9am - 5pm CST.
+    Thank you for your order from {{var store.getFrontendName()}}.
+    You can check the status of your order by <a href="{{store url='customer/account/'}}" style="color:{{customvar code='email_link_color'}};">logging into your account</a>. 
+    If you have any questions about your order please contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:{{customvar code='email_link_color'}};">{{config path='trans_email/ident_support/email'}}</a> or call us at <span class="nobr">{{config path='general/store_information/phone'}}</span> Monday - Friday, 9am - 5pm CST.
 </p>
 <h2 style="border-bottom:2px solid #eee; font-size:1.05em; padding-bottom:1px; "> Your Credit Memo #{{var creditmemo.increment_id}} for Order #{{var order.increment_id}}</h2>
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
     <thead>
-    <tr>
-      <th align="left" width="48%" bgcolor="#b70302" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Billing Information:</th>
-      <th width="2%"></th>
-      <th align="left" width="48%" bgcolor="#b70302" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Payment Method:</th>
-    </tr>
+        <tr>
+            <th align="left" width="48%" bgcolor="{{customvar code='email_th_bg'}}" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; color:{{customvar code='email_th_color'}}; font-family: Helvetica,Arial,sans-serif;">Billing Information:</th>
+            <th width="2%"></th>
+            <th align="left" width="48%" bgcolor="{{customvar code='email_th_bg'}}" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; color:{{customvar code='email_th_color'}}; font-family:Helvetica,Arial,sans-serif;">Payment Method:</th>
+        </tr>
     </thead>
     <tbody>
-    <tr>
-        <td valign="top" style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial; padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-            {{var order.billing_address.format('html')}}
-        </td>
-        <td>&nbsp;</td>
-        <td valign="top" style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial; padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-            {{var payment_html}}
-        </td>
-    </tr>
+        <tr>
+            <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; background:#f8f7f5;">
+                {{var order.getBillingAddress().format('html')}}
+            </td>
+            <td>&nbsp;</td>
+            <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; background:#f8f7f5; text-align:left;">
+                {{var payment_html}}
+            </td>
+        </tr>
     </tbody>
 </table>
 <br/>
@@ -54,20 +54,20 @@ Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
     <thead>
     <tr>
-      <th align="left" width="48%" bgcolor="#b70302" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Shipping Information:</th>
-      <th width="2%"></th>
-      <th align="left" width="48%" bgcolor="#b70302" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; border-bottom:none; line-height:1em; color:#FFF; font-size:12px; font-family: Helvetica,Arial,sans-serif;">Shipping Method:</th>
+        <th align="left" width="48%" bgcolor="{{customvar code='email_th_bg'}}" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; color:{{customvar code='email_th_color'}}; font-family:Helvetica,Arial,sans-serif;">Shipping Information:</th>
+        <th width="2%"></th>
+        <th align="left" width="48%" bgcolor="{{customvar code='email_th_bg'}}" style="padding:5px 9px 6px 9px; border:1px solid #bebcb7; color:{{customvar code='email_th_color'}}; font-family:Helvetica,Arial,sans-serif;">Shipping Method:</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td valign="top" style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial; padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
+        <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; background:#f8f7f5;">
             {{block type='core/template' area='frontend' template='email/order/shipping.phtml' order=$order}}
             &nbsp;
         </td>
         <td>&nbsp;</td>
-        <td valign="top" style="color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial; padding:7px 9px 9px 9px; border:1px solid #bebcb7; border-top:0; background:#f8f7f5;">
-            {{var order.shipping_description}}
+        <td valign="top" style="padding:7px 9px 9px 9px; border:1px solid #bebcb7; background:#f8f7f5;">
+            {{var order.getShippingDescription()}}
             &nbsp;
         </td>
     </tr>
@@ -79,5 +79,5 @@ Credit Memo # {{var creditmemo.increment_id}} for Order # {{var order.increment_
 {{layout handle="sales_email_order_creditmemo_items" creditmemo=$creditmemo order=$order}}
 <p style="margin:1.1em 0;">{{var comment}}</p>
 <p style="margin:1.1em 0;">Thank you again,</p>
-<p style="margin:2.2em 0 1.1em;"><strong>UNL Marketplace</strong></p>
+<p style="margin:2.2em 0 1.1em;"><strong>{{var store.getFrontendName()}}</strong></p>
 {{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

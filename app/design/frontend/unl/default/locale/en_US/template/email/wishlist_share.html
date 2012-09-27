@@ -7,11 +7,11 @@
 "var items":"Wishlist Items"}
 @-->
 <!--@styles
-td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+
 @-->
 
 {{block type='core/template' area='frontend' template='email/common/header.phtml'}}
-Take a look at my wishlist from UNL Marketplace
+Take a look at my wishlist from {{var store.getFrontendName()}}
 {{block type='core/template' area='frontend' template='email/common/body.phtml'}}
 <div style="width:556px;">
   <p style="margin:1.1em 0;">{{var message}}</p>
@@ -19,8 +19,8 @@ Take a look at my wishlist from UNL Marketplace
 {{var items}}
 <br />
 <p style="margin:1.1em 0;">
-    {{depend salable}}<strong><a href="{{var addAllLink}}" style="color:#b70302;">Add all items to shopping cart</a></strong> |{{/depend}}
-    <strong><a href="{{var viewOnSiteLink}}" style="color:#b70302;">View all wishlist items</a></strong>
+    {{depend salable}}<strong><a href="{{var addAllLink}}" style="color:{{customvar code='email_link_color'}};">Add all items to shopping cart</a></strong> |{{/depend}}
+    <strong><a href="{{var viewOnSiteLink}}" style="color:{{customvar code='email_link_color'}};">View all wishlist items</a></strong>
 </p>
 <p style="margin:2.2em 0 1.1em;"><strong>{{htmlescape var=$customer.name}}</strong></p>
 {{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

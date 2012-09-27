@@ -11,17 +11,17 @@
 @-->
 
 <!--@styles
-td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+
 @-->
 
 {{block type='core/template' area='frontend' template='email/common/header.phtml'}}
 Account confirmation for {{var customer.name}}
 {{block type='core/template' area='frontend' template='email/common/body.phtml'}}
 <p style="margin:1.1em 0;"><strong>Dear {{htmlescape var=$customer.name}}</strong>:</p>
-<p style="margin:1.1em 0;">Welcome to the UNL Marketplace.</p>
+<p style="margin:1.1em 0;">Welcome to {{var store.getFrontendName()}}.</p>
 <p style="margin:1.1em 0;">Your e-mail {{var customer.email}} must be confirmed before using it to log in to our store.</p>
-<p style="margin:1.1em 0;">To confirm the e-mail and instantly log in, please, use <a href="{{store url='customer/account/confirm/' _query_id=$customer.id _query_key=$customer.confirmation _query_back_url=$back_url}}" style="color:#b70302;">this confirmation link</a>. This link is valid only once.</p>
-<p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#b70302;">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
+<p style="margin:1.1em 0;">To confirm the e-mail and instantly log in, please, use <a href="{{store url='customer/account/confirm/' _query_id=$customer.id _query_key=$customer.confirmation _query_back_url=$back_url}}" style="color:{{customvar code='email_link_color'}};">this confirmation link</a>. This link is valid only once.</p>
+<p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:{{customvar code='email_link_color'}};">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
 <p style="margin:1.1em 0;">Thank you again,</p>
-<p style="margin:2.2em 0 1.1em;"><strong>UNL Marketplace</strong></p>
+<p style="margin:2.2em 0 1.1em;"><strong>{{var store.getFrontendName()}}</strong></p>
 {{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

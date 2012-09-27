@@ -9,14 +9,14 @@
 @-->
 
 <!--@styles
-td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+
 @-->
 
 {{block type='core/template' area='frontend' template='email/common/header.phtml'}}
 Welcome {{var customer.name}}!
 {{block type='core/template' area='frontend' template='email/common/body.phtml'}}
 <p style="margin:1.1em 0;"><strong>Dear {{htmlescape var=$customer.name}}:</strong></p>
-<p style="margin:1.1em 0;">Welcome to the UNL Marketplace. To log in when visiting our site just click <a href="{{store url='customer/account/'}}" style="color:#b70302;">Your Account</a> at the top of every page.  If you are a UNL Student or Faculty/Staff member, clicking the UNL Login button will allow you to use your My.UNL credentials to access your account. Otherwise, you enter your e-mail address and password.</p>
+<p style="margin:1.1em 0;">Welcome to {{var store.getFrontendName()}}. To log in when visiting our site just click <a href="{{store url='customer/account/'}}" style="color:{{customvar code='email_link_color'}};">Your Account</a> at the top of every page. {{customvar code='email_account_extra'}}</p>
 {{depend customer.getForceConfirmed()}}
 <p style="border:1px solid #E0E0E0; font-size:12px; line-height:16px; margin:0; padding:13px 18px; background:#f9f9f9;">
     Use the following values when prompted to log in:<br/>
@@ -32,7 +32,7 @@ Welcome {{var customer.name}}!
     <li>Change your password</li>
     <li>Store alternative addresses (for shipping to multiple family members and friends!)</li>
 </ul>
-<p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#b70302;">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
+<p style="margin:1.1em 0;">If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:{{customvar code='email_link_color'}};">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
 <p style="margin:1.1em 0;">Thanks again,</p>
-<p style="margin:2.2em 0 1.1em;"><strong>UNL Marketplace</strong></p>
+<p style="margin:2.2em 0 1.1em;"><strong>{{var store.getFrontendName()}}</strong></p>
 {{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

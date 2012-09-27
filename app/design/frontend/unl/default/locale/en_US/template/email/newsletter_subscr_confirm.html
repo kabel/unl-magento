@@ -7,7 +7,7 @@
 "var subscriber.getConfirmationLink()":"Subscriber Confirmation Url"}
 @-->
 <!--@styles
-td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+
 @-->
 
 {{block type='core/template' area='frontend' template='email/common/header.phtml'}}
@@ -16,7 +16,7 @@ Newsletter subscription confirmation
 <p style="margin:1.1em 0;"><strong>Dear {{htmlescape var=$customer.name}}:</strong></p>
 <p style="margin:1.1em 0;">Thank you for subscribing to our newsletter.</p>
 <p style="border:1px solid #BEBCB7; padding:13px 18px; background:#F8F7F5; margin:1.1em 0;">To begin receiving the newsletter, you must first confirm your subscription by clicking on the following link:<br />
-    <a href="{{var subscriber.getConfirmationLink()}}" style="color:#b70302;">{{var subscriber.getConfirmationLink()}}</a></p>
+    <a href="{{var subscriber.getConfirmationLink()}}" style="color:{{customvar code='email_link_color'}};">{{var subscriber.getConfirmationLink()}}</a></p>
 <p style="margin:1.1em 0;">Thank you again,</p>
-<p style="margin:2.2em 0 1.1em;"><strong>UNL Marketplace</strong></p>
+<p style="margin:2.2em 0 1.1em;"><strong>{{var store.getFrontendName()}}</strong></p>
 {{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

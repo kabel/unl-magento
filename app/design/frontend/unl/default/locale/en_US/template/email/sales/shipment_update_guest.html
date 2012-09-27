@@ -1,4 +1,4 @@
-<!--@subject UNL Marketplace: Shipment # {{var shipment.increment_id}} update @-->
+<!--@subject {{var store.getFrontendName()}}: Shipment # {{var shipment.increment_id}} update @-->
 <!--@vars
 {"store url=\"\"":"Store Url",
 "var logo_url":"Email Logo Image Url",
@@ -10,7 +10,7 @@
 "var store.getFrontendName()":"Store Name"}
 @-->
 <!--@styles
- td {color:#494949; font-size: 12px; line-height: 140%; font-family: 'Lucida Grande',Verdana,Arial;}
+
 @-->
 
 {{block type='core/template' area='frontend' template='email/common/header.phtml'}}
@@ -20,7 +20,7 @@ Shipment # {{var shipment.increment_id}} update
 <p style="margin:1.1em 0;">Your order # {{var order.increment_id}} is<br/>
     <strong>{{var order.getStatusLabel()}}</strong>.</p>
 <p style="margin:1.1em 0;">{{var comment}}</p>
-<p style="margin:1.1em 0;">If you have any questions, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#b70302;">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
+<p style="margin:1.1em 0;">If you have any questions, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:{{customvar code='email_link_color'}};">{{config path='trans_email/ident_support/email'}}</a> or by phone at {{config path='general/store_information/phone'}}.</p>
 <p style="margin:1.1em 0;">Thank you again,</p>
-<p style="margin:2.2em 0 1.1em;"><strong>UNL Marketplace</strong></p>
+<p style="margin:2.2em 0 1.1em;"><strong>{{var store.getFrontendName()}}</strong></p>
 {{block type='core/template' area='frontend' template='email/common/footer.phtml'}}
