@@ -1,13 +1,23 @@
 <?php $_invoice = $this->getInvoice() ?>
 <?php $_order   = $this->getOrder() ?>
+<?php
+$thColor = Mage::getModel('core/variable')
+    ->setStoreId($_order->getStoreId())
+    ->loadByCode('email_th_color')
+    ->getValue('html');
+$thBg = Mage::getModel('core/variable')
+    ->setStoreId($_order->getStoreId())
+    ->loadByCode('email_th_bg')
+    ->getValue('html');
+?>
 <?php if ($_invoice && $_order): ?>
 <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #bebcb7; background:#f8f7f5;">
     <thead>
         <tr>
-            <th align="left" bgcolor="#ba0000" style="padding:3px 9px;line-height:1em;color:#FFF;font-size:12px;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Item') ?></th>
-            <th align="left" bgcolor="#ba0000" style="padding:3px 9px;line-height:1em;color:#FFF;font-size:12px;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Sku') ?></th>
-            <th align="center" bgcolor="#ba0000" style="padding:3px 9px;line-height:1em;color:#FFF;font-size:12px;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Qty') ?></th>
-            <th align="right" bgcolor="#ba0000" style="padding:3px 9px;line-height:1em;color:#FFF;font-size:12px;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Subtotal') ?></th>
+            <th align="left" bgcolor="<?php echo $thBg ?>" style="padding:3px 9px;border-bottom:2px solid #BEBCB7;color:<?php echo $thColor ?>;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Item') ?></th>
+            <th align="left" bgcolor="<?php echo $thBg ?>" style="padding:3px 9px;border-bottom:2px solid #BEBCB7;color:<?php echo $thColor ?>;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Sku') ?></th>
+            <th align="center" bgcolor="<?php echo $thBg ?>" style="padding:3px 9px;border-bottom:2px solid #BEBCB7;color:<?php echo $thColor ?>;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Qty') ?></th>
+            <th align="right" bgcolor="<?php echo $thBg ?>" style="padding:3px 9px;border-bottom:2px solid #BEBCB7;color:<?php echo $thColor ?>;font-family: Helvetica,Arial,sans-serif;"><?php echo $this->__('Subtotal') ?></th>
         </tr>
     </thead>
 
