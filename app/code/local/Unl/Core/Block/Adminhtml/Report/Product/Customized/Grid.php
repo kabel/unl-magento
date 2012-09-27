@@ -92,6 +92,11 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
             'index'     => 'customer_lastname',
         ));
 
+        $this->addColumn('customer_email', array(
+            'header'    => Mage::helper('sales')->__('Customer Email'),
+            'index'     => 'customer_email',
+        ));
+
         $this->addColumn('product_options', array(
             'header'    => Mage::helper('reports')->__('Options'),
             'index'     => 'product_options',
