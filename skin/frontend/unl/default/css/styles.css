@@ -921,7 +921,7 @@ tr.summary-details-excluded { font-style:italic; }
 /* .products-text .product-shop .right-info button.button span { height:23px; line-height:18px; background-image:url(../images/bkg_btn-small.png); } */
 #maincontent .products-text .product-name { font-size:16px; padding:0; margin:0 0 2px; }
 .products-text .price-box { float:left; margin:4px 13px 0 0; }
-.products-text .availability { float:left; margin:3px 0 0; }
+#maincontent .products-text .availability { float:left; margin:4px 0 0; }
 .products-text .product-shop .ratings { margin:0; }
 /* ======================================================================================= */
 

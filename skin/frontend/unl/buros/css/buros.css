@@ -165,8 +165,8 @@ navigation > ul > li.empty:hover a {
      color: #0071B7;
   }
   #maincontent {
-     background: url('//buros-apps.unl.edu/templates/html/css/images/buros_watermark.jpg') bottom right no-repeat;
-     background-size:contain;
+     /*background: url('//buros-apps.unl.edu/templates/html/css/images/buros_watermark.jpg') bottom right no-repeat;
+     background-size:contain;*/
   }
   #maincontent .two_cols {
     -webkit-column-count: 2;
