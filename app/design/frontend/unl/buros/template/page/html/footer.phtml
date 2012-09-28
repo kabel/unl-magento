@@ -1,0 +1,31 @@
+<footer id="footer">
+    <div id="footer_floater"></div>
+    <div class="footer_col" id="wdn_footer_feedback">
+        <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/feedback.html'); ?>
+    </div>
+    <div class="footer_col" id="wdn_footer_related">
+        <!-- InstanceBeginEditable name="leftcollinks" -->
+        <!-- InstanceEndEditable -->
+    </div>
+    <div class="footer_col" id="wdn_footer_contact">
+        <!-- InstanceBeginEditable name="contactinfo" -->
+        <!-- InstanceEndEditable -->
+    </div>
+    <div class="footer_col" id="wdn_footer_share">
+        <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/socialmediashare.html'); ?>
+    </div>
+    <!-- InstanceBeginEditable name="optionalfooter" -->
+    <?php echo $this->getChildHtml('optional_footer') ?>
+    <!-- InstanceEndEditable -->
+    <div id="wdn_copyright">
+        <div>
+            <!-- InstanceBeginEditable name="footercontent" -->
+            &copy; <?php echo date('Y') ?> <?php echo $this->getCopyright() ?>
+            <br />
+            <p>This site is powered by <a href="http://www.magentocommerce.com/">Magento</a><sup>&reg;</sup></p>
+            <!-- InstanceEndEditable -->
+            <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/wdn.html'); ?>
+        </div>
+        <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/logos.html'); ?>
+    </div>
+</footer>
