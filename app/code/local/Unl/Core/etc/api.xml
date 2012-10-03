@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <api>
+        <resources>
+            <catalog_product_downloadable_link>
+                <acl>catalog/product/downloadable_link</acl>
+                <methods>
+                    <add>
+                        <acl>catalog/product/downloadable_link/add</acl>
+                    </add>
+                    <list>
+                        <acl>catalog/product/downloadable_link/list</acl>
+                    </list>
+                    <remove>
+                        <acl>catalog/product/downloadable_link/remove</acl>
+                    </remove>
+                </methods>
+            </catalog_product_downloadable_link>
+        </resources>
+    </api>
+</config>
