@@ -9,12 +9,12 @@
 
 <?php if($_product->isSaleable()): ?>
     <p class="availability in-stock"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Test Review Available for Download') ?></span></p>
+    <?php echo $this->getChildHtml('product_type_data_extra') ?>
+    <?php echo $this->getPriceHtml($_product) ?>
+    <p>Note that what you are purchasing is a <em>test review</em>. These reviews are <strong>descriptions and evaluations</strong> of the tests, <em>not</em> the actual tests themselves. To purchase the actual test materials, you will need to contact the test publisher(s).</p>
 <?php elseif ($_product->getNoSale()): ?>
     <p class="availability no-sale"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Not available online') ?></span></p>
 <?php else: ?>
     <p class="availability out-of-stock"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Test Review Not Available') ?></span></p>
 <?php endif; ?>
-<?php echo $this->getChildHtml('product_type_data_extra') ?>
-<?php echo $this->getPriceHtml($_product) ?>
-<p>Note that what you are purchasing is a <em>test review</em>. These reviews are <strong>descriptions and evaluations</strong> of the tests, <em>not</em> the actual tests themselves. To purchase the actual test materials, you will need to contact the test publisher(s).</p>
 <?php echo $this->getChildHtml('samples') ?>
