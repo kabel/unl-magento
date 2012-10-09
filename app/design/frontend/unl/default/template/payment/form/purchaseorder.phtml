@@ -2,10 +2,13 @@
     <li>
         <label for="po_number" class="required"><em>*</em><?php echo $this->__('Purchase Order Number') ?></label>
         <div class="input-box">
-            <input type="text" id="po_number" name="payment[po_number]" title="<?php echo $this->__('Purchase Order Number') ?>" class="input-text required-entry validate-digits validate-co-length" value="<?php echo $this->htmlEscape($this->getInfoData('po_number')) ?>" />
+            <input type="text" id="po_number" name="payment[po_number]" title="<?php echo $this->__('Purchase Order Number') ?>" class="input-text required-entry validate-costobject" value="<?php echo $this->htmlEscape($this->getInfoData('po_number')) ?>" />
         </div>
     </li>
 </ul>
 <script type="text/javascript">
-Validation.add('validate-co-length', 'Please enter a valid cost object number', {minLength:10});
+Validation.add('validate-costobject', 'Please enter a valid cost object number', function(v, elem) {
+    v = v.replace(/\-|\s/g, '');
+    return Validation.get('IsEmpty').test(v) || ( !/[^\d]/.test(v) && ( v.length == 10 || v.length == 13 ) );
+});
 </script>
