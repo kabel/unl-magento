@@ -122,6 +122,12 @@
                     <product>Unl_Core_Helper_Catalog_Product</product>
                 </rewrite>
             </catalog>
+            <downloadable>
+                <rewrite>
+                    <!-- Use a better HTTP client for proxying download URLs -->
+                    <download>Unl_Core_Helper_Downloadable_Download</download>
+                </rewrite>
+            </downloadable>
             <payment>
                 <rewrite>
                     <!-- Fix disabled model issue -->
