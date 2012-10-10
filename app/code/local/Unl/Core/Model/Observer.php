@@ -295,4 +295,18 @@ class Unl_Core_Model_Observer
 
         return $this;
     }
+
+    /**
+     * A <i>frontend</i> event observer for the
+     * <code>catalog_helper_output_construct</code> event.
+     * Adds a handler for the productAttribute output helper.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function attachProductHandler($observer)
+    {
+        /* @var $helper Mage_Catalog_Helper_Output */
+        $helper = $observer->getEvent()->getHelper();
+        $helper->addHandler('productAttribute', Mage::helper('unl_core/catalog_output'));
+    }
 }

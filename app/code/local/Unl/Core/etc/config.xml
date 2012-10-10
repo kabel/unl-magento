@@ -613,6 +613,15 @@
         </routers>
     
         <events>
+            <catalog_helper_output_construct>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/observer</class>
+                        <method>attachProductHandler</method>
+                    </unl_core>
+                </observers>
+            </catalog_helper_output_construct>
+        
             <core_design_check_useragent_exps_before>
                 <observers>
                     <no_mobile>
