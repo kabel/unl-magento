@@ -24,17 +24,23 @@ class Unl_Core_Model_Catalog_Layer_Filter_Alpha extends Mage_Catalog_Model_Layer
 
         switch ($this->_appliedLetter) {
             case '1':
-                $collection->addAttributeToSelect('name', 'inner');
-                $collection->getSelect()->where('LEFT(IF(_table_name.value_id > 0, _table_name.value, _table_name_default.value), 1) REGEXP ?', '[[:digit:]]');
+                $collection->addAttributeToFilter('name', array(
+                    'regexp' => '[[:digit:]]',
+                    'field_expr' => 'LEFT(#?, 1)'
+                ));
                 $filter['label'] = '0-9';
                 break;
             case '~':
-                $collection->addAttributeToSelect('name', 'inner');
-                $collection->getSelect()->where('LEFT(IF(_table_name.value_id > 0, _table_name.value, _table_name_default.value), 1) NOT REGEXP ?', '[[:alnum:]]');
+                $collection->addAttributeToFilter('name', array(
+                    'regexp' => '[[:alnum:]]',
+                    'field_expr' => 'LEFT(#?, 1) NOT'
+                ));
                 $filter['label'] = 'Symbols';
                 break;
             default:
-                $collection->addAttributeToFilter('name', array('like' => $this->_appliedLetter . '%'));
+                $collection->addAttributeToFilter('name', array(
+                    'like' => Mage::getResourceHelper('core')->addLikeEscape($this->_appliedLetter, array('position' => 'start'))
+                ));
                 $filter['label'] = strtoupper($this->_appliedLetter);
                 break;
         }
@@ -133,23 +139,34 @@ class Unl_Core_Model_Catalog_Layer_Filter_Alpha extends Mage_Catalog_Model_Layer
      */
     protected function _getItemCountCollection($collection)
     {
-        $collectionHelper = Mage::getResourceModel('unl_core/catalog_layer_filter_alpha_collection');
-        $attributeAlias = $collectionHelper->getFilterAttributeAlias();
-        $letterExpr = "UPPER(LEFT({$attributeAlias}, 1))";
+        $collectionHelper = clone $collection;
 
-        $collection->addAttributeToSelect('name', 'left');
-        $select = clone $collection->getSelect();
+        $collectionHelper->addExpressionAttributeToSelect('letter', 'UPPER(LEFT({{name}}, 1))', 'name');
+
+        $select = $collectionHelper->getSelect();
+
+        foreach ($select->getPart(Zend_Db_Select::COLUMNS) as $column) {
+            if ($column[2] == 'letter') {
+                $letterExpr = $column[1];
+            }
+        }
+
+        if (!isset($letterExpr)) {
+            Mage::throwException('Could not locate expression for alpha filtering');
+        }
+
         $select->reset(Zend_Db_Select::COLUMNS)
             ->reset(Zend_Db_Select::GROUP)
             ->reset(Zend_Db_Select::ORDER)
             ->distinct(false)
+            ->limit()
             ->columns(array(
-                'letter' => new Zend_Db_Expr($letterExpr),
+                'letter' => $letterExpr,
                 'product_count' => new Zend_Db_Expr('COUNT(DISTINCT e.entity_id)')
             ))
             ->group($letterExpr);
 
-        $letters = $collection->getConnection()->fetchPairs($select);
+        $letters = $collectionHelper->getConnection()->fetchPairs($select);
         return $letters;
     }
 }
