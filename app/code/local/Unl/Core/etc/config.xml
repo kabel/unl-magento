@@ -758,7 +758,7 @@
             <controller_action_predispatch_adminhtml_system_account_save>
                 <observers>
                     <unl_filter_cas>
-                        <class>unl_core/admion_observer</class>
+                        <class>unl_core/admin_observer</class>
                         <method>onSystemAccountSavePreDispatch</method>
                     </unl_filter_cas>
                 </observers>
