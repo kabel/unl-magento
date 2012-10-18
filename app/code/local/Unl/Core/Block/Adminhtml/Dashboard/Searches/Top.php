@@ -25,6 +25,8 @@ class Unl_Core_Block_Adminhtml_Dashboard_Searches_Top extends Mage_Adminhtml_Blo
         $this->_collection
             ->setPopularQueryFilter($storeIds);
 
+        $this->_collection->getSelect()->columns('query_id');
+
         $this->setCollection($this->_collection);
 
         return Mage_Adminhtml_Block_Dashboard_Grid::_prepareCollection();
