@@ -10,35 +10,8 @@ class Unl_CustomerTag_Block_Tag_Assigned_Grid extends Mage_Adminhtml_Block_Widge
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
         if ($this->_getTagId()) {
-            $this->setDefaultFilter(array('in_customers'=>1));
+            $this->setDefaultFilter(array('is_tagged'=>1));
         }
-    }
-
-	/**
-     * Add filter to grid columns
-     *
-     * @param mixed $column
-     * @return Mage_Adminhtml_Block_Tag_Assigned_Grid
-     */
-    protected function _addColumnFilterToCollection($column)
-    {
-        // Set custom filter for in customers flag
-        if ($column->getId() == 'in_customers') {
-            $customerIds = $this->_getSelectedCustomers();
-            if (empty($customerIds)) {
-                $customerIds = 0;
-            }
-            if ($column->getFilter()->getValue()) {
-                $this->getCollection()->addFieldToFilter('entity_id', array('in'=>$customerIds));
-            } else {
-                if($customerIds) {
-                    $this->getCollection()->addFieldToFilter('entity_id', array('nin'=>$customerIds));
-                }
-            }
-        } else {
-            parent::_addColumnFilterToCollection($column);
-        }
-        return $this;
     }
 
     protected function _prepareCollection()
@@ -49,6 +22,9 @@ class Unl_CustomerTag_Block_Tag_Assigned_Grid extends Mage_Adminhtml_Block_Widge
             ->addAttributeToSelect('created_at')
             ->addAttributeToSelect('group_id');
 
+        $collection->joinField('is_tagged', 'unl_customertag/link', new Zend_Db_Expr('tag_id IS NOT NULL'), 'customer_id=entity_id',
+            array('tag_id' => $this->_getTagId()), 'left');
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -56,13 +32,16 @@ class Unl_CustomerTag_Block_Tag_Assigned_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function _prepareColumns()
     {
-        $this->addColumn('in_customers', array(
-            'header_css_class'  => 'a-center',
-            'type'              => 'checkbox',
-            'field_name'        => 'in_customers',
-            'values'            => $this->_getSelectedCustomers(),
-            'align'             => 'center',
-            'index'             => 'entity_id'
+        $this->addColumn('is_tagged', array(
+            'header'   => Mage::helper('unl_customertag')->__('Is Tagged'),
+            'index'    => 'is_tagged',
+            'type'     => 'options',
+            'options'  => array(
+                '1' => Mage::helper('unl_customertag')->__('Yes'),
+                '0' => Mage::helper('unl_customertag')->__('No'),
+            ),
+            'width' => '50px',
+            'align' => 'center',
         ));
 
         $this->addColumn('entity_id', array(
@@ -105,38 +84,12 @@ class Unl_CustomerTag_Block_Tag_Assigned_Grid extends Mage_Adminhtml_Block_Widge
         return parent::_prepareColumns();
     }
 
-	/**
-     * Retrieve related customers
-     *
-     * @return array
-     */
-    protected function _getSelectedCustomers()
+    public function getRowUrl($row)
     {
-        $customers = $this->getRequest()->getPost('assigned_customers', null);
-        if (!is_array($customers)) {
-            $customers = $this->getLinkedCustomers();
-        }
-        return $customers;
-    }
-
-    /**
-     * Retrieve saved related customers
-     *
-     * @return array
-     */
-    public function getLinkedCustomers()
-    {
-        return $this->getCurrentTag()->getLinkedCustomerIds();
-    }
-
-	/**
-     * Retrieve Grid Url
-     *
-     * @return string
-     */
-    public function getGridUrl()
-    {
-        return $this->getUrl('*/*/assignedGridOnly', array('_current' => true));
+        return $this->getUrl('*/customer/edit', array(
+            'tab' => 'customertag',
+            'id' => $row->getId()
+        ));
     }
 
     /**

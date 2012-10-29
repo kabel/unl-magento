@@ -77,15 +77,6 @@ class Unl_CustomerTag_CustomerTagController extends Mage_Adminhtml_Controller_Ac
 
     public function assignedAction()
     {
-        $this->_title($this->__('Tags'))->_title($this->__('Assigned'));
-
-        $this->_initTag();
-        $this->loadLayout();
-        $this->renderLayout();
-    }
-
-    public function assignedGridOnlyAction()
-    {
         $this->_initTag();
         $this->loadLayout();
         $this->renderLayout();
@@ -118,11 +109,6 @@ class Unl_CustomerTag_CustomerTagController extends Mage_Adminhtml_Controller_Ac
 
 
                 $model->addData($data);
-            }
-
-            if (isset($postData['tag_assigned_customers'])) {
-                $customerIds = Mage::helper('adminhtml/js')->decodeGridSerializedInput($postData['tag_assigned_customers']);
-                $model->addCustomerLinks($customerIds);
             }
 
             try {
