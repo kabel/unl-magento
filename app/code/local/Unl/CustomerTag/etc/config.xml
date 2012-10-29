@@ -161,6 +161,24 @@
                     </save_customertags>
                 </observers>
             </catalog_product_save_after>
+            
+            <adminhtml_customer_prepare_save>
+                <observers>
+                    <save_customertags>
+                        <class>unl_customertag/observer</class>
+                        <method>onCustomerPrepareSave</method>
+                    </save_customertags>
+                </observers>
+            </adminhtml_customer_prepare_save>
+            
+            <customer_save_after>
+                <observers>
+                    <save_customertags>
+                        <class>unl_customertag/observer</class>
+                        <method>onAfterCustomerSave</method>
+                    </save_customertags>
+                </observers>
+            </customer_save_after>
         </events>
         
         <layout>

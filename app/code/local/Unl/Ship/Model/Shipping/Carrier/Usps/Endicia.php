@@ -383,7 +383,13 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         $xmlRequest->addChild('ToCompany', htmlspecialchars($request->getRecipientContactCompanyName()));
         $xmlRequest->addChild('ToAddress1', $request->getRecipientAddressStreet1());
         $xmlRequest->addChild('ToAddress2', $request->getRecipientAddressStreet2());
-        $xmlRequest->addChild('ToCity', $request->getRecipientAddressCity());
+
+        $city = $request->getRecipientAddressCity();
+        if ($domestic) {
+            $city = preg_replace('/[^a-zA-Z \-\.]/', '', $city);
+        }
+        $xmlRequest->addChild('ToCity', $city);
+
         if ($request->getRecipientAddressStateOrProvinceCode()) {
             $xmlRequest->addChild('ToState', $request->getRecipientAddressStateOrProvinceCode());
         }

@@ -16,7 +16,7 @@ class Unl_CustomerTag_Model_Resource_Tag_Collection extends Mage_Core_Model_Reso
 	 * @param array $cols
 	 * @return Unl_CustomerTag_Model_Resource_Tag_Collection
 	 */
-	protected function _addLinkFilter($type, $id, $alias, $cols = array())
+	protected function _addLinkFilter($type, $id, $alias, $cols = array(), $left = false)
 	{
 	    $col = $flag = $type;
 	    if (empty($type)) {
@@ -27,10 +27,14 @@ class Unl_CustomerTag_Model_Resource_Tag_Collection extends Mage_Core_Model_Reso
 	    $col .= '_id';
 
 	    if (!$this->getFlag($flag)) {
-	        $this->join(array($alias => "unl_customertag/{$type}link"),
-	            "main_table.tag_id = {$alias}.tag_id AND " . $this->getConnection()->prepareSqlCondition("{$alias}.{$col}", $id),
-	            $cols
-            );
+	        $table = "unl_customertag/{$type}link";
+	        $cond  = "main_table.tag_id = {$alias}.tag_id AND " . $this->getConnection()->prepareSqlCondition("{$alias}.{$col}", $id);
+
+	        if ($left) {
+	            $this->getSelect()->joinLeft(array($alias => $this->getTable($table)), $cond, $cols);
+	        } else {
+    	        $this->join(array($alias => $table), $cond, $cols);
+	        }
 
 	        $this->setFlag($flag, true);
 	    }
@@ -44,9 +48,9 @@ class Unl_CustomerTag_Model_Resource_Tag_Collection extends Mage_Core_Model_Reso
 	 * @param int $customerId
 	 * @return Unl_CustomerTag_Model_Resource_Tag_Collection
 	 */
-	public function addCustomerFilter($customerId)
+	public function addCustomerFilter($customerId, $left = false)
 	{
-	    return $this->_addLinkFilter('', $customerId, 'cl', array('created_at'));
+	    return $this->_addLinkFilter('', $customerId, 'cl', array('created_at'), $left);
 	}
 
 	/**

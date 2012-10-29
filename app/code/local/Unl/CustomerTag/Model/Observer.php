@@ -125,6 +125,46 @@ class Unl_CustomerTag_Model_Observer
     }
 
     /**
+     * An <i>adminhtml</i> event observer for the <code>adminhtml_customer_prepare_save</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
+    public function onCustomerPrepareSave($observer)
+    {
+        $customer = $observer->getEvent()->getCustomer();
+        $request  = $observer->getEvent()->getRequest();
+        $ids = $request->getPost('customer_tags');
+
+        if ($customer->getId() && $ids !== null) {
+            $customer->setAddedCustomerTagIds(Mage::helper('adminhtml/js')->decodeGridSerializedInput($ids));
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * An <i>adminhtml</i> event observer for the <code>customer_save_after</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Unl_CustomerTag_Model_Observer
+     */
+    public function onAfterCustomerSave($observer)
+    {
+        /* @var $customer Mage_Customer_Model_Customer */
+        $customer = $observer->getEvent()->getCustomer();
+
+        if ($customer->getAddedCustomerTagIds() !== null) {
+            Mage::getResourceModel('unl_customertag/tag')->addTagLinks($customer);
+        }
+
+        return $this;
+    }
+
+    /**
      * An event observer for the <code>core_copy_fieldset_customer_account_to_quote</code>
      * event.
      * Sets the customer_tag_ids from a collection.
