@@ -17,22 +17,29 @@
     <adminhtml_customertag_assigned>
             <remove name="root" />
             <block type="unl_customertag/tag_assigned_grid" name="tag_assigned_grid" output="toHtml" />
-            <block type="adminhtml/widget_grid_serializer" name="tag_grid_serializer" output="toHtml">
-                <reference name="tag_grid_serializer">
+    </adminhtml_customertag_assigned>
+    
+    <adminhtml_customertag_customer_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_customertag/customer_edit_tab_tag" name="customer.customertag.grid"/>
+            <block type="adminhtml/widget_grid_serializer" name="customertag_grid_serializer">
+                <reference name="customertag_grid_serializer">
                     <action method="initSerializerBlock">
-                        <grid_block_name>tag_assigned_grid</grid_block_name>
-                        <data_callback>getLinkedCustomers</data_callback>
-                        <hidden_input_name>tag_assigned_customers</hidden_input_name>
-                        <reload_param_name>assigned_customers</reload_param_name>
+                        <grid_block_name>customer.customertag.grid</grid_block_name>
+                        <data_callback>getLinkedTags</data_callback>
+                        <hidden_input_name>customer_tags</hidden_input_name>
+                        <reload_param_name>assigned_tags</reload_param_name>
                     </action>
                 </reference>
             </block>
-    </adminhtml_customertag_assigned>
-    <adminhtml_customertag_assignedgridonly>
-        <remove name="root" />
-        <block type="unl_customertag/tag_assigned_grid" name="assigned_grid" output="toHtml" />
-    </adminhtml_customertag_assignedgridonly>
-    
+        </block>
+    </adminhtml_customertag_customer_grid>
+    <adminhtml_customertag_customer_gridonly>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_customertag/customer_edit_tab_tag" name="customer.customertag.grid"/>
+        </block>
+    </adminhtml_customertag_customer_gridonly>
+        
     <adminhtml_customertag_product_grid>
         <block type="core/text_list" name="root" output="toHtml">
             <block type="unl_customertag/product_edit_tab_access" name="product.customertag.grid"/>

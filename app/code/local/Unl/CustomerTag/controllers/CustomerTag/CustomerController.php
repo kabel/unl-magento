@@ -21,13 +21,16 @@ class Unl_CustomerTag_CustomerTag_CustomerController extends Mage_Adminhtml_Cont
 
     public function gridAction()
     {
-        $customer = $this->_initCustomer();
+        $this->_initCustomer();
         $this->loadLayout();
-        $this->getResponse()->setBody(
-            $this->getLayout()->createBlock('unl_customertag/customer_edit_tab_tag')
-                ->setCustomerId($customer->getId())
-                ->toHtml()
-        );
+        $this->renderLayout();
+    }
+
+    public function gridOnlyAction()
+    {
+        $this->_initCustomer();
+        $this->loadLayout();
+        $this->renderLayout();
     }
 
     protected function _isAllowed()

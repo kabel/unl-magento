@@ -9,17 +9,34 @@ class Unl_CustomerTag_Block_Customer_Edit_Tab_Tag extends Mage_Adminhtml_Block_W
         $this->setDefaultSort('name');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        $this->setFilterVisibility(false);
+        $this->setDefaultFilter(array('in_tag'=>1));
+    }
+
+    protected function _addColumnFilterToCollection($column)
+    {
+        if ($column->getId() == 'in_tag') {
+            $tagIds = $this->_getSelectedTags();
+            if (empty($tagIds)) {
+                $tagIds = 0;
+            }
+            if ($column->getFilter()->getValue()) {
+                $this->getCollection()->addFieldToFilter('main_table.tag_id', array('in'=>$tagIds));
+            } else {
+                if($tagIds) {
+                    $this->getCollection()->addFieldToFilter('main_table.tag_id', array('nin'=>$tagIds));
+                }
+            }
+        } else {
+            parent::_addColumnFilterToCollection($column);
+        }
+        return $this;
     }
 
     protected function _prepareCollection()
     {
-        if( $this->getCustomerId() instanceof Mage_Customer_Model_Customer ) {
-            $this->setCustomerId( $this->getCustomerId()->getId() );
-        }
+        $collection = Mage::getResourceModel('unl_customertag/tag_collection');
 
-        $collection = Mage::getResourceModel('unl_customertag/tag_collection')
-            ->addCustomerFilter($this->getCustomerId());
+        $collection->addCustomerFilter($this->getCustomerId(), true);
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -27,6 +44,15 @@ class Unl_CustomerTag_Block_Customer_Edit_Tab_Tag extends Mage_Adminhtml_Block_W
 
     protected function _prepareColumns()
     {
+        $this->addColumn('in_tag', array(
+            'header_css_class'  => 'a-center',
+            'type'              => 'checkbox',
+            'field_name'        => 'in_tag',
+            'values'            => $this->_getSelectedTags(),
+            'align'             => 'center',
+            'index'             => 'tag_id'
+        ));
+
         $this->addColumn('name', array(
             'header'    => Mage::helper('unl_customertag')->__('Tag Name'),
             'index'     => 'name',
@@ -36,10 +62,31 @@ class Unl_CustomerTag_Block_Customer_Edit_Tab_Tag extends Mage_Adminhtml_Block_W
             'header'    =>  Mage::helper('unl_customertag')->__('Tagged On'),
             'type'      =>  'datetime',
             'index'     => 'created_at',
-            'width'     => '150',
+            'width'     => '200px',
         ));
 
         return parent::_prepareColumns();
+    }
+
+    protected function _getSelectedTags()
+    {
+        $tags = $this->getRequest()->getPost('assigned_tags', null);
+        if (!is_array($tags)) {
+            $tags = $this->getLinkedTags();
+        }
+        return $tags;
+    }
+
+    public function getLinkedTags()
+    {
+        /* @var $resource Unl_CustomerTag_Model_Resource_Tag */
+        $resource = Mage::getResourceModel('unl_customertag/tag');
+        return $resource->getCustomerTags(Mage::registry('current_customer'));
+    }
+
+    public function getCustomerId()
+    {
+        return Mage::registry('current_customer')->getId();
     }
 
     public function getRowUrl($row)
@@ -51,7 +98,7 @@ class Unl_CustomerTag_Block_Customer_Edit_Tab_Tag extends Mage_Adminhtml_Block_W
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/customerTag_customer/grid', array(
+        return $this->getUrl('*/customerTag_customer/gridOnly', array(
             '_current' => true,
             'id'       => $this->getCustomerId()
         ));
