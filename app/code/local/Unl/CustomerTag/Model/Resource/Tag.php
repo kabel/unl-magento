@@ -45,6 +45,17 @@ class Unl_CustomerTag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abs
     }
 
     /**
+     * Retreive Customer's tags
+     *
+     * @param Mage_Customer_Model_Customer $model
+     * @return array
+     */
+    public function getCustomerTags($model)
+    {
+        return $this->getCustomerIds($model);
+    }
+
+    /**
      * Retrieve the tag_ids or customer_ids for a given model
      *
      * @param string $type
