@@ -2,6 +2,8 @@
 
 class Unl_Core_Helper_Downloadable_Download extends Mage_Downloadable_Helper_Download
 {
+    protected $_urlResponse;
+
     protected function _getHandle()
     {
         if (!$this->_resourceFile) {
@@ -18,12 +20,14 @@ class Unl_Core_Helper_Downloadable_Download extends Mage_Downloadable_Helper_Dow
                     'adapter' => 'Zend_Http_Client_Adapter_Curl',
                 ));
 
+                $this->_resourceFile = $client->getUri()->getPath();
+
                 $client->setStream();
                 $client->setHeaders('Accept-encoding', 'identity');
 
                 try {
                     /** @var $response Zend_Http_Response_Stream */
-                    $response = $client->request('GET');
+                    $this->_urlResponse = $response = $client->request('GET');
                     $this->_handle = $response->getStream();
                     $this->_urlHeaders = array_change_key_case($response->getHeaders(), CASE_LOWER);
 
