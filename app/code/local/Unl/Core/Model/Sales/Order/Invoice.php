@@ -141,4 +141,18 @@ class Unl_Core_Model_Sales_Order_Invoice extends Mage_Sales_Model_Order_Invoice
         Mage::dispatchEvent('sales_order_invoice_register', array($this->_eventObject=>$this, 'order' => $order));
         return $this;
     }
+
+    /* Overrides
+     * @see Mage_Sales_Model_Order_Invoice::isLast()
+     * by skipping dummy items
+     */
+    public function isLast()
+    {
+        foreach ($this->getAllItems() as $item) {
+            if (!$item->getOrderItem()->isDummy() && !$item->isLast()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
