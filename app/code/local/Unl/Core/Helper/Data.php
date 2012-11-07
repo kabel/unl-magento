@@ -99,6 +99,29 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $groupScope;
     }
 
+    public function getAdminUserScopeWebsites()
+    {
+        $scope = $this->getAdminUserScope();
+        if (!$scope) {
+            return false;
+        }
+
+        $siteScope = array();
+
+        foreach ($scope as $storeId) {
+            try {
+                $website = Mage::app()->getStore($storeId)->getWebsiteId();
+                if (!in_array($website, $siteScope)) {
+                    $siteScope[] = $website;
+                }
+            } catch (Exception $e) {
+                // ignore
+            }
+        }
+
+        return $siteScope;
+    }
+
     public function getAdminUserWarehouseScope($asArray = false)
     {
         $user = Mage::getSingleton('admin/session')->getUser();

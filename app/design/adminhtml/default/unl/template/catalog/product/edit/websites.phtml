@@ -12,8 +12,9 @@
             </li>
         </ul>
     <?php endif; ?>
+    <?php $scope = Mage::helper('unl_core')->getAdminUserScopeWebsites(); ?>
     <?php foreach ($this->getWebsiteCollection() as $_website): ?>
-    <div>
+    <div<?php echo ($scope && !in_array($_website->getId(), $scope)) ? ' class="no-display"' : ''?>>
         <div class="website-name">
             <input name="product[website_ids][]" value="<?php echo $_website->getId() ?>" <?php if ($this->isReadonly()):?> disabled="disabled"<?php endif;?> class="checkbox website-checkbox" id="product_website_<?php echo $_website->getId() ?>" type="checkbox"<?php if($this->hasWebsite($_website->getId())): ?> checked="checked"<?php endif; ?> />
             <big><strong><label for="product_website_<?php echo $_website->getId() ?>"><?php echo $this->escapeHtml($_website->getName()) ?></label></strong></big>
