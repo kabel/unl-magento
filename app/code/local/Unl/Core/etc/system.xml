@@ -284,25 +284,59 @@
                         </model>
                     </fields>
                 </invoicelater>
+                
+                <paypal_payments>
+                    <paypal_verisign>
+                        <fields>
+                            <settings_paypal_payflow>
+                                <fields>
+                                    <settings_paypal_payflow_advanced>
+                                        <fields>
+                                            <reference_txn translate="label">
+                                                <label>Allow Reference Transactions</label>
+                                                <config_path>payment/verisign/reference_txn</config_path>
+                                                <frontend_type>select</frontend_type>
+                                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                                <sort_order>45</sort_order>
+                                                <show_in_default>1</show_in_default>
+                                                <show_in_website>1</show_in_website>
+                                            </reference_txn>
+                                        </fields>
+                                    </settings_paypal_payflow_advanced>
+                                </fields>
+                            </settings_paypal_payflow>
+                        </fields>
+                    </paypal_verisign>
+                    
+                    <paypal_verisign_with_express_checkout>
+                        <backend_config>
+                            <US>
+                                <fields>
+                                    <paypal_payflow_required>
+                                        <fields>
+                                            <enable_paypal_payflow>
+                                                <frontend_class>paypal-enabler paypal-ec-independent</frontend_class>
+                                            </enable_paypal_payflow>
+                                        </fields>
+                                    </paypal_payflow_required>
+                                </fields>
+                            </US>
+                        </backend_config>
+                        <fields>
+                            <paypal_payflow_express_checkout>
+                                <fields>
+                                    <enable_express_pe translate="label">
+                                        <label>Enable Express Checkout</label>
+                                        <frontend_model>adminhtml/system_config_form_field</frontend_model>
+                                        <frontend_class>paypal-ec-payflow-enabler paypal-enabler paypal-ec-pe paypal-ec-independent</frontend_class>
+                                    </enable_express_pe>
+                                </fields>
+                            </paypal_payflow_express_checkout>
+                        </fields>
+                    </paypal_verisign_with_express_checkout>
+                </paypal_payments>
             </groups>
         </payment>
-        <paypal>
-        	<groups>
-        		<verisign>
-        			<fields>
-        				<reference_txn translate="label">
-                            <label>Allow Reference Transactions</label>
-                            <config_path>payment/verisign/reference_txn</config_path>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>59</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                        </reference_txn>
-        			</fields>
-        		</verisign>
-        	</groups>
-        </paypal>
         <carriers>
             <groups>
                 <pickup translate="label">
