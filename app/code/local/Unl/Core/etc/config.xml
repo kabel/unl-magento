@@ -95,6 +95,12 @@
                     <template_links>Unl_Core_Block_Page_Template_Links</template_links>
                 </rewrite>
             </page>
+            <paypal>
+                <rewrite>
+                    <!-- Remove requirement of an express checkout method -->
+                    <adminhtml_system_config_fieldset_location>Unl_Core_Block_Paypal_Adminhtml_System_Config_Fieldset_Location</adminhtml_system_config_fieldset_location>
+                </rewrite>
+            </paypal>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
