@@ -1,11 +1,11 @@
 <?php $_item = $this->getItem() ?>
 <?php
 $thColor = Mage::getModel('core/variable')
-    ->setStoreId($_order->getStoreId())
+    ->setStoreId($_item->getOrder()->getStoreId())
     ->loadByCode('email_th_color')
     ->getValue('html');
 $thBg = Mage::getModel('core/variable')
-    ->setStoreId($_order->getStoreId())
+    ->setStoreId($_item->getOrder()->getStoreId())
     ->loadByCode('email_th_bg')
     ->getValue('html');
 ?>
