@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_spam_quarantine_index>
+        <reference name="content">
+            <block type="unl_spam/adminhtml_quarantine" name="quarantine_list" />
+        </reference>
+    </adminhtml_spam_quarantine_index>
+    
+    <adminhtml_spam_quarantine_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_spam/adminhtml_quarantine_grid" name="quarantine_list"/>
+        </block>
+    </adminhtml_spam_quarantine_grid>
+</layout>

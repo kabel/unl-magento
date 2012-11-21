@@ -84,6 +84,13 @@
                 <Unl_Core/>
             </depends>
         </Unl_Payment>
+        <Unl_Spam>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Core/>
+            </depends>
+        </Unl_Spam>
         
         <AW_Deliverydate>
             <active>true</active>

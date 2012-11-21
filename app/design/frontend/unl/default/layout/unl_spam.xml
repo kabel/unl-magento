@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <spamBlock>
+        <reference name="root">
+            <!-- <action method="unsetChild"><name>head</name></action>
+            <block type="page/html_head" name="head" as="head" /> -->
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        
+        <reference name="head">
+            <action method="addCss"><item>css/terminal.css</item></action>
+            <action method="setTitle"><title>Access Denied</title></action>
+        </reference>
+        
+        <remove name="store_switcher" />
+        <remove name="top.menu" />
+        <remove name="subnav" />
+        <remove name="left" />
+        <remove name="right" />
+        <remove name="contact_link" />
+        <remove name="optional_footer" />
+        
+        <reference name="content">
+            <block type="core/template" name="spam_warning" template="unl_spam/denied.phtml" />
+        </reference>
+    </spamBlock>
+</layout>

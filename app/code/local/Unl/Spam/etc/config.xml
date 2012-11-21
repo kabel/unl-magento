@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Spam>
+            <version>0.2.0</version>
+        </Unl_Spam>
+    </modules>
+    
+    <global>
+        <blocks>
+            <unl_spam>
+                <class>Unl_Spam_Block</class>
+            </unl_spam>
+        </blocks>
+        <helpers>
+            <unl_spam>
+                <class>Unl_Spam_Helper</class>
+            </unl_spam>
+        </helpers>
+        <models>
+            <unl_spam>
+                <class>Unl_Spam_Model</class>
+                <resourceModel>unl_spam_resource</resourceModel>
+            </unl_spam>
+            <unl_spam_resource>
+                <class>Unl_Spam_Model_Resource</class>
+                <entities>
+                    <sfs_cache>
+                        <table>unl_spam_sfs_cache</table>
+                    </sfs_cache>
+                    <quarantine>
+                        <table>unl_spam_quarantine</table>
+                    </quarantine>
+                    <blacklist>
+                        <table>unl_spam_blacklist</table>
+                    </blacklist>
+                </entities>
+            </unl_spam_resource>
+        </models>
+        
+        <resources>
+            <unl_spam_setup>
+                <setup>
+                    <module>Unl_Spam</module>
+                    <class>Unl_Spam_Model_Resource_Setup</class>
+                </setup>
+            </unl_spam_setup>
+        </resources>
+        
+        <events>
+            
+        </events>
+
+    </global>
+    
+    <crontab>
+        
+    </crontab>
+    
+    <frontend>
+        <routers>
+            <unl_spam>
+                <use>standard</use>
+                <args>
+                    <module>Unl_Spam</module>
+                    <frontName>unlspam</frontName>
+                </args>
+            </unl_spam>
+        </routers>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <unl_spam>
+                        <type>singleton</type>
+                        <class>unl_spam/observer</class>
+                        <method>onAllPredispatch</method>
+                    </unl_spam>
+                </observers>
+            </controller_action_predispatch>
+            
+            <controller_action_predispatch_contacts>
+                <observers>
+                    <unl_spam>
+                        <type>singleton</type>
+                        <class>unl_spam/observer</class>
+                        <method>onHoneypotPredispatch</method>
+                    </unl_spam>
+                </observers>
+            </controller_action_predispatch_contacts>
+            
+            <controller_action_predispatch_contacts_index_post>
+                <observers>
+                    <unl_spam>
+                        <type>singleton</type>
+                        <class>unl_spam/observer</class>
+                        <method>onContactPostPredispatch</method>
+                    </unl_spam>
+                </observers>
+            </controller_action_predispatch_contacts_index_post>
+        </events>
+        <layout>
+            <updates>
+                <unl_spam module="Unl_Spam">
+                    <file>unl_spam.xml</file>
+                </unl_spam>
+            </updates>
+        </layout>
+    </frontend>
+    
+    <adminhtml>
+        <layout>
+            <updates>
+                <unl_spam module="Unl_Spam">
+                    <file>unl_spam.xml</file>
+                </unl_spam>
+            </updates>
+        </layout>
+    </adminhtml>
+    
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Unl_Spam before="Mage_Adminhtml">Unl_Spam_Adminhtml</Unl_Spam>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    
+    <default>
+        <unl_spam>
+            <sfs>
+                <active>1</active>
+                <cache_ttl>30</cache_ttl>
+                <confidence_threshold>60</confidence_threshold>
+            </sfs>
+            <blacklist>
+                <quarantine_time>60</quarantine_time>
+                <quarantine_strikes>5</quarantine_strikes>
+                <blacklist_strikes>30</blacklist_strikes>
+            </blacklist>
+        </unl_spam>
+    </default>
+</config>

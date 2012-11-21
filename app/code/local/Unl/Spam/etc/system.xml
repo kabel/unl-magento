@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<config>
+   <sections>
+        <unl_spam translate="label" module="unl_spam">
+            <label>UNL Spam</label>
+            <tab>service</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>300</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>0</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+                 <sfs translate="label">
+                    <label>Stop Forum Spam API Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>300</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Active</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <api_key translate="label">
+                            <label>API Key</label>
+                            <frontend_type>text</frontend_type>
+                            <comment>Visit http://www.stopforumspam.com/signup for more information</comment>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </api_key>
+                        <cache_ttl translate="label">
+                            <label>Cache TTL</label>
+                            <comment>Cleanup cahced IP lookup entries older than X minutes.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </cache_ttl>
+                        <confidence_threshold translate="label">
+                            <label>Confidence Threshold</label>
+                            <comment>Quarantine results with confidence of at least X percent.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </confidence_threshold>
+                    </fields>
+                </sfs>
+                <blacklist translate="label">
+                    <label>Blacklisting and Quarantine</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>300</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <quarantine_time translate="label">
+                            <label>Quarantine Period</label>
+                            <comment>Block access to spam vulnerable pages for X minutes.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </quarantine_time>
+                        <quarantine_strikes translate="label">
+                            <label>Quarantine Strikes to Ban</label>
+                            <comment>Block access to site after X hits on the quarantine</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </quarantine_strikes>
+                        <blacklist_strikes translate="label">
+                            <label>Blacklist hits to non-verbose response</label>
+                            <comment>Stop sending full block response after X hits on the blacklist</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </blacklist_strikes>
+                    </fields>
+                </blacklist>
+            </groups>
+        </unl_spam>
+    </sections>
+</config>
