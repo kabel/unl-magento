@@ -104,6 +104,7 @@ class Unl_Core_Model_Tax_Calculation extends Mage_Tax_Model_Calculation
     {
         if ($address->getCountryId() == 'US'
             && ($address->getRegionCode() == 'NE' || $address->getRegionId() == $this->_getNebraskaRegion()->getId())
+            && $address->getStreet()
         ) {
             Mage::getResourceModel('unl_core/tax_boundary_collection')->validateAddressZip($address);
         }
