@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Spam_Model_Sfs_Cache extends Mage_Core_Model_Abstract
+class Unl_Spam_Model_Sfs_Cache extends Unl_Spam_Model_RemoteAddrAbstract
 {
     const XML_PATH_SFS_CACHE_TTL   = 'unl_spam/sfs/cache_ttl';
     const XML_PATH_SFS_CONFIDENCE  = 'unl_spam/sfs/confidence_threshold';
@@ -8,35 +8,6 @@ class Unl_Spam_Model_Sfs_Cache extends Mage_Core_Model_Abstract
     protected function _construct()
     {
         $this->_init('unl_spam/sfs_cache');
-    }
-
-    protected function _beforeSave()
-    {
-        $this->swapRemoteAddr(true);
-        return parent::_beforeSave();
-    }
-
-    protected function _afterSave()
-    {
-        $this->swapRemoteAddr();
-        return parent::_afterSave();
-    }
-
-    protected function _afterLoad()
-    {
-        $this->swapRemoteAddr();
-        return parent::_afterLoad();
-    }
-
-    public function swapRemoteAddr($toBinary = false)
-    {
-        if ($toBinary) {
-            $this->setRemoteAddr(inet_pton($this->getRemoteAddr()));
-        } else {
-            $this->setRemoteAddr(inet_ntop($this->getRemoteAddr()));
-        }
-
-        return $this;
     }
 
     public function isValid()

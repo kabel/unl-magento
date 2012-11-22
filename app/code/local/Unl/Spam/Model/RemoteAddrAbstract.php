@@ -22,10 +22,12 @@ abstract class Unl_Spam_Model_RemoteAddrAbstract extends Mage_Core_Model_Abstrac
 
     public function swapRemoteAddr($toBinary = false)
     {
-        if ($toBinary) {
-            $this->setRemoteAddr(inet_pton($this->getRemoteAddr()));
-        } else {
-            $this->setRemoteAddr(inet_ntop($this->getRemoteAddr()));
+        if ($this->getRemoteAddr()) {
+            if ($toBinary) {
+                $this->setRemoteAddr(inet_pton($this->getRemoteAddr()));
+            } else {
+                $this->setRemoteAddr(inet_ntop($this->getRemoteAddr()));
+            }
         }
 
         return $this;
