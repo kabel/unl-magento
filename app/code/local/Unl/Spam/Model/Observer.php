@@ -3,10 +3,12 @@
 class Unl_Spam_Model_Observer
 {
     const XML_PATH_SFS_ACTIVE      = 'unl_spam/sfs/active';
+    const XML_PATH_SFS_LOG_REPORTS = 'unl_spam/sfs/log_reports';
     const XML_PATH_SFS_API_KEY     = 'unl_spam/sfs/api_key';
     const XML_PATH_QUARANTINE_TIME = 'unl_spam/blacklist/quarantine_time';
     const XML_PATH_QUARANTINE_HITS = 'unl_spam/blacklist/quarantine_strikes';
     const XML_PATH_BLACKLIST_HITS  = 'unl_spam/blacklist/blacklist_strikes';
+    const XML_PATH_ENABLE_LOG      = 'unl_spam/blacklist/enable_log';
 
     public function onContactPostPredispatch($observer)
     {
@@ -30,7 +32,10 @@ class Unl_Spam_Model_Observer
             $this->_quarantineIp();
 
             $ip = Mage::helper('core/http')->getRemoteAddr();
-            Mage::log('IP Address "' . $ip . '" detected spam, added to quarantine.', Zend_Log::INFO, 'unl_spam.log');
+
+            if (Mage::getStoreConfigFlag(self::XML_PATH_ENABLE_LOG)) {
+                Mage::log('IP Address "' . $ip . '" detected spam, added to quarantine.', Zend_Log::INFO, 'unl_spam.log');
+            }
 
             $ex = new Mage_Core_Controller_Varien_Exception();
             $ex->prepareForward('denied', 'index', 'unlspam');
@@ -78,9 +83,15 @@ class Unl_Spam_Model_Observer
 
             $client->setParameterPost($data);
 
-            $client->request(Zend_Http_Client::POST);
+            try {
+                $client->request(Zend_Http_Client::POST);
 
-            Mage::log('Reported SPAM to SFS with: ' . print_r($data, true), Zend_Log::NOTICE, 'unl_spam.log');
+                if (Mage::getStoreConfigFlag(self::XML_PATH_SFS_LOG_REPORTS)) {
+                    Mage::log('Reported SPAM to SFS with: ' . print_r($data, true), Zend_Log::NOTICE, 'unl_spam.log');
+                }
+            } catch (Exception $ex) {
+                Mage::log('SPAM Report to SFS failed with: ' . print_r($data, true), Zend_Log::WARN, 'unl_spam.log');
+            }
         }
     }
 
@@ -99,6 +110,7 @@ class Unl_Spam_Model_Observer
         if (count($collection)) {
             $item = $collection->getFirstItem();
             $strikes += $item->getStrikes();
+            $item->delete();
         }
 
         $quarantine = Mage::getModel('unl_spam/quarantine');
@@ -122,7 +134,9 @@ class Unl_Spam_Model_Observer
 
         if ($this->_checkQuarantine()) {
             $ip = Mage::helper('core/http')->getRemoteAddr();
-            Mage::log('IP Address "' . $ip . '" denied by quarantine.', Zend_Log::INFO, 'unl_spam.log');
+            if (Mage::getStoreConfigFlag(self::XML_PATH_ENABLE_LOG)) {
+                Mage::log('IP Address "' . $ip . '" denied by quarantine.', Zend_Log::INFO, 'unl_spam.log');
+            }
 
             $ex = new Mage_Core_Controller_Varien_Exception();
             $ex->prepareForward('denied', 'index', 'unlspam');
@@ -140,7 +154,9 @@ class Unl_Spam_Model_Observer
 
         if ($blacklist = $this->_checkBlacklist()) {
             $ip = Mage::helper('core/http')->getRemoteAddr();
-            Mage::log('IP Address "' . $ip . '" blocked by blacklist.', Zend_Log::INFO, 'unl_spam.log');
+            if (Mage::getStoreConfigFlag(self::XML_PATH_ENABLE_LOG)) {
+                Mage::log('IP Address "' . $ip . '" blocked by blacklist.', Zend_Log::INFO, 'unl_spam.log');
+            }
 
             $ex = new Mage_Core_Controller_Varien_Exception();
             switch ($blacklist->getResponseType()) {
