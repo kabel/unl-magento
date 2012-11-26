@@ -133,6 +133,7 @@
         <unl_spam>
             <sfs>
                 <active>1</active>
+                <log_reports>0</log_reports>
                 <cache_ttl>30</cache_ttl>
                 <confidence_threshold>60</confidence_threshold>
             </sfs>
@@ -140,6 +141,7 @@
                 <quarantine_time>60</quarantine_time>
                 <quarantine_strikes>5</quarantine_strikes>
                 <blacklist_strikes>30</blacklist_strikes>
+                <enable_log>1</enable_log>
             </blacklist>
         </unl_spam>
     </default>
