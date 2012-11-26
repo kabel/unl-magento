@@ -50,14 +50,18 @@ class Unl_Spam_Model_Sfs_Cache extends Unl_Spam_Model_RemoteAddrAbstract
             'f'  => 'serial',
         ));
 
-        $response = $client->request();
-        $data = unserialize($response->getBody());
+        try {
+            $response = $client->request();
+            $data = unserialize($response->getBody());
 
-        if ($data) {
-            $this->setExpiresAt(Mage::getSingleton('core/date')->gmtDate(time() + (Mage::getStoreConfig(self::XML_PATH_SFS_CACHE_TTL) * 60)));
-            $this->setConfidence(isset($data['ip']['confidence']) ? $data['ip']['confidence'] : null);
-            $this->setAppears($data['ip']['appears']);
-            $this->save();
+            if ($data) {
+                $this->setExpiresAt(Mage::getSingleton('core/date')->gmtDate(time() + (Mage::getStoreConfig(self::XML_PATH_SFS_CACHE_TTL) * 60)));
+                $this->setConfidence(isset($data['ip']['confidence']) ? $data['ip']['confidence'] : null);
+                $this->setAppears($data['ip']['appears']);
+                $this->save();
+            }
+        } catch (Exception $ex) {
+            return false;
         }
 
         return true;
