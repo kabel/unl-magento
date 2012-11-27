@@ -222,16 +222,16 @@ class Unl_Spam_Model_Observer
         $collection->addFieldToFilter('remote_addr', $remoteAddr);
         $collection->addFieldToFilter('cidr_mask', array('null' => true));
 
-        if (!$collection->getSize()) {
-            $collection = Mage::getModel('unl_spam/blacklist')->getCollection();
+//         if (!$collection->getSize()) {
+//             $collection = Mage::getModel('unl_spam/blacklist')->getCollection();
 
-            $collection->getSelect()->where($collection->getConnection()->quoteInto(
-                '(? & ' . $collection->getConnection()->quoteIdentifier('cidr_mask') . ') = ' .
-                    $collection->getConnection()->quoteIdentifier('remote_addr'),
-                $remoteAddr
-            ));
-            $collection->addFieldToFilter('cidr_mask', array('notnull' => true));
-        }
+//             $collection->getSelect()->where($collection->getConnection()->quoteInto(
+//                 '(? & ' . $collection->getConnection()->quoteIdentifier('cidr_mask') . ') = ' .
+//                     $collection->getConnection()->quoteIdentifier('remote_addr'),
+//                 $remoteAddr
+//             ));
+//             $collection->addFieldToFilter('cidr_mask', array('notnull' => true));
+//         }
 
         if (!$collection->getSize()) {
             return false;
