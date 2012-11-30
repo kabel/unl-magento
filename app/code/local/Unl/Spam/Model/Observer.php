@@ -108,17 +108,19 @@ class Unl_Spam_Model_Observer
         $ttl = Mage::getStoreConfig(self::XML_PATH_QUARANTINE_TIME) * 60;
         $strikes = 1;
         if (count($collection)) {
-            $item = $collection->getFirstItem();
+            $quarantine = $collection->getFirstItem();
             $strikes += $item->getStrikes();
-            $item->delete();
+        } else {
+            $quarantine = Mage::getModel('unl_spam/quarantine');
+            $quarantine->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr());
         }
 
-        $quarantine = Mage::getModel('unl_spam/quarantine');
-        $quarantine->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr());
         $quarantine->setStrikes($strikes);
         $quarantine->setExpiresAt(Mage::getSingleton('core/date')->gmtDate(time() + $ttl));
 
         $quarantine->save();
+
+        $this->_checkAutoban($quarantine);
 
         return $this;
     }
@@ -189,23 +191,34 @@ class Unl_Spam_Model_Observer
         $ttl = Mage::getStoreConfig(self::XML_PATH_QUARANTINE_TIME) * 60;
         $item->setExpiresAt(Mage::getSingleton('core/date')->gmtDate(time() + ($ttl * pow(2, $item->getStrikes()))));
         $item->setStrikes($item->getStrikes() + 1);
+        $item->save();
 
-        $transaction = Mage::getModel('core/resource_transaction')->addObject($item);
+        $this->_checkAutoban($item);
 
-        if ($item->getStrikes() >= Mage::getStoreConfig(self::XML_PATH_QUARANTINE_HITS)) {
+        return true;
+    }
+
+    /**
+     * Checks the quarantine item for hits to convert to blacklist
+     *
+     * @param Unl_Spam_Model_Quarantine $quarantine
+     * @return boolean
+     */
+    protected function _checkAutoban($quarantine)
+    {
+        if ($quarantine->getStrikes() >= Mage::getStoreConfig(self::XML_PATH_QUARANTINE_HITS)) {
             $blacklist = Mage::getModel('unl_spam/blacklist');
-            $blacklist->setRemoteAddr($item->getRemoteAddr());
+            $blacklist->setRemoteAddr($quarantine->getRemoteAddr());
             $blacklist->setResponseType(Unl_Spam_Model_Blacklist::RESPONSE_TYPE_403);
             $blacklist->setLastSeen(Mage::getSingleton('core/date')->gmtDate());
 
-            Mage::log('IP Address "' . $item->getRemoteAddr() . '" automatically added to blacklist.', Zend_Log::INFO, 'unl_spam.log');
+            Mage::log('IP Address "' . $quarantine->getRemoteAddr() . '" automatically added to blacklist.', Zend_Log::INFO, 'unl_spam.log');
 
-            $transaction->addObject($blacklist);
+            $blacklist->save();
+            return true;
         }
 
-        $transaction->save();
-
-        return true;
+        return false;
     }
 
     /**
