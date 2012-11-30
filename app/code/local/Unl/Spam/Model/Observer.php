@@ -109,7 +109,7 @@ class Unl_Spam_Model_Observer
         $strikes = 1;
         if (count($collection)) {
             $quarantine = $collection->getFirstItem();
-            $strikes += $item->getStrikes();
+            $strikes += $quarantine->getStrikes();
         } else {
             $quarantine = Mage::getModel('unl_spam/quarantine');
             $quarantine->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr());
