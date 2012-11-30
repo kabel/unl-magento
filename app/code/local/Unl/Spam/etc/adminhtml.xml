@@ -1,5 +1,24 @@
 <?xml version="1.0"?>
 <config>
+    <menu>
+        <system>
+            <children>
+                <tools>
+                    <children>
+                        <spam_quarantine translate="title" module="unl_spam">
+                            <title>SPAM Quarantine</title>
+                            <action>adminhtml/spam_quarantine</action>
+                        </spam_quarantine>
+                        <spam_blacklist translate="title" module="unl_spam">
+                            <title>SPAM Blacklist</title>
+                            <action>adminhtml/spam_blacklist</action>
+                        </spam_blacklist>
+                    </children>
+                </tools>
+            </children>
+        </system>
+    </menu>
+    
     <acl>
         <resources>
             <admin>
@@ -13,6 +32,16 @@
                                     </unl_spam>
                                 </children>
                             </config>
+                            <tools>
+                                <children>
+                                    <spam_quarantine translate="title" module="unl_spam">
+                                        <title>SPAM Quarantine</title>
+                                    </spam_quarantine>
+                                    <spam_blacklist translate="title" module="unl_spam">
+                                        <title>SPAM Blacklist</title>
+                                    </spam_blacklist>
+                                </children>
+                            </tools>
                         </children>
                     </system>
                 </children>
