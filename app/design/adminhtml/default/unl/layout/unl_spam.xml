@@ -11,4 +11,16 @@
             <block type="unl_spam/adminhtml_quarantine_grid" name="quarantine_list"/>
         </block>
     </adminhtml_spam_quarantine_grid>
+    
+    <adminhtml_spam_blacklist_index>
+        <reference name="content">
+            <block type="unl_spam/adminhtml_blacklist" name="blacklist" />
+        </reference>
+    </adminhtml_spam_blacklist_index>
+    
+    <adminhtml_spam_blacklist_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="unl_spam/adminhtml_blacklist_grid" name="blacklist"/>
+        </block>
+    </adminhtml_spam_blacklist_grid>
 </layout>
