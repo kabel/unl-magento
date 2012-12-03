@@ -240,6 +240,8 @@ billing.onSave = function(evt){
                 //]]>
                 </script>
             </div>
+            <?php elseif ($this->isItemsAvailable()): ?>
+            <p><?php echo $this->__('Due to our specific processing procudures, we can only accept gift messages on individual items. To add a message, please check the box below and enter the necessary information.'); ?></p>
             <?php endif; ?>
             <?php if($this->isItemsAvailable()): ?>
             <h4><?php echo $this->__('Gift Options for Individual Items'); ?></h4>
