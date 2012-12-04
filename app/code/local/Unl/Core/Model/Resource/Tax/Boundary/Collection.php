@@ -1208,19 +1208,22 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         $correctCity = false;
         $strict = false;
         $adapter = $this->getConnection();
+        $now = Mage::getSingleton('core/date')->date('Y-m-d');
 
-        $select = clone $this->getSelect()
+        $select = clone $this->getSelect();
+        $select->reset(Zend_Db_Select::COLUMNS)
             ->columns(array(new Zend_Db_Expr('COUNT(*)')))
             ->where('record_type = ?', 'A')
-            ->where('NOW() BETWEEN begin_date AND end_date')
+            ->where('? BETWEEN begin_date AND end_date', $now)
             ->where('city_name = ?', $address->getCity());
         $cityCount = $adapter->fetchOne($select);
 
         if (!$cityCount) {
-            $select = clone $this->getSelect()
+            $select = clone $this->getSelect();
+            $select->reset(Zend_Db_Select::COLUMNS)
                 ->columns(array(new Zend_Db_Expr('COUNT(*)')))
                 ->where('record_type = ?', 'A')
-                ->where('NOW() BETWEEN begin_date AND end_date')
+                ->where('? BETWEEN begin_date AND end_date', $now)
                 ->where('zip_code = ?', $address->getPostcode());
             $zipCount = $adapter->fetchOne($select);
 
@@ -1237,8 +1240,20 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
 
             $this->parsePieces($street_pieces, $search, $possib, $strict);
 
+            $this->addFieldToSelect(array(
+                'city_name',
+                'zip_code',
+                'plus_4',
+                'street_pre_directional',
+                'street_suffix_abbr',
+                'street_post_directional',
+                'address_secondary_low',
+                'address_secondary_high',
+                'odd_even_indicator',
+            ));
+
             $select = $this->getSelect()->where('record_type = ?', 'A')
-                ->where('NOW() BETWEEN begin_date AND end_date')
+                ->where('? BETWEEN begin_date AND end_date', $now)
                 ->where('? BETWEEN low_address_range AND high_address_range', $search['address'])
                 ->where('street_name LIKE ?', implode(' ', $search['street_name']) . '%');
 
@@ -1412,11 +1427,14 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
         if (false === $result) {
             $result = '';
             $originalZip = $zip;
+            $now = Mage::getSingleton('core/date')->date('Y-m-d');
 
             if (preg_match('/^(\d{5})(?:-(\d{4}))$/', $zip, $matches)) {
                 $this->_reset();
+
+                $this->addFieldToSelect(array('fips_place_number', 'fips_county_code'));
                 $this->getSelect()->where('record_type = ?', '4')
-                    ->where('NOW() BETWEEN begin_date AND end_date')
+                    ->where('? BETWEEN begin_date AND end_date', $now)
                     ->where('? BETWEEN zip_code_low AND zip_code_high', $matches[1])
                     ->where('? BETWEEN zip_ext_low AND zip_ext_high', $matches[2]);
 
@@ -1430,8 +1448,9 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             if (!$result) {
                 $this->_reset();
 
+                $this->addFieldToSelect(array('fips_place_number', 'fips_county_code'));
                 $this->getSelect()->where('record_type = ?', 'Z')
-                    ->where('NOW() BETWEEN begin_date AND end_date')
+                    ->where('? BETWEEN begin_date AND end_date', $now)
                     ->where('? BETWEEN zip_code_low AND zip_code_high', $zip);
 
                 if (count($this)) {
