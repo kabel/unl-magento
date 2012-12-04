@@ -20,6 +20,7 @@ class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
         $this->getResource()->turnOnSerializableMode();
 
         $tables = $this->getResource()->getTables();
+        $this->getResource()->loadForeignKeysInfo($tables);
 
         $backup->write($this->getResource()->getHeader());
 
@@ -91,7 +92,9 @@ class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
             $this->_processTable($backup, $depTable);
         }
 
-        $this->getResource()->commitTransaction();
+        if ($asTransaction) {
+            $this->getResource()->commitTransaction();
+        }
 
         return $this;
     }
