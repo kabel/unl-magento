@@ -49,53 +49,27 @@ $installer->getConnection()->dropIndex(
 
 $installer->getConnection()->addIndex(
     $installer->getTable('unl_core/tax_boundary'),
-    $installer->getIdxName('unl_core/tax_boundary', array(
-        'record_type',
-        'begin_date',
-        'end_date',
-        'city_name',
-    )),
-    array(
-        'record_type',
-        'begin_date',
-        'end_date',
-        'city_name',
-    )
+    $installer->getIdxName('unl_core/tax_boundary', array('city_name')),
+    array('city_name')
+);
+
+$installer->getConnection()->addIndex(
+    $installer->getTable('unl_core/tax_boundary'),
+    $installer->getIdxName('unl_core/tax_boundary', array('zip_code')),
+    array('zip_code')
 );
 
 $installer->getConnection()->addIndex(
     $installer->getTable('unl_core/tax_boundary'),
     $installer->getIdxName('unl_core/tax_boundary', array(
-        'record_type',
-        'begin_date',
-        'end_date',
-        'zip_code',
-    )),
-    array(
-        'record_type',
-        'begin_date',
-        'end_date',
-        'zip_code',
-    )
-);
-
-$installer->getConnection()->addIndex(
-    $installer->getTable('unl_core/tax_boundary'),
-    $installer->getIdxName('unl_core/tax_boundary', array(
-        'record_type',
-        'begin_date',
-        'end_date',
+        'street_name',
         'low_address_range',
         'high_address_range',
-        'street_name',
     )),
     array(
-        'record_type',
-        'begin_date',
-        'end_date',
+        'street_name',
         'low_address_range',
         'high_address_range',
-        'street_name',
     )
 );
 
@@ -103,21 +77,13 @@ $installer->getConnection()->addIndex(
     $installer->getTable('unl_core/tax_boundary'),
     $installer->getIdxName('unl_core/tax_boundary', array(
         'record_type',
-        'begin_date',
-        'end_date',
         'zip_code_low',
         'zip_code_high',
-        'zip_ext_low',
-        'zip_ext_high',
     )),
     array(
         'record_type',
-        'begin_date',
-        'end_date',
         'zip_code_low',
         'zip_code_high',
-        'zip_ext_low',
-        'zip_ext_high',
     )
 );
 
