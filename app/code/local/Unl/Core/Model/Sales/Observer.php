@@ -177,6 +177,27 @@ class Unl_Core_Model_Sales_Observer
     }
 
     /**
+     * An <i>adminhtml</i> observer for the <code>adminhtml_sales_order_creditmemo_register_before</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onSalesOrderCreditmemoRegister($observer)
+    {
+        $creditmemo = $observer->getEvent()->getCreditmemo();
+
+        foreach ($creditmemo->getAllItems() as $creditmemoItem) {
+            $orderItem = $creditmemoItem->getOrderItem();
+
+            if ($creditmemoItem->getQty() && !$orderItem->isDummy()) {
+                if ($orderItem->getBaseRowTotal() == 0 && !$creditmemo->getAllowZeroGrandTotal()) {
+                    $creditmemo->setAllowZeroGrandTotal(true);
+                }
+            }
+        }
+    }
+
+    /**
      * And event observer for the <code>sales_order_invoice_pay</code>
      *
      * @param Varien_Event_Observer $observer

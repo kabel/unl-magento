@@ -724,6 +724,15 @@
                 </observers>
             </admin_user_save_before>
             
+            <adminhtml_sales_order_creditmemo_register_before>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/sales_observer</class>
+                        <method>onSalesOrderCreditmemoRegister</method>
+                    </unl_core>
+                </observers>
+            </adminhtml_sales_order_creditmemo_register_before>
+            
             <adminhtml_widget_grid_filter_collection>
                 <observers>
                     <unl_scope>
