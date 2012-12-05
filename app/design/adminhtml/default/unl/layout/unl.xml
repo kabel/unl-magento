@@ -61,6 +61,11 @@ Invoice Button (add-on)
         <reference name="head">
             <action method="addJs"><file>unl/adminhtml/externalid.js</file></action>
         </reference>
+        <reference name="sales_order_edit">
+            <block type="unl_core/adminhtml_update" name="unl_core_update">
+                <action method="addOrderBlockParentButtons" />
+            </block>
+        </reference>
         <reference name="order_info">
             <block type="adminhtml/template" name="externalid_popup_window" template="unl/externalid/popup.phtml"/>
         </reference>

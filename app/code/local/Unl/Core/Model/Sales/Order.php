@@ -52,6 +52,41 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
         return $this;
     }
 
+    /**
+     * Returns if an order is $0 and has been invoiced
+     *
+     * @return boolean
+     */
+    public function canBackOut()
+    {
+        if (!$this->isCanceled() && floatval($this->getBaseGrandTotal()) == 0 && !$this->canInvoice()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Cancels an order by first cancelling the $0 invoices
+     *
+     * @return Unl_Core_Model_Sales_Order
+     */
+    public function backOut()
+    {
+        if ($this->canBackOut()) {
+            foreach ($this->getInvoiceCollection() as $invoice) {
+                $invoice->cancel();
+                $this->addRelatedObject($invoice);
+            }
+
+            $this->cancel();
+        } else {
+            Mage::throwException(Mage::helper('sales')->__('Order does not allow to be backed out.'));
+        }
+
+        return $this;
+    }
+
     /* Overrides
      * @see Mage_Sales_Model_Order::_getEmails()
      * by using the source store attribute to get config emails
