@@ -17,4 +17,20 @@ class Unl_Spam_Model_Blacklist extends Unl_Spam_Model_RemoteAddrAbstract
         }
         return parent::_beforeSave();
     }
+
+    public function getCidrBitCount()
+    {
+        if (null === $this->getCidrBits()) {
+            $mask = $this->getCidrMask();
+
+            if (empty($mask)) {
+                return null;
+            }
+
+            $count = Mage::helper('unl_spam')->getCidrBits($mask);
+            $this->setCidrBits($count);
+        }
+
+        return $this->getCidrBits();
+    }
 }
