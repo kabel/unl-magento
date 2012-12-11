@@ -1245,6 +1245,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
                 'zip_code',
                 'plus_4',
                 'street_pre_directional',
+                'street_name',
                 'street_suffix_abbr',
                 'street_post_directional',
                 'address_secondary_low',
@@ -1255,7 +1256,9 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
             $select = $this->getSelect()->where('record_type = ?', 'A')
                 ->where('? BETWEEN begin_date AND end_date', $now)
                 ->where('? BETWEEN low_address_range AND high_address_range', $search['address'])
-                ->where('street_name LIKE ?', implode(' ', $search['street_name']) . '%');
+                ->where('street_name LIKE ?', implode(' ', $search['street_name']));
+
+            //TODO: Should we handle numeric typos "1ST", "2ND", "3RD", "4TH" ...
 
             if (!$cityCount) {
                 $select->where('zip_code = ?', $address->getPostcode());
