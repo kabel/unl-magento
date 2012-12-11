@@ -23,4 +23,10 @@
             <block type="unl_spam/adminhtml_blacklist_grid" name="blacklist"/>
         </block>
     </adminhtml_spam_blacklist_grid>
+    
+    <adminhtml_spam_blacklist_edit>
+        <reference name="content">
+            <block type="unl_spam/adminhtml_blacklist_edit" name="blacklist_edit" />
+        </reference>
+    </adminhtml_spam_blacklist_edit>
 </layout>
