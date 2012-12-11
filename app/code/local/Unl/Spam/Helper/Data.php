@@ -31,4 +31,24 @@ class Unl_Spam_Helper_Data extends Mage_Core_Helper_Abstract
 
         return pack('H*', $mask);
     }
+
+    public function getCidrBits($mask)
+    {
+        $mask = bin2hex($mask);
+        $count = substr_count($mask, 'f') << 2;
+
+        switch ($mask[strlen($mask)-1]) {
+            case 'e':
+                $count += 3;
+                break;
+            case 'c':
+                $count += 2;
+                break;
+            case '8':
+                $count += 1;
+                break;
+        }
+
+        return $count;
+    }
 }
