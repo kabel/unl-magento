@@ -5,7 +5,7 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Grid extends Mage_Adminhtml_Block_Widge
     public function __construct()
     {
         parent::__construct();
-        $this->setId('spamQuarantineGrid');
+        $this->setId('spamBlacklistGrid');
         $this->setDefaultSort('last_seen');
         $this->setDefaultDir('desc');
         $this->setSaveParametersInSession(true);
@@ -17,7 +17,9 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Grid extends Mage_Adminhtml_Block_Widge
         /* @var $collection Unl_Spam_Model_Resource_Blacklist_Collection */
         $collection = Mage::getModel('unl_spam/blacklist')->getCollection();
 
-        $collection->addExpressionFieldToSelect('mask_length', 'NULLIF(BIT_COUNT({{cidr_mask}}), 0)', 'cidr_mask');
+        $expr = 'IF(LENGTH({{cidr_mask}}) <= 8, BIT_COUNT(CONV(HEX({{cidr_mask}}),16,10)), NULL)';
+        $collection->addExpressionFieldToSelect('cidr_bits', $expr, 'cidr_mask');
+        $collection->addFilterToMap('cidr_bits', str_replace('{{cidr_mask}}', 'cidr_mask', $expr));
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -34,7 +36,7 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Grid extends Mage_Adminhtml_Block_Widge
         $this->addColumn('cidr_mask', array(
             'header' => Mage::helper('unl_spam')->__('CIDR Mask Bits'),
             'type'   => 'number',
-            'index'  => 'mask_length',
+            'index'  => 'cidr_bits',
         ));
 
         $responses = Mage::getSingleton('unl_spam/source_responsetype')->toOptionHash();
@@ -72,11 +74,11 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function _prepareMassaction()
     {
-        $this->setMassactionIdField('quarantine_id');
-        $this->getMassactionBlock()->setFormFieldName('quarantine_ids');
+        $this->setMassactionIdField('blacklist_id');
+        $this->getMassactionBlock()->setFormFieldName('blacklist');
         $this->getMassactionBlock()->setUseSelectAll(false);
 
-        $this->getMassactionBlock()->addItem('expire', array(
+        $this->getMassactionBlock()->addItem('delete', array(
             'label'=> Mage::helper('unl_spam')->__('Delete'),
             'url'  => $this->getUrl('*/*/massDelete'),
         ));
