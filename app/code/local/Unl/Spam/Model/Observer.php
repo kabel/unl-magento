@@ -22,7 +22,7 @@ class Unl_Spam_Model_Observer
         $post = $controller->getRequest()->getPost();
         // Check for spam to report
         if ($post) {
-            if (!isset($post['hideit']) || preg_match('#(?:url|href)=["\']https?://[^"\']+["\']#', $post['comment'])) {
+            if (!isset($post['hideit']) || preg_match('#(?:url|href)=["\']?https?://[^>"\']+["\']?#', $post['comment'])) {
                 $doQuarantine = true;
                 $this->_reportToSfs($post);
             }
