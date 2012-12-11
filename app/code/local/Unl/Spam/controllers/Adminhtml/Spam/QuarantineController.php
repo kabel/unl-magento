@@ -21,11 +21,13 @@ class Unl_Spam_Adminhtml_Spam_QuarantineController extends Mage_Adminhtml_Contro
 
     public function massexpireAction()
     {
+        $this->_getSession()->addNotice(Mage::helper('adminhtml')->__('This action has not been implemented yet.'));
         $this->_redirect('*/*/');
     }
 
     public function massblacklistAction()
     {
+        $this->_getSession()->addNotice(Mage::helper('adminhtml')->__('This action has not been implemented yet.'));
         $this->_redirect('*/*/');
     }
 
