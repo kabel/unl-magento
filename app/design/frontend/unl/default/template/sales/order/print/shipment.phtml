@@ -8,7 +8,7 @@
     <div class="col2-set">
         <div class="col-1">
             <h3><?php echo $this->__('Shipping Address') ?></h3>
-            <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+            <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($order->getShippingMethod())): ?>
                 <?php echo $this->__('Pickup order') ?>
             <?php else: ?>
                 <address><?php echo $this->getShipmentAddressFormattedHtml($shipment); ?></address>
