@@ -43,9 +43,9 @@ class Unl_Spam_Block_Adminhtml_Widget_Grid_Column_Filter_Cidr extends Mage_Admin
         //TODO: Fix this for IPv6
 
         $cond = array();
+        $connection = $this->getColumn()->getGrid()->getCollection()->getConnection();
         if ($mask) {
             $ip = $ip & $mask;
-            $connection = $this->getColumn()->getGrid()->getCollection()->getConnection();
             $cond['field_expr'] = '(CONV(HEX(#?),16,10) & CONV(HEX(' . $connection->quote($mask) . '),16,10))';
         }
         $cond['eq'] = new Zend_Db_Expr($connection->quoteInto('CONV(HEX(?),16,10)', $ip));
