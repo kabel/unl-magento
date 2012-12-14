@@ -189,7 +189,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         return $this->requestToVoid($data, true);
     }
 
-    public function requestToVoid($data, $quiet)
+    public function requestToVoid($data, $quiet = false)
     {
         if (!$this->getConfigData('endicia_enabled')) {
             return parent::rollBack($data);
