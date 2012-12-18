@@ -205,12 +205,12 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getScopeFilteredStores($storeIds = null)
     {
+        if (!empty($storeIds) && !is_array($storeIds)) {
+            $storeIds = array($storeIds);
+        }
+        
         if ($scope = $this->getAdminUserScope()) {
             if (!empty($storeIds)) {
-                if (!is_array($storeIds)) {
-                    $storeIds = array($storeIds);
-                }
-
                 $storeIds = array_intersect($scope, $storeIds);
 
                 // ensure the return isn't empty, return impossible value
