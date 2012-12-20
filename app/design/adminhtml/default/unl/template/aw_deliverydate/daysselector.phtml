@@ -189,8 +189,8 @@
     
     	$dow = new Zend_Date($_item['period_from'], 'Y-MM-dd');
     
-		$_item['period_from'] = $this->formatDate($_item['period_from']);
-		$_item['period_to'] = $this->formatDate($_item['period_to']);
+		$_item['period_from'] = $this->formatDate(new Zend_Date($_item['period_from']));
+		$_item['period_to'] = $this->formatDate(new Zend_Date($_item['period_to']));
 		
 		
 		$dow = $dow->toArray();
