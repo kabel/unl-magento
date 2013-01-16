@@ -45,7 +45,6 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Grid extends Mage_Adminhtml_Block_Widge
             'type'   => 'options',
             'index'  => 'response_type',
             'options' => $responses,
-            'width' => '80'
         ));
 
         $this->addColumn('created_at', array(
@@ -66,7 +65,7 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Grid extends Mage_Adminhtml_Block_Widge
             'header' => Mage::helper('unl_spam')->__('Strikes'),
             'index' => 'strikes',
             'type'  => 'number',
-            'width' => '200px'
+            'width' => '100'
         ));
 
         return parent::_prepareColumns();

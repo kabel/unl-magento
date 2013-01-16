@@ -28,6 +28,11 @@ class Unl_Spam_Block_Adminhtml_Blacklist_Edit_Form extends Mage_Adminhtml_Block_
             'title' => Mage::helper('unl_spam')->__('IP Address'),
             'required' => true,
         ));
+        
+        if ($model->getId()) {
+            $fieldset->getElements()->searchById('remote_addr')
+                ->setReadonly(true);
+        }
 
         $fieldset->addField('cidr_bits', 'text', array(
             'name' => 'cidr_bits',
