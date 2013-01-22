@@ -97,6 +97,16 @@
                     </unl_spam>
                 </observers>
             </controller_action_predispatch_contacts_index_post>
+            
+            <controller_action_predispatch_review_product_post>
+                <observers>
+                    <unl_spam>
+                        <type>singleton</type>
+                        <class>unl_spam/observer</class>
+                        <method>onProductReviewPostPredispatch</method>
+                    </unl_spam>
+                </observers>
+            </controller_action_predispatch_review_product_post>
         </events>
         <layout>
             <updates>

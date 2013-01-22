@@ -24,24 +24,49 @@ class Unl_Spam_Model_Observer
         if ($post) {
             if (!isset($post['hideit']) || preg_match('#(?:url|href)=["\']?https?://[^>"\']+["\']?#', $post['comment'])) {
                 $doQuarantine = true;
-                $this->_reportToSfs($post);
+                $post = array_merge(array('name' => '', 'email' => ''), $post);
+                $this->_reportToSfs($post['name'], $post['email'], $post['comment']);
             }
         }
 
         if ($doQuarantine) {
-            $this->_quarantineIp();
-
-            $ip = Mage::helper('core/http')->getRemoteAddr();
-
-            if (Mage::getStoreConfigFlag(self::XML_PATH_ENABLE_LOG)) {
-                Mage::log('IP Address "' . $ip . '" detected spam, added to quarantine.', Zend_Log::INFO, 'unl_spam.log');
-            }
-
-            $ex = new Mage_Core_Controller_Varien_Exception();
-            $ex->prepareForward('denied', 'index', 'unlspam');
-
-            throw $ex;
+            $this->quarantineAndForward();
         }
+    }
+    
+    public function onProductReviewPostPredispatch($observer)
+    {
+        $controller = $observer->getEvent()->getControllerAction();
+        $doQuarantine = $this->_checkSfs();
+        
+        $post = $controller->getRequest()->getPost();
+        if ($post) {
+            if (!isset($post['hideit']) || preg_match('#(?:url|href)=["\']?https?://[^>"\']+["\']?#', $post['detail'])) {
+                $doQuarantine = true;
+                $post = array_merge(array('nickname' => '', 'email' => ''), $post);
+                $this->_reportToSfs($post['nickname'], $post['email'], $post['detail']);
+            }
+        }
+        
+        if ($doQuarantine) {
+            $this->quarantineAndForward();
+        }
+    }
+    
+    protected function quarantineAndForward()
+    {
+        $this->_quarantineIp();
+        
+        $ip = Mage::helper('core/http')->getRemoteAddr();
+        
+        if (Mage::getStoreConfigFlag(self::XML_PATH_ENABLE_LOG)) {
+            Mage::log('IP Address "' . $ip . '" detected spam, added to quarantine.', Zend_Log::INFO, 'unl_spam.log');
+        }
+        
+        $ex = new Mage_Core_Controller_Varien_Exception();
+        $ex->prepareForward('denied', 'index', 'unlspam');
+        
+        throw $ex;
     }
 
     protected function _checkSfs()
@@ -64,7 +89,7 @@ class Unl_Spam_Model_Observer
         return false;
     }
 
-    protected function _reportToSfs($post)
+    protected function _reportToSfs($name, $email, $evidence)
     {
         if (Mage::getStoreConfigFlag(self::XML_PATH_SFS_ACTIVE) && ($apiKey = Mage::getStoreConfig(self::XML_PATH_SFS_API_KEY))) {
             $client = new Zend_Http_Client('http://www.stopforumspam.com/add', array(
@@ -74,11 +99,11 @@ class Unl_Spam_Model_Observer
             ));
 
             $data = array(
-                'username' => isset($post['name']) ? $post['name'] : 'spammer',
-                'email'    => isset($post['email']) ? $post['email'] : 'spammer@example.com',
+                'username' => !empty($name) ? $name : 'spammer',
+                'email'    => !empty($email) ? $email : 'spammer@example.com',
                 'ip'       => Mage::helper('core/http')->getRemoteAddr(),
                 'api_key'  => $apiKey,
-                'evidence' => $post['comment'],
+                'evidence' => $evidence,
             );
 
             $client->setParameterPost($data);
