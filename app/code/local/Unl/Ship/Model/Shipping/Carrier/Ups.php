@@ -3,6 +3,8 @@
 class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrier_Ups
     implements Unl_Ship_Model_Shipping_Carrier_VoidInterface
 {
+    protected $_lastVoidResult;
+    
     public function isVoidAvailable()
     {
         return true;
@@ -847,7 +849,7 @@ XMLRequest;
         $this->setXMLAccessRequest();
 
         foreach ($data as $info) {
-            $result = $this->_sendVoidRequest($info['tracking_number']);
+            $this->_lastVoidResult = $result = $this->_sendVoidRequest($info['tracking_number']);
 
             if ($result->hasErrors()) {
                 if ($quiet) {
@@ -861,6 +863,11 @@ XMLRequest;
         }
 
         return true;
+    }
+    
+    public function getLastVoidResult()
+    {
+        return $this->_lastVoidResult;
     }
 
     protected function _sendVoidRequest($trackingNumber)

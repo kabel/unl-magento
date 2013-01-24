@@ -158,6 +158,11 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             $shipment->unregister();
 
             $shipment->getOrder()->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $this->__('Voided and deleted a shipment for reprocessing.'));
+            
+            if (($result = $carrier->getLastVoidResult()) && $result->hasMessage()) {
+                $shipment->getOrder()->addStatusHistoryComment($result->getMessage());
+            }
+            
             $this->_saveShipment($shipment);
             $this->_getSession()->addSuccess($this->__('Successfully voided and deleted shipment.'));
         } catch (Mage_Core_Exception $e) {

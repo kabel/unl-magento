@@ -3,6 +3,8 @@
 class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carrier_Usps
     implements Unl_Ship_Model_Shipping_Carrier_VoidInterface
 {
+    protected $_lastVoidResult;
+    
     public function isVoidAvailable()
     {
         return (bool)$this->getConfigData('endicia_enabled');
@@ -197,7 +199,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
 
         $endicia = Mage::getSingleton('unl_ship/shipping_carrier_usps_endicia');
         foreach ($data as $info) {
-            $result = $endicia->doRefundRequest($this, $info['tracking_number']);
+            $this->_lastVoidResult = $result = $endicia->doRefundRequest($this, $info['tracking_number']);
 
             if ($result->hasErrors()) {
                 if ($quiet) {
@@ -211,5 +213,10 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         }
 
         return true;
+    }
+    
+    public function getLastVoidResult()
+    {
+        return $this->_lastVoidResult;
     }
 }

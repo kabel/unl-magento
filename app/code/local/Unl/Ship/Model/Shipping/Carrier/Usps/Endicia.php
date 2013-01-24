@@ -532,6 +532,8 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             } elseif ($xml->RefundList->PICNumber->IsApproved != 'YES') {
                 $result->setErrors((string)$xml->RefundList->PICNumber->ErrorMsg);
                 $debugData['result'] = array('error' => $result->getErrors());
+            } else {
+                $result->setMessage(Mage::helper('unl_ship')->__('Endicia refund request submitted with ID: "%s".', (string)$xml->FormNumber));
             }
         }
 
