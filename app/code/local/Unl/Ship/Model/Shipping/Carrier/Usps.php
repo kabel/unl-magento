@@ -5,6 +5,216 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
 {
     protected $_lastVoidResult;
     
+    public function getCode($type, $code='')
+    {
+        $codes = array(
+            'service'=>array(
+                'PARCEL'      => Mage::helper('usa')->__('Standard Post'),
+            ),
+            
+            'service_to_code'=>array(
+                'First Class Mail Postcards'                 => 'FIRST CLASS',
+                'First-Class Package International Service'  => 'FIRST CLASS',
+                'Standard Post'                              => 'PARCEL',
+                'Express Mail Sunday/Holiday Delivery'                           => 'EXPRESS',
+                'Express Mail Flat Rate Boxes'                                   => 'EXPRESS',
+                'Express Mail Flat Rate Boxes Hold For Pickup'                   => 'EXPRESS',
+                'Express Mail Sunday/Holiday Delivery Flat-Rate Boxes'           => 'EXPRESS',
+                'Express Mail Sunday/Holiday Delivery Flat-Rate Envelope'        => 'EXPRESS',
+                'Express Mail Legal Flat Rate Envelope'                          => 'EXPRESS',
+                'Express Mail Legal Flat Rate Envelope Hold For Pickup'          => 'EXPRESS',
+                'Express Mail Sunday/Holiday Delivery Legal Flat Rate Envelope'  => 'EXPRESS',
+                'Express Mail Padded Flat Rate Envelope'                         => 'EXPRESS',
+                'Express Mail Padded Flat Rate Envelope Hold For Pickup'         => 'EXPRESS',
+                'Express Mail Sunday/Holiday Delivery Padded Flat Rate Envelope' => 'EXPRESS',
+                'Express Mail International Flat Rate Boxes'                     => 'EXPRESS',
+                'Express Mail International Legal Flat Rate Envelope'            => 'EXPRESS',
+                'Express Mail International Padded Flat Rate Envelope'           => 'EXPRESS',
+                'Priority Mail Legal Flat Rate Envelope'     => 'PRIORITY',
+                'Priority Mail Padded Flat Rate Envelope'    => 'PRIORITY',
+                'Priority Mail Gift Card Flat Rate Envelope' => 'PRIORITY',
+                'Priority Mail Small Flat Rate Envelope'     => 'PRIORITY',
+                'Priority Mail Window Flat Rate Envelope'    => 'PRIORITY',
+                'Priority Mail International DVD Flat Rate priced box'           => 'PRIORITY',
+                'Priority Mail International Large Video Flat Rate priced box'   => 'PRIORITY',
+                'Priority Mail International Legal Flat Rate Envelope'           => 'PRIORITY',
+                'Priority Mail International Padded Flat Rate Envelope'          => 'PRIORITY',
+                'Priority Mail International Gift Card Flat Rate Envelope'       => 'PRIORITY',
+                'Priority Mail International Small Flat Rate Envelope'           => 'PRIORITY',
+                'Priority Mail International Window Flat Rate Envelope'          => 'PRIORITY',
+            ),
+            
+            'containers_filter' => array(
+                array(
+                    'containers' => array('VARIABLE'),
+                    'filters'    => array(
+                        'within_us' => array(
+                            'method' => array(
+                                'Express Mail Flat Rate Boxes',
+                                'Express Mail Flat Rate Boxes Hold For Pickup',
+                                'Express Mail Flat Rate Envelope',
+                                'Express Mail Flat Rate Envelope Hold For Pickup',
+                                'Express Mail Flat-Rate Envelope Sunday/Holiday Delivery',
+                                'Express Mail Hold For Pickup',
+                                'Express Mail Legal Flat Rate Envelope',
+                                'Express Mail Legal Flat Rate Envelope Hold For Pickup',
+                                'Express Mail Padded Flat Rate Envelope',
+                                'Express Mail Padded Flat Rate Envelope Hold For Pickup',
+                                'Express Mail Sunday/Holiday Delivery',
+                                'Priority Mail Large Flat Rate Box',
+                                'Priority Mail Legal Flat Rate Envelope',
+                                'Priority Mail Medium Flat Rate Box',
+                                'Priority Mail Padded Flat Rate Envelope',
+                                'Priority Mail Small Flat Rate Box',
+                                'Priority Mail Small Flat Rate Envelope',
+                                'Priority Mail Window Flat Rate Envelope',
+                                'Express Mail',
+                                'Priority Mail',
+                                'Standard Post',
+                                'Media Mail',
+                                'First-Class Mail Large Envelope',
+                                'First-Class Mail Parcel',
+                            )
+                        ),
+                        'from_us' => array(
+                            'method' => array(
+                                'Express Mail International Flat Rate Boxes',
+                                'Express Mail International Flat Rate Envelope',
+                                'Express Mail International Legal Flat Rate Envelope',
+                                'Express Mail International Padded Flat Rate Envelope',
+                                'Priority Mail International DVD Flat Rate priced box',
+                                'Priority Mail International Flat Rate Envelope',
+                                'Priority Mail International Gift Card Flat Rate Envelope',
+                                'Priority Mail International Large Flat Rate Box',
+                                'Priority Mail International Large Video Flat Rate priced box',
+                                'Priority Mail International Legal Flat Rate Envelope',
+                                'Priority Mail International Medium Flat Rate Box',
+                                'Priority Mail International Padded Flat Rate Envelope',
+                                'Priority Mail International Small Flat Rate Box',
+                                'Priority Mail International Small Flat Rate Envelope',
+                                'Priority Mail International Window Flat Rate Envelope',
+                                'USPS GXG Envelopes',
+                                'Express Mail International',
+                                'Priority Mail International',
+                                'First-Class Mail International Large Envelope',
+                                'First-Class Package International Service',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'containers' => array('FLAT RATE BOX'),
+                    'filters'    => array(
+                        'within_us' => array(
+                            'method' => array(
+                                'Express Mail Flat Rate Boxes',
+                                'Express Mail Flat Rate Boxes Hold For Pickup',
+                                'Priority Mail Large Flat Rate Box',
+                                'Priority Mail Medium Flat Rate Box',
+                                'Priority Mail Small Flat Rate Box',
+                            )
+                        ),
+                        'from_us' => array(
+                            'method' => array(
+                                'Express Mail International Flat Rate Boxes',
+                                'Priority Mail International DVD Flat Rate priced box',
+                                'Priority Mail International Large Flat Rate Box',
+                                'Priority Mail International Large Video Flat Rate priced box',
+                                'Priority Mail International Medium Flat Rate Box',
+                                'Priority Mail International Small Flat Rate Box',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'containers' => array('FLAT RATE ENVELOPE'),
+                    'filters'    => array(
+                        'within_us' => array(
+                            'method' => array(
+                                'Express Mail Flat Rate Envelope',
+                                'Express Mail Flat Rate Envelope Hold For Pickup',
+                                'Express Mail Flat-Rate Envelope Sunday/Holiday Delivery',
+                                'Express Mail Legal Flat Rate Envelope',
+                                'Express Mail Legal Flat Rate Envelope Hold For Pickup',
+                                'Express Mail Padded Flat Rate Envelope',
+                                'Express Mail Padded Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Legal Flat Rate Envelope',
+                                'Priority Mail Padded Flat Rate Envelope',
+                                'Priority Mail Small Flat Rate Envelope',
+                                'Priority Mail Window Flat Rate Envelope',
+                            )
+                        ),
+                        'from_us' => array(
+                            'method' => array(
+                                'Express Mail International Flat Rate Envelope',
+                                'Express Mail International Legal Flat Rate Envelope',
+                                'Express Mail International Padded Flat Rate Envelope',
+                                'Priority Mail International Flat Rate Envelope',
+                                'Priority Mail International Gift Card Flat Rate Envelope',
+                                'Priority Mail International Legal Flat Rate Envelope',
+                                'Priority Mail International Padded Flat Rate Envelope',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'containers' => array('RECTANGULAR'),
+                    'filters'    => array(
+                        'within_us' => array(
+                            'method' => array(
+                                'Express Mail',
+                                'Priority Mail',
+                                'Standard Post',
+                                'Media Mail',
+                            )
+                        ),
+                        'from_us' => array(
+                            'method' => array(
+                                'USPS GXG Envelopes',
+                                'Express Mail International',
+                                'Priority Mail International',
+                                'First-Class Package International Service',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'containers' => array('NONRECTANGULAR'),
+                    'filters'    => array(
+                        'within_us' => array(
+                            'method' => array(
+                                'Express Mail',
+                                'Priority Mail',
+                                'Standard Post',
+                                'Media Mail',
+                            )
+                        ),
+                        'from_us' => array(
+                            'method' => array(
+                                'USPS GXG Envelopes',
+                                'Express Mail International',
+                                'Priority Mail International',
+                                'First-Class Package International Service',
+                            )
+                        )
+                    )
+                ),
+            ),
+        );
+        
+        if (!isset($codes[$type])) {
+            return parent::getCode($type, $code);
+        } elseif (''===$code) {
+            return $codes[$type];
+        }
+        
+        if (!isset($codes[$type][$code])) {
+            return parent::getCode($type, $code);
+        } else {
+            return $codes[$type][$code];
+        }
+    }
+    
     public function isVoidAvailable()
     {
         return (bool)$this->getConfigData('endicia_enabled');
