@@ -182,18 +182,18 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
     {
         $codes = array(
             'First-Class'                                   => array('First', null),
-            'First-Class Mail International Large Envelope' => array('FirstClassMailInternational', 'Parcel'),
+            'First-Class Mail International Large Envelope' => array('FirstClassMailInternational', 'Flat'),
             'First-Class Mail International Letter'         => array('FirstClassMailInternational', 'Letter'),
-            'First-Class Mail International Package'        => array('FirstClassMailInternational', 'Parcel'),
-            'First-Class Mail International Parcel'         => array('FirstClassMailInternational', 'Parcel'),
+            'First-Class Mail International Package'        => array('FirstClassPackageInternationalService', 'Parcel'),
+            'First-Class Mail International Parcel'         => array('FirstClassPackageInternationalService', 'Parcel'),
             'First-Class Mail'                 => array('First', null),
             'First-Class Mail Flat'            => array('First', 'Flat'),
-            'First-Class Mail Large Envelope'  => array('First', 'Parcel'),
+            'First-Class Mail Large Envelope'  => array('First', 'Flat'),
             'First-Class Mail International'   => array('FirstClassMailInternational', 'Letter'),
             'First-Class Mail Letter'          => array('First', 'Letter'),
             'First-Class Mail Parcel'          => array('First', 'Parcel'),
             'First-Class Mail Package'         => array('First', 'Parcel'),
-            'Parcel Post'                      => array('ParcelPost', 'Parcel'),
+            'Parcel Post'                      => array('ParcelSelect', 'Parcel'),
             'Bound Printed Matter'             => false,
             'Media Mail'                       => array('MediaMail', 'Parcel'),
             'Library Mail'                     => array('LibraryMail', 'Parcel'),
@@ -206,8 +206,8 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             'Express Mail Hold For Pickup'                     => array('Express', null, array('Hfp')),
             'Global Express Guaranteed (GXG)'                  => array('GXG', null),
             'Global Express Guaranteed Non-Document Rectangular'     => array('GXG', 'Parcel'),
-            'Global Express Guaranteed Non-Document Non-Rectangular' => array('GXG', 'IrregularParcel'),
-            'USPS GXG Envelopes'                               => array('GXG', 'Letter'),
+            'Global Express Guaranteed Non-Document Non-Rectangular' => array('GXG', 'Parcel'),
+            'USPS GXG Envelopes'                               => array('GXG', 'Flat'),
             'Express Mail International'                       => array('ExpressMailInternational', null),
             'Express Mail International Flat Rate Envelope'    => array('ExpressMailInternational', 'FlatRateEnvelope'),
             'Priority Mail'                        => array('Priority', null),
@@ -222,6 +222,37 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             'Priority Mail International Medium Flat Rate Box'       => array('Priority', 'MediumFlatRateBox'),
             'Priority Mail International Large Flat Rate Box'        => array('Priority', 'LargeFlatRateBox'),
             'Priority Mail International Flat Rate Box'              => array('Priority', 'MediumFlatRateBox'),
+            
+            //services added after magento core
+            'First Class Mail Postcards'                 => array('First', 'Card'),
+            'First-Class Package International Service'  => array('FirstClassPackageInternationalService', 'Parcel'),
+            'Standard Post'                              => array('ParcelSelect', 'Parcel'),
+            'Express Mail Sunday/Holiday Delivery'                           => array('Express', null, array('Sunday')),
+            'Express Mail Flat Rate Boxes'                                   => array('Express', 'MediumFlatRateBox'),
+            'Express Mail Flat Rate Boxes Hold For Pickup'                   => array('Express', 'MediumFlatRateBox', array('Hfp')),
+            'Express Mail Sunday/Holiday Delivery Flat-Rate Boxes'           => array('Express', 'MediumFlatRateBox', array('Sunday')),
+            'Express Mail Sunday/Holiday Delivery Flat-Rate Envelope'        => array('Express', 'FlatRateEnvelope', array('Sunday')),
+            'Express Mail Legal Flat Rate Envelope'                          => array('Express', 'FlatRateLegalEnvelope'),
+            'Express Mail Legal Flat Rate Envelope Hold For Pickup'          => array('Express', 'FlatRateLegalEnvelope', array('Hfp')),
+            'Express Mail Sunday/Holiday Delivery Legal Flat Rate Envelope'  => array('Express', 'FlatRateLegalEnvelope', array('Sunday')),
+            'Express Mail Padded Flat Rate Envelope'                         => array('Express', 'FlatRatePaddedEnvelope'),
+            'Express Mail Padded Flat Rate Envelope Hold For Pickup'         => array('Express', 'FlatRatePaddedEnvelope', array('Hfp')),
+            'Express Mail Sunday/Holiday Delivery Padded Flat Rate Envelope' => array('Express', 'FlatRatePaddedEnvelope', array('Sunday')),
+            'Express Mail International Flat Rate Boxes'                     => array('ExpressMailInternational', 'MediumFlatRateBox'),
+            'Express Mail International Legal Flat Rate Envelope'            => array('ExpressMailInternational', 'FlatRateLegalEnvelope'),
+            'Express Mail International Padded Flat Rate Envelope'           => array('ExpressMailInternational', 'FlatRatePaddedEnvelope'),
+            'Priority Mail Legal Flat Rate Envelope'     => array('Priority', 'FlatRateLegalEnvelope'),
+            'Priority Mail Padded Flat Rate Envelope'    => array('Priority', 'FlatRatePaddedEnvelope'),
+            'Priority Mail Gift Card Flat Rate Envelope' => array('Priority', 'FlatRateGiftCardEnvelope'),
+            'Priority Mail Small Flat Rate Envelope'     => array('Priority', 'SmallFlatRateEnvelope'),
+            'Priority Mail Window Flat Rate Envelope'    => array('Priority', 'FlatRateWindowEnvelope'),
+            'Priority Mail International DVD Flat Rate priced box'           => array('PriorityMailInternational', 'DVDFlatRateBox'),
+            'Priority Mail International Large Video Flat Rate priced box'   => array('PriorityMailInternational', 'LargeVideoFlatRateBox'),
+            'Priority Mail International Legal Flat Rate Envelope'           => array('PriorityMailInternational', 'FlatRateLegalEnvelope'),
+            'Priority Mail International Padded Flat Rate Envelope'          => array('PriorityMailInternational', 'FlatRatePaddedEnvelope'),
+            'Priority Mail International Gift Card Flat Rate Envelope'       => array('PriorityMailInternational', 'FlatRateGiftCardEnvelope'),
+            'Priority Mail International Small Flat Rate Envelope'           => array('PriorityMailInternational', 'SmallFlatRateEnvelope'),
+            'Priority Mail International Window Flat Rate Envelope'          => array('PriorityMailInternational', 'FlatRateWindowEnvelope'),
         );
 
         if (!isset($codes[$service])) {
@@ -262,16 +293,16 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         $labelFormat = 'PNG';
 
         $xmlRequest = new SimpleXMLElement('<LabelRequest/>');
+        $xmlRequest->addAttribute('ImageFormat', $labelFormat . 'MONOCHROME');
 
         if ($domestic) {
             $xmlRequest->addAttribute('LabelType', 'Default');
             $xmlRequest->addAttribute('LabelSize', '4x6');
-            $xmlRequest->addAttribute('ImageFormat', $labelFormat);
+            
         } else {
             $xmlRequest->addAttribute('LabelType', 'International');
             $xmlRequest->addAttribute('LabelSubtype', 'Integrated');
             $xmlRequest->addAttribute('LabelSize', '4x6c');
-            $xmlRequest->addAttribute('ImageFormat', $labelFormat);
             $xmlRequest->addAttribute('ImageRotation', 'Rotate270');
         }
 
@@ -288,6 +319,11 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
 
         if (!is_null($mailinfo[1])) {
             $xmlRequest->addChild('MailpieceShape', $mailinfo[1]);
+        }
+        
+        if ($mailinfo[0] == 'ParcelSelect') {
+            $xmlRequest->addChild('SortType', 'Nonpresorted');
+            $xmlRequest->addChild('EntryFacility', 'Other');
         }
 
         if ($packageParams->getLength() || $packageParams->getWidth() || $packageParams->getHeight()) {
