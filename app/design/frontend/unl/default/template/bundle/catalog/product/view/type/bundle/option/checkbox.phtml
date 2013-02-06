@@ -1,25 +1,34 @@
-<?php /* @var $this Mage_Bundle_Block_Catalog_Product_View_Type_Bundle_Option_Checkbox */ ?>
+<?php /* @var $this Unl_BundlePlus_Block_Catalog_Product_View_Type_Bundle_Option_Checkbox */ ?>
 <?php $_option = $this->getOption() ?>
 <?php $_selections = $_option->getSelections() ?>
 <dt><label<?php if ($_option->getRequired()) echo ' class="required"' ?>><?php echo $this->htmlEscape($_option->getTitle()) ?><?php if ($_option->getRequired()) echo '<em>*</em>' ?></label></dt>
 <dd<?php if ($_option->decoratedIsLast){?> class="last"<?php }?>>
     <div class="input-box">
-    <?php if (count($_selections) == 1 && $_option->getRequired()): ?>
-        <?php echo $this->getSelectionQtyTitlePrice($_selections[0]) ?>
-        <input type="hidden" name="bundle_option[<?php echo $_option->getId() ?>]" value="<?php echo $_selections[0]->getSelectionId() ?>"/>
-    <?php else:?>
+    <?php if ($this->_showSingle()): ?>
+        <?php list($_defaultQty, $_canChangeQty) = $this->_getSelectionDefaultValues($_selections[0]); ?>
+        <input type="hidden" name="bundle_option[<?php echo $_option->getId() ?>][]" value="<?php echo $_selections[0]->getSelectionId() ?>"/>
+        <?php if ($_canChangeQty): ?>
+            <span class="qty-holder"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selections[0]->getSelectionId() ?>-qty-input"><?php echo $this->__('Qty:') ?>&nbsp;</label>
+                <input onkeyup="bundle.changeOptionQty(this, event)" onblur="bundle.changeOptionQty(this, event)" class="input-text qty required-entry validate-greater-than-zero" id="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selections[0]->getSelectionId() ?>-qty-input" type="text" name="bundle_option_qty[<?php echo $_option->getId() ?>][<?php echo $_selections[0]->getSelectionId() ?>]" value="<?php echo $_defaultQty ?>" /></span>
+            <span class="label"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selections[0]->getSelectionId() ?>"><?php echo $this->getSelectionTitlePrice($_selections[0]) ?></label></span>
+            <?php echo $this->setValidationContainer('bundle-option-'.$_option->getId().'-'.$_selections[0]->getSelectionId(), 'bundle-option-'.$_option->getId().'-container') ?>
+        <?php else: ?>
+            <?php echo $this->getSelectionQtyTitlePrice($_selections[0]) ?>
+        <?php endif; ?>
+    <?php else: ?>
         <ul class="options-list">
         <?php foreach($_selections as $_selection): ?>
         <?php /* @var $_selection Mage_Bundle_Model_Selection */ ?>
             <li>
                 <?php $_isSelected = $this->_isSelected($_selection); ?>
+                <?php list($_defaultQty, $_canChangeQty) = $this->_getSelectionDefaultValues($_selection); ?>
                 <input onclick="bundle.changeSelection(this)" class="change-container-classname checkbox bundle-option-<?php echo $_option->getId() ?> <?php if ($_option->getRequired()) echo 'validate-one-required-by-name' ?>" id="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>" type="checkbox" name="bundle_option[<?php echo $_option->getId() ?>][]"<?php if ($_isSelected) echo ' checked="checked"' ?><?php if (!$_selection->isSaleable()) echo ' disabled="disabled"' ?> value="<?php echo $_selection->getSelectionId() ?>"/>
 
-                <?php if ($_selection->getSelectionCanChangeQty()): ?>
+                <?php if ($_canChangeQty): ?>
                 <span class="qty-holder"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>-qty-input"><?php echo $this->__('Qty:') ?>&nbsp;</label>
-                    <input onkeyup="bundle.changeOptionQty(this, event)" onblur="bundle.changeOptionQty(this, event)" class="input-text qty<?php if (!$_isSelected) echo ' qty-disabled' ?>" id="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>-qty-input" type="text" name="bundle_option_qty[<?php echo $_option->getId() ?>][<?php echo $_selection->getSelectionId() ?>]"<?php if (!$_isSelected) echo ' disabled="disabled"' ?> value="<?php echo $this->_getSelectionQty($_selection)*1 ?>" /></span>
+                    <input onkeyup="bundle.changeOptionQty(this, event)" onblur="bundle.changeOptionQty(this, event)" class="input-text qty<?php if (!$_isSelected) echo ' qty-disabled' ?>" id="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>-qty-input" type="text" name="bundle_option_qty[<?php echo $_option->getId() ?>][<?php echo $_selection->getSelectionId() ?>]"<?php if (!$_isSelected) echo ' disabled="disabled"' ?> value="<?php echo $_defaultQty ?>" /></span>
                 <?php else: ?>
-                <span class="qty-holder"><label><?php echo $this->__('Qty:') ?>&nbsp;</label><?php echo $_selection->getSelectionQty()*1 ?></span>
+                <span class="qty-holder"><label><?php echo $this->__('Qty:') ?>&nbsp;</label><?php echo $_defaultQty ?></span>
                 <?php endif; ?>
                 <span class="label"><label for="bundle-option-<?php echo $_option->getId() ?>-<?php echo $_selection->getSelectionId() ?>"><?php echo $this->getSelectionTitlePrice($_selection) ?></label></span>
 
