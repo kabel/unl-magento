@@ -1,0 +1,67 @@
+Index: js/mage/adminhtml/sales/packaging.js
+===================================================================
+--- js/mage/adminhtml/sales/packaging.js	(revision 157611)
++++ js/mage/adminhtml/sales/packaging.js	(working copy)
+@@ -132,7 +132,7 @@
+             var weight, length, width, height = null;
+             var packagesParams = [];
+             this.packagesContent.childElements().each(function(pack) {
+-                var packageId = pack.id.match(/\d$/)[0];
++                var packageId = pack.id.match(/\d+$/)[0];
+                 weight = parseFloat(pack.select('input[name="container_weight"]')[0].value);
+                 length = parseFloat(pack.select('input[name="container_length"]')[0].value);
+                 width = parseFloat(pack.select('input[name="container_width"]')[0].value);
+@@ -323,7 +323,7 @@
+     deletePackage: function(obj) {
+         var pack = $(obj).up('div[id^="package_block"]');
+         var packItems = pack.select('.package_items')[0];
+-        var packageId = pack.id.match(/\d$/)[0];
++        var packageId = pack.id.match(/\d+$/)[0];
+ 
+         delete this.packages[packageId];
+         pack.remove();
+@@ -336,7 +336,7 @@
+         var itemId = item.select('[type="checkbox"]')[0].value;
+         var pack = $(obj).up('div[id^="package_block"]');
+         var packItems = pack.select('.package_items')[0];
+-        var packageId = pack.id.match(/\d$/)[0];
++        var packageId = pack.id.match(/\d+$/)[0];
+ 
+         delete this.packages[packageId]['items'][itemId];
+         if (item.offsetParent.rows.length <= 2) { /* head + this last row */
+@@ -414,7 +414,7 @@
+     packItems: function(obj) {
+         var anySelected = false;
+         var packageBlock = $(obj).up('[id^="package_block"]');
+-        var packageId = packageBlock.id.match(/\d$/)[0];
++        var packageId = packageBlock.id.match(/\d+$/)[0];
+         var packagePrepare = packageBlock.select('.package_prapare')[0];
+         var packagePrepareGrid = packagePrepare.select('.grid_prepare')[0];
+ 
+@@ -584,7 +584,7 @@
+             option = document.createElement('OPTION');
+             option.value = '';
+             option.text = '';
+-            packageSize[0].options.add(option);
++            packageSize[0].add(option);
+             packageSize[0].value = '';
+             packageSize[0].disable();
+             packageSize[0].addClassName('disabled');
+@@ -690,7 +690,7 @@
+             var packagesCount = this.packagesContent.childElements().length;
+             this.packageIncrement = packagesCount;
+             this.packagesContent.childElements().each(function(pack) {
+-                var packageId = pack.id.match(/\d$/)[0];
++                var packageId = pack.id.match(/\d+$/)[0];
+                 pack.id = 'package_block_' + packagesCount;
+                 pack.select('.package-number span')[0].update(packagesCount);
+                 packagesRecalc[packagesCount] = this.packages[packageId];
+@@ -786,7 +786,7 @@
+ 
+     _recalcContainerWeightAndCustomsValue: function(container) {
+         var packageBlock = container.up('[id^="package_block"]');
+-        var packageId = packageBlock.id.match(/\d$/)[0];
++        var packageId = packageBlock.id.match(/\d+$/)[0];
+         var containerWeight = packageBlock.select('[name="container_weight"]')[0];
+         var containerCustomsValue = packageBlock.select('[name="package_customs_value"]')[0];
+         containerWeight.value = 0;
