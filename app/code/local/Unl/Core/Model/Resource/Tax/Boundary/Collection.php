@@ -958,7 +958,7 @@ class Unl_Core_Model_Resource_Tax_Boundary_Collection extends Mage_Core_Model_Re
      */
     public function sanitizeAddress($address)
     {
-        $address = str_replace(array('#', '.', ','), '', $address);
+        $address = str_replace(array('#', '.', ',', '"'. '\''), '', $address);
         $address = str_replace(array("\n", "\r", "\t"), ' ', $address);
         $address = str_replace(array('   ', '  '), ' ', $address);
 
