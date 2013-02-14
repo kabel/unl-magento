@@ -91,8 +91,12 @@ class Unl_Inventory_Model_Observer
 
         foreach ($invoice->getAllItems() as $item) {
             /* @var $item Mage_Sales_Model_Order_Invoice_Item */
+            if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy()) {
+                continue;
+            }
+            
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
-            if ($item->getOrderItem()->isDummy() || !Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
+            if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 continue;
             }
 
@@ -166,9 +170,12 @@ class Unl_Inventory_Model_Observer
 
         foreach ($invoice->getAllItems() as $item) {
             /* @var $item Mage_Sales_Model_Order_Invoice_Item */
+            if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy()) {
+                continue;
+            }
+            
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
-            if ($item->getOrderItem()->isDummy()
-                || !Mage::helper('unl_inventory')->getIsAuditInventory($product) ) {
+            if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 continue;
             }
 
@@ -230,9 +237,12 @@ class Unl_Inventory_Model_Observer
 
         foreach ($creditmemo->getAllItems() as $item) {
             /* @var $item Mage_Sales_Model_Order_Creditmemo_Item */
+            if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy() || !$item->getBackToStock()) {
+                continue;
+            }
+            
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
-            if ($item->getOrderItem()->isDummy() || !$item->getBackToStock()
-                || !Mage::helper('unl_inventory')->getIsAuditInventory($product) ) {
+            if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 continue;
             }
 
