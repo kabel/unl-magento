@@ -31,7 +31,7 @@ class Unl_Inventory_Catalog_InventoryController extends Mage_Adminhtml_Controlle
         }
         $product = Mage::getModel('catalog/product')->load($productId);
         
-        if ($product->getId()) {
+        if (!$product->getId()) {
             return null;
         }
 
