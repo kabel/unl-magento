@@ -61,7 +61,7 @@ class Unl_Core_Model_Sales_Order_Invoice extends Mage_Sales_Model_Order_Invoice
     {
         $this->setState(self::STATE_WRITEOFF);
         $this->getOrder()->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true);
-        Mage::dispatchEvent('sales_order_invoice_cancel', array($this->_eventObject=>$this));
+        Mage::dispatchEvent('sales_order_invoice_writeoff', array($this->_eventObject=>$this));
         return $this;
     }
 
