@@ -30,6 +30,10 @@ class Unl_Inventory_Catalog_InventoryController extends Mage_Adminhtml_Controlle
             return null;
         }
         $product = Mage::getModel('catalog/product')->load($productId);
+        
+        if ($product->getId()) {
+            return null;
+        }
 
         $flags = new Varien_Object(array('denied' => false));
         Mage::dispatchEvent('unl_inventory_controller_product_init', array('product' => $product, 'flags' => $flags));
