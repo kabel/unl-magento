@@ -94,8 +94,8 @@ class Unl_AdminLog_Model_Config
             $eventDef = $config->log_events->$event;
             foreach ($this->_configActionsMap as $actionElem => $actionVal) {
                 if (isset($eventDef->$actionElem, $eventDef->$actionElem->$actionName)) {
-                    if ($eventDef->$actionElem->$actionName['condition']) {
-                        $condParam = (string) $eventDef->$actionElem->$actionName['condition'];
+                    if ($eventDef->$actionElem->{$actionName}['condition']) {
+                        $condParam = (string) $eventDef->$actionElem->{$actionName}['condition'];
                         if (!$request->getParam($condParam, false)) {
                             continue;
                         }
