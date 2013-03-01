@@ -19,6 +19,16 @@ class Unl_Inventory_Model_Resource_Audit_Collection extends Mage_Core_Model_Reso
 
 	    return $this;
 	}
+	
+	public function addPurchaseFilter($purchaseId)
+	{
+	    $adapter = $this->getConnection();
+	    $this->join(
+	        array('pa' => 'unl_inventory/purchase_audit'), 
+	        'main_table.audit_id = pa.audit_id AND ' . $adapter->quoteInto('pa.purchase_id = ?', $purchaseId), 
+	        array('qty_affected' => 'qty')
+        );
+	}
 
 	/**
 	 * Adds a cost per item expression to the selected collection
@@ -29,20 +39,6 @@ class Unl_Inventory_Model_Resource_Audit_Collection extends Mage_Core_Model_Reso
 	{
 	    $this->addExpressionFieldToSelect('cost_per_item', 'IF({{amount}}, {{amount}} / {{qty}}, NULL)',
 	        array('amount' => 'amount', 'qty' => 'qty'));
-
-	    return $this;
-	}
-
-	/**
-	 * Sets the select statement to show audited products
-	 *
-	 * @return Unl_Inventory_Model_Resource_Audit_Collection
-	 */
-	public function selectProducts()
-	{
-	    $select = $this->getSelect()->reset(Zend_Db_Select::COLUMNS);
-	    $select->columns(array('product_id'))
-	        ->group('product_id');
 
 	    return $this;
 	}
