@@ -4,12 +4,11 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 {
     public function getQtyOnHand($productId)
     {
-        $collection = Mage::getResourceModel('unl_inventory/index_collection')
-            ->addProductFilter($productId)
-            ->selectQtyOnHand();
-
-        foreach ($collection as $row) {
-            return $row->getQty();
+        $resource = Mage::getResourceSingleton('unl_inventory/purchase');
+        
+        $qty = $resource->loadQtyOnHand($productId);
+        if ($qty) {
+            return $qty;
         }
 
         return 0;
@@ -28,6 +27,14 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return 0;
+    }
+    
+    public function productHasAudits($productId)
+    {
+        $collection = Mage::getResourceModel('unl_inventory/index_collection')
+            ->addFieldToFilter('product_id', $productId);
+        
+        return $collection->getSize() > 0;
     }
 
     public function isAllowedInventoryEdit()
