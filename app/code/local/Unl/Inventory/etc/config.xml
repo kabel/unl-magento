@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Unl_Inventory>
-            <version>0.2.0</version>
+            <version>0.2.1</version>
         </Unl_Inventory>
     </modules>
     
@@ -36,6 +36,16 @@
                     <audit>
                         <table>unl_inventory_audit</table>
                     </audit>
+                    <purchase>
+                        <table>unl_inventory_purchase</table>
+                    </purchase>
+                    <backorder>
+                        <table>unl_inventory_backorder</table>
+                    </backorder>
+                    <purchase_audit>
+                        <table>unl_inventory_purchase_audit</table>
+                    </purchase_audit>
+                    <!-- Following DEPRECATED -->
                     <index>
                         <table>unl_inventory_index</table>
                     </index>
