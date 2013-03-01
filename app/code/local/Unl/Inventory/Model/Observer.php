@@ -31,11 +31,7 @@ class Unl_Inventory_Model_Observer
                 $product->setCost($helper->getIndexProductCost($product->getId()));
                 $stockData['qty'] = $helper->getQtyOnHand($product->getId());
 
-                $collection = Mage::getModel('unl_inventory/audit')
-                    ->getCollection()
-                    ->addFieldToFilter('product_id', $product->getId());
-
-                if ($collection->getSize()) {
+                if ($helper->productHasAudits($product->getId())) {
                     $this->_logAuditNote($product->getId(), $helper->__('Inventory auditing has been restarted'));
                 }
             } else {
@@ -94,7 +90,7 @@ class Unl_Inventory_Model_Observer
             if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy()) {
                 continue;
             }
-            
+
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
             if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 continue;
@@ -105,47 +101,10 @@ class Unl_Inventory_Model_Observer
                 'product_id' => $item->getProductId(),
                 'type' => Unl_Inventory_Model_Audit::TYPE_SALE,
                 'qty' => $item->getQty() * -1,
-                'amount' => $item->getQty() * $item->getBaseCost() * -1
+                'amount' => $item->getQty() * $item->getBaseCost() * -1,
+                'invoice_item' => $item,
             ));
             $auditLogs[] = $auditLog;
-
-            // TODO?: Check for backordered items and reassign cost
-
-            // check to see if we need to update the order item product cost (if spans multiple indexes)
-            if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG) {
-                continue;
-            }
-
-            $indexes = Mage::getResourceModel('unl_inventory/index_collection')
-                ->addProductFilter($product->getId())
-                ->addAccountingOrder($accounting)
-                ->load();
-
-            $costAmount = 0;
-            $qty = $item->getQty();
-            foreach ($indexes as $index) {
-                if ($qty > $index->getQtyOnHand()) {
-                    $costAmount += $index->getAmount();
-                    $qty -= $index->getQtyOnHand();
-                } else {
-                    if ($costAmount) {
-                        $costAmount += $index->getAmount() / $index->getQtyOnHand() * $qty;
-                    }
-                    break;
-                }
-            }
-
-            if ($costAmount) {
-                $cost = $costAmount / $item->getQty();
-                $item->setBaseCost($cost);
-                $item->setCost($cost * $order->getBaseToOrderRate());
-                $item->getOrderItem()->setBaseCost($cost);
-                $item->getOrderItem()->setCost($cost * $order->getBaseToOrderRate());
-            } else {
-                $costAmount = $item->getQty() * $item->getBaseCost();
-            }
-
-            $auditLog->setAmount($costAmount * -1);
         }
 
         if ($auditLogs) {
@@ -173,7 +132,7 @@ class Unl_Inventory_Model_Observer
             if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy()) {
                 continue;
             }
-            
+
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
             if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 continue;
@@ -184,7 +143,8 @@ class Unl_Inventory_Model_Observer
                 'product_id' => $item->getProductId(),
                 'type' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
                 'qty' => $item->getQty(),
-                'amount' => $item->getBaseCost() * $item->getQty()
+                'amount' => $item->getBaseCost() * $item->getQty(),
+                'invoice_item' => $item,
             ));
             $auditLogs[] = $auditLog;
         }
@@ -208,14 +168,22 @@ class Unl_Inventory_Model_Observer
         if ($auditLogs = $invoice->getAuditLogs()) {
             $note = Mage::helper('unl_inventory')->__('Order # %s , Invoice # %s', $invoice->getOrder()->getRealOrderId(), $invoice->getIncrementId());
             $now = Mage::getSingleton('core/date')->gmtDate();
+            $changeModel = Mage::getSingleton('unl_inventory/change');
+
             if ($invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
                 $note .= ' [' . Mage::helper('unl_inventory')->__('CANCELED') . ']';
             }
+
             foreach ($auditLogs as $auditLog) {
-                $auditLog->setRegisterFlag(true)
+                if ($auditLog->getInvoiceItem()) {
+                    $auditLog->setInvoiceItemId($auditLog->getInvoiceItem()->getId());
+                }
+
+                $auditLog
                     ->setNote($note)
-                    ->setCreatedAt($now)
-                    ->save();
+                    ->setCreatedAt($now);
+
+                $changeModel->adjustInventory($auditLog);
             }
         }
 
@@ -240,7 +208,7 @@ class Unl_Inventory_Model_Observer
             if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy() || !$item->getBackToStock()) {
                 continue;
             }
-            
+
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
             if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 continue;
@@ -251,7 +219,8 @@ class Unl_Inventory_Model_Observer
                 'product_id' => $item->getProductId(),
                 'type' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
                 'qty' => $item->getQty(),
-                'amount' => $item->getBaseCost() * $item->getQty()
+                'amount' => $item->getBaseCost() * $item->getQty(),
+                'creditmemo_item' => $item,
             ));
             $auditLogs[] = $auditLog;
         }
@@ -276,11 +245,18 @@ class Unl_Inventory_Model_Observer
         if ($auditLogs = $creditmemo->getAuditLogs()) {
             $note = Mage::helper('unl_inventory')->__('Order # %s , Creditmemo # %s', $creditmemo->getOrder()->getRealOrderId(), $creditmemo->getIncrementId());
             $now = Mage::getSingleton('core/date')->gmtDate();
+            $changeModel = Mage::getSingleton('unl_inventory/change');
+
             foreach ($auditLogs as $auditLog) {
-                $auditLog->setRegisterFlag(true)
+                if ($auditLog->getCreditmemoItem()) {
+                    $auditLog->setCreditmemoItemId($auditLog->getCreditmemoItem()->getId());
+                }
+
+                $auditLog
                     ->setNote($note)
-                    ->setCreatedAt($now)
-                    ->save();
+                    ->setCreatedAt($now);
+
+                $changeModel->adjustInventory($auditLog);
             }
         }
 
@@ -317,6 +293,7 @@ class Unl_Inventory_Model_Observer
      * @param Varien_Event_Observer $observer
      * @return Unl_Inventory_Model_Observer
      */
+    //TODO: Completely redo
     public function onInventoryConfigChange($observer)
     {
         $updateCost = 0;
