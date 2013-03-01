@@ -30,7 +30,7 @@ class Unl_Inventory_Catalog_InventoryController extends Mage_Adminhtml_Controlle
             return null;
         }
         $product = Mage::getModel('catalog/product')->load($productId);
-        
+
         if (!$product->getId()) {
             return null;
         }
@@ -80,26 +80,15 @@ class Unl_Inventory_Catalog_InventoryController extends Mage_Adminhtml_Controlle
             return $this->_redirect('*/*/');
         }
 
-        $redirectBack   = $this->getRequest()->getParam('back', false);
+        $redirectBack = $this->getRequest()->getParam('back', false);
 
         try {
             if (!Mage::helper('unl_inventory')->getIsAuditInventory($product)) {
                 Mage::throwException($this->__("This product's inventory is currently not being audited. Save failed."));
             }
 
-            $auditLog = Mage::getModel('unl_inventory/audit');
-            $auditLog->setData($data['adjust']);
-            $auditLog->setProduct($product);
-            $auditLog->setProductId($product->getId());
-
-            $result = $auditLog->validate();
-            if (is_string($result)) {
-                Mage::throwException($result);
-            }
-
-            $auditLog->setRegisterFlag(true)
-                ->setCreatedAt(Mage::getSingleton('core/date')->gmtDate())
-                ->save();
+            $handler = Mage::getSingleton('unl_inventory/change');
+            $handler->handlePost($product, $data['adjust']);
 
             Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('unl_inventory')->__('The inventory update has been logged.'));
 
