@@ -24,7 +24,7 @@ class Unl_Inventory_Block_Products_Grid extends Mage_Adminhtml_Block_Widget_Grid
 
         Mage::helper('unl_core')->addProductAdminScopeFilters($collection);
 
-        $collection->joinAuditAndIndex();
+        $collection->joinAuditAndStock();
 
         $this->setCollection($collection);
 
