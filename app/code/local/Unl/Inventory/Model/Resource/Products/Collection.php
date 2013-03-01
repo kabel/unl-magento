@@ -45,20 +45,23 @@ class Unl_Inventory_Model_Resource_Products_Collection extends Mage_Catalog_Mode
         return $this;
     }
 
-    public function joinAuditAndIndex()
+    public function joinAuditAndStock()
     {
-        $auditSelect = Mage::getModel('unl_inventory/audit')->getCollection()->selectProducts()->getSelect();
-        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectQtyOnHand()->getSelect();
+        $auditSelect = Mage::getResourceModel('unl_inventory/audit')->getProductsSelect();
+        $purchaseSelect = Mage::getResourceModel('unl_inventory/purchase')->getOnHandSelect();
+        $backorderSelect = Mage::getResourceModel('unl_inventory/backorder')->getBackorderedSelect();
 
         $adapter   = $this->getConnection();
         $auditExpr = $this->getAuditExpression();
 
         $this->getSelect()
             ->joinLeft(array('ia' => $auditSelect), 'ia.product_id=e.entity_id', array())
-            ->joinLeft(array('ii' => $indexSelect), 'ii.product_id=e.entity_id', array());
+            ->joinLeft(array('ip' => $purchaseSelect), 'ip.product_id=e.entity_id', array())
+            ->joinLeft(array('ib' => $backorderSelect), 'ib.product_id=e.entity_id', array());
 
+        $onHandExpr = $adapter->getIfNullSql('ip.qty_stocked', '0') . ' - ' . $adapter->getIfNullSql('ib.qty_backordered', '0');
         $this->addExpressionAttributeToSelect('qty_on_hand',
-            $adapter->getCheckSql($auditExpr, $adapter->getIfNullSql('ii.qty', '0'), 'cisi.qty'), array('audit_inventory'));
+            $adapter->getCheckSql($auditExpr, $onHandExpr, 'cisi.qty'), array('audit_inventory'));
 
         $this->getSelect()->where('(ia.product_id IS NOT NULL OR ' .
             str_replace('{{audit_inventory}}', $this->_getAttributeFieldName('audit_inventory'), $auditExpr) . ')');
