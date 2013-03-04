@@ -28,10 +28,10 @@ class Unl_Inventory_Model_Observer
         if (!$wasAudit && $isAudit) {
             $stockData = $product->getStockData();
             if ($product->getId()) {
-                $product->setCost($helper->getIndexProductCost($product->getId()));
-                $stockData['qty'] = $helper->getQtyOnHand($product->getId());
+                $product->setCost($helper->getProductPurchaseCost($product));
+                $stockData['qty'] = $helper->getQtyOnHand($product);
 
-                if ($helper->productHasAudits($product->getId())) {
+                if ($helper->productHasAudits($product)) {
                     $this->_logAuditNote($product->getId(), $helper->__('Inventory auditing has been restarted'));
                 }
             } else {

@@ -115,18 +115,36 @@ class Unl_Inventory_Model_Change
         }
     }
 
+    public function getProductPurchaseCost($product)
+    {
+        $purchases = $this->_getPurchaseCollection($product);
+        $purchases->setPageSize(1);
+
+        foreach ($purchases as $purchase) {
+            return $purchase->getCostPerItem();
+        }
+
+        return 0;
+    }
+
     /**
      * Get a sorted collection of active purchases for a product
      *
-     * @param Mage_Catalog_Model_Product $product
+     * @param Mage_Catalog_Model_Product|int $product
      * @return Unl_Inventory_Model_Resource_Purchase_Collection
      */
     protected function _getPurchaseCollection($product)
     {
+        if (is_int($product)) {
+            $productId = $product;
+        } else {
+            $productId = $product->getId();
+        }
+
         $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
         $purchases = Mage::getResourceModel('unl_inventory/purchase_collection')
             ->addActiveFilter()
-            ->addProductFilter($product->getId())
+            ->addProductFilter($productId)
             ->addAccountingOrder($accounting);
 
         return $purchases;

@@ -2,10 +2,16 @@
 
 class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    public function getQtyOnHand($productId)
+    public function getQtyOnHand($product)
     {
+        if (is_int($product)) {
+            $productId = $product;
+        } else {
+            $productId = $product->getId();
+        }
+
         $resource = Mage::getResourceSingleton('unl_inventory/purchase');
-        
+
         $qty = $resource->loadQtyOnHand($productId);
         if ($qty) {
             return $qty;
@@ -14,26 +20,16 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
         return 0;
     }
 
-    public function getIndexProductCost($productId)
+    public function getProductPurchaseCost($product)
     {
-        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
-        $collection = Mage::getResourceModel('unl_inventory/index_collection')
-            ->addProductFilter($productId)
-            ->addAccountingOrder($accounting)
-            ->setPageSize(1);
-
-        foreach ($collection as $index) {
-            return $index->getAmount() / $index->getQtyOnHand();
-        }
-
-        return 0;
+        return Mage::getSingleton('unl_inventory/change')->getProductPurchaseCost($product);
     }
-    
-    public function productHasAudits($productId)
+
+    public function productHasAudits($product)
     {
-        $collection = Mage::getResourceModel('unl_inventory/index_collection')
-            ->addFieldToFilter('product_id', $productId);
-        
+        $collection = Mage::getResourceModel('unl_inventory/audit_collection')
+            ->addProductFilter($product);
+
         return $collection->getSize() > 0;
     }
 
