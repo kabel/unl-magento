@@ -35,6 +35,37 @@ class Unl_Inventory_Model_Resource_Purchase extends Mage_Core_Model_Resource_Db_
 	    return $select;
 	}
 
+	public function getNewProductCostSelect()
+	{
+	    $adapter = $this->_getWriteAdapter();
+	    $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
+
+	    $select = $adapter->select()
+	        ->from($this->getMainTable(), array(
+                'product_id',
+	            'next_at' => ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_LIFO ? 'MAX' : 'MIN') . '(created_at)')
+            )
+            ->where('qty_on_hand > 0')
+            ->group('product_id');
+
+        $select = $adapter->select()
+            ->from(array('next_purchase' => $this->getMainTable()), array('purchase_id' => 'MIN(purchase_id)'))
+            ->join(array('next_out' => $select),
+                'next_purchase.product_id = next_out.product_id AND next_purchase.created_at = next_out.next_at',
+                 array())
+            ->group('next_purchase.product_id');
+
+        $select = $adapter->select()
+            ->from(array('main_table' => $this->getMainTable()), array(
+                'product_id',
+                'new_cost' => '(amount_remaining / qty_on_hand)'
+            ))
+            ->join(array('purchase_index' => $select), 'purchase_index.purchase_id = main_table.purchase_id',
+                array());
+
+        return $select;
+	}
+
 	public function mergeRemainingPurchases()
 	{
 	    $adapter = $this->_getWriteAdapter();
@@ -45,7 +76,7 @@ class Unl_Inventory_Model_Resource_Purchase extends Mage_Core_Model_Resource_Db_
     	        'SUM(qty_on_hand)',
     	        'SUM(amount_remaining)',
             ))
-            ->where('qty_on_hand > ?', 0)
+            ->where('qty_on_hand > 0')
 	        ->group('product_id');
 
         $adapter->beginTransaction();

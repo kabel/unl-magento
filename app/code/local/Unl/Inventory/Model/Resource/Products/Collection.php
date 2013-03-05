@@ -69,6 +69,16 @@ class Unl_Inventory_Model_Resource_Products_Collection extends Mage_Catalog_Mode
         return $this;
     }
 
+    public function joinNewCost()
+    {
+        $costSelect = Mage::getResourceModel('unl_inventory/purchase')->getNewProductCostSelect();
+
+        $this->getSelect()
+            ->joinLeft(array('ic' => $costSelect), 'ic.product_id=e.entity_id', array('new_cost'));
+
+        return $this;
+    }
+
     public function addManageStockFilter()
     {
         $this->getSelect()->where('cisi.use_config_manage_stock');

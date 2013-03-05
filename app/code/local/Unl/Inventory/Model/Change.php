@@ -348,6 +348,7 @@ class Unl_Inventory_Model_Change
             $products = Mage::getResourceModel('unl_inventory/products_collection');
             $products
                 ->addAttributeToFilter('audit_inventory', true)
+                ->joinNewCost()
                 ->setPage(1, 1000)
                 ->setFlag('require_stock_items', true);
 
@@ -355,7 +356,7 @@ class Unl_Inventory_Model_Change
                 foreach ($products as $product) {
                     $product
                         ->setCostFlag(true)
-                        ->setCost($helper->getProductPurchaseCost($product))
+                        ->setCost($product->getNewCost())
                         ->save();
                 }
 
