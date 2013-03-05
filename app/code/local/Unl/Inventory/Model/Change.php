@@ -135,7 +135,7 @@ class Unl_Inventory_Model_Change
      */
     protected function _getPurchaseCollection($product)
     {
-        if (is_int($product)) {
+        if (is_numeric($product)) {
             $productId = $product;
         } else {
             $productId = $product->getId();

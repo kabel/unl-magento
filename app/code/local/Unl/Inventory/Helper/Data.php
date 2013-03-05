@@ -4,7 +4,7 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 {
     public function getQtyOnHand($product)
     {
-        if (is_int($product)) {
+        if (is_numeric($product)) {
             $productId = $product;
         } else {
             $productId = $product->getId();
