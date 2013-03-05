@@ -67,7 +67,6 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Audit extends Mage_Adminhtml_Block_
 
          $this->addColumn('note', array(
              'header'    =>  Mage::helper('unl_inventory')->__('Note'),
-//             'filter'    =>  false,
              'sortable'  =>  false,
              'index'     =>  'note',
         ));
@@ -81,5 +80,10 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Audit extends Mage_Adminhtml_Block_
     public function getGridUrl()
     {
         return $this->getUrl('*/*/auditGrid', array('_current' => true));
+    }
+
+    public function getRowUrl($item)
+    {
+        return false;
     }
 }
