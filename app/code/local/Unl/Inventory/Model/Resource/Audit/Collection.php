@@ -19,15 +19,17 @@ class Unl_Inventory_Model_Resource_Audit_Collection extends Mage_Core_Model_Reso
 
 	    return $this;
 	}
-	
+
 	public function addPurchaseFilter($purchaseId)
 	{
 	    $adapter = $this->getConnection();
 	    $this->join(
-	        array('pa' => 'unl_inventory/purchase_audit'), 
-	        'main_table.audit_id = pa.audit_id AND ' . $adapter->quoteInto('pa.purchase_id = ?', $purchaseId), 
-	        array('qty_affected' => 'qty')
+	        array('pa' => 'unl_inventory/purchase_audit'),
+	        'main_table.audit_id = pa.audit_id AND ' . $adapter->quoteInto('pa.purchase_id = ?', $purchaseId),
+	        array('qty_affected')
         );
+
+	    return $this;
 	}
 
 	/**
