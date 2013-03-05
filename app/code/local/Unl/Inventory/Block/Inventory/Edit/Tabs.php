@@ -13,14 +13,20 @@ class Unl_Inventory_Block_Inventory_Edit_Tabs extends Mage_Adminhtml_Block_Widge
 
     protected function _beforeToHtml()
     {
-        if (Mage::helper('unl_inventory')->isAllowedInventoryEdit()
-            && Mage::helper('unl_inventory')->getIsAuditInventory(Mage::registry('current_product'))) {
-
-            $this->addTab('adjustment', array(
-                'label'     => Mage::helper('unl_inventory')->__('Purchase/Adjustment'),
-                'content'   => $this->getLayout()->createBlock('unl_inventory/inventory_edit_tab_inventory')->initForm()->toHtml(),
-            ));
+        if (Mage::helper('unl_inventory')->isAllowedInventoryEdit()) {
+            if (Mage::helper('unl_inventory')->getIsAuditInventory(Mage::registry('current_product'))) {
+                $this->addTab('adjustment', array(
+                    'label'     => Mage::helper('unl_inventory')->__('Purchase/Adjustment'),
+                    'content'   => $this->getLayout()->createBlock('unl_inventory/inventory_edit_tab_inventory')->initForm()->toHtml(),
+                ));
+            }
         }
+
+        $this->addTab('purchases', array(
+            'label'     => Mage::helper('unl_inventory')->__('Purchase History'),
+            'class'     => 'ajax',
+            'url'       => $this->getUrl('*/*/purchasesGrid', array('_current' => true)),
+        ));
 
         $this->addTab('audit', array(
             'label'     => Mage::helper('unl_inventory')->__('Audit Trail'),
