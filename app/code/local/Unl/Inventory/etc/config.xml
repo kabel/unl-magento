@@ -45,13 +45,13 @@
                     <purchase_audit>
                         <table>unl_inventory_purchase_audit</table>
                     </purchase_audit>
+                    <index_tmp>
+                        <table>unl_inventory_index_tmp</table>
+                    </index_tmp>
                     <!-- Following DEPRECATED -->
                     <index>
                         <table>unl_inventory_index</table>
                     </index>
-                    <index_tmp>
-                        <table>unl_inventory_index_tmp</table>
-                    </index_tmp>
                     <index_idx>
                         <table>unl_inventory_index_idx</table>
                     </index_idx>

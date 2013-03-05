@@ -7,13 +7,9 @@ $installer->startSetup();
 /**
  * Drop unneeded tables
  */
-$dropTables = array(
-    'unl_inventory_index_tmp',
-    'unl_inventory_index_idx'
-);
-foreach ($dropTables as $table) {
-    $installer->getConnection()->dropTable($installer->getTable($table));
-}
+$installer->getConnection()->dropTable($installer->getTable('unl_inventory_index_idx'));
+
+$installer->getConnection()->dropColumn($installer->getTable('unl_inventory/index_tmp'), 'created_at');
 
 /**
  * Rename table

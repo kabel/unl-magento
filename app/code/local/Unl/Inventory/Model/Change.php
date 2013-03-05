@@ -315,4 +315,53 @@ class Unl_Inventory_Model_Change
         $purchase->save();
         $audit->save();
     }
+
+    public function handleConfigChange($oldManageStock, $oldAccounting)
+    {
+        $configManageStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
+        if ($oldManageStock != $configManageStock && !$configManageStock) {
+            // batch 1000 products
+            $products = Mage::getResourceModel('unl_inventory/products_collection');
+            $products
+                ->addAttributeToFilter('audit_inventory', true)
+                ->addManageStockFilter()
+                ->setPage(1, 1000)
+                ->setFlag('require_stock_items', true);
+
+            for ($i = 1; $i <= $products->getLastPageNumber(); $i++) {
+                foreach ($products as $product) {
+                    $product->setAuditInventory(false)->save();
+                }
+
+                $products->clear();
+                $products->setCurPage($i + 1);
+            }
+        }
+
+        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
+        if ($oldAccounting != $accounting) {
+            if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG) {
+                Mage::getResourceSingleton('unl_inventory/purchase')->mergeRemainingPurchases();
+            }
+
+            $helper = Mage::helper('unl_inventory');
+            $products = Mage::getResourceModel('unl_inventory/products_collection');
+            $products
+                ->addAttributeToFilter('audit_inventory', true)
+                ->setPage(1, 1000)
+                ->setFlag('require_stock_items', true);
+
+            for ($i = 1; $i <= $products->getLastPageNumber(); $i++) {
+                foreach ($products as $product) {
+                    $product
+                        ->setCostFlag(true)
+                        ->setCost($helper->getProductPurchaseCost($product))
+                        ->save();
+                }
+
+                $products->clear();
+                $products->setCurPage($i + 1);
+            }
+        }
+    }
 }

@@ -35,9 +35,58 @@ class Unl_Inventory_Model_Resource_Purchase extends Mage_Core_Model_Resource_Db_
 	    return $select;
 	}
 
-	public function publishAvg($product)
+	public function mergeRemainingPurchases()
 	{
-	    Mage::throwException('Not implemented');
-	    //TODO: Save product cost from average calculation
+	    $adapter = $this->_getWriteAdapter();
+
+	    $select = $adapter->select()
+	        ->from($this->getMainTable(), array(
+    	        'product_id',
+    	        'SUM(qty_on_hand)',
+    	        'SUM(amount_remaining)',
+            ))
+            ->where('qty_on_hand > ?', 0)
+	        ->group('product_id');
+
+        $adapter->beginTransaction();
+        try {
+            $adapter->query($select->insertFromSelect($this->getTable('unl_inventory/index_tmp')));
+
+            $adapter->update($this->getMainTable(), array(
+                'qty_on_hand' => 0,
+                'amount_remaining' => 0,
+                'qty' => new Zend_Db_Expr('(qty - qty_on_hand)'),
+                'amount' => new Zend_Db_Expr('(amount - amount_remaining)'),
+            ), array(
+                'qty_on_hand > ?' => 0
+            ));
+
+            $select = $adapter->select()
+                ->from($this->getTable('unl_inventory/index_tmp'), array(
+                    'product_id',
+                    'qty_on_hand',
+                    'amount_remaining' => 'amount',
+                    'created_at' => new Zend_Db_Expr("'" . Mage::getSingleton('core/date')->gmtDate() . "'"),
+                    'qty' => 'qty_on_hand',
+                    'amount' => 'amount'
+                ));
+            $adapter->query($select->insertFromSelect($this->getMainTable(), array(
+                'product_id',
+                'qty_on_hand',
+                'amount_remaining',
+                'created_at',
+                'qty',
+                'amount',
+            )));
+
+            $adapter->commit();
+        } catch (Exception $e) {
+            $adapter->rollBack();
+            throw $e;
+        }
+
+        $adapter->truncateTable($this->getTable('unl_inventory/index_tmp'));
+
+        return $this;
 	}
 }
