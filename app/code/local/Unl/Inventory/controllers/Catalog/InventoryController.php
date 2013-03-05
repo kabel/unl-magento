@@ -107,10 +107,18 @@ class Unl_Inventory_Catalog_InventoryController extends Mage_Adminhtml_Controlle
         $this->_redirect('*/*/');
     }
 
+    public function purchasesGridAction()
+    {
+        $this->_initProduct();
+        $this->loadLayout()
+            ->renderLayout();
+    }
+
     public function auditGridAction()
     {
         $this->_initProduct();
-        $this->getResponse()->setBody($this->getLayout()->createBlock('unl_inventory/inventory_edit_tab_audit')->toHtml());
+        $this->loadLayout()
+            ->renderLayout();
     }
 
     public function exportAuditCsvAction()
