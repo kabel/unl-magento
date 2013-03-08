@@ -32,6 +32,14 @@ class Unl_Inventory_Model_Resource_Audit_Collection extends Mage_Core_Model_Reso
 	    return $this;
 	}
 
+	public function addBackorderFilter($backorder)
+	{
+	    $this->addFieldToFilter('invoice_item_id', $backorder->getParentId());
+	    $this->addFieldToFilter('type', Unl_Inventory_Model_Audit::TYPE_SALE);
+
+	    return $this;
+	}
+
 	/**
 	 * Adds a cost per item expression to the selected collection
 	 *

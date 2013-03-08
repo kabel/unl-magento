@@ -83,6 +83,34 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 	    return $this->getAmount() / $this->getQty();
 	}
 
+	/**
+	 * Gets the related invoice item object
+	 *
+	 * @return Mage_Sales_Model_Order_Invoice_Item
+	 */
+	public function getInvoiceItem()
+	{
+	    if (!$this->hasInvoiceItem() && $this->hasInvoiceItemId()) {
+	        $this->setInvoiceItem(Mage::getModel('sales/order_invoice_item')->load($this->getInvoiceItemId()));
+	    }
+
+	    return $this->getData('invoice_item');
+	}
+
+	/**
+	 * Gets the related creditmemo item object
+	 *
+	 * @return Mage_Sales_Model_Order_Creditmemo_Item
+	 */
+	public function getCreditmemoItem()
+	{
+	    if (!$this->hasCreditmemoItem() && $this->hasCreditmemoItemId()) {
+	        $this->setCreditmemoItem(Mage::getModel('sales/order_creditmemo_item')->load($this->getCreditmemoItemId()));
+	    }
+
+	    return $this->getData('creditmemo_item');
+	}
+
 	public function syncItemCost()
 	{
 	    if ($this->getInvoiceItem()) {

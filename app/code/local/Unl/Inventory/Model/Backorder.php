@@ -17,7 +17,24 @@ class Unl_Inventory_Model_Backorder extends Mage_Core_Model_Abstract
      */
     public function handlePurchase($purchase, $qty, $amount)
     {
-        Mage::throwException('Not implemented yet');
-        //TODO: Fetch associations (invoice items, audits) and update (re-link to purchase), then delete if qty covered
+        $audits = Mage::getResourceModel('unl_inventory/audit_collection');
+        $audits->addBackorderFilter($this);
+
+        /* @var $audit Unl_Inventory_Model_Audit */
+        foreach ($audits as $audit) {
+            $audit->setAmount($audit->getAmount() - $amount);
+            $audit->syncItemCost();
+            $audit->setPurchaseAssociations(array(
+                array('purchase' => $purchase, 'qty' => $qty)
+            ));
+            break;
+        }
+
+        $this->setQty($this->getQty() - $qty);
+        if ($this->getQty() <= 0) {
+            $this->isDeleted(true);
+        }
+
+        $this->save();
     }
 }

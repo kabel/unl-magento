@@ -234,8 +234,27 @@ class Unl_Inventory_Model_Change
             }
         }
 
+        if ($qty < 0) {
+            if (!$isSale) {
+                Mage::throwException('This inventory change will result in a backorder, which is not allowed.');
+            }
+
+            if (!$actualCost) {
+                $actualCost = $audit->getAmount() * -1;
+                $actualCost += $audit->getCostPerItem() * $qty;
+            }
+
+            $backorder = Mage::getModel('unl_inventory/backorder');
+            $backorder->setData(array(
+                'product_id' => $product->getId(),
+                'qty' => $qty * -1,
+                'parent_id' => $audit->getInvoiceItemId(),
+            ));
+            $backorder->save();
+        }
+
         if ($isSale) {
-            if ($actualCost && $actualCost != $audit->getAmount()) {
+            if ($actualCost && ($actualCost * -1) != $audit->getAmount()) {
                 $audit->setAmount($actualCost * -1);
                 $audit->syncItemCost();
             }
@@ -243,19 +262,7 @@ class Unl_Inventory_Model_Change
             $audit->setPurchaseAssociations($auditPurchases);
         }
 
-        if ($qty < 0) {
-            if (!$isSale) {
-                Mage::throwException('This inventory change will result in a backorder, which is not allowed.');
-            }
-
-            $backorder = Mage::getModel('unl_inventory/backorder');
-            $backorder->setData(array(
-                'product_id' => $product->getId(),
-                'qty' => $qty,
-                'parent_id' => $audit->getInvoiceItemId(),
-            ));
-            $backorder->save();
-        } elseif ($republish) {
+        if ($qty >= 0 && $republish) {
             foreach ($purchases as $purchase) {
                 if (!$purchase->canPublish()) {
                     continue;
