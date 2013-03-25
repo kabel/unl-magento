@@ -63,23 +63,20 @@ class Unl_Inventory_Catalog_Inventory_PurchaseController extends Mage_Adminhtml_
         }
 
         try {
-            //TODO: Implement purchase amount validation and change
-            Mage::throwException('Not yet implemented');
+            $updateData = new Varien_Object($data['purchase']);
 
-            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('unl_inventory')->__('The inventory update has been logged.'));
-
-            if ($redirectBack) {
-                return $this->_redirect('*/*/edit', array(
-                    'id'    => $product->getId(),
-                    '_current'=>true
-                ));
+            if ((float)$updateData->getAmount() < 0) {
+                Mage::throwException('Purchase cost must be positive');
             }
+
+            $purchase->updateCost($updateData);
+            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('unl_inventory')->__('The inventory purchase has been updated.'));
         } catch (Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             return $this->_redirect('*/*/edit', array('id'=>$purchase->getId(), '_current'=>true));
         }
 
-        $this->_redirect('*/*/');
+        $this->_redirect('*/catalog_inventory/edit', array('id' => $purchase->getProduct()->getId()));
     }
 
     public function auditGridAction()

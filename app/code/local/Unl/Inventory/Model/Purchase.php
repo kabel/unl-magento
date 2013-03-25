@@ -118,6 +118,7 @@ class Unl_Inventory_Model_Purchase extends Mage_Core_Model_Abstract
         }
 
         if (!empty($this->_audits)) {
+            /* @var $audit Unl_Inventory_Model_Audit */
             foreach ($this->_audits as $audit) {
                 if (!$audit->hasPurchase()) {
                     $audit->setPurchaseAssociations(array(
@@ -126,6 +127,10 @@ class Unl_Inventory_Model_Purchase extends Mage_Core_Model_Abstract
                 }
 
                 $audit->save();
+
+                if ($this->getReSyncAudits()) {
+                    $audit->syncItemCost();
+                }
             }
         }
 
@@ -201,5 +206,106 @@ class Unl_Inventory_Model_Purchase extends Mage_Core_Model_Abstract
         }
 
         return $cost;
+    }
+
+    public function getOriginalCostPerItem()
+    {
+        return $this->getAmount() / $this->getQty();
+    }
+
+    /**
+     * Gets the current purchase used for inventory costing
+     *
+     * @return Unl_Inventory_Model_Purchase
+     */
+    public function getNextOutFromCollection()
+    {
+        return Mage::helper('unl_inventory')
+            ->getActiveProductPurchases($this->getProductId(), 1)
+            ->getFirstItem();
+    }
+
+    public function updateCost(Varien_Object $data)
+    {
+        if (!$this->getId()) {
+            return $this;
+        }
+
+        if ($this->getNextOutFromCollection()->getId() == $this->getId()) {
+            $this->setTryPublish(true);
+            $this->setForcePublish(true);
+        }
+
+        $oldCostPerItem = $this->getOriginalCostPerItem();
+        $oldAmount = $this->getAmount();
+
+        $this->setAmount($data->getAmount());
+
+        $origCostPerItem = $this->getOriginalCostPerItem();
+        $this->setAmountRemaining($this->getQtyOnHand() * $origCostPerItem);
+
+        /* @var $transaction Mage_Core_Model_Resource_Transaction */
+        $transaction = Mage::getResourceModel('core/transaction');
+        $audits = $this->getAuditCollection();
+
+        if (count($audits)) {
+            $this->setReSyncAudits(true);
+
+            /* @var $audit Unl_Inventory_Model_Audit */
+            foreach ($this->getAuditCollection() as $audit) {
+                switch ($audit->getType()) {
+                    case Unl_Inventory_Model_Audit::TYPE_PURCHASE:
+                    case Unl_Inventory_Model_Audit::TYPE_ADJUSTMENT:
+                        if ((float)$this->getAmount() == 0) {
+                            $audit->setType(Unl_Inventory_Model_Audit::TYPE_ADJUSTMENT);
+                        } else {
+                            $audit->setType(Unl_Inventory_Model_Audit::TYPE_PURCHASE);
+                        }
+
+                        if ($data->getNote()) {
+                            $msg = "\n\n" . '[UPDATED ' . Mage::helper('core')->formatDate(null,
+                                Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, true) . '] - ' . $data->getNote();
+
+                            $audit->setNote($audit->getNote() . $msg);
+                        }
+                        // intentional no-break
+                    case Unl_Inventory_Model_Audit::TYPE_SALE:
+                    case Unl_Inventory_Model_Audit::TYPE_CREDIT:
+                        $multiplier = $audit->getType() == Unl_Inventory_Model_Audit::TYPE_SALE ? 1 : -1;
+
+                        if ($audit->getQtyAffected() == $this->getQty()) {
+                            $audit->setAmount($audit->getAmount() + $multiplier * ($oldAmount - $this->getAmount()));
+                        } else {
+                            $audit->setAmount($audit->getAmount() + $multiplier * (
+                                ($oldCostPerItem * $audit->getQtyAffected()) - ($origCostPerItem * $audit->getQtyAffected())));
+                        }
+                        break;
+                }
+            }
+        } else {
+            $msg = Mage::helper('unl_inventory')->__(
+                'A previously untracked purchase amount has been updated from %s to %s.',
+                Mage::helper('core')->formatCurrency($oldAmount),
+                Mage::helper('core')->formatCurrency($this->getAmount())
+            );
+
+            if ($data->getNote()) {
+                $msg .= "\n\n" . $data->getNote();
+            }
+
+            $audit = Mage::getModel('unl_inventory/audit');
+            $audit->setData(array(
+                'product_id' => $this->getProductId(),
+                'type' => Unl_Inventory_Model_Audit::TYPE_NOTE_ONLY,
+                'created_at' => Mage::getSingleton('core/date')->gmtDate(),
+                'note' => $msg,
+            ));
+            $transaction->addObject($audit);
+        }
+
+        $transaction->addObject($this);
+        $transaction->save();
+
+        return $this;
     }
 }
