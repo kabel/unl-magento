@@ -26,8 +26,10 @@ class Unl_Inventory_Model_Change
             if ($purchaseCount && $accounting == Unl_Inventory_Model_Config::ACCOUNTING_AVG) {
                 $purchase = $purchases->getFirstItem();
                 $purchase
+                    ->setQty($changeObj->getQty() + $purchase->getQty())
                     ->setQtyOnHand($changeObj->getQty() + $purchase->getQtyOnHand())
-                    ->setAmount($changeObj->getAmount() + $purchase->getAmountRemaining())
+                    ->setAmount($changeObj->getAmount() + $purchase->getAmount())
+                    ->setAmountRemaining($changeObj->getAmount() + $purchase->getAmountRemaining())
                     ->setProduct($product)
                     ->setTryPublish(true);
             } else {
@@ -91,7 +93,7 @@ class Unl_Inventory_Model_Change
             case Unl_Inventory_Model_Audit::TYPE_ADJUSTMENT:
                 $changeObj->unsAmount();
 
-                if ($changeObj->getAdjType() == self::TYPE_ADJUSTMENT_SET) {
+                if ($changeObj->getAdjType() == Unl_Inventory_Model_Audit::TYPE_ADJUSTMENT_SET) {
                     if ($changeObj->getQty() < 0) {
                         Mage::throwException($helper->__('A valid, positive Qty is required.'));
                     }
