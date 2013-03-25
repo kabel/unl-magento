@@ -22,7 +22,38 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getProductPurchaseCost($product)
     {
-        return Mage::getSingleton('unl_inventory/change')->getProductPurchaseCost($product);
+        $purchase = $this->getActiveProductPurchases($product, 1)->getFirstItem();
+
+        return $purchase->getCostPerItem();
+    }
+
+    /**
+     * Return a collection of purchases currently used for inventory costing
+     *
+     * @param int|Unl_Inventory_Model_Purchase $product
+     * @param number $pageSize [OPTIONAL] Restrict the collection size fetched.
+     * Defaults to 0, which is unlimited.
+     * @return Unl_Inventory_Model_Resource_Purchase_Collection
+     */
+    public function getActiveProductPurchases($product, $pageSize = 0)
+    {
+        if (is_numeric($product)) {
+            $productId = $product;
+        } else {
+            $productId = $product->getId();
+        }
+
+        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
+        $purchases = Mage::getResourceModel('unl_inventory/purchase_collection')
+            ->addActiveFilter()
+            ->addProductFilter($productId)
+            ->addAccountingOrder($accounting);
+
+        if ($pageSize) {
+            $purchases->setPageSize($pageSize);
+        }
+
+        return $purchases;
     }
 
     public function productHasAudits($product)

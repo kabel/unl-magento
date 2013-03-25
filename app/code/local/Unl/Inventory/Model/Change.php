@@ -17,7 +17,7 @@ class Unl_Inventory_Model_Change
         $this->_validate($changeObj, $qty);
 
         $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
-        $purchases = $this->_getPurchaseCollection($product);
+        $purchases = $helper->getActiveProductPurchases($product);
         $purchaseCount = $purchases->getSize();
 
         if ($changeObj->getType() == Unl_Inventory_Model_Audit::TYPE_PURCHASE
@@ -117,41 +117,6 @@ class Unl_Inventory_Model_Change
         }
     }
 
-    public function getProductPurchaseCost($product)
-    {
-        $purchases = $this->_getPurchaseCollection($product);
-        $purchases->setPageSize(1);
-
-        foreach ($purchases as $purchase) {
-            return $purchase->getCostPerItem();
-        }
-
-        return 0;
-    }
-
-    /**
-     * Get a sorted collection of active purchases for a product
-     *
-     * @param Mage_Catalog_Model_Product|int $product
-     * @return Unl_Inventory_Model_Resource_Purchase_Collection
-     */
-    protected function _getPurchaseCollection($product)
-    {
-        if (is_numeric($product)) {
-            $productId = $product;
-        } else {
-            $productId = $product->getId();
-        }
-
-        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
-        $purchases = Mage::getResourceModel('unl_inventory/purchase_collection')
-            ->addActiveFilter()
-            ->addProductFilter($productId)
-            ->addAccountingOrder($accounting);
-
-        return $purchases;
-    }
-
     /**
      * Adjusts the internal Magento inventory object by given qty
      *
@@ -193,7 +158,7 @@ class Unl_Inventory_Model_Change
         // link remaining change to purchases
         $auditPurchases = array();
         $actualCost = 0;
-        $purchases = $this->_getPurchaseCollection($product);
+        $purchases = Mage::helper('unl_inventory')->getActiveProductPurchases($product);
 
         foreach ($purchases as $purchase) {
             $step = $qty;
@@ -286,7 +251,7 @@ class Unl_Inventory_Model_Change
     public function handleCredit($audit)
     {
         $product = $audit->getProduct();
-        $purchases = $this->_getPurchaseCollection($product);
+        $purchases = Mage::helper('unl_inventory')->getActiveProductPurchases($product);
         $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
 
         $purchase = Mage::getModel('unl_inventory/purchase');
