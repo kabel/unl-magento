@@ -37,6 +37,11 @@ class Unl_Inventory_Block_Inventory_Purchase_Edit_Tab_Info extends Mage_Adminhtm
             'note'     => Mage::helper('unl_inventory')->__('Please enter the full amount of the purchase.'),
         ));
 
+        $fieldset->addField('note', 'textarea', array(
+            'name'     => 'note',
+            'label'    => Mage::helper('unl_inventory')->__('Update Note'),
+        ));
+
         $form->setValues($purchase->getData());
         $this->setForm($form);
         return $this;
