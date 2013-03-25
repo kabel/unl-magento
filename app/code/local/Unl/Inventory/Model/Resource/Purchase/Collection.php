@@ -40,26 +40,8 @@ class Unl_Inventory_Model_Resource_Purchase_Collection extends Mage_Core_Model_R
 	}
 
 	/**
-	 * Changes the collection to return a valuation aggregation
-	 *
-	 * @return Unl_Inventory_Model_Resource_Index_Collection
-	 */
-	public function selectValuation()
-	{
-	    $select = $this->getSelect()->reset(Zend_Db_Select::COLUMNS);
-	    $select->columns(array(
-	        'qty' => 'SUM(qty_on_hand)',
-	        'value' => 'SUM(amount)',
-	        'avg_cost' => 'SUM(amount) / SUM(qty_on_hand)',
-	        'product_id'
-	    ))
-	    ->group('product_id');
-
-	    return $this;
-	}
-
-	/**
-	 * Enter description here ...
+	 * Ensures the returned collection is in the order that purchases should be used
+	 * (for valuation purposees).
 	 *
 	 * @param unknown_type $accounting
 	 * @return Unl_Inventory_Model_Resource_Index_Collection

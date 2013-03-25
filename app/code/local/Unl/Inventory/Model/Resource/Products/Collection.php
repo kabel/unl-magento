@@ -35,9 +35,9 @@ class Unl_Inventory_Model_Resource_Products_Collection extends Mage_Catalog_Mode
 
     public function joinValuation()
     {
-        $indexSelect = Mage::getModel('unl_inventory/index')->getCollection()->selectValuation()->getSelect();
+        $valuationSelect = Mage::getResourceModel('unl_inventory/purchase')->getValuationSelect();
         $this->getSelect()->joinLeft(
-            array('iv' => $indexSelect),
+            array('iv' => $valuationSelect),
             'iv.product_id = e.entity_id',
             array('qty', 'value', 'avg_cost')
         );

@@ -35,6 +35,22 @@ class Unl_Inventory_Model_Resource_Purchase extends Mage_Core_Model_Resource_Db_
 	    return $select;
 	}
 
+
+	public function getValuationSelect()
+	{
+	    $select = $this->_getReadAdapter()->select()
+    	    ->from($this->getMainTable(), array(
+    	        'product_id',
+    	        'qty' => 'SUM(qty_on_hand)',
+    	        'value' => 'SUM(amount)',
+    	        'avg_cost' => 'SUM(amount) / SUM(qty_on_hand)',
+    	    ))
+    	    ->where('qty_on_hand > 0')
+    	    ->group('product_id');
+
+	    return $select;
+	}
+
 	public function getNewProductCostSelect()
 	{
 	    $adapter = $this->_getWriteAdapter();
