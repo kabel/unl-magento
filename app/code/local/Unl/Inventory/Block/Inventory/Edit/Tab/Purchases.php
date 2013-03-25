@@ -7,7 +7,13 @@ class Unl_Inventory_Block_Inventory_Edit_Tab_Purchases extends Mage_Adminhtml_Bl
         parent::__construct();
         $this->setId('invPurchasesGrid');
         $this->setDefaultSort('created_at');
-        $this->setDefaultDir('desc');
+
+        $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
+        if ($accounting == Unl_Inventory_Model_Config::ACCOUNTING_FIFO) {
+            $this->setDefaultDir('asc');
+        } else {
+            $this->setDefaultDir('desc');
+        }
 
         $this->setUseAjax(true);
 
