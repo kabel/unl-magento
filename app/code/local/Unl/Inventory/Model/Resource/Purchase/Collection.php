@@ -6,12 +6,14 @@ class Unl_Inventory_Model_Resource_Purchase_Collection extends Mage_Core_Model_R
 	{
 		$this->_init('unl_inventory/purchase');
 	}
-	
+
 	public function addActiveFilter()
 	{
 	    $this->addFieldToFilter('qty_on_hand', array('gt' => 0));
+
+	    return $this;
 	}
-	
+
 	public function addAuditFilter($auditId)
 	{
 	    $adapter = $this->getConnection();
@@ -20,6 +22,8 @@ class Unl_Inventory_Model_Resource_Purchase_Collection extends Mage_Core_Model_R
 	        'main_table.purchase_id = pa.purchase_id AND ' . $adapter->quoteInto('pa.audit_id = ?', $auditId),
 	        array('qty_affected' => 'qty')
 	    );
+
+	    return $this;
 	}
 
 	/**
@@ -50,7 +54,7 @@ class Unl_Inventory_Model_Resource_Purchase_Collection extends Mage_Core_Model_R
 	        'product_id'
 	    ))
 	    ->group('product_id');
-	
+
 	    return $this;
 	}
 
@@ -73,7 +77,7 @@ class Unl_Inventory_Model_Resource_Purchase_Collection extends Mage_Core_Model_R
 	            break;
 	    }
 
-	    $this->setOrder('index_id', self::SORT_ORDER_DESC);
+	    $this->setOrder('purchase_id', self::SORT_ORDER_DESC);
 
 	    return $this;
 	}
