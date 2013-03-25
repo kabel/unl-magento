@@ -103,8 +103,13 @@ class Unl_Inventory_Model_Purchase extends Mage_Core_Model_Abstract
                         break;
                     }
                 }
+
+                // save, but skip the normal model checks
+                $this->_getResource()->save($this);
             }
         }
+
+        $this->unsCheckBackorders();
 
         return $this;
     }
@@ -121,6 +126,7 @@ class Unl_Inventory_Model_Purchase extends Mage_Core_Model_Abstract
             /* @var $audit Unl_Inventory_Model_Audit */
             foreach ($this->_audits as $audit) {
                 if (!$audit->hasPurchase()) {
+                    $audit->setPurchase($this);
                     $audit->setPurchaseAssociations(array(
                         array('purchase' => $this, 'qty' => $this->getQty())
                     ));
@@ -132,6 +138,8 @@ class Unl_Inventory_Model_Purchase extends Mage_Core_Model_Abstract
                     $audit->syncItemCost();
                 }
             }
+
+            $this->unsReSyncAudits();
         }
 
         if ($this->getTryPublish() && $this->canPublish()) {

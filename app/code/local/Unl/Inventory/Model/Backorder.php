@@ -17,17 +17,18 @@ class Unl_Inventory_Model_Backorder extends Mage_Core_Model_Abstract
      */
     public function handlePurchase($purchase, $qty, $amount)
     {
-        $audits = Mage::getResourceModel('unl_inventory/audit_collection');
-        $audits->addBackorderFilter($this);
-
         /* @var $audit Unl_Inventory_Model_Audit */
-        foreach ($audits as $audit) {
+        $audit = Mage::getResourceModel('unl_inventory/audit_collection')
+            ->addBackorderFilter($this)
+            ->getFirstItem();
+
+        if ($audit->getId()) {
             $audit->setAmount($audit->getAmount() - $amount);
-            $audit->syncItemCost();
             $audit->setPurchaseAssociations(array(
                 array('purchase' => $purchase, 'qty' => $qty)
             ));
-            break;
+            $audit->save();
+            $audit->syncItemCost();
         }
 
         $this->setQty($this->getQty() - $qty);
