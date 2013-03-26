@@ -27,6 +27,21 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
 
             $order = $invoice->getOrder();
 
+            if ($invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_PAID) {
+                $page->setFillColor(new Zend_Pdf_Color_RGB(1, 0, 0));
+                $page->setLineColor(new Zend_Pdf_Color_RGB(1, 0, 0));
+                $this->_setFontItalic($page, 15);
+                $text = Mage::helper('sales')->__('Paid: ') . Mage::helper('core')->formatDate($invoice->getPaidAt(), 'short', false);
+                $feed = self::DEFAULT_PAGE_MARGIN_RIGHT - self::DEFAULT_BOX_PAD - $this->widthForStringUsingFontSize($text, $page->getFont(), $page->getFontSize());
+                $page->setLineWidth(1.5);
+                $page->drawRoundedRectangle($feed - self::DEFAULT_BOX_PAD - 3, self::DEFAULT_PAGE_TOP - 18 - 2 * self::DEFAULT_BOX_PAD, self::DEFAULT_PAGE_MARGIN_RIGHT + 3, self::DEFAULT_PAGE_TOP + 3, 5, Zend_Pdf_Page::SHAPE_DRAW_STROKE);
+                $page->setLineWidth(0.5);
+                $page->drawRoundedRectangle($feed - self::DEFAULT_BOX_PAD, self::DEFAULT_PAGE_TOP - 15 - 2 * self::DEFAULT_BOX_PAD, self::DEFAULT_PAGE_MARGIN_RIGHT, self::DEFAULT_PAGE_TOP, 5, Zend_Pdf_Page::SHAPE_DRAW_STROKE);
+                $page->drawText($text, $feed, self::DEFAULT_PAGE_TOP - 13 - self::DEFAULT_BOX_PAD, 'UTF-8');
+            } else {
+                $order->setHighlightPayment(true);
+            }
+
             /* Add image */
             $this->insertLogo($page, $invoice->getStore());
 

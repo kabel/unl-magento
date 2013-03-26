@@ -217,11 +217,19 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
         }
 
         // Highlight?
-//         if ($showTotals) {
-//             $page->setFillColor(new Zend_Pdf_Color_Cmyk(0, 0, 1, 0));
-//             $page->drawRectangle($paymentLeft, $yPayments + self::DEFAULT_LINE_HEIGHT, $paymentRight, $yPayments - (count($payment) - 1) * self::DEFAULT_LINE_HEIGHT, Zend_Pdf_Page::SHAPE_DRAW_FILL);
-//             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
-//         }
+        if ($order->getHighlightPayment()) {
+            $page->setFillColor(new Zend_Pdf_Color_Cmyk(0, 0, 1, 0));
+            $page->drawRectangle($paymentLeft - self::DEFAULT_BOX_PAD, $yPayments + self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD,
+                $paymentRight + self::DEFAULT_BOX_PAD, $yPayments - (count($payment) - 1) * self::DEFAULT_LINE_HEIGHT, Zend_Pdf_Page::SHAPE_DRAW_FILL);
+            $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
+
+            $page->setLineColor(new Zend_Pdf_Color_GrayScale(0));
+            $page->setLineWidth(3);
+            $page->drawLine($paymentLeft - self::DEFAULT_BOX_PAD, $yPayments + self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD,
+                $paymentLeft - self::DEFAULT_BOX_PAD, $yPayments - (count($payment) - 1) * self::DEFAULT_LINE_HEIGHT);
+            $page->setLineWidth(0.5);
+            $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
+        }
 
         foreach ($payment as $value){
             if (trim($value)!=='') {
@@ -230,7 +238,10 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
             }
         }
 
-        if (!$order->getIsVirtual()) {
+        if ($order->getIsVirtual()) {
+            $this->y = min($this->y, $yPayments);
+            $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
+        } else {
             $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
 
             $page->drawText($shippingMethod, self::DEFAULT_PAGE_COL2, $this->y, 'UTF-8');
