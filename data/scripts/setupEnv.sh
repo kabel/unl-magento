@@ -28,6 +28,7 @@ else
 #       "app/code/community/Zenprint"
         "app/code/local/Mage"
         "app/code/local/Unl"
+        "app/code/local/Zend"
         "app/design/frontend/unl"
         "app/design/adminhtml/default/unl"
         "app/etc/modules/Unl_All.xml"
