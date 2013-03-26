@@ -51,12 +51,12 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
             $page->drawText($text, $feed, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
 
             /* Add table head */
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
             $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
             $this->y -= self::DEFAULT_LINE_HEIGHT;
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.4, 0.4, 0.4));
             $this->_drawHeader($page);
             $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
 
@@ -125,12 +125,12 @@ class Unl_Core_Model_Sales_Order_Pdf_Creditmemo extends Unl_Core_Model_Sales_Ord
 
         if (!empty($settings['table_header'])) {
             $this->_setFontRegular($page);
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
             $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
             $this->y -= self::DEFAULT_LINE_HEIGHT;
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.4, 0.4, 0.4));
             $this->_drawHeader($page);
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
             $this->y -= 2 * self::DEFAULT_LINE_HEIGHT;

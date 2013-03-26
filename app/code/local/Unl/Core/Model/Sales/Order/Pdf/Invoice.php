@@ -28,8 +28,8 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
             $order = $invoice->getOrder();
 
             if ($invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_PAID) {
-                $page->setFillColor(new Zend_Pdf_Color_RGB(1, 0, 0));
-                $page->setLineColor(new Zend_Pdf_Color_RGB(1, 0, 0));
+                $page->setFillColor(new Zend_Pdf_Color_Rgb(1, 0, 0));
+                $page->setLineColor(new Zend_Pdf_Color_Rgb(1, 0, 0));
                 $this->_setFontItalic($page, 15);
                 $text = Mage::helper('sales')->__('Paid: ') . Mage::helper('core')->formatDate($invoice->getPaidAt(), 'short', false);
                 $feed = self::DEFAULT_PAGE_MARGIN_RIGHT - self::DEFAULT_BOX_PAD - $this->widthForStringUsingFontSize($text, $page->getFont(), $page->getFontSize());
@@ -59,7 +59,7 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
             $page->drawText($text, $feed, self::DEFAULT_PAGE_TOP - self::DEFAULT_LOGO_HEIGHT - self::DEFAULT_LOGO_MARGIN - self::DEFAULT_LINE_HEIGHT, 'UTF-8');
 
             /* Add table */
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
 
@@ -67,7 +67,7 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
             $this->y -= self::DEFAULT_LINE_HEIGHT;
 
             /* Add table head */
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.4, 0.4, 0.4));
             $this->_drawHeader($page);
 
             $this->y -= self::DEFAULT_LINE_HEIGHT + self::DEFAULT_BOX_PAD;
@@ -126,13 +126,13 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
 
         if (!empty($settings['table_header'])) {
             $this->_setFontRegular($page);
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.93, 0.92, 0.92));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.93, 0.92, 0.92));
             $page->setLineColor(new Zend_Pdf_Color_GrayScale(0.5));
             $page->setLineWidth(0.5);
             $page->drawRectangle(self::DEFAULT_PAGE_MARGIN_LEFT, $this->y, self::DEFAULT_PAGE_MARGIN_RIGHT, $this->y - self::DEFAULT_LINE_HEIGHT - self::DEFAULT_BOX_PAD);
             $this->y -= self::DEFAULT_LINE_HEIGHT;
 
-            $page->setFillColor(new Zend_Pdf_Color_RGB(0.4, 0.4, 0.4));
+            $page->setFillColor(new Zend_Pdf_Color_Rgb(0.4, 0.4, 0.4));
             $this->_drawHeader($page);
 
             $page->setFillColor(new Zend_Pdf_Color_GrayScale(0));
