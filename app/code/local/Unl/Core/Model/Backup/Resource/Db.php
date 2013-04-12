@@ -63,6 +63,11 @@ class Unl_Core_Model_Backup_Resource_Db extends Mage_Backup_Model_Resource_Db
         return $this->_foreignKeyInfo;
     }
 
+    public function getDbConfig()
+    {
+        return $this->_write->getConfig();
+    }
+
     public function beginTransaction()
     {
         $this->_write->beginTransaction();

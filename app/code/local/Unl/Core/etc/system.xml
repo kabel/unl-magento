@@ -481,6 +481,17 @@
         </carriers>
         <system>
             <groups>
+                <backup>
+                    <fields>
+                        <backup_bin translate="label comment">
+                            <label>Database Backup Binary</label>
+                            <comment>Please provide the full system path. Defaults to "mysqldump".</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </backup_bin>
+                    </fields>
+                </backup>
                 <rsync translate="label" module="unl_core">
                     <label>Automated RSYNC backup</label>
                     <sort_order>16</sort_order>

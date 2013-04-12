@@ -2,6 +2,8 @@
 
 class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
 {
+    const XML_PATH_RSYNC_ENABLED = 'system/backup/backup_bin';
+
     protected $_processedTables = array();
     protected $_processingStack = array();
     protected $_ignoreDataTables;
@@ -15,6 +17,51 @@ class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
 
     public function createBackup(Mage_Backup_Model_Backup $backup)
     {
+        $dumpCmd = Mage::getStoreConfig(self::XML_PATH_RSYNC_ENABLED);
+        if (empty($dumpCmd)) {
+            $dumpCmd = 'mysqldump';
+        }
+
+        $dbConfig = $this->getResource()->getDbConfig();
+        if (!empty($dbConfig['unix_socket'])) {
+            $dumpCmd .= ' -S ' . $dbConfig['unix_socket'];
+        } elseif (!empty($dbConfig['host'])) {
+            $dumpCmd .= ' -h ' . $dbConfig['host'];
+        }
+
+        $dumpCmd .= ' -u ' . $dbConfig['username'];
+        $dumpCmd .= ' -p'  . $dbConfig['password'];
+
+        $options = array('--single-transaction');
+
+        $noDataCmd = $dumpCmd . ' --no-data ' . $dbConfig['dbname'];
+        foreach ($this->getIgnoreDataTablesList() as $table) {
+            $noDataCmd .= ' ' . $table;
+            $options[] = '--ignore-table=' . $dbConfig['dbname'] . '.' . $table;
+        }
+
+        $tmpErrorLog = Mage::getBaseDir('var') . DS . 'log' . DS . 'tmpBackup.log';
+        $errorRedir = " 2>>{$tmpErrorLog}";
+
+        exec($noDataCmd . " {$errorRedir} | gzip -9 -c > " . $backup->getPath() . DS . $backup->getFileName());
+        exec($dumpCmd . ' ' . implode(' ', $options) . ' ' . $dbConfig['dbname'] . " {$errorRedir} | gzip -9 -c >> "
+            . $backup->getPath() . DS . $backup->getFileName());
+
+        if (file_exists($tmpErrorLog)) {
+            $errors = file_get_contents($tmpErrorLog);
+            unlink($tmpErrorLog);
+            if ($errors) {
+                if ($backup->exists()) {
+                    $backup->deleteFile();
+                }
+
+                throw new Exception('Failed during backup command.' . "\n" . $errors);
+            }
+        }
+
+        return $this;
+
+        /*
         $backup->open(true);
 
         $this->getResource()->turnOnSerializableMode();
@@ -34,6 +81,7 @@ class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
         $backup->close();
 
         return $this;
+        */
     }
 
     protected function _processTable(Mage_Backup_Model_Backup $backup, $table, $asTransaction = false)
