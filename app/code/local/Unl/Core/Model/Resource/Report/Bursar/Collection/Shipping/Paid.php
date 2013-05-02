@@ -10,6 +10,11 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Shipping_Paid extends Unl
         return $this->_selectedColumns;
     }
 
+    protected function _getFilterExpr()
+    {
+        Mage::helper('unl_core/report_bursar')->getShippingFilter();
+    }
+
     protected  function _initSelect()
     {
         return $this->_initSelectForShipping();

@@ -35,9 +35,15 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
         );
     }
 
-    public function getShippingFilter()
+    public function getShippingFilter($isRefund = false)
     {
-        return '(e.shipping_amount + IFNULL(e.shipping_tax_amount, 0)) > 0';
+        $orCond = array('(e.shipping_amount + IFNULL(e.shipping_tax_amount, 0)) > 0');
+
+        if ($isRefund) {
+            $orCond[] = 'e.adjustment != 0';
+        }
+
+        return '(' . implode(') OR (', $orCond) . ')';
     }
 
     public function getPaymentMethodCodes($type)

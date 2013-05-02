@@ -68,6 +68,11 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
         return $this->_periodExpr;
     }
 
+    protected function _getFilterExpr()
+    {
+        return '';
+    }
+
     protected function _getMainItemTable()
     {
         return $this->_mainItemTable;
@@ -99,7 +104,7 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
             ->where('p.method IN (?)', $this->_paymentMethodCodes);
 
         if ($filterShipping) {
-            $this->getSelect()->where(Mage::helper('unl_core/report_bursar')->getShippingFilter());
+            $this->getSelect()->where($this->_getFilterExpr());
         }
 
         if (!$this->isTotals()) {
