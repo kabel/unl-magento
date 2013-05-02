@@ -12,7 +12,7 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Shipping_Refunded extends
 
     protected function _getFilterExpr()
     {
-        Mage::helper('unl_core/report_bursar')->getShippingFilter(true);
+        return Mage::helper('unl_core/report_bursar')->getShippingFilter(true);
     }
 
     protected  function _initSelect()
