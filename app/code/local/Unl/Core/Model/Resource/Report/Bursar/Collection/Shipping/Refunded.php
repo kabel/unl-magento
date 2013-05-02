@@ -5,7 +5,7 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Shipping_Refunded extends
     protected function _getSelectedColumns()
     {
         parent::_getSelectedColumns();
-        $this->_selectedColumns += Mage::helper('unl_core/report_bursar')->getShippingAggregateColumns();
+        $this->_selectedColumns += Mage::helper('unl_core/report_bursar')->getShippingAggregateColumns(true);
 
         return $this->_selectedColumns;
     }

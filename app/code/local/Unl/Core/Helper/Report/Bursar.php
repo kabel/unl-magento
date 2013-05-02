@@ -8,14 +8,20 @@ class Unl_Core_Helper_Report_Bursar extends Mage_Core_Helper_Abstract
         'nocap' => array('checkmo', 'cash', 'invoicelater'),
     );
 
-    public function getShippingAggregateColumns()
+    public function getShippingAggregateColumns($isRefund = false)
     {
-        return array(
+        $cols = array(
             'orders_count'    => 'COUNT(DISTINCT e.order_id)',
             'total_tax'       => 'SUM(IFNULL(e.shipping_tax_amount, 0) * e.store_to_base_rate * e.base_to_global_rate)',
             'total_shipping'  => 'SUM(e.shipping_amount * e.store_to_base_rate * e.base_to_global_rate)',
             'total_revenue'   => 'SUM((e.shipping_amount + IFNULL(e.shipping_tax_amount, 0)) * e.store_to_base_rate * e.base_to_global_rate)'
         );
+
+        if ($isRefund) {
+            $cols['total_adjustments'] = 'SUM(e.adjustment * e.store_to_base_rate * e.base_to_global_rate)';
+        }
+
+        return $cols;
     }
 
     public function getItemAggregateColumns()
