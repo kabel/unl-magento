@@ -4,7 +4,7 @@ class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrie
     implements Unl_Ship_Model_Shipping_Carrier_VoidInterface
 {
     protected $_lastVoidResult;
-    
+
     public function isVoidAvailable()
     {
         return true;
@@ -440,6 +440,17 @@ XMLRequest;
         if ($request->getStoreId() != null) {
             $this->setStore($request->getStoreId());
         }
+
+        $validResult = new Varien_Object();
+        Mage::dispatchEvent('shipping_carrier_request_to_shipment', array(
+            'request' => $request,
+            'carrier' => $this,
+            'result'  => $validResult,
+        ));
+        if ($validResult->getError()) {
+            Mage::throwException($validResult->getError());
+        }
+
         $data = array();
         foreach ($packages as $packageId => $package) {
             $request->setPackageId($packageId);
@@ -864,7 +875,7 @@ XMLRequest;
 
         return true;
     }
-    
+
     public function getLastVoidResult()
     {
         return $this->_lastVoidResult;

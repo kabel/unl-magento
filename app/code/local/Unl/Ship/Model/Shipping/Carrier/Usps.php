@@ -4,14 +4,14 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     implements Unl_Ship_Model_Shipping_Carrier_VoidInterface
 {
     protected $_lastVoidResult;
-    
+
     public function getCode($type, $code='')
     {
         $codes = array(
             'service'=>array(
                 'PARCEL'      => Mage::helper('usa')->__('Standard Post'),
             ),
-            
+
             'service_to_code'=>array(
                 'First Class Mail Postcards'                 => 'FIRST CLASS',
                 'First-Class Package International Service'  => 'FIRST CLASS',
@@ -43,7 +43,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 'Priority Mail International Small Flat Rate Envelope'           => 'PRIORITY',
                 'Priority Mail International Window Flat Rate Envelope'          => 'PRIORITY',
             ),
-            
+
             'containers_filter' => array(
                 array(
                     'containers' => array('VARIABLE'),
@@ -201,20 +201,20 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 ),
             ),
         );
-        
+
         if (!isset($codes[$type])) {
             return parent::getCode($type, $code);
         } elseif (''===$code) {
             return $codes[$type];
         }
-        
+
         if (!isset($codes[$type][$code])) {
             return parent::getCode($type, $code);
         } else {
             return $codes[$type][$code];
         }
     }
-    
+
     public function isVoidAvailable()
     {
         return (bool)$this->getConfigData('endicia_enabled');
@@ -330,6 +330,17 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         if ($request->getStoreId() != null) {
             $this->setStore($request->getStoreId());
         }
+
+        $validResult = new Varien_Object();
+        Mage::dispatchEvent('shipping_carrier_request_to_shipment', array(
+            'request' => $request,
+            'carrier' => $this,
+            'result'  => $validResult,
+        ));
+        if ($validResult->getError()) {
+            Mage::throwException($validResult->getError());
+        }
+
         $data = array();
         foreach ($packages as $packageId => $package) {
             $request->setPackageId($packageId);
@@ -424,7 +435,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
 
         return true;
     }
-    
+
     public function getLastVoidResult()
     {
         return $this->_lastVoidResult;

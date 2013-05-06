@@ -193,8 +193,6 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
      */
     public function updateAddress($address)
     {
-        $this->setStore(current($this->_getStoresFromItems($address->getAllItems())));
-
         // clear any values that link this address to anything else
         $address->setSameAsBilling(0)
             ->unsCustomerAddressId()
@@ -202,7 +200,17 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
             ->unsFax()
             ->setSaveInAddressBook(false);
 
-        $data = array(
+        $data = $this->getReplacementAddress(current($this->_getStoresFromItems($address->getAllItems())));
+
+        $address->addData($data);
+        $address->implodeStreetAddress();
+    }
+
+    public function getReplacementAddress($storeId)
+    {
+        $this->setStore($storeId);
+
+        return array(
             'company' => $this->getConfigData('company'),
             'street' => array(
                 $this->getConfigData('address1'),
@@ -214,8 +222,5 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
             'country_id' => $this->getConfigData('country_id'),
             'telephone' => $this->getConfigData('phone')
         );
-
-        $address->addData($data);
-        $address->implodeStreetAddress();
     }
 }
