@@ -51,11 +51,20 @@ class Unl_Core_Model_Sales_Observer
     {
         /* @var $address Unl_Core_Model_Sales_Quote_Address */
         $address = $observer->getEvent()->getQuoteAddress();
+        $previous = $observer->getEvent()->getPrevious();
         $method = $address->getShippingMethod();
 
-        if (!empty($method) && strpos($method, 'pickup_store') === 0 && $address->getShippingRateByCode($method)) {
-            $address->getShippingRateByCode($method)->getCarrierInstance()->updateAddress($address);
-            $address->save();
+        if ($previous == $method) {
+            return;
+        }
+
+        if (!empty($method)) {
+            if (strpos($method, 'pickup_store') === 0) {
+                Mage::getModel('unl_core/shipping_carrier_pickup')->updateAddress($address);
+            } elseif (strpos($previous, 'pickup_store') === 0) {
+                $billing = $address->getQuote()->getBillingAddress();
+                Mage::getModel('unl_core/shipping_carrier_pickup')->revertAddress($address, $billing);
+            }
         }
     }
 
@@ -89,7 +98,7 @@ class Unl_Core_Model_Sales_Observer
 
         $pickup = Mage::getModel('unl_core/shipping_carrier_pickup');
         $replacementAddr = $pickup->getReplacementAddress($request->getStoreId());
-        $replacementAddr['region_code'] = Mage::getModel('directory/region')->load($replacementAddr['region'])->getCode();
+        $replacementAddr['region_code'] = Mage::getModel('directory/region')->load($replacementAddr['region_id'])->getCode();
 
         if ($request->getRecipientContactCompanyName() == $replacementAddr['company']
             && $request->getRecipientAddressStreet1() == $replacementAddr['street'][0]

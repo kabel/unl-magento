@@ -206,6 +206,36 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
         $address->implodeStreetAddress();
     }
 
+    /**
+     * Replaces the replaced shipping address with the billing address
+     *
+     * @param Unl_Core_Model_Sales_Quote_Address $shipping
+     * @param Unl_Core_Model_Sales_Quote_Address $billing
+     */
+    public function revertAddress($shipping, $billing)
+    {
+        $shipping->setSameAsBilling(1)
+            ->setSaveInAddressBook(0)
+            ->unsRegionId()
+            ->setCollectShippingRates(true);
+
+        $requiredBillingAttributes = array(
+            'customer_address_id',
+            'company',
+            'street',
+            'city',
+            'region_id',
+            'postcode',
+            'country_id',
+            'telephone',
+            'fax',
+        );
+
+        foreach ($requiredBillingAttributes as $key) {
+            $shipping->setData($key, $billing->getData($key));
+        }
+    }
+
     public function getReplacementAddress($storeId)
     {
         $this->setStore($storeId);
@@ -217,7 +247,7 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
                 $this->getConfigData('address2')
             ),
             'city' => $this->getConfigData('city'),
-            'region' => $this->getConfigData('region_id'),
+            'region_id' => $this->getConfigData('region_id'),
             'postcode' => $this->getConfigData('postcode'),
             'country_id' => $this->getConfigData('country_id'),
             'telephone' => $this->getConfigData('phone')
