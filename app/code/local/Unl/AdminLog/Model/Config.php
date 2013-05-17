@@ -8,7 +8,7 @@ class Unl_AdminLog_Model_Config
     const XML_PATH_ADMIN_LOG_ACTION_OTHER = 'system/adminlog/log_other';
     const XML_PATH_ADMIN_LOG_MISC_EVENTS = 'system/adminlog/log_misc_events';
     const XML_PATH_ADMIN_LOG_ARCHIVE_DAYS = 'system/adminlog/archive_days';
-    const XML_PATH_ADMIN_LOG_SAVE_DAYS =  'system/adminlog/savedays';
+    const XML_PATH_ADMIN_LOG_SAVE_DAYS =  'system/adminlog/save_days';
 
     /**
      * The XML config for the admin log
