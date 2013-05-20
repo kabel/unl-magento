@@ -162,6 +162,7 @@ class Unl_Inventory_Model_Observer
     {
         $invoice = $observer->getEvent()->getInvoice();
         if ($auditLogs = $invoice->getAuditLogs()) {
+            $invoice->unsAuditLogs();
             $note = Mage::helper('unl_inventory')->__('Order # %s , Invoice # %s', $invoice->getOrder()->getRealOrderId(), $invoice->getIncrementId());
             $now = Mage::getSingleton('core/date')->gmtDate();
             $changeModel = Mage::getSingleton('unl_inventory/change');
@@ -239,6 +240,7 @@ class Unl_Inventory_Model_Observer
     {
         $creditmemo = $observer->getEvent()->getCreditmemo();
         if ($auditLogs = $creditmemo->getAuditLogs()) {
+            $creditmemo->unsAuditLogs();
             $note = Mage::helper('unl_inventory')->__('Order # %s , Creditmemo # %s', $creditmemo->getOrder()->getRealOrderId(), $creditmemo->getIncrementId());
             $now = Mage::getSingleton('core/date')->gmtDate();
             $changeModel = Mage::getSingleton('unl_inventory/change');
