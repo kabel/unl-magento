@@ -179,6 +179,10 @@ class Unl_Inventory_Model_Change
                 $purchase->setQtyOnHand(0);
                 $purchase->setAmountRemaining(0);
                 $purchase->save();
+
+                if ($qty == 0) {
+                    break;
+                }
             } else {
                 $tempCost = $purchase->getCostPerItem() * $step * -1;
 
