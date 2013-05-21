@@ -23,6 +23,10 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
                         $this->_setState(self::STATE_CLOSED, true, '', $userNotification);
                         return $this;
                     }
+                } elseif ($invoice->getState() == Unl_Core_Model_Sales_Order_Invoice::STATE_OPEN) {
+                    if ($this->getState() !== self::STATE_PENDING_PAYMENT) {
+                        $this->setState(self::STATE_PENDING_PAYMENT, true, '', $userNotification);
+                    }
                 }
             }
 
