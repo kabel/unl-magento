@@ -50,7 +50,19 @@ class Mage_Backup_Archive_Tar extends Mage_Archive_Tar
         }
 
         $this->_tarCmd = $tar . '-rf ' . escapeshellarg($this->_destinationFilePath)
-            . ' -C ' . escapeshellarg($this->_getCurrentPath()) . ' --no-recursion ';
+            . ' -C ' . escapeshellarg($this->_getCurrentPath()) . ' --no-recursion'
+            . ' -T ' . escapeshellarg($this->_destinationFilePath . '.in');
+
+        $this->_writer = new Mage_Archive_Helper_File($this->_destinationFilePath . '.in');
+        $this->_writer->open('w');
+
+        return $this;
+    }
+
+    protected function _destroyWriter()
+    {
+        parent::_destroyWriter();
+        @unlink($this->_destinationFilePath . '.in');
 
         return $this;
     }
@@ -75,6 +87,8 @@ class Mage_Backup_Archive_Tar extends Mage_Archive_Tar
             $this->_setCurrentFile($item->getPathname());
             $this->_packAndWriteCurrentFile();
         }
+
+        exec($this->_tarCmd);
     }
 
     protected function _packAndWriteCurrentFile()
@@ -83,7 +97,7 @@ class Mage_Backup_Archive_Tar extends Mage_Archive_Tar
         $path = $this->_getCurrentPath();
         $nameFile = str_replace($path, '', $currentFile);
 
-        exec($this->_tarCmd . escapeshellarg($nameFile));
+        $this->_getWriter()->write($nameFile . "\n");
     }
 
     /**
