@@ -44,8 +44,13 @@ class Mage_Backup_Archive_Tar extends Mage_Archive_Tar
 
     protected function _initWriter()
     {
-        $this->_tarCmd = 'tar -C ' . escapeshellarg($this->_getCurrentPath())
-            . ' -rnf ' . escapeshellarg($this->_destinationFilePath) . ' ';
+        $tar = 'tar ';
+        if (strpos(PHP_OS, 'Darwin') === 0) {
+            $tar = 'gnutar ';
+        }
+
+        $this->_tarCmd = $tar . '-rf ' . escapeshellarg($this->_destinationFilePath)
+            . ' -C ' . escapeshellarg($this->_getCurrentPath()) . ' --no-recursion ';
 
         return $this;
     }
