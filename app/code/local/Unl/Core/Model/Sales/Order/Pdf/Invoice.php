@@ -88,6 +88,8 @@ class Unl_Core_Model_Sales_Order_Pdf_Invoice extends Unl_Core_Model_Sales_Order_
                 $page = $this->_drawItem($item, $page, $order);
             }
 
+            $this->y -= self::DEFAULT_LINE_HEIGHT;
+
             /* Add totals */
             $page = $this->insertTotals($page, $invoice);
 
