@@ -366,21 +366,24 @@ abstract class Unl_Core_Model_Sales_Order_Pdf_Abstract extends Mage_Sales_Model_
 
     protected function _setFontRegular($object, $size = self::DEFAULT_FONT_SIZE)
     {
-        $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont/LinLibertineC_Re-2.8.0.ttf');
+//         $font = Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_TIMES);
+        $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont513/LinLibertine_aS.ttf');
         $object->setFont($font, $size);
         return $font;
     }
 
     protected function _setFontBold($object, $size = self::DEFAULT_FONT_SIZE)
     {
-        $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont/LinLibertine_Bd-2.8.1.ttf');
+//         $font = Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_TIMES_BOLD);
+        $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont513/LinLibertine_RB.ttf');
         $object->setFont($font, $size);
         return $font;
     }
 
     protected function _setFontItalic($object, $size = self::DEFAULT_FONT_SIZE)
     {
-        $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont/LinLibertine_It-2.8.2.ttf');
+//         $font = Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_TIMES_ITALIC);
+        $font = Zend_Pdf_Font::fontWithPath(Mage::getBaseDir() . '/lib/LinLibertineFont513/LinLibertine_RI.ttf');
         $object->setFont($font, $size);
         return $font;
     }

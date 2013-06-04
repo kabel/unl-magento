@@ -9,18 +9,17 @@ class Unl_Core_Model_Sales_Order_Pdf_Items_Creditmemo_Default extends Unl_Core_M
     const DEFAULT_OFFSET_QTY      = 455;
     const DEFAULT_OFFSET_TAX      = 475;
     const DEFAULT_OFFSET_SUBTOTAL = 575;
-    
+
     const DEFAULT_WIDTH_TOTAL_EX  = 50;
     const DEFAULT_WIDTH_DISCOUNT  = 50;
     const DEFAULT_WIDTH_QTY       = 30;
     const DEFAULT_WIDTH_TAX       = 45;
-    
+
     const DEFAULT_OFFSET_PAD      = 10;
-    
+
     const DEFAULT_TRIM_PRODUCT    = 45;
-    const DEFAULT_TRIM_OPTION     = 30;
     const DEFAULT_TRIM_SKU        = 20;
-    
+
     public function draw()
     {
         $order  = $this->getOrder();
@@ -77,33 +76,15 @@ class Unl_Core_Model_Sales_Order_Pdf_Items_Creditmemo_Default extends Unl_Core_M
             'width' => self::DEFAULT_WIDTH_TAX,
         );
 
-        // draw Subtotal
+        // draw Total (inc)
+        $subtotal = $item->getRowTotal() + $item->getTaxAmount() + $item->getHiddenTaxAmount()
+            - $item->getDiscountAmount();
         $lines[0][] = array(
-            'text'  => $order->formatPriceTxt($item->getRowTotal() + $item->getTaxAmount() - $item->getDiscountAmount()),
+            'text'  => $order->formatPriceTxt($subtotal),
             'feed'  => self::DEFAULT_OFFSET_SUBTOTAL,
             'font'  => 'bold',
             'align' => 'right'
         );
-
-        // draw options
-        $options = $this->getItemOptions();
-        if ($options) {
-            foreach ($options as $option) {
-                // draw options label
-                $lines[][] = array(
-                    'text' => Mage::helper('core/string')->str_split(strip_tags($option['label']), self::DEFAULT_TRIM_PRODUCT, true, true),
-                    'font' => 'italic',
-                    'feed' => self::DEFAULT_OFFSET_PRODUCT
-                );
-
-                // draw options value
-                $_printValue = isset($option['print_value']) ? $option['print_value'] : strip_tags($option['value']);
-                $lines[][] = array(
-                    'text' => Mage::helper('core/string')->str_split($_printValue, self::DEFAULT_TRIM_OPTION, true, true),
-                    'feed' => self::DEFAULT_OFFSET_PRODUCT + self::DEFAULT_OFFSET_PAD
-                );
-            }
-        }
 
         $lineBlock = array(
             'lines'  => $lines,
@@ -112,5 +93,7 @@ class Unl_Core_Model_Sales_Order_Pdf_Items_Creditmemo_Default extends Unl_Core_M
 
         $page = $pdf->drawLineBlocks($page, array($lineBlock), array('table_header' => true));
         $this->setPage($page);
+
+        $this->drawOptions();
     }
 }
