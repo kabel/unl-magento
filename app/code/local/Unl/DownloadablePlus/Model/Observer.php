@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Model_Downloadable_Observer
+class Unl_DownloadablePlus_Model_Observer
 {
     /**
      * A <i>frontend</i> and <i>adminhtml</i> event observer for the
@@ -11,7 +11,6 @@ class Unl_Core_Model_Downloadable_Observer
      *
      * @see Mage_Downloadable_Model_Observer::setLinkStatus()
      * @param Varien_Event_Observer $observer
-     * @return Unl_Core_Model_Downloadable_Observer
      */
     public function setLinkStatus($observer)
     {

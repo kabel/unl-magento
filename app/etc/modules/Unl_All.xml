@@ -52,6 +52,13 @@
                 <Unl_Core />
             </depends>
         </Unl_CustomerTag>
+        <Unl_DownloadablePlus>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Unl_Core />
+            </depends>
+        </Unl_DownloadablePlus>
         <Unl_Inventory>
             <active>true</active>
             <codePool>local</codePool>

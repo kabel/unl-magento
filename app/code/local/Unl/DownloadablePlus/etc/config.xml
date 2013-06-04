@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_DownloadablePlus>
+            <version>0.2.0</version>
+        </Unl_DownloadablePlus>
+    </modules>
+    
+    <global>
+        <blocks>
+            <downloadable>
+                <rewrite>
+                    <!-- Setup for use with Pluploader -->
+                    <adminhtml_catalog_product_edit_tab_downloadable_links>Unl_DownloadablePlus_Block_Adminhtml_Catalog_Product_Edit_Tab_Downloadable_Links</adminhtml_catalog_product_edit_tab_downloadable_links>
+                    <adminhtml_catalog_product_edit_tab_downloadable_samples>Unl_DownloadablePlus_Block_Adminhtml_Catalog_Product_Edit_Tab_Downloadable_Samples</adminhtml_catalog_product_edit_tab_downloadable_samples>
+                </rewrite>
+            </downloadable>
+        </blocks>
+        <helpers>
+            <downloadable>
+                <rewrite>
+                    <!-- Use a better HTTP client for proxying download URLs -->
+                    <download>Unl_DownloadablePlus_Helper_Download</download>
+                </rewrite>
+            </downloadable>
+        </helpers>
+        <models>
+            <downloadable>
+                <rewrite>
+                    <sales_order_pdf_items_invoice>Unl_DownloadablePlus_Model_Sales_Order_Pdf_Items_Invoice</sales_order_pdf_items_invoice>
+                    <sales_order_pdf_items_creditmemo>Unl_DownloadablePlus_Model_Sales_Order_Pdf_Items_Creditmemo</sales_order_pdf_items_creditmemo>
+                </rewrite>
+            </downloadable>
+            <unl_downloadableplus>
+                <class>Unl_DownloadablePlus_Model</class>
+            </unl_downloadableplus>
+        </models>
+    </global>
+    
+    <frontend>
+        <events>
+            <sales_order_save_commit_after>
+                <observers>
+                    <!-- Extend and Forward Core -->
+                    <downloadable_observer>
+                        <class>unl_downloadableplus/observer</class>
+                        <method>setLinkStatus</method>
+                    </downloadable_observer>
+                </observers>
+            </sales_order_save_commit_after>
+        </events>
+    </frontend>
+    
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <unl_downloadableplus before="Mage_Adminhtml">Unl_DownloadablePlus_Adminhtml</unl_downloadableplus>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    
+    <adminhtml>
+        <events>
+            <sales_order_save_commit_after>
+                <observers>
+                    <!-- Extend and Forward Core -->
+                    <downloadable_observer>
+                        <class>unl_downloadableplus/observer</class>
+                        <method>setLinkStatus</method>
+                    </downloadable_observer>
+                </observers>
+            </sales_order_save_commit_after>
+        </events>
+    </adminhtml>
+</config>

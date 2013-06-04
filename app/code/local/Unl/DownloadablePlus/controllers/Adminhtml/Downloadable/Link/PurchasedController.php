@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Adminhtml_Downloadable_Link_PurchasedController extends Mage_Adminhtml_Controller_Action
+class Unl_DownloadablePlus_Adminhtml_Link_PurchasedController extends Mage_Adminhtml_Controller_Action
 {
     /**
      * Unitialize the order model instance

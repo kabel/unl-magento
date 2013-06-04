@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Helper_Downloadable_Download extends Mage_Downloadable_Helper_Download
+class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Download
 {
     protected $_urlResponse;
 

@@ -65,12 +65,6 @@
                     <product_view_attributes>Unl_Core_Block_Catalog_Product_View_Attributes</product_view_attributes>
                 </rewrite>
             </catalog>
-            <downloadable>
-                <rewrite>
-                    <adminhtml_catalog_product_edit_tab_downloadable_links>Unl_Core_Block_Downloadable_Adminhtml_Catalog_Product_Edit_Tab_Downloadable_Links</adminhtml_catalog_product_edit_tab_downloadable_links>
-                    <adminhtml_catalog_product_edit_tab_downloadable_samples>Unl_Core_Block_Downloadable_Adminhtml_Catalog_Product_Edit_Tab_Downloadable_Samples</adminhtml_catalog_product_edit_tab_downloadable_samples>
-                </rewrite>
-            </downloadable>
             <customer>
                 <rewrite>
                     <address_renderer_default>Unl_Core_Block_Customer_Address_Renderer_Default</address_renderer_default>
@@ -128,12 +122,6 @@
                     <product>Unl_Core_Helper_Catalog_Product</product>
                 </rewrite>
             </catalog>
-            <downloadable>
-                <rewrite>
-                    <!-- Use a better HTTP client for proxying download URLs -->
-                    <download>Unl_Core_Helper_Downloadable_Download</download>
-                </rewrite>
-            </downloadable>
             <payment>
                 <rewrite>
                     <!-- Fix disabled model issue -->
@@ -645,16 +633,6 @@
                     </no_mobile>
                 </observers>
             </core_design_check_useragent_exps_before>
-            
-            <sales_order_save_commit_after>
-                <observers>
-                    <!-- Extend and Forward Core -->
-                    <downloadable_observer>
-                        <class>unl_core/downloadable_observer</class>
-                        <method>setLinkStatus</method>
-                    </downloadable_observer>
-                </observers>
-            </sales_order_save_commit_after>
         
             <sales_quote_item_qty_set_after>
                 <observers>
@@ -957,16 +935,6 @@
                     </filter_scope>
                 </observers>
             </rss_order_new_collection_select>
-            
-            <sales_order_save_commit_after>
-                <observers>
-                    <!-- Extend and Forward Core -->
-                    <downloadable_observer>
-                        <class>unl_core/downloadable_observer</class>
-                        <method>setLinkStatus</method>
-                    </downloadable_observer>
-                </observers>
-            </sales_order_save_commit_after>
             
             <sales_order_shipment_save_before>
                 <observers>
