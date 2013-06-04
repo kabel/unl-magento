@@ -38,6 +38,7 @@ else
         "errors/local.xml"
 #       "js/xajax_js"
         "js/unl"
+        "lib/LinLibertineFont513"
         "lib/SimpleCAS"
         "lib/SimpleCAS.php"
         "lib/UNL"
