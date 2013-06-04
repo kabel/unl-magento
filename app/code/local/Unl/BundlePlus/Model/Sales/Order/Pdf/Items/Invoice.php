@@ -12,8 +12,7 @@ class Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Invoice
 
     const DEFAULT_OFFSET_PAD      = 10;
 
-    const DEFAULT_TRIM_PRODUCT    = 45;
-    const DEFAULT_TRIM_OPTION     = 30;
+    const DEFAULT_TRIM_PRODUCT    = 46;
     const DEFAULT_TRIM_SKU        = 20;
 
     /**
@@ -129,44 +128,9 @@ class Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Invoice
             $drawItems[$optionId]['lines'][] = $line;
         }
 
-        // custom options
-        $options = $item->getOrderItem()->getProductOptions();
-        if ($options) {
-            if (isset($options['options'])) {
-                foreach ($options['options'] as $option) {
-                    $lines = array();
-                    $lines[][] = array(
-                        'text'  => Mage::helper('core/string')->str_split(strip_tags($option['label']), self::DEFAULT_TRIM_PRODUCT, true, true),
-                        'font'  => 'italic',
-                        'feed'  => self::DEFAULT_OFFSET_PRODUCT
-                    );
-
-                    if ($option['value']) {
-                        $text = array();
-                        $_printValue = isset($option['print_value']) ? $option['print_value'] : strip_tags($option['value']);
-                        $values = explode(', ', $_printValue);
-                        foreach ($values as $value) {
-                            foreach (Mage::helper('core/string')->str_split($value, self::DEFAULT_TRIM_OPTION, true, true) as $_value) {
-                                $text[] = $_value;
-                            }
-                        }
-
-                        $lines[][] = array(
-                            'text'  => $text,
-                            'feed'  => self::DEFAULT_OFFSET_PRODUCT + self::DEFAULT_OFFSET_PAD
-                        );
-                    }
-
-                    $drawItems[] = array(
-                        'lines'  => $lines,
-                        'height' => self::DEFAULT_LINE_HEIGHT
-                    );
-                }
-            }
-        }
-
         $page = $pdf->drawLineBlocks($page, $drawItems, array('table_header' => true));
-
         $this->setPage($page);
+
+        $this->drawOptions();
     }
 }
