@@ -134,7 +134,7 @@ class Mage_Backup_Filesystem extends Mage_Backup_Abstract
         $tarPacker->setSkipFiles($this->getIgnorePaths())
             ->pack($this->getRootDir(), $tarTmpPath, true);
 
-        if (!is_file($tarTmpPath) || filesize($tarTmpPath) == 0) {
+        if (!$this->_isFileComplete($tarTmpPath)) {
             throw new Mage_Exception('Failed to create backup');
         }
 
@@ -143,13 +143,26 @@ class Mage_Backup_Filesystem extends Mage_Backup_Abstract
         $gzPacker = 'gzip -9c ' . escapeshellarg($tarTmpPath) . ' > ' . escapeshellarg($backupPath);
         exec($gzPacker);
 
-        if (!is_file($backupPath) || filesize($backupPath) == 0) {
+        if (!$this->_isFileComplete($backupPath)) {
             throw new Mage_Exception('Failed to create backup');
         }
 
         @unlink($tarTmpPath);
 
         $this->_lastOperationSucceed = true;
+    }
+
+    /**
+     * Uses the test binary to ensure a file exists and has size
+     *
+     * @param string $file
+     * @return boolean
+     */
+    protected function _isFileComplete($file)
+    {
+        $null = null;
+        exec('[ -s ' . escapeshellarg($file) . ' ]', $null, $ret);
+        return $ret === 0;
     }
 
     /**
