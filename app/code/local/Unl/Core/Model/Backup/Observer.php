@@ -64,15 +64,10 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
 
     protected function _clearBackups()
     {
-        /* @var $backupModel Mage_Backup_Model_Backup */
-        $backupModel = Mage::getModel('backup/backup');
-        $collection = Mage::getSingleton('backup/fs_collection');
+        $baseDir = Mage::getBaseDir('var') . DS . 'backups';
 
-        foreach ($collection as $file) {
-            list($time, $type) = explode('_', $file->getId());
-            $backupModel
-                ->loadByTimeAndType($time, $type)
-                ->deleteFile();
+        foreach (glob($baseDir . DS . '*') as $file) {
+            @unlink($file);
         }
 
         return $this;
