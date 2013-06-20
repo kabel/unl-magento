@@ -91,6 +91,15 @@
                 <Unl_Core/>
             </depends>
         </Unl_Payment>
+        <Unl_PaymentFilter>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Catalog/>
+                <Mage_Payment/>
+                <Mage_Sales/>
+            </depends>
+        </Unl_PaymentFilter>
         <Unl_Spam>
             <active>true</active>
             <codePool>local</codePool>
