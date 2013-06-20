@@ -690,7 +690,7 @@ $catalogInstaller->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'product_gro
     'input'                      => 'multiselect',
     'input_renderer'             => 'unl_core/adminhtml_catalog_product_helper_groupacl',
     'class'                      => '',
-    'source'                     => '',
+    'source'                     => 'unl_core/catalog_category_attribute_source_groupacl',
     'global'                     => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
     'visible'                    => true,
     'required'                   => false,
