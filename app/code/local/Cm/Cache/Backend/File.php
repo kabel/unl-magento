@@ -611,7 +611,11 @@ class Cm_Cache_Backend_File extends Zend_Cache_Backend_File
         if (is_resource($tag)) {
             $ids = stream_get_contents($tag);
         } else {
-            $ids = @file_get_contents($this->_tagFile($tag));
+            $ids = null;
+            $tagFile = $this->_tagFile($tag);
+            if (file_exists($tagFile)) {
+                $ids = @file_get_contents($tagFile);
+            }
         }
         if( ! $ids) {
             return array();
