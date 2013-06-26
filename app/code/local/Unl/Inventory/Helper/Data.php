@@ -77,7 +77,11 @@ class Unl_Inventory_Helper_Data extends Mage_Core_Helper_Abstract
 
         $configStock = Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
         if ($fromStockData && ($stockData = $product->getStockData()) && isset($stockData['use_config_manage_stock'])) {
-            $manageStock = $stockData['use_config_manage_stock'] ? $configStock : (bool)$stockData['manage_stock'];
+            if ($stockData['use_config_manage_stock']) {
+                $manageStock = $configStock;
+            } else {
+                $manageStock = isset($stockData['manage_stock']) ? (bool)$stockData['manage_stock'] : false;
+            }
         } else {
             $stockData = $product->getStockItem();
             if (!$stockData) {
