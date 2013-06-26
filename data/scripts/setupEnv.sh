@@ -25,24 +25,20 @@ if [ "$3" == "vendor" ]; then
     );
 else
     symlinks=(
-#       "app/code/community/Zenprint"
+        "app/code/local/Cm"
         "app/code/local/Mage"
         "app/code/local/Unl"
         "app/code/local/Zend"
         "app/design/frontend/unl"
         "app/design/adminhtml/default/unl"
         "app/etc/modules/Unl_All.xml"
-#       "app/etc/modules/Zenprint_Xajax.xml"
-#       "app/etc/modules/Zenprint_Ordership.xml"
         "errors/unl"
         "errors/local.xml"
-#       "js/xajax_js"
         "js/unl"
         "lib/LinLibertineFont513"
         "lib/SimpleCAS"
         "lib/SimpleCAS.php"
         "lib/UNL"
-#       "lib/Xajax"
         "skin/frontend/unl"
         "skin/adminhtml/default/unl"
     );
