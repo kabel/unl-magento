@@ -13,6 +13,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
         $this->setDefaultLimit(1000);
         $this->setPagerVisibility(false);
 
+        $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
     }
 
