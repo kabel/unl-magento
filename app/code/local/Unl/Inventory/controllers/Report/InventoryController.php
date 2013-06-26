@@ -12,6 +12,11 @@ class Unl_Inventory_Report_InventoryController extends Mage_Adminhtml_Controller
 
     public function valuationAction()
     {
+        if ($this->getRequest()->getQuery('ajax')) {
+            $this->_forward('valuationGrid');
+            return;
+        }
+
         $this->_title($this->__('Reports'))
             ->_title($this->__('Products'))
             ->_title($this->__('Inventory Valuation'));
@@ -20,6 +25,12 @@ class Unl_Inventory_Report_InventoryController extends Mage_Adminhtml_Controller
             ->_setActiveMenu('report/products/inventory_valuation')
             ->_addBreadcrumb(Mage::helper('unl_inventory')->__('Inventory Valuation'),
                 Mage::helper('unl_inventory')->__('Invengtory Valuation'))
+            ->renderLayout();
+    }
+
+    public function valuationGridAction()
+    {
+        $this->loadLayout()
             ->renderLayout();
     }
 

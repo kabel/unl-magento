@@ -35,11 +35,14 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
 
         $collection->joinValuation();
 
+        $collection->addAttributeToSelect('unl_payment_account');
         $collection->addFieldToFilter('audit_active', 1);
 
         $this->setCollection($collection);
 
-        return parent::_prepareCollection();
+        parent::_prepareCollection();
+
+        $this->removeColumn('entity_id');
     }
 
     /**
@@ -49,59 +52,60 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('entity_id',
-            array(
-                'header' => Mage::helper('catalog')->__('ID'),
-                'width'  => '50px',
-                'type'   => 'number',
-                'index'  => 'entity_id',
-                'filter' => false,
+        $this->addColumn('entity_id', array(
+            'header' => Mage::helper('catalog')->__('ID'),
+            'width'  => '50px',
+            'type'   => 'number',
+            'index'  => 'entity_id',
+            'filter' => false,
         ));
 
-        $this->addColumn('sku',
-            array(
-                'header' => Mage::helper('catalog')->__('SKU'),
-                'width'  => '80px',
-                'index'  => 'sku',
+        $this->addColumn('sku', array(
+            'header' => Mage::helper('catalog')->__('SKU'),
+            'width'  => '80px',
+            'index'  => 'sku',
         ));
 
-        $this->addColumn('name',
-            array(
-                'header' => Mage::helper('catalog')->__('Name'),
-                'index'  => 'name',
+        $this->addColumn('name', array(
+            'header' => Mage::helper('catalog')->__('Name'),
+            'index'  => 'name',
         ));
 
-        $this->addColumn('qty',
-            array(
-                'header' => Mage::helper('unl_inventory')->__('Qty on Hand'),
-                'width'  => '100px',
-                'type'   => 'number',
-                'index'  => 'qty',
+        $this->addColumn('payment_account', array(
+            'header'  => Mage::helper('unl_inventory')->__('Payment Account'),
+            'width'   => '150px',
+            'type'    => 'options',
+            'options' => Mage::getSingleton('unl_payment/account_source')->toOptionHash(),
+            'index'   => 'unl_payment_account'
+        ));
+
+        $this->addColumn('qty', array(
+            'header' => Mage::helper('unl_inventory')->__('Qty on Hand'),
+            'width'  => '100px',
+            'type'   => 'number',
+            'index'  => 'qty',
         ));
 
         $store = Mage::app()->getStore();
-        $this->addColumn('value',
-            array(
-                'header' => Mage::helper('unl_inventory')->__('Value'),
-                'type'   => 'currency',
-                'currency_code' => $store->getBaseCurrency()->getCode(),
-                'index'  => 'value',
+        $this->addColumn('value', array(
+            'header' => Mage::helper('unl_inventory')->__('Value'),
+            'type'   => 'currency',
+            'currency_code' => $store->getBaseCurrency()->getCode(),
+            'index'  => 'value',
         ));
 
-        $this->addColumn('avg_cost',
-            array(
-                'header' => Mage::helper('unl_inventory')->__('Avg Cost'),
-                'type'   => 'price',
-                'currency_code' => $store->getBaseCurrency()->getCode(),
-                'index'  => 'avg_cost',
+        $this->addColumn('avg_cost', array(
+            'header' => Mage::helper('unl_inventory')->__('Avg Cost'),
+            'type'   => 'price',
+            'currency_code' => $store->getBaseCurrency()->getCode(),
+            'index'  => 'avg_cost',
         ));
 
-        $this->addColumn('price',
-            array(
-                'header' => Mage::helper('catalog')->__('Price'),
-                'type'   => 'price',
-                'currency_code' => $store->getBaseCurrency()->getCode(),
-                'index'  => 'price',
+        $this->addColumn('price', array(
+            'header' => Mage::helper('catalog')->__('Price'),
+            'type'   => 'price',
+            'currency_code' => $store->getBaseCurrency()->getCode(),
+            'index'  => 'price',
         ));
 
 
@@ -118,6 +122,6 @@ class Unl_Inventory_Block_Report_Valuation_Grid extends Mage_Adminhtml_Block_Wid
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/index/edit', array('id' => $row->getId()));
+        return $this->getUrl('*/catalog_inventory/edit', array('id' => $row->getId()));
     }
 }
