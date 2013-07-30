@@ -95,18 +95,43 @@
                 packaging.sendCreateLabelRequest();
             });
             packaging.setLabelCreatedCallback(function(response){
-            <?php if (Mage::helper('unl_ship')->isUnlShipQueueEmpty()): ?>
-                setLocation("<?php echo $this->getUrl(
-                    '*/sales_order/view',
-                    array('order_id' => $this->getShipment()->getOrderId())
-                ); ?>");
-            <?php else: ?>
-                window.open("<?php echo $this->getUrl(
-                    '*/sales_order/view',
-                    array('order_id' => $this->getShipment()->getOrderId())
-                ); ?>");
-                setLocation("<?php echo $this->getUrl('*/*/nextInQueue'); ?>");
-            <?php endif; ?>
+                if (!response.next_url) {
+                	setLocation("<?php echo $this->getUrl(
+                        '*/sales_order/view',
+                        array('order_id' => $this->getShipment()->getOrderId())
+                    ); ?>");
+                    return;
+                }
+
+                packaging.window.select('.entry-edit-head button')[0].hide();
+                packaging.window.select('.buttons-set')[0].hide();
+                packaging.packagesContent.hide();
+
+                var packagesSuccess = $('packages_success'),
+                successButtons = packaging.window.select('.buttons-set')[1].show().select('button'),
+                _timerInt, i = response.timer;
+
+                packagesSuccess.insert(['<p>',  response.success, '</p>'].join(''));
+                packagesSuccess.insert(['<p>',  response.note, '</p>'].join(''));
+                _timerInt = setInterval(function() {
+                    var dispSec = Math.max(0, --i);
+                    packagesSuccess.select('.timer')[0].update(dispSec);
+                    if (i <= 0) {
+                        clearInterval(_timerInt);
+                        setLocation(response.next_url);
+                    }
+                }, 1000);
+
+                successButtons[0].on('click', function() {
+                	clearInterval(_timerInt);
+                    setLocation(response.next_url);
+                });
+                successButtons[1].on('click', function() {
+                    window.open(response.shipment_url);
+                });
+                successButtons[2].on('click', function() {
+                    window.open(response.shipping_label_url);
+                });
             });
             packaging.setCancelCallback(function() {
                 packaging.cleanPackages();

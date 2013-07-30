@@ -215,6 +215,7 @@ document.observe("dom:loaded", function() {
                 </div>
             </div>
             <div id="packages_content"></div>
+            <div id="packages_success"></div>
         </div>
         <div class="buttons-set a-right">
             <button type="button" class="scalable disabled SavePackagesBtn" disabled="disabled" onclick="packaging.confirmPackaging();" title="<?php echo Mage::helper('sales')->__('Products should be added to package(s)')?>">
@@ -222,6 +223,17 @@ document.observe("dom:loaded", function() {
             </button>
             <button type="button" class="scalable" onclick="packaging.cancelPackaging();">
                 <span><?php echo Mage::helper('sales')->__('Cancel') ?></span>
+            </button>
+        </div>
+        <div class="buttons-set a-right" style="display:none;">
+            <button type="button" class="scalable">
+                <span><?php echo Mage::helper('sales')->__('OK') ?></span>
+            </button>
+            <button type="button" class="scalable go">
+                <span><?php echo Mage::helper('unl_ship')->__('View Shipment') ?></span>
+            </button>
+            <button type="button" class="scalable go">
+                <span><?php echo Mage::helper('unl_ship')->__('View Shipping Label') ?></span>
             </button>
         </div>
     </div>
