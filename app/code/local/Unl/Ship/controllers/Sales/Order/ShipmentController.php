@@ -4,6 +4,150 @@ require_once 'Mage/Adminhtml/controllers/Sales/Order/ShipmentController.php';
 
 class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order_ShipmentController
 {
+    /**
+     * The AJAX response object for saving shipments
+     *
+     * @var Varien_Object
+     */
+    protected $_responseAjax;
+
+    /* Overrides
+     * @see Mage_Adminhtml_Sales_Order_ShipmentController::saveAction()
+     * by moving the _saveShipment logic and changing the AJAX response
+     */
+    public function saveAction()
+    {
+        $data = $this->getRequest()->getPost('shipment');
+        if (!empty($data['comment_text'])) {
+            Mage::getSingleton('adminhtml/session')->setCommentText($data['comment_text']);
+        }
+
+        try {
+            $shipment = $this->_initShipment();
+            if (!$shipment) {
+                $this->_forward('noRoute');
+                return;
+            }
+            $responseAjax = $this->_responseAjax = new Varien_Object();
+            $isNeedCreateLabel = isset($data['create_shipping_label']) && $data['create_shipping_label'];
+
+            $shipment->register();
+            $comment = '';
+            if (!empty($data['comment_text'])) {
+                $shipment->addComment(
+                    $data['comment_text'],
+                    isset($data['comment_customer_notify']),
+                    isset($data['is_visible_on_front'])
+                );
+                if (isset($data['comment_customer_notify'])) {
+                    $comment = $data['comment_text'];
+                }
+            }
+
+            if (!empty($data['send_email'])) {
+                $shipment->setEmailSent(true);
+            }
+
+            $shipment->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
+
+            $this->_saveShipment($shipment, $isNeedCreateLabel);
+
+            $shipment->sendEmail(!empty($data['send_email']), $comment);
+
+            Mage::getSingleton('adminhtml/session')->getCommentText(true);
+        } catch (Mage_Core_Exception $e) {
+            if ($isNeedCreateLabel) {
+                $responseAjax->setError(true);
+                $responseAjax->setMessage($e->getMessage());
+            } else {
+                $this->_getSession()->addError($e->getMessage());
+                $this->_redirect('*/*/new', array('order_id' => $this->getRequest()->getParam('order_id')));
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+            if ($isNeedCreateLabel) {
+                $responseAjax->setError(true);
+                $responseAjax->setMessage(
+                    Mage::helper('sales')->__('An error occurred while creating shipping label.'));
+            } else {
+                $this->_getSession()->addError($this->__('Cannot save shipment.'));
+                $this->_redirect('*/*/new', array('order_id' => $this->getRequest()->getParam('order_id')));
+            }
+
+        }
+
+        $shipmentCreatedMessage = $this->__('The shipment has been created.');
+        $labelCreatedMessage    = $this->__('The shipping label has been created.');
+
+        $success = $isNeedCreateLabel ? $shipmentCreatedMessage . ' ' . $labelCreatedMessage : $shipmentCreatedMessage;
+        if ($isNeedCreateLabel) {
+            $responseAjax->addData(array(
+                'success' => $success,
+                'shipment_url' => $this->getUrl('*/*/view', array('shipment_id' => $shipment->getId())),
+                'shipping_label_url' => $this->getUrl('*/*/printLabel', array('shipment_id' => $shipment->getId())),
+            ));
+
+            $timer = 15;
+            if (Mage::helper('unl_ship')->isUnlShipQueueEmpty()) {
+                $nextUrl = $this->getUrl('*/sales_order/view', array('order_id' => $shipment->getOrderId()));
+                $note = Mage::helper('unl_ship')->__('You will be redirected back to the order in <span class="timer">%s</span> seconds', $timer);
+            } else {
+                $nextUrl = $this->getUrl('*/*/nextInQueue');
+                $note = Mage::helper('unl_ship')->__('You will be redirected to the next order in the queue in <span class="timer">%s</span> seconds', $timer);
+            }
+            $responseAjax->addData(array(
+                'note' => $note,
+                'next_url' => $nextUrl,
+                'timer' => $timer,
+            ));
+
+            $this->getResponse()->setBody($responseAjax->toJson());
+        } else {
+            $this->_getSession()->addSuccess($success);
+            $this->_redirect('*/sales_order/view', array('order_id' => $shipment->getOrderId()));
+        }
+    }
+
+    /* Overrides
+     * @see Mage_Adminhtml_Sales_Order_ShipmentController::_saveShipment()
+     * by adding a commit callback to create the label if needed
+     */
+    protected function _saveShipment($shipment, $isNeedCreateLabel = false)
+    {
+        $shipment->getOrder()->setIsInProcess(true);
+        $transactionSave = Mage::getModel('core/resource_transaction')
+            ->addObject($shipment)
+            ->addObject($shipment->getOrder());
+
+        if ($isNeedCreateLabel) {
+            $transactionSave->addCommitCallback(array($this, 'createLabelFromCurrent'));
+        }
+
+        $transactionSave->save();
+
+        return $this;
+    }
+
+    /**
+     * Create shipping label for the current shipment being saved.
+     *
+     * @return boolean
+     */
+    public function createLabelFromCurrent()
+    {
+        $shipment = Mage::registry('current_shipment');
+        $responseAjax = $this->_responseAjax;
+
+        if ($responseAjax && $this->_createShippingLabel($shipment)) {
+            $shipment->save();
+            $responseAjax->setOk(true);
+
+            return true;
+        }
+
+        return false;
+    }
+
     /* Extends
      * @see Mage_Adminhtml_Sales_Order_ShipmentController::printLabelAction()
      * by optionally forwarding the request to a different PDF generator
@@ -158,11 +302,11 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             $shipment->unregister();
 
             $shipment->getOrder()->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $this->__('Voided and deleted a shipment for reprocessing.'));
-            
+
             if (($result = $carrier->getLastVoidResult()) && $result->hasMessage()) {
                 $shipment->getOrder()->addStatusHistoryComment($result->getMessage());
             }
-            
+
             $this->_saveShipment($shipment);
             $this->_getSession()->addSuccess($this->__('Successfully voided and deleted shipment.'));
         } catch (Mage_Core_Exception $e) {
