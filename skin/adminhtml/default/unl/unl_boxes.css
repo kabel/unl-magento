@@ -1,3 +1,7 @@
+.wrapper {
+	position: relative;
+}
+
 button.hover {
     background: url("../default/images/btn_over_bg.gif") repeat-x scroll 0 0 #F77C16;
 }
@@ -71,6 +75,7 @@ button.active {
 .packed-window {
 	width: 98%;
 	margin-left: -49%;
+	position: absolute;
 }
 
 .product-options dd .qty-disabled {
