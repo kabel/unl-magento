@@ -272,11 +272,8 @@
 <script type="text/javascript">
 //<![CDATA[
     function showPackedWindow() {
-        var window = $('packed_window');
-        window.show();
-        $('popup-window-mask').setStyle({
-            height: $('html-body').getHeight() + 'px'
-        }).show();
+        $('packed_window').show();
+        $('popup-window-mask').show();
     }
     function hidePackedWindow() {
         $('packed_window').hide();
