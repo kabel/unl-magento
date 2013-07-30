@@ -430,8 +430,13 @@ class Unl_Core_Model_Sales_Observer
                         $invoice->setRequestedCaptureCase($captureCase);
                     }
 
-                    $invoice->register();
-                    $invoice->save();
+                    try {
+                        $invoice->register();
+                        $invoice->save();
+                    } catch (Exception $e) {
+                        Mage::logException($e);
+                        throw $e;
+                    }
 
                     try {
                         $invoice->sendEmail(false);
