@@ -2,18 +2,15 @@
 /**
  * Catalog advanced search form
  *
- * @see Mage_CatalogSearch_Block_Advanced_Form
+ * @see Unl_Core_Block_CatalogSearch_Advanced_Inline
  */
+/* @var $this Unl_Core_Block_CatalogSearch_Advanced_Inline */
 ?>
 <?php $maxQueryLength= $this->helper('catalogsearch')->getMaxQueryLength();?>
-<div class="page-title">
-    <h1><?php echo $this->__('Advanced Search') ?></h1>
-</div>
-<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 <form action="<?php echo $this->getSearchPostUrl() ?>" method="get" id="form-validate">
     <div class="fieldset advanced-search">
-        <h2 class="legend"><?php echo $this->__('Search Settings') ?></h2>
-        <ul class="form-list" id="advanced-search-list">
+        <h2 class="legend"><?php echo $this->__('Keyword Search') ?></h2>
+        <ul class="form-list" id="advanced-search-list" style="list-style:none; padding:0;">
             <?php foreach ($this->getSearchableAttributes() as $_attribute): ?>
             <?php $_code = $_attribute->getAttributeCode() ?>
             <?php if (!in_array($_code, array('name')) && strpos($_code, 'buros_') !== 0) {
