@@ -29,6 +29,10 @@
                 <rewrite>
                     <sales_order_pdf_items_invoice>Unl_DownloadablePlus_Model_Sales_Order_Pdf_Items_Invoice</sales_order_pdf_items_invoice>
                     <sales_order_pdf_items_creditmemo>Unl_DownloadablePlus_Model_Sales_Order_Pdf_Items_Creditmemo</sales_order_pdf_items_creditmemo>
+                    <!-- Fix PHP warnings during API link creation -->
+                    <link_api>Unl_DownloadablePlus_Model_Link_Api</link_api>
+                    <link_api_v2>Unl_DownloadablePlus_Model_Link_Api_V2</link_api_v2>
+                    <link_api_validator>Unl_DownloadablePlus_Model_Link_Api_Validator</link_api_validator>
                 </rewrite>
             </downloadable>
             <unl_downloadableplus>

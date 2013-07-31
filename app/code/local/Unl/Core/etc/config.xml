@@ -166,6 +166,13 @@
                     <system_config_source_catalog_listMode>Unl_Core_Model_Adminhtml_System_Config_Source_Catalog_ListMode</system_config_source_catalog_listMode>
                 </rewrite>
             </adminhtml>
+            <api>
+                <rewrite>
+                    <!-- Fix problems with FCGI headers -->
+                    <server_adapter_soap>Unl_Core_Model_Api_Server_Adapter_Soap</server_adapter_soap>
+                    <server_v2_adapter_soap>Unl_Core_Model_Api_Server_V2_Adapter_Soap</server_v2_adapter_soap>
+                </rewrite>
+            </api>
             <backup>
                 <rewrite>
                     <!-- Add extra ignore tables -->
