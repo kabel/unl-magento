@@ -9,11 +9,14 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     {
         $codes = array(
             'service'=>array(
+                'FIRST CLASS' => Mage::helper('usa')->__('First-Class Mail'),
+                'EXPRESS'     => Mage::helper('usa')->__('Priority Mail Express'),
                 'PARCEL'      => Mage::helper('usa')->__('Standard Post'),
             ),
 
             'service_to_code'=>array(
-                'First Class Mail Postcards'                 => 'FIRST CLASS',
+                'First-Class Mail Postcards'                 => 'FIRST CLASS',
+                'First-Class Mail Large Postcards'           => 'FIRST CLASS',
                 'First-Class Package International Service'  => 'FIRST CLASS',
                 'Standard Post'                              => 'PARCEL',
                 'Express Mail Sunday/Holiday Delivery'                           => 'EXPRESS',
@@ -42,6 +45,32 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 'Priority Mail International Gift Card Flat Rate Envelope'       => 'PRIORITY',
                 'Priority Mail International Small Flat Rate Envelope'           => 'PRIORITY',
                 'Priority Mail International Window Flat Rate Envelope'          => 'PRIORITY',
+                // added by USPS 7/28/2013
+                'Priority Mail 2-Day'                                            => 'PRIORITY',
+                'Priority Mail 2-Day Flat Rate Envelope'                         => 'PRIORITY',
+                'Priority Mail 2-Day Gift Card Flat Rate Envelope'               => 'PRIORITY',
+                'Priority Mail 2-Day Large Flat Rate Box'                        => 'PRIORITY',
+                'Priority Mail 2-Day Legal Flat Rate Envelope'                   => 'PRIORITY',
+                'Priority Mail 2-Day Medium Flat Rate Box'                       => 'PRIORITY',
+                'Priority Mail 2-Day Padded Flat Rate Envelope'                  => 'PRIORITY',
+                'Priority Mail 2-Day Small Flat Rate Box'                        => 'PRIORITY',
+                'Priority Mail 2-Day Small Flat Rate Envelope'                   => 'PRIORITY',
+                'Priority Mail 2-Day Window Flat Rate Envelope'                  => 'PRIORITY',
+                'Priority Mail Express 2-Day'                                           => 'EXPRESS',
+                'Priority Mail Express 2-Day Flat Rate Boxes'                           => 'EXPRESS',
+                'Priority Mail Express 2-Day Flat Rate Boxes Hold For Pickup'           => 'EXPRESS',
+                'Priority Mail Express 2-Day Flat Rate Envelope'                        => 'EXPRESS',
+                'Priority Mail Express 2-Day Flat Rate Envelope Hold For Pickup'        => 'EXPRESS',
+                'Priority Mail Express 2-Day Hold For Pickup'                           => 'EXPRESS',
+                'Priority Mail Express 2-Day Legal Flat Rate Envelope'                  => 'EXPRESS',
+                'Priority Mail Express 2-Day Legal Flat Rate Envelope Hold For Pickup'  => 'EXPRESS',
+                'Priority Mail Express 2-Day Padded Flat Rate Envelope'                 => 'EXPRESS',
+                'Priority Mail Express 2-Day Padded Flat Rate Envelope Hold For Pickup' => 'EXPRESS',
+                'Priority Mail Express International'                                   => 'EXPRESS',
+                'Priority Mail Express International Flat Rate Boxes'                   => 'EXPRESS',
+                'Priority Mail Express International Flat Rate Envelope'                => 'EXPRESS',
+                'Priority Mail Express International Legal Flat Rate Envelope'          => 'EXPRESS',
+                'Priority Mail Express International Padded Flat Rate Envelope'         => 'EXPRESS',
             ),
 
             'containers_filter' => array(
@@ -50,26 +79,26 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     'filters'    => array(
                         'within_us' => array(
                             'method' => array(
-                                'Express Mail Flat Rate Boxes',
-                                'Express Mail Flat Rate Boxes Hold For Pickup',
-                                'Express Mail Flat Rate Envelope',
-                                'Express Mail Flat Rate Envelope Hold For Pickup',
-                                'Express Mail Flat-Rate Envelope Sunday/Holiday Delivery',
-                                'Express Mail Hold For Pickup',
-                                'Express Mail Legal Flat Rate Envelope',
-                                'Express Mail Legal Flat Rate Envelope Hold For Pickup',
-                                'Express Mail Padded Flat Rate Envelope',
-                                'Express Mail Padded Flat Rate Envelope Hold For Pickup',
-                                'Express Mail Sunday/Holiday Delivery',
-                                'Priority Mail Large Flat Rate Box',
-                                'Priority Mail Legal Flat Rate Envelope',
-                                'Priority Mail Medium Flat Rate Box',
-                                'Priority Mail Padded Flat Rate Envelope',
-                                'Priority Mail Small Flat Rate Box',
-                                'Priority Mail Small Flat Rate Envelope',
-                                'Priority Mail Window Flat Rate Envelope',
-                                'Express Mail',
-                                'Priority Mail',
+                                'Priority Mail Express 2-Day Flat Rate Boxes',
+                                'Priority Mail Express 2-Day Flat Rate Boxes Hold For Pickup',
+                                'Priority Mail Express 2-Day Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Express 2-Day Flat-Rate Envelope Sunday/Holiday Delivery',
+                                'Priority Mail Express 2-Day Hold For Pickup',
+                                'Priority Mail Express 2-Day Legal Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Legal Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Express 2-Day Padded Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Padded Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail 2-Day Flat Rate Envelope',
+                                'Priority Mail 2-Day Large Flat Rate Box',
+                                'Priority Mail 2-Day Legal Flat Rate Envelope',
+                                'Priority Mail 2-Day Medium Flat Rate Box',
+                                'Priority Mail 2-Day Padded Flat Rate Envelope',
+                                'Priority Mail 2-Day Small Flat Rate Box',
+                                'Priority Mail 2-Day Small Flat Rate Envelope',
+                                'Priority Mail 2-Day Window Flat Rate Envelope',
+                                'Priority Mail Express 2-Day',
+                                'Priority Mail 2-Day',
                                 'Standard Post',
                                 'Media Mail',
                                 'First-Class Mail Large Envelope',
@@ -78,10 +107,10 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                         ),
                         'from_us' => array(
                             'method' => array(
-                                'Express Mail International Flat Rate Boxes',
-                                'Express Mail International Flat Rate Envelope',
-                                'Express Mail International Legal Flat Rate Envelope',
-                                'Express Mail International Padded Flat Rate Envelope',
+                                'Priority Mail Express International Flat Rate Boxes',
+                                'Priority Mail Express International Flat Rate Envelope',
+                                'Priority Mail Express International Legal Flat Rate Envelope',
+                                'Priority Mail Express International Padded Flat Rate Envelope',
                                 'Priority Mail International DVD Flat Rate priced box',
                                 'Priority Mail International Flat Rate Envelope',
                                 'Priority Mail International Gift Card Flat Rate Envelope',
@@ -94,7 +123,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                                 'Priority Mail International Small Flat Rate Envelope',
                                 'Priority Mail International Window Flat Rate Envelope',
                                 'USPS GXG Envelopes',
-                                'Express Mail International',
+                                'Priority Mail Express International',
                                 'Priority Mail International',
                                 'First-Class Mail International Large Envelope',
                                 'First-Class Package International Service',
@@ -107,16 +136,16 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     'filters'    => array(
                         'within_us' => array(
                             'method' => array(
-                                'Express Mail Flat Rate Boxes',
-                                'Express Mail Flat Rate Boxes Hold For Pickup',
-                                'Priority Mail Large Flat Rate Box',
-                                'Priority Mail Medium Flat Rate Box',
-                                'Priority Mail Small Flat Rate Box',
+                                'Priority Mail Express 2-Day Flat Rate Boxes',
+                                'Priority Mail Express 2-Day Flat Rate Boxes Hold For Pickup',
+                                'Priority Mail 2-Day Large Flat Rate Box',
+                                'Priority Mail 2-Day Medium Flat Rate Box',
+                                'Priority Mail 2-Day Small Flat Rate Box',
                             )
                         ),
                         'from_us' => array(
                             'method' => array(
-                                'Express Mail International Flat Rate Boxes',
+                                'Priority Mail Express International Flat Rate Boxes',
                                 'Priority Mail International DVD Flat Rate priced box',
                                 'Priority Mail International Large Flat Rate Box',
                                 'Priority Mail International Large Video Flat Rate priced box',
@@ -131,24 +160,23 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     'filters'    => array(
                         'within_us' => array(
                             'method' => array(
-                                'Express Mail Flat Rate Envelope',
-                                'Express Mail Flat Rate Envelope Hold For Pickup',
-                                'Express Mail Flat-Rate Envelope Sunday/Holiday Delivery',
-                                'Express Mail Legal Flat Rate Envelope',
-                                'Express Mail Legal Flat Rate Envelope Hold For Pickup',
-                                'Express Mail Padded Flat Rate Envelope',
-                                'Express Mail Padded Flat Rate Envelope Hold For Pickup',
-                                'Priority Mail Legal Flat Rate Envelope',
-                                'Priority Mail Padded Flat Rate Envelope',
-                                'Priority Mail Small Flat Rate Envelope',
-                                'Priority Mail Window Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Express 2-Day Legal Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Legal Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Express 2-Day Padded Flat Rate Envelope',
+                                'Priority Mail Express 2-Day Padded Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail 2-Day Legal Flat Rate Envelope',
+                                'Priority Mail 2-Day Padded Flat Rate Envelope',
+                                'Priority Mail 2-Day Small Flat Rate Envelope',
+                                'Priority Mail 2-Day Window Flat Rate Envelope',
                             )
                         ),
                         'from_us' => array(
                             'method' => array(
-                                'Express Mail International Flat Rate Envelope',
-                                'Express Mail International Legal Flat Rate Envelope',
-                                'Express Mail International Padded Flat Rate Envelope',
+                                'Priority Mail Express International Flat Rate Envelope',
+                                'Priority Mail Express International Legal Flat Rate Envelope',
+                                'Priority Mail Express International Padded Flat Rate Envelope',
                                 'Priority Mail International Flat Rate Envelope',
                                 'Priority Mail International Gift Card Flat Rate Envelope',
                                 'Priority Mail International Legal Flat Rate Envelope',
@@ -162,8 +190,8 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     'filters'    => array(
                         'within_us' => array(
                             'method' => array(
-                                'Express Mail',
-                                'Priority Mail',
+                                'Priority Mail Express 2-Day',
+                                'Priority Mail 2-Day',
                                 'Standard Post',
                                 'Media Mail',
                             )
@@ -171,7 +199,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                         'from_us' => array(
                             'method' => array(
                                 'USPS GXG Envelopes',
-                                'Express Mail International',
+                                'Priority Mail Express International',
                                 'Priority Mail International',
                                 'First-Class Package International Service',
                             )
@@ -183,8 +211,8 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     'filters'    => array(
                         'within_us' => array(
                             'method' => array(
-                                'Express Mail',
-                                'Priority Mail',
+                                'Priority Mail Express 2-Day',
+                                'Priority Mail 2-Day',
                                 'Standard Post',
                                 'Media Mail',
                             )
@@ -192,7 +220,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                         'from_us' => array(
                             'method' => array(
                                 'USPS GXG Envelopes',
-                                'Express Mail International',
+                                'Priority Mail Express International',
                                 'Priority Mail International',
                                 'First-Class Package International Service',
                             )

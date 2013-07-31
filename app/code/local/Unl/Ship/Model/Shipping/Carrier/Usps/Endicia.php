@@ -197,19 +197,19 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             'Bound Printed Matter'             => false,
             'Media Mail'                       => array('MediaMail', 'Parcel'),
             'Library Mail'                     => array('LibraryMail', 'Parcel'),
-            'Express Mail'                     => array('Express', null),
-            'Express Mail PO to PO'            => array('Express', null),
-            'Express Mail Flat Rate Envelope'  => array('Express', 'FlatRateEnvelope'),
-            'Express Mail Flat-Rate Envelope Sunday/Holiday Guarantee'  => array('Express', 'FlatRateEnvelope', array('Sunday')),
-            'Express Mail Sunday/Holiday Guarantee'            => array('Express', null, array('Sunday')),
-            'Express Mail Flat Rate Envelope Hold For Pickup'  => array('Express', 'FlatRateEnvelope', array('Hfp')),
-            'Express Mail Hold For Pickup'                     => array('Express', null, array('Hfp')),
+            'Express Mail'                     => array('PriorityExpress', null),
+            'Express Mail PO to PO'            => array('PriorityExpress', null),
+            'Express Mail Flat Rate Envelope'  => array('PriorityExpress', 'FlatRateEnvelope'),
+            'Express Mail Flat-Rate Envelope Sunday/Holiday Guarantee'  => array('PriorityExpress', 'FlatRateEnvelope', array('Sunday')),
+            'Express Mail Sunday/Holiday Guarantee'            => array('PriorityExpress', null, array('Sunday')),
+            'Express Mail Flat Rate Envelope Hold For Pickup'  => array('PriorityExpress', 'FlatRateEnvelope', array('Hfp')),
+            'Express Mail Hold For Pickup'                     => array('PriorityExpress', null, array('Hfp')),
             'Global Express Guaranteed (GXG)'                  => array('GXG', null),
             'Global Express Guaranteed Non-Document Rectangular'     => array('GXG', 'Parcel'),
             'Global Express Guaranteed Non-Document Non-Rectangular' => array('GXG', 'Parcel'),
             'USPS GXG Envelopes'                               => array('GXG', 'Flat'),
-            'Express Mail International'                       => array('ExpressMailInternational', null),
-            'Express Mail International Flat Rate Envelope'    => array('ExpressMailInternational', 'FlatRateEnvelope'),
+            'Express Mail International'                       => array('PriorityMailExpressInternational', null),
+            'Express Mail International Flat Rate Envelope'    => array('PriorityMailExpressInternational', 'FlatRateEnvelope'),
             'Priority Mail'                        => array('Priority', null),
             'Priority Mail Small Flat Rate Box'    => array('Priority', 'SmallFlatRateBox'),
             'Priority Mail Medium Flat Rate Box'   => array('Priority', 'MediumFlatRateBox'),
@@ -217,30 +217,31 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             'Priority Mail Flat Rate Box'          => array('Priority', 'MediumFlatRateBox'),
             'Priority Mail Flat Rate Envelope'     => array('Priority', 'FlatRateEnvelope'),
             'Priority Mail International'                            => array('PriorityMailInternational', null),
-            'Priority Mail International Flat Rate Envelope'         => array('Priority', 'FlatRateEnvelope'),
-            'Priority Mail International Small Flat Rate Box'        => array('Priority', 'SmallFlatRateBox'),
-            'Priority Mail International Medium Flat Rate Box'       => array('Priority', 'MediumFlatRateBox'),
-            'Priority Mail International Large Flat Rate Box'        => array('Priority', 'LargeFlatRateBox'),
-            'Priority Mail International Flat Rate Box'              => array('Priority', 'MediumFlatRateBox'),
-            
+            'Priority Mail International Flat Rate Envelope'         => array('PriorityMailInternational', 'FlatRateEnvelope'),
+            'Priority Mail International Small Flat Rate Box'        => array('PriorityMailInternational', 'SmallFlatRateBox'),
+            'Priority Mail International Medium Flat Rate Box'       => array('PriorityMailInternational', 'MediumFlatRateBox'),
+            'Priority Mail International Large Flat Rate Box'        => array('PriorityMailInternational', 'LargeFlatRateBox'),
+            'Priority Mail International Flat Rate Box'              => array('PriorityMailInternational', 'MediumFlatRateBox'),
+
             //services added after magento core
-            'First Class Mail Postcards'                 => array('First', 'Card'),
+            'First-Class Mail Postcards'                 => array('First', 'Card'),
+            'First-Class Mail Large Postcards'           => array('First', 'Card'),
             'First-Class Package International Service'  => array('FirstClassPackageInternationalService', 'Parcel'),
             'Standard Post'                              => array('ParcelSelect', 'Parcel'),
-            'Express Mail Sunday/Holiday Delivery'                           => array('Express', null, array('Sunday')),
-            'Express Mail Flat Rate Boxes'                                   => array('Express', 'MediumFlatRateBox'),
-            'Express Mail Flat Rate Boxes Hold For Pickup'                   => array('Express', 'MediumFlatRateBox', array('Hfp')),
-            'Express Mail Sunday/Holiday Delivery Flat-Rate Boxes'           => array('Express', 'MediumFlatRateBox', array('Sunday')),
-            'Express Mail Sunday/Holiday Delivery Flat-Rate Envelope'        => array('Express', 'FlatRateEnvelope', array('Sunday')),
-            'Express Mail Legal Flat Rate Envelope'                          => array('Express', 'FlatRateLegalEnvelope'),
-            'Express Mail Legal Flat Rate Envelope Hold For Pickup'          => array('Express', 'FlatRateLegalEnvelope', array('Hfp')),
-            'Express Mail Sunday/Holiday Delivery Legal Flat Rate Envelope'  => array('Express', 'FlatRateLegalEnvelope', array('Sunday')),
-            'Express Mail Padded Flat Rate Envelope'                         => array('Express', 'FlatRatePaddedEnvelope'),
-            'Express Mail Padded Flat Rate Envelope Hold For Pickup'         => array('Express', 'FlatRatePaddedEnvelope', array('Hfp')),
-            'Express Mail Sunday/Holiday Delivery Padded Flat Rate Envelope' => array('Express', 'FlatRatePaddedEnvelope', array('Sunday')),
-            'Express Mail International Flat Rate Boxes'                     => array('ExpressMailInternational', 'MediumFlatRateBox'),
-            'Express Mail International Legal Flat Rate Envelope'            => array('ExpressMailInternational', 'FlatRateLegalEnvelope'),
-            'Express Mail International Padded Flat Rate Envelope'           => array('ExpressMailInternational', 'FlatRatePaddedEnvelope'),
+            'Express Mail Sunday/Holiday Delivery'                           => array('PriorityExpress', null, array('Sunday')),
+            'Express Mail Flat Rate Boxes'                                   => array('PriorityExpress', 'MediumFlatRateBox'),
+            'Express Mail Flat Rate Boxes Hold For Pickup'                   => array('PriorityExpress', 'MediumFlatRateBox', array('Hfp')),
+            'Express Mail Sunday/Holiday Delivery Flat-Rate Boxes'           => array('PriorityExpress', 'MediumFlatRateBox', array('Sunday')),
+            'Express Mail Sunday/Holiday Delivery Flat-Rate Envelope'        => array('PriorityExpress', 'FlatRateEnvelope', array('Sunday')),
+            'Express Mail Legal Flat Rate Envelope'                          => array('PriorityExpress', 'FlatRateLegalEnvelope'),
+            'Express Mail Legal Flat Rate Envelope Hold For Pickup'          => array('PriorityExpress', 'FlatRateLegalEnvelope', array('Hfp')),
+            'Express Mail Sunday/Holiday Delivery Legal Flat Rate Envelope'  => array('PriorityExpress', 'FlatRateLegalEnvelope', array('Sunday')),
+            'Express Mail Padded Flat Rate Envelope'                         => array('PriorityExpress', 'FlatRatePaddedEnvelope'),
+            'Express Mail Padded Flat Rate Envelope Hold For Pickup'         => array('PriorityExpress', 'FlatRatePaddedEnvelope', array('Hfp')),
+            'Express Mail Sunday/Holiday Delivery Padded Flat Rate Envelope' => array('PriorityExpress', 'FlatRatePaddedEnvelope', array('Sunday')),
+            'Express Mail International Flat Rate Boxes'                     => array('PriorityMailExpressInternational', 'MediumFlatRateBox'),
+            'Express Mail International Legal Flat Rate Envelope'            => array('PriorityMailExpressInternational', 'FlatRateLegalEnvelope'),
+            'Express Mail International Padded Flat Rate Envelope'           => array('PriorityMailExpressInternational', 'FlatRatePaddedEnvelope'),
             'Priority Mail Legal Flat Rate Envelope'     => array('Priority', 'FlatRateLegalEnvelope'),
             'Priority Mail Padded Flat Rate Envelope'    => array('Priority', 'FlatRatePaddedEnvelope'),
             'Priority Mail Gift Card Flat Rate Envelope' => array('Priority', 'FlatRateGiftCardEnvelope'),
@@ -253,6 +254,33 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             'Priority Mail International Gift Card Flat Rate Envelope'       => array('PriorityMailInternational', 'FlatRateGiftCardEnvelope'),
             'Priority Mail International Small Flat Rate Envelope'           => array('PriorityMailInternational', 'SmallFlatRateEnvelope'),
             'Priority Mail International Window Flat Rate Envelope'          => array('PriorityMailInternational', 'FlatRateWindowEnvelope'),
+
+            //service added after USPS 7/28/2013
+            'Priority Mail 2-Day'                                            => array('Priority', null),
+            'Priority Mail 2-Day Flat Rate Envelope'                         => array('Priority', 'FlatRateEnvelope'),
+            'Priority Mail 2-Day Gift Card Flat Rate Envelope'               => array('Priority', 'FlatRateGiftCardEnvelope'),
+            'Priority Mail 2-Day Large Flat Rate Box'                        => array('Priority', 'LargeFlatRateBox'),
+            'Priority Mail 2-Day Legal Flat Rate Envelope'                   => array('Priority', 'FlatRateLegalEnvelope'),
+            'Priority Mail 2-Day Medium Flat Rate Box'                       => array('Priority', 'MediumFlatRateBox'),
+            'Priority Mail 2-Day Padded Flat Rate Envelope'                  => array('Priority', 'FlatRatePaddedEnvelope'),
+            'Priority Mail 2-Day Small Flat Rate Box'                        => array('Priority', 'SmallFlatRateBox'),
+            'Priority Mail 2-Day Small Flat Rate Envelope'                   => array('Priority', 'SmallFlatRateEnvelope'),
+            'Priority Mail 2-Day Window Flat Rate Envelope'                  => array('Priority', 'FlatRateWindowEnvelope'),
+            'Priority Mail Express 2-Day'                                           => array('PriorityExpress', null),
+            'Priority Mail Express 2-Day Flat Rate Boxes'                           => array('PriorityExpress', 'MediumFlatRateBox'),
+            'Priority Mail Express 2-Day Flat Rate Boxes Hold For Pickup'           => array('PriorityExpress', 'MediumFlatRateBox', array('Hfp')),
+            'Priority Mail Express 2-Day Flat Rate Envelope'                        => array('PriorityExpress', 'FlatRateEnvelope'),
+            'Priority Mail Express 2-Day Flat Rate Envelope Hold For Pickup'        => array('PriorityExpress', 'FlatRateEnvelope', array('Hfp')),
+            'Priority Mail Express 2-Day Hold For Pickup'                           => array('PriorityExpress', null, array('Hfp')),
+            'Priority Mail Express 2-Day Legal Flat Rate Envelope'                  => array('PriorityExpress', 'FlatRateLegalEnvelope'),
+            'Priority Mail Express 2-Day Legal Flat Rate Envelope Hold For Pickup'  => array('PriorityExpress', 'FlatRateLegalEnvelope', array('Hfp')),
+            'Priority Mail Express 2-Day Padded Flat Rate Envelope'                 => array('PriorityExpress', 'FlatRatePaddedEnvelope'),
+            'Priority Mail Express 2-Day Padded Flat Rate Envelope Hold For Pickup' => array('PriorityExpress', 'FlatRatePaddedEnvelope', array('Hfp')),
+            'Priority Mail Express International'                                   => array('PriorityMailExpressInternational', null),
+            'Priority Mail Express International Flat Rate Boxes'                   => array('PriorityMailExpressInternational', 'MediumFlatRateBox'),
+            'Priority Mail Express International Flat Rate Envelope'                => array('PriorityMailExpressInternational', 'FlatRateEnvelope'),
+            'Priority Mail Express International Legal Flat Rate Envelope'          => array('PriorityMailExpressInternational', 'FlatRateLegalEnvelope'),
+            'Priority Mail Express International Padded Flat Rate Envelope'         => array('PriorityMailExpressInternational', 'FlatRatePaddedEnvelope'),
         );
 
         if (!isset($codes[$service])) {
@@ -298,7 +326,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         if ($domestic) {
             $xmlRequest->addAttribute('LabelType', 'Default');
             $xmlRequest->addAttribute('LabelSize', '4x6');
-            
+
         } else {
             $xmlRequest->addAttribute('LabelType', 'International');
             $xmlRequest->addAttribute('LabelSubtype', 'Integrated');
@@ -320,7 +348,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         if (!is_null($mailinfo[1])) {
             $xmlRequest->addChild('MailpieceShape', $mailinfo[1]);
         }
-        
+
         if ($mailinfo[0] == 'ParcelSelect') {
             $xmlRequest->addChild('SortType', 'Nonpresorted');
             $xmlRequest->addChild('EntryFacility', 'Other');
