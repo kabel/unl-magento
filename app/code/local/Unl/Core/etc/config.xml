@@ -631,6 +631,15 @@
                     </unl_core>
                 </observers>
             </catalog_helper_output_construct>
+            
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <unl_core_front_layout>
+                        <class>unl_core/observer</class>
+                        <method>onAfterFrontPrepareLayout</method>
+                    </unl_core_front_layout>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
         
             <core_design_check_useragent_exps_before>
                 <observers>

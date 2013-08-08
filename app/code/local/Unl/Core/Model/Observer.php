@@ -8,7 +8,7 @@ class Unl_Core_Model_Observer
      * An <i>adminhtml</i> event observer for the <code>core_block_abstract_prepare_layout_after</code>
      * Provides a hook for blocks that cannot be modified from layout files.
      *
-     * @param unknown_type $observer
+     * @param Varien_Event_Observer $observer
      */
     public function onAfterAdminPrepareLayout($observer)
     {
@@ -47,6 +47,29 @@ class Unl_Core_Model_Observer
             if ($block instanceof $type) {
                 $block->getChild('store_switcher')->setTemplate('unl/report/store/switcher.phtml');
                 return;
+            }
+        }
+    }
+
+    /**
+     * A <i>frontend</i> event observer for the <code>core_block_abstract_prepare_layout_after</code> event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onAfterFrontPrepareLayout($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+
+        // Do actions based on block type
+
+        $type = 'Mage_Cms_Block_Page';
+        if ($block instanceof $type) {
+            /* @var $block Mage_Cms_Block_Page */
+            $homeId = Mage::getStoreConfig(Mage_Cms_Helper_Page::XML_PATH_HOME_PAGE);
+            $pageId = is_numeric($homeId) ? $block->getPage()->getId() : $block->getPage()->getIdentifier();
+            $head = $block->getLayout()->getBlock('head');
+            if ($head && $homeId === $pageId) {
+                $head->setTitle('');
             }
         }
     }
