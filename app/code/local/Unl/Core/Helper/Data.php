@@ -39,6 +39,36 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
 
+    /**
+     * Returns a string that contains the branded title
+     *
+     * @param Mage_Page_Block_Html_Head $head The HTML Head block
+     * @param string $brand The brand name to append (defaults to 'UNL Marketplace')
+     * @param string $glue The string to put between title pieces
+     *
+     */
+    public function getFormattedPageTitle($head, $brand = 'UNL Marketplace', $glue = ' | ')
+    {
+        if ($head->getData('title') == $head->getDefaultTitle()) {
+            return $head->getTitle();
+        }
+
+        $title = array();
+        if (trim($head->getTitle())) {
+            $title[] = $head->getTitle();
+        }
+
+        if (Mage::app()->getStore()->getCode() != 'default') {
+            $title[] = $this->htmlEscape(Mage::app()->getGroup()->getName());
+        }
+
+        if ($brand) {
+            $title[] = $this->htmlEscape($brand);
+        }
+
+        return implode($glue, $title);
+    }
+
     public function getProductSourceStoreFilterOptions()
     {
         $options = Mage::getSingleton('unl_core/store_source_switcher')->getOptionArray();
@@ -208,7 +238,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         if (!empty($storeIds) && !is_array($storeIds)) {
             $storeIds = array($storeIds);
         }
-        
+
         if ($scope = $this->getAdminUserScope()) {
             if (!empty($storeIds)) {
                 $storeIds = array_intersect($scope, $storeIds);

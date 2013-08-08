@@ -17,11 +17,7 @@
 <?php echo Mage::helper('unl_core')->fetchServerFile('/wdn/templates_3.1/includes/scriptsandstyles_local.html'); ?>
 <!-- TemplateBeginEditable name="doctitle" -->
 <title>
-<?php if (substr($this->getTitle(), 0, 3) == 'UNL'): ?>
-    <?php echo $this->getTitle() ?>
-<?php else: ?>
-    <?php echo $this->getTitle() ?><?php if (Mage::app()->getStore()->getCode() != 'default'): ?> | <?php echo $this->htmlEscape(Mage::app()->getGroup()->getName()) ?><?php endif; ?> | UNL Marketplace
-<?php endif; ?>
+    <?php echo Mage::helper('unl_core')->getFormattedPageTitle($this) ?>
 </title>
 <!-- TemplateEndEditable -->
 <!-- TemplateBeginEditable name="head" -->
