@@ -513,16 +513,6 @@
                     </set_dummy>
                 </observers>
             </sales_shipment_item_save_before>
-            
-            <shipping_carrier_request_to_shipment>
-                <observers>
-                    <unl_core>
-                        <class>unl_core/sales_observer</class>
-                        <method>onBeforeRequestToShipment</method>
-                    </unl_core>
-                </observers>
-            </shipping_carrier_request_to_shipment>
-            
         </events>
         
         <cache>
@@ -951,24 +941,6 @@
                     </filter_scope>
                 </observers>
             </rss_order_new_collection_select>
-            
-            <sales_order_shipment_save_before>
-                <observers>
-                    <was_new>
-                        <class>unl_core/sales_observer</class>
-                        <method>onBeforeOrderShipmentSave</method>
-                    </was_new>
-                </observers>
-            </sales_order_shipment_save_before>
-            
-            <sales_order_shipment_save_after>
-                <observers>
-                    <capture_case>
-                        <class>unl_core/sales_observer</class>
-                        <method>onAfterOrderShipmentSave</method>
-                    </capture_case>
-                </observers>
-            </sales_order_shipment_save_after>
         </events>
         
         <layout>

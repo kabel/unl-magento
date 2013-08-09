@@ -13,7 +13,7 @@
             <fieldset>
                 <div><?php echo $this->getPaymentHtml() ?></div>
                 <div><?php echo Mage::helper('sales')->__('The order was placed using %s', $_order->getOrderCurrencyCode()) ?></div>
-                <?php $_wfHelper = Mage::helper('unl_core/adminhtml_sales_workflow'); /* @var $_wfHelper Unl_Core_Helper_Adminhtml_Sales_Workflow */ ?>
+                <?php $_wfHelper = Mage::helper('unl_ship/adminhtml_sales_workflow'); /* @var $_wfHelper Unl_Core_Helper_Adminhtml_Sales_Workflow */ ?>
                 <?php if ($_wfHelper->isCaptureAllowed()): ?>
                     <?php if ($_wfHelper->canInvoice($_order) || $_wfHelper->hasInvoiceNeedsCapture($_order)): ?>
                         <div class="shipment-invoice">

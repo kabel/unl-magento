@@ -126,6 +126,15 @@
                     </unl_ship>
                 </observers>
             </sales_order_shipment_save_after>
+            
+            <shipping_carrier_request_to_shipment>
+                <observers>
+                    <unl_ship>
+                        <class>unl_ship/observer</class>
+                        <method>onBeforeRequestToShipment</method>
+                    </unl_ship>
+                </observers>
+            </shipping_carrier_request_to_shipment>
         </events>
     
         <layout>

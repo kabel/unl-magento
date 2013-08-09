@@ -1,6 +1,6 @@
 <?php
 
-class Unl_Core_Helper_Adminhtml_Sales_Workflow extends Mage_Core_Helper_Abstract
+class Unl_Ship_Helper_Adminhtml_Sales_Workflow extends Mage_Core_Helper_Abstract
 {
     /**
      * Check if capture operation is allowed in ACL

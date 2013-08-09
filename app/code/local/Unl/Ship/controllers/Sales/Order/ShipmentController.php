@@ -50,6 +50,13 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
 
             $shipment->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
 
+            // ** check for invoice capturing
+            if (!empty($data['do_invoice'])) {
+                $captureCase = isset($data['capture_case']) ? $data['capture_case'] : null;
+                $this->_doInvoice($shipment, $captureCase);
+            }
+            // **
+
             $this->_saveShipment($shipment, $isNeedCreateLabel);
 
             $shipment->sendEmail(!empty($data['send_email']), $comment);
@@ -105,6 +112,97 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
         } else {
             $this->_getSession()->addSuccess($success);
             $this->_redirect('*/sales_order/view', array('order_id' => $shipment->getOrderId()));
+        }
+    }
+
+    /**
+     * Searches an array of shipment items for a matching order item id
+     *
+     * @param Mage_Sales_Model_Order_Shipment_Item[] $items
+     * @param int $orderItemId
+     * @return Mage_Sales_Model_Order_Shipment_Item
+     */
+    protected function _getShipmentItemByOrderItemId($items, $orderItemId)
+    {
+        foreach ($items as $item) {
+            if ($item->getOrderItemId() == $orderItemId) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Creates/captures an invoice for the shipment's items
+     *
+     * @param Mage_Sales_Model_Order_Shipment $shipment
+     * @param string $captureCase
+     * @throws Exception
+     */
+    protected function _doInvoice($shipment, $captureCase)
+    {
+        $helper = Mage::helper('unl_ship/adminhtml_sales_workflow');
+        $order = $shipment->getOrder();
+
+        if ($helper->canInvoice($order)) {
+            $savedQtys = array();
+            if ($order->getPayment()->canCapturePartial()) {
+                foreach ($shipment->getAllItems() as $item) {
+                    if (!$item->getOrderItem()->isDummy()) {
+                        if ($item->getOrderItem()->isDummy(true)) {
+                            $parentOrderItem = $item->getOrderItem()->getParentItem();
+                            $savedQtys[$item->getOrderItemId()] = $item->getOrderItem()->getQtyOrdered()
+                            / $parentOrderItem->getQtyOrdered()
+                            * $this->_getShipmentItemByOrderItemId(
+                                $shipment->getAllItems(),
+                                $parentOrderItem->getId()
+                            )->getQty();
+                        } else {
+                            $savedQtys[$item->getOrderItemId()] = $item->getQty();
+                        }
+                    }
+                }
+
+                foreach ($order->getAllItems() as $item) {
+                    if (!isset($savedQtys[$item->getId()]) && $item->getQtyToInvoice()) {
+                        $savedQtys[$item->getId()] = 0;
+                    }
+                }
+            }
+
+            /* @var $invoice Mage_Sales_Model_Order_Invoice */
+            $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice($savedQtys);
+
+            if (!empty($captureCase)) {
+                $invoice->setRequestedCaptureCase($captureCase);
+            }
+
+            $rethrow = true;
+            try {
+                $invoice->register();
+                $invoice->save();
+
+                $rethrow = false;
+                $invoice->sendEmail(false);
+            } catch (Exception $e) {
+                Mage::logException($e);
+
+                if ($rethrow) {
+                    throw $e;
+                }
+            }
+        } elseif ($helper->hasInvoiceNeedsCapture($order)) {
+            foreach ($order->getInvoiceCollection() as $invoice) {
+                if ($invoice->canCapture()) {
+                    if ($captureCase == Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE) {
+                        $invoice->capture()->save();
+                    } elseif ($captureCase == Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE) {
+                        $invoice->setCanVoidFlag(false);
+                        $invoice->pay()->save();
+                    }
+                }
+            }
         }
     }
 

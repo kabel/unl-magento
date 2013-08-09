@@ -4,7 +4,7 @@ class Unl_Core_Model_Sales_Observer
 {
     /**
      * An event observer for the <code>sales_quote_item_set_product</code> event.
-     * Sets the quote_item's source store view and warehose
+     * Sets the quote_item's source store view and warehouse
      *
      * @param Varien_Event_Observer $observer
      */
@@ -62,56 +62,8 @@ class Unl_Core_Model_Sales_Observer
             if (strpos($method, 'pickup_store') === 0) {
                 Mage::getModel('unl_core/shipping_carrier_pickup')->updateAddress($address);
             } elseif (strpos($previous, 'pickup_store') === 0) {
-                $billing = $address->getQuote()->getBillingAddress();
-                Mage::getModel('unl_core/shipping_carrier_pickup')->revertAddress($address, $billing);
+                Mage::getModel('unl_core/shipping_carrier_pickup')->revertAddress($address);
             }
-        }
-    }
-
-    /**
-     * An event observer for the custom <code>shipping_carrier_request_to_shipment</code>
-     * event.
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function onBeforeRequestToShipment($observer)
-    {
-        /* @var $request Mage_Shipping_Model_Shipment_Request */
-        /* @var $carrier Mage_Shipping_Model_Carrier_Abstract */
-        /* @var $result  Varien_Object */
-        $request = $observer->getEvent()->getRequest();
-        $carrier = $observer->getEvent()->getCarrier();
-        $result  = $observer->getEvent()->getResult();
-
-        $session = Mage::getSingleton('adminhtml/session');
-
-        $ackExpiration = $session->getOrderShipmentAckExp();
-        if ($ackExpiration && $ackExpiration <= time()) {
-            $session->getOrderShipmentAckExp(true);
-            $session->getLastOrderShipmentAck(true);
-        }
-
-        $lastOrderAck = $session->getLastOrderShipmentAck(true);
-        if ($lastOrderAck === $request->getOrderShipment()->getOrderId()) {
-            return;
-        }
-
-        $pickup = Mage::getModel('unl_core/shipping_carrier_pickup');
-        $replacementAddr = $pickup->getReplacementAddress($request->getStoreId());
-        $replacementAddr['region_code'] = Mage::getModel('directory/region')->load($replacementAddr['region_id'])->getCode();
-
-        if ($request->getRecipientContactCompanyName() == $replacementAddr['company']
-            && $request->getRecipientAddressStreet1() == $replacementAddr['street'][0]
-            && $request->getRecipientAddressStreet2() == $replacementAddr['street'][1]
-            && $request->getRecipientAddressCity() == $replacementAddr['city']
-            && $request->getRecipientAddressStateOrProvinceCode() == $replacementAddr['region_code']
-            && strpos($request->getRecipientAddressPostalCode(), $replacementAddr['postcode']) === 0
-            && $request->getRecipientAddressCountryCode() == $replacementAddr['country_id']
-            && $request->getRecipientContactPhoneNumber() == $replacementAddr['telephone']
-        ) {
-            $result->setError(Mage::helper('unl_core')->__('You are about to create a label for the "internal pickup" address. Are you sure this is correct?'));
-            $session->setOrderShipmentAckExp(time() + (5 * 60));
-            $session->setLastOrderShipmentAck($request->getOrderShipment()->getOrderId());
         }
     }
 
@@ -342,123 +294,6 @@ class Unl_Core_Model_Sales_Observer
         $helper = Mage::helper('unl_core');
         $helper->checkCustomerAllowedProduct($_item);
         $helper->checkCustomerAllowedProductQty($_item);
-    }
-
-    /**
-     * An <i>adminhtml</i> event observer for the <code>sales_order_shipment_save_before</code>
-     * event.
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function onBeforeOrderShipmentSave($observer)
-    {
-        $shipment = $observer->getEvent()->getShipment();
-        if ($shipment->isObjectNew()) {
-            $shipment->setObjectWasNew(true);
-        }
-    }
-
-    /**
-     * Enter description here ...
-     *
-     * @param array $items
-     * @param int $orderItemId
-     * @return Mage_Sales_Model_Order_Shipment_Item
-     */
-    protected function _getShipmentItemByOrderItemId($items, $orderItemId)
-    {
-        foreach ($items as $item) {
-            if ($item->getOrderItemId() == $orderItemId) {
-                return $item;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * An <i>adminhtml</i> event observer for the <code>sales_order_shipment_save_after</code>
-     * event.
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function onAfterOrderShipmentSave($observer)
-    {
-        $shipment = $observer->getEvent()->getShipment();
-        /* @var $shipment Mage_Sales_Model_Order_Shipment */
-
-        if ($shipment->getObjectWasNew()) {
-            $shipment->unsObjectWasNew();
-            $request = Mage::app()->getRequest();
-            $order = $shipment->getOrder();
-            $data = $request->getParam('shipment');
-            $captureCase = isset($data['capture_case']) ? $data['capture_case'] : null;
-            $helper = Mage::helper('unl_core/adminhtml_sales_workflow');
-
-            if (!empty($data['do_invoice'])) {
-
-                if ($helper->canInvoice($order)) {
-                    $savedQtys = array();
-                    if ($order->getPayment()->canCapturePartial()) {
-                        foreach ($shipment->getAllItems() as $item) {
-                            if (!$item->getOrderItem()->isDummy()) {
-                                if ($item->getOrderItem()->isDummy(true)) {
-                                    $parentOrderItem = $item->getOrderItem()->getParentItem();
-                                    $savedQtys[$item->getOrderItemId()] = $item->getOrderItem()->getQtyOrdered()
-                                        / $parentOrderItem->getQtyOrdered()
-                                        * $this->_getShipmentItemByOrderItemId(
-                                            $shipment->getAllItems(),
-                                            $parentOrderItem->getId()
-                                        )->getQty();
-                                } else {
-                                    $savedQtys[$item->getOrderItemId()] = $item->getQty();
-                                }
-                            }
-                        }
-
-                        foreach ($order->getAllItems() as $item) {
-                            if (!isset($savedQtys[$item->getId()]) && $item->getQtyToInvoice()) {
-                                $savedQtys[$item->getId()] = 0;
-                            }
-                        }
-                    }
-
-                    /* @var $invoice Mage_Sales_Model_Order_Invoice */
-                    $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice($savedQtys);
-
-                    if (!empty($captureCase)) {
-                        $invoice->setRequestedCaptureCase($captureCase);
-                    }
-
-                    try {
-                        $invoice->register();
-                        $invoice->save();
-                    } catch (Exception $e) {
-                        Mage::logException($e);
-                        throw $e;
-                    }
-
-                    try {
-                        $invoice->sendEmail(false);
-                    } catch (Exception $e) {
-                        Mage::logException($e);
-                    }
-                } elseif ($helper->hasInvoiceNeedsCapture($order)) {
-                    foreach ($order->getInvoiceCollection() as $invoice) {
-                        if ($invoice->canCapture()) {
-                            if ($captureCase == Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE) {
-                                $invoice->capture()->save();
-                            } elseif ($captureCase == Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE) {
-                                $invoice->setCanVoidFlag(false);
-                                $invoice->pay()->save();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $this;
     }
 
     /**

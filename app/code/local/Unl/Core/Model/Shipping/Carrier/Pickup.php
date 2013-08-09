@@ -210,10 +210,11 @@ class Unl_Core_Model_Shipping_Carrier_Pickup extends Mage_Shipping_Model_Carrier
      * Replaces the replaced shipping address with the billing address
      *
      * @param Unl_Core_Model_Sales_Quote_Address $shipping
-     * @param Unl_Core_Model_Sales_Quote_Address $billing
      */
-    public function revertAddress($shipping, $billing)
+    public function revertAddress($shipping)
     {
+        $billing = $shipping->getQuote()->getBillingAddress();
+
         $shipping->setSameAsBilling(1)
             ->setSaveInAddressBook(0)
             ->unsRegionId()
