@@ -31,6 +31,15 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             $responseAjax = $this->_responseAjax = new Varien_Object();
             $isNeedCreateLabel = isset($data['create_shipping_label']) && $data['create_shipping_label'];
 
+            $shipment->getOrder()->setIsInProcess(true);
+
+            // ** check for invoice capturing
+            if (!empty($data['do_invoice'])) {
+                $captureCase = isset($data['capture_case']) ? $data['capture_case'] : null;
+                $this->_doInvoice($shipment, $captureCase);
+            }
+            // **
+
             $shipment->register();
             $comment = '';
             if (!empty($data['comment_text'])) {
@@ -49,13 +58,6 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             }
 
             $shipment->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
-
-            // ** check for invoice capturing
-            if (!empty($data['do_invoice'])) {
-                $captureCase = isset($data['capture_case']) ? $data['capture_case'] : null;
-                $this->_doInvoice($shipment, $captureCase);
-            }
-            // **
 
             $this->_saveShipment($shipment, $isNeedCreateLabel);
 
@@ -181,7 +183,8 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             $rethrow = true;
             try {
                 $invoice->register();
-                $invoice->save();
+                $transaction = $this->_getSaveTransaction($invoice);
+                $transaction->save();
 
                 $rethrow = false;
                 $invoice->sendEmail(false);
@@ -206,16 +209,28 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
         }
     }
 
+    /**
+     * Returns a order model transaction ready to be saved
+     *
+     * @param Mage_Sales_Model_Order_Invoice|Mage_Sales_Model_Order_Shipment $model
+     * @return Mage_Core_Model_Resource_Transaction
+     */
+    protected function _getSaveTransaction($model)
+    {
+        $transaction = Mage::getModel('core/resource_transaction')
+            ->addObject($model)
+            ->addObject($model->getOrder());
+
+        return $transaction;
+    }
+
     /* Overrides
      * @see Mage_Adminhtml_Sales_Order_ShipmentController::_saveShipment()
      * by adding a commit callback to create the label if needed
      */
     protected function _saveShipment($shipment, $isNeedCreateLabel = false)
     {
-        $shipment->getOrder()->setIsInProcess(true);
-        $transactionSave = Mage::getModel('core/resource_transaction')
-            ->addObject($shipment)
-            ->addObject($shipment->getOrder());
+        $transactionSave = $this->_getSaveTransaction($shipment);
 
         if ($isNeedCreateLabel) {
             $transactionSave->addCommitCallback(array($this, 'createLabelFromCurrent'));
