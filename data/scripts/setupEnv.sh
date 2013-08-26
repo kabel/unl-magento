@@ -14,35 +14,24 @@ fi
 
 cd $magePath
 
-if [ "$3" == "vendor" ]; then
-    if [ "$4" == "revert" ]; then
-        action=2
-    fi
-    
-    symlinks=(
-        "app/code/local/AW"
-        "app/code/local/Webshopapps"
-    );
-else
-    symlinks=(
-        "app/code/local/Cm"
-        "app/code/local/Mage"
-        "app/code/local/Unl"
-        "app/code/local/Zend"
-        "app/design/frontend/unl"
-        "app/design/adminhtml/default/unl"
-        "app/etc/modules/Unl_All.xml"
-        "errors/unl"
-        "errors/local.xml"
-        "js/unl"
-        "lib/LinLibertineFont513"
-        "lib/SimpleCAS"
-        "lib/SimpleCAS.php"
-        "lib/UNL"
-        "skin/frontend/unl"
-        "skin/adminhtml/default/unl"
-    );
-fi
+symlinks=(
+    "app/code/local/Cm"
+    "app/code/local/Mage"
+    "app/code/local/Unl"
+    "app/code/local/Zend"
+    "app/design/frontend/unl"
+    "app/design/adminhtml/default/unl"
+    "app/etc/modules/Unl_All.xml"
+    "errors/unl"
+    "errors/local.xml"
+    "js/unl"
+    "lib/LinLibertineFont513"
+    "lib/SimpleCAS"
+    "lib/SimpleCAS.php"
+    "lib/UNL"
+    "skin/frontend/unl"
+    "skin/adminhtml/default/unl"
+);
 
 #echo ${symlinks[@]}
 #exit
