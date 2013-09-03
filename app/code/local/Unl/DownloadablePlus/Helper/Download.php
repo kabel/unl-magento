@@ -26,7 +26,7 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
                 $client->setHeaders('Accept-encoding', 'identity');
 
                 try {
-                    /** @var $response Zend_Http_Response_Stream */
+                    /* @var $response Zend_Http_Response_Stream */
                     $this->_urlResponse = $response = $client->request('GET');
                     $this->_handle = $response->getStream();
                     $this->_urlHeaders = array_change_key_case($response->getHeaders(), CASE_LOWER);
@@ -35,6 +35,7 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
                         Mage::throwException(Mage::helper('downloadable')->__('An error occurred while getting the requested content. Please contact the store owner.'));
                     }
                 } catch (Zend_Http_Client_Exception $e) {
+                    Mage::logException($e);
                     Mage::throwException(Mage::helper('downloadable')->__('An error occurred while getting the requested content. Please contact the store owner.'));
                 }
             }
