@@ -21,7 +21,12 @@ abstract class Unl_Core_Controller_Report_Sales extends Mage_Adminhtml_Controlle
         }
 
         $requestData = Mage::helper('adminhtml')->prepareFilterString($this->getRequest()->getParam('filter'));
-        $requestData = $this->_filterDates($requestData, array('from', 'to'));
+        try {
+            $requestData = $this->_filterDates($requestData, array('from', 'to'));
+        } catch (Exception $e) {
+            $this->_getSession()->addError($e->getMessage());
+            unset($requestData['from'], $requestData['to']);
+        }
         $requestData['store_ids'] = $this->getRequest()->getParam('store_ids');
         $params = new Varien_Object();
 
