@@ -25,6 +25,7 @@ abstract class Unl_Core_Controller_Report_Sales extends Mage_Adminhtml_Controlle
             $requestData = $this->_filterDates($requestData, array('from', 'to'));
         } catch (Exception $e) {
             $this->_getSession()->addError($e->getMessage());
+            $this->_initLayoutMessages('adminhtml/session');
             unset($requestData['from'], $requestData['to']);
         }
         $requestData['store_ids'] = $this->getRequest()->getParam('store_ids');
