@@ -575,7 +575,8 @@
         <ignore_user_agents>
             <bing>Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)</bing>
             <msnbot1>msnbot/1.1 (+http://search.msn.com/msnbot.htm)</msnbot1>
-            <msnbot>msnbot/2.0b (+http://search.msn.com/msnbot.htm)._</msnbot>
+            <msnbot>msnbot/2.0b (+http://search.msn.com/msnbot.htm)</msnbot>
+            <msnbot_media>msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)</msnbot_media>
             <yahoo>Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)</yahoo>
             <mj12>Mozilla/5.0 (compatible; MJ12bot/v1.3.3; http://www.majestic12.co.uk/bot.php?+)</mj12>
             <yandex>Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)</yandex>
@@ -583,7 +584,12 @@
             <baidu>Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)</baidu>
             <ezooms>Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)</ezooms>
             <daumoa>Mozilla/5.0 (compatible; MSIE or Firefox mutant; not on Windows server; +http://ws.daum.net/aboutWebSearch.html) Daumoa/2.0</daumoa>
-            <collectd>collectd/4.10.2</collectd>
+            <daumoa3>Mozilla/5.0 (compatible; MSIE or Firefox mutant; not on Windows server; + http://tab.search.daum.net/aboutWebSearch.html) Daumoa/3.0</daumoa3>
+            <collectd_4102>collectd/4.10.2</collectd_4102>
+            <collectd_4103>collectd/4.10.3</collectd_4103>
+            <integromedb>www.integromedb.org/Crawler</integromedb>
+            <MJ12bot>Mozilla/5.0 (compatible; MJ12bot/v1.4.4; http://www.majestic12.co.uk/bot.php?+)</MJ12bot>
+            <flamingo>Flamingo_SearchEngine (+http://www.flamingosearch.com/bot)</flamingo>
         </ignore_user_agents>
         
         <session>
