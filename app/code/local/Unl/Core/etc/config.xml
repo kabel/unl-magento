@@ -59,6 +59,8 @@
                     <!-- Customized layed navigation -->
                     <layer_view>Unl_Core_Block_Catalog_Layer_View</layer_view>
                     <product_gallery>Unl_Core_Block_Catalog_Product_Gallery</product_gallery>
+                    <!-- Fix tier price display -->
+                    <product_price>Unl_Core_Block_Catalog_Product_Price</product_price>
                     <!-- Add text list mode -->
                     <product_list_toolbar>Unl_Core_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
                     <!-- Do not display empty attributes -->
