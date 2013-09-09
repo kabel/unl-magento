@@ -1078,6 +1078,7 @@ f/********** Product Prices > */
 
 /* Tier Prices */
 .tier-prices { margin:10px 0; padding:10px; background:#f4f9ea; border:1px solid #ddd; }
+.tier-prices .benefit-separator { display: none; }
 .tier-prices .benefit { font-style:italic; font-weight:bold; }
 .tier-prices .price { font-weight:bold;; }
 
