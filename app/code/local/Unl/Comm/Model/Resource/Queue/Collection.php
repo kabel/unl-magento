@@ -22,8 +22,10 @@ class Unl_Comm_Model_Resource_Queue_Collection extends Mage_Core_Model_Resource_
     public function orderByStartAtNullFirst($desc = true)
     {
         $field = 'queue_start_at_nullfirst';
+        $cond = $this->_getConditionSql('queue_start_at', array('null' => true));
         $true = $desc ? 1 : 0;
-        $alias = $this->getConnection()->getCheckSql('queue_start_at IS NULL', $true, (int)!$true);
+
+        $alias = $this->getConnection()->getCheckSql($cond, $true, (int)!$true);
         $this->addFilterToMap($field, $alias);
 
         $this->setOrder($field);
