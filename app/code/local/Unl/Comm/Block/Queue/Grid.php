@@ -15,6 +15,7 @@ class Unl_Comm_Block_Queue_Grid extends Mage_Adminhtml_Block_Widget_Grid
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel('unl_comm/queue_collection')
+            ->orderByStartAtNullFirst()
             ->addRecipientInfo();
 
         $this->setCollection($collection);

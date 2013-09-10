@@ -10,8 +10,25 @@ class Unl_Comm_Model_Resource_Queue_Collection extends Mage_Core_Model_Resource_
      */
     protected function _construct()
     {
-        $this->_map['fields']['queue_id'] = 'main_table.queue_id';
         $this->_init('unl_comm/queue');
+    }
+
+    /**
+     * Add an order by clause to bubble queue_start_at nulls
+     *
+     * @param bool $desc
+     * @return Unl_Comm_Model_Resource_Queue_Collection
+     */
+    public function orderByStartAtNullFirst($desc = true)
+    {
+        $field = 'queue_start_at_nullfirst';
+        $true = $desc ? 1 : 0;
+        $alias = $this->getConnection()->getCheckSql('queue_start_at IS NULL', $true, (int)!$true);
+        $this->addFilterToMap($field, $alias);
+
+        $this->setOrder($field);
+
+        return $this;
     }
 
     public function toOptionArray()
@@ -35,6 +52,8 @@ class Unl_Comm_Model_Resource_Queue_Collection extends Mage_Core_Model_Resource_
      */
     public function addRecipientFilter($customerId)
     {
+        $this->addFilterToMap('queue_id', 'main_table.queue_id');
+
         $this->getSelect()
             ->join(array('link' => $this->getTable('queue_link')),
                 'main_table.queue_id=link.queue_id',
