@@ -136,7 +136,7 @@ class Unl_Comm_Customer_QueueController extends Mage_Adminhtml_Controller_Action
         $queue->delete();
         $this->_getSession()->addSuccess(Mage::helper('adminhtml')->__('Successfully removed queued message.'));
 
-        $this->_redirectUrl('*/*');
+        $this->_redirect('*/*');
     }
 
     public function sendingAction()
