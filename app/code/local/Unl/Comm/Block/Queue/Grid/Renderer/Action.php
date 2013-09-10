@@ -6,10 +6,13 @@ class Unl_Comm_Block_Queue_Grid_Renderer_Action extends Mage_Adminhtml_Block_Wid
     {
         $actions = array();
 
+        $confirm = 'Are you sure want to ';
+        $what = ' this queued message?';
+
         if ($row->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_NEVER) {
             $actions[] = array(
                 'url' => $this->getUrl('*/*/delete', array('id' => $row->getId())),
-             	'confirm'	=>	Mage::helper('unl_comm')->__('Do you really want to delete the queue?'),
+             	'confirm'	=>	Mage::helper('unl_comm')->__($confirm . 'delete' . $what),
                 'caption'	=>	Mage::helper('unl_comm')->__('Delete')
             );
             if(!$row->getQueueStartAt() && $row->getRecipientsTotal()) {
@@ -26,7 +29,7 @@ class Unl_Comm_Block_Queue_Grid_Renderer_Action extends Mage_Adminhtml_Block_Wid
 
             $actions[] = array(
                 'url'		=>	$this->getUrl('*/*/cancel', array('id'=>$row->getId())),
-                'confirm'	=>	Mage::helper('unl_comm')->__('Do you really want to cancel the queue?'),
+                'confirm'	=>	Mage::helper('unl_comm')->__($confirm . 'stop' . $what),
                 'caption'	=>	Mage::helper('unl_comm')->__('Cancel')
             );
 
