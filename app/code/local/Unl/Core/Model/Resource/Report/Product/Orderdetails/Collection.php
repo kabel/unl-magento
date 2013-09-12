@@ -12,7 +12,8 @@ class Unl_Core_Model_Resource_Report_Product_Orderdetails_Collection extends Mag
             ->addFilterToMap('order_date', 'order.created_at')
             ->addFilterToMap('ordernum', 'order.increment_id')
             ->addFilterToMap('order_state', 'order.state')
-            ->addFilterToMap('order_status', 'order.status');
+            ->addFilterToMap('order_status', 'order.status')
+            ->addFilterToMap('customer_email', 'order.customer_email');
 
         $this
             ->addFilterToMap('billing_firstname', 'oa.firstname')
@@ -21,7 +22,7 @@ class Unl_Core_Model_Resource_Report_Product_Orderdetails_Collection extends Mag
         $this->getSelect()
             ->join(array('order' => $this->getTable('sales/order')),
                 "(main_table.order_id = order.entity_id AND order.state != '" . Mage_Sales_Model_Order::STATE_CANCELED ."')",
-                array('ordernum' => 'increment_id', 'order_date' => 'created_at', 'order_status' => 'status')
+                array('ordernum' => 'increment_id', 'order_date' => 'created_at', 'order_status' => 'status', 'customer_email')
             )
             ->joinLeft(array('oa' => $this->getTable('sales/order_address')),
                 "(main_table.order_id = oa.parent_id AND oa.address_type = 'billing')",

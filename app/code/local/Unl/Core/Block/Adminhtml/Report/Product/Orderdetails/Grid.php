@@ -91,6 +91,11 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
             'index'     => 'customer_lastname',
         ));
 
+        $this->addColumn('customer_email', array(
+            'header'    => Mage::helper('sales')->__('Customer Email'),
+            'index'     => 'customer_email',
+        ));
+
         $this->addExportType('*/*/exportOrderdetailsCsv', Mage::helper('reports')->__('CSV'));
         $this->addExportType('*/*/exportOrderdetailsExcel', Mage::helper('reports')->__('Excel XML'));
 
