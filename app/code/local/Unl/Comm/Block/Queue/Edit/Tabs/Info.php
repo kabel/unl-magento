@@ -15,25 +15,20 @@ class Unl_Comm_Block_Queue_Edit_Tabs_Info extends Mage_Adminhtml_Block_Widget_Fo
         ));
 
         $outputFormat = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
+        $dateConfig = array(
+            'name'      =>    'start_at',
+            'time'      =>    true,
+            'format'    =>    $outputFormat,
+            'label'     =>    Mage::helper('unl_comm')->__('Queue Date Start'),
+            'image'     =>    $this->getSkinUrl('images/grid-cal.gif')
+        );
 
         if ($queue->getQueueStatus() == Unl_Comm_Model_Queue::STATUS_NEVER) {
-            $fieldset->addField('date', 'date',array(
-                'name'      =>    'start_at',
-                'time'      =>    true,
-                'format'    =>    $outputFormat,
-                'label'     =>    Mage::helper('unl_comm')->__('Queue Date Start'),
-                'image'     =>    $this->getSkinUrl('images/grid-cal.gif')
-            ));
+            $dateConfig['note'] = Mage::helper('unl_comm')->__('Enter the date/time you would like this message to begin sending. Your message will not be sent without this.');
         } else {
-            $fieldset->addField('date','date',array(
-                'name'      => 'start_at',
-                'time'      => true,
-                'disabled'  => 'true',
-                'format'    => $outputFormat,
-                'label'     => Mage::helper('unl_comm')->__('Queue Date Start'),
-                'image'     => $this->getSkinUrl('images/grid-cal.gif')
-            ));
+            $dateConfig['disabled'] = 'true';
         }
+        $fieldset->addField('date', 'date', $dateConfig);
 
         if ($queue->getQueueStartAt()) {
             $form->getElement('date')->setValue(
