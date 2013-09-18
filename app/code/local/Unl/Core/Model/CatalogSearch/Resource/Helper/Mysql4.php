@@ -8,7 +8,7 @@ class Unl_Core_Model_CatalogSearch_Resource_Helper_Mysql4 extends Mage_CatalogSe
         $select->columns(array('relevance' => $field));
 
         if ($booleanMode) {
-            return new Zend_Db_Expr('MATCH ('.$alias.'.data_index) AGAINST (:query_bool IN BOOLEAN MODE)');
+            return new Zend_Db_Expr('MATCH ('.$alias.'.data_index) AGAINST (:query IN BOOLEAN MODE)');
         }
 
         return $field;

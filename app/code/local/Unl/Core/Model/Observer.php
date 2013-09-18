@@ -72,6 +72,18 @@ class Unl_Core_Model_Observer
                 $head->setTitle('');
             }
         }
+
+        $type = 'Mage_CatalogSearch_Block_Layer';
+        if ($block instanceof $type) {
+            /* @var $block Mage_CatalogSearch_Block_Layer */
+            $layer = $block->getLayer();
+            $storeId = Mage::app()->getStore()->getId();
+            if ($block->getRequest()->getParam('deep')) {
+                $layer->getProductCollection()->addAttributeToSelect('source_store_view', 'inner');
+            } else {
+                $layer->getProductCollection()->addAttributeToFilter('source_store_view', $storeId);
+            }
+        }
     }
 
     /**
