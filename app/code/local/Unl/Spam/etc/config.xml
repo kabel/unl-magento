@@ -50,6 +50,10 @@
         <events>
             
         </events>
+        
+        <ignoredModules>
+            <unl_spam/>
+        </ignoredModules>
 
     </global>
     
@@ -71,9 +75,9 @@
             <controller_action_predispatch>
                 <observers>
                     <unl_spam>
-                        <type>singleton</type>
                         <class>unl_spam/observer</class>
                         <method>onAllPredispatch</method>
+                        <priority>100</priority>
                     </unl_spam>
                 </observers>
             </controller_action_predispatch>
@@ -81,7 +85,6 @@
             <controller_action_predispatch_contacts>
                 <observers>
                     <unl_spam>
-                        <type>singleton</type>
                         <class>unl_spam/observer</class>
                         <method>onHoneypotPredispatch</method>
                     </unl_spam>
@@ -91,7 +94,6 @@
             <controller_action_predispatch_contacts_index_post>
                 <observers>
                     <unl_spam>
-                        <type>singleton</type>
                         <class>unl_spam/observer</class>
                         <method>onContactPostPredispatch</method>
                     </unl_spam>
@@ -101,7 +103,6 @@
             <controller_action_predispatch_review_product_post>
                 <observers>
                     <unl_spam>
-                        <type>singleton</type>
                         <class>unl_spam/observer</class>
                         <method>onProductReviewPostPredispatch</method>
                     </unl_spam>

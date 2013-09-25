@@ -153,11 +153,18 @@ class Unl_Core_Model_Observer
     public function checkNoMobile($observer)
     {
         $result = $observer->getEvent()->getResult();
-        $session = Mage::getSingleton('core/session');
+        $request = Mage::app()->getRequest();
+        $action = Mage::app()->getFrontController()->getAction();
+        /* @var $action Mage_Core_Controller_Varien_Action */
+        if ($action->getFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_START_SESSION)) {
+            $session = new Varien_Object();
+        } else {
+            $session = Mage::getSingleton('core/session');
+        }
 
-        if (Mage::app()->getRequest()->getParam('mobile') == 'no' && !$session->getDesignNoExps()) {
+        if ($request->getParam('mobile') == 'no' && !$session->getDesignNoExps()) {
             $session->setDesignNoExps(true);
-        } elseif (Mage::app()->getRequest()->getParam('mobile', 'no') != 'no' && $session->getDesignNoExps()) {
+        } elseif ($request->getParam('mobile', 'no') != 'no' && $session->getDesignNoExps()) {
             $session->unsDesignNoExps();
         }
 

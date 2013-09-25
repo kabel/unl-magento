@@ -248,6 +248,8 @@
                 <rewrite>
                     <!-- Fix stack trace in error message -->
                     <cron>Unl_Core_Model_Log_Cron</cron>
+                    <!-- Prevent session start if controller flagged it -->
+                    <visitor>Unl_Core_Model_Log_Visitor</visitor>
                 </rewrite>
             </log>
             <payment>

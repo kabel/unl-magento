@@ -33,12 +33,12 @@ class Unl_Spam_Model_Observer
             $this->quarantineAndForward();
         }
     }
-    
+
     public function onProductReviewPostPredispatch($observer)
     {
         $controller = $observer->getEvent()->getControllerAction();
         $doQuarantine = $this->_checkSfs();
-        
+
         $post = $controller->getRequest()->getPost();
         if ($post) {
             if (!isset($post['hideit']) || preg_match('#(?:url|href)=["\']?https?://[^>"\']+["\']?#', $post['detail'])) {
@@ -47,25 +47,25 @@ class Unl_Spam_Model_Observer
                 $this->_reportToSfs($post['nickname'], $post['email'], $post['detail']);
             }
         }
-        
+
         if ($doQuarantine) {
             $this->quarantineAndForward();
         }
     }
-    
+
     protected function quarantineAndForward()
     {
         $this->_quarantineIp();
-        
+
         $ip = Mage::helper('core/http')->getRemoteAddr();
-        
+
         if (Mage::getStoreConfigFlag(self::XML_PATH_ENABLE_LOG)) {
             Mage::log('IP Address "' . $ip . '" detected spam, added to quarantine.', Zend_Log::INFO, 'unl_spam.log');
         }
-        
+
         $ex = new Mage_Core_Controller_Varien_Exception();
         $ex->prepareForward('denied', 'index', 'unlspam');
-        
+
         throw $ex;
     }
 
@@ -190,6 +190,12 @@ class Unl_Spam_Model_Observer
                 case Unl_Spam_Model_Blacklist::RESPONSE_TYPE_503:
                     $ex->prepareForward('unavailable', 'index', 'unlspam');
                     break;
+                case Unl_Spam_Model_Blacklist::RESPONSE_TYPE_404:
+                    $ex->prepareForward('deniedEmpty', 'index', 'unlspam');
+                    break;
+                case Unl_Spam_Model_Blacklist::RESPONSE_TYPE_403_SPARSE:
+                    $ex->prepareForward('deniedSparse', 'index', 'unlspam');
+                    break;
                 default:
                     $ex->prepareForward('denied', 'index', 'unlspam');
                     break;
@@ -283,12 +289,12 @@ class Unl_Spam_Model_Observer
         $item->setStrikes($item->getStrikes() + 1);
         $item->setLastSeen(Mage::getSingleton('core/date')->gmtDate());
 
-        if ($item->getResponseType() != Unl_Spam_Model_Blacklist::RESPONSE_TYPE_503
+        if ($item->getResponseType() == Unl_Spam_Model_Blacklist::RESPONSE_TYPE_403
             && $item->getStrikes() >= Mage::getStoreConfig(self::XML_PATH_BLACKLIST_HITS)
         ) {
-            $item->setResponseType(Unl_Spam_Model_Blacklist::RESPONSE_TYPE_503);
+            $item->setResponseType(Unl_Spam_Model_Blacklist::RESPONSE_TYPE_403_SPARSE);
 
-            Mage::log('IP Address "' . $item->getRemoteAddr() . '" converted to 503 response.', Zend_Log::INFO, 'unl_spam.log');
+            Mage::log('IP Address "' . $item->getRemoteAddr() . '" converted to 403 sparse response.', Zend_Log::INFO, 'unl_spam.log');
         }
 
         $item->save();

@@ -2,8 +2,10 @@
 
 class Unl_Spam_Model_Blacklist extends Unl_Spam_Model_RemoteAddrAbstract
 {
-    const RESPONSE_TYPE_403 = 1;
-    const RESPONSE_TYPE_503 = 2;
+    const RESPONSE_TYPE_403         = 1;
+    const RESPONSE_TYPE_403_SPARSE  = 2;
+    const RESPONSE_TYPE_404         = 3;
+    const RESPONSE_TYPE_503         = 4;
 
     protected function _construct()
     {
