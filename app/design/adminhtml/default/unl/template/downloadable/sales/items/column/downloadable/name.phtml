@@ -28,8 +28,8 @@
             <dt><?php echo $this->getLinksTitle(); ?></dt>
             <?php foreach ($this->getLinks()->getPurchasedItems() as $_link): ?>
                 <dd><?php echo $this->escapeHtml($_link->getLinkTitle()) ?> (<?php echo $_link->getNumberOfDownloadsUsed() . ' / ' . ($_link->getNumberOfDownloadsBought()?$_link->getNumberOfDownloadsBought():Mage::helper('downloadable')->__('U')) ?>)</dd>
-                <?php if ($_link->getNumberOfDownloadsBought() && $_link->getStatus() == Mage_Downloadable_Model_Link_Purchased_Item::LINK_STATUS_EXPIRED): ?>
-                <dd><strong><a href="#" onclick="confirmSetLocation('<?php echo Mage::helper('unl_core')->__('This will reset the number of downloads used for this link to zero, allowing the customer to download the product again. Do you wish to proceed?') ?>', '<?php echo $this->getUrl('*/downloadable_link_purchased/resetUse', array('order_id' => $this->getItem()->getOrder()->getId(), 'item_id' => $_link->getId())) ?>')">
+                <?php if ($_resetUrl = Mage::helper('unl_downloadableplus')->getResetDownloadUrl($_link, $this->getItem()->getOrder())): ?>
+                <dd><strong><a href="#" onclick="confirmSetLocation('<?php echo Mage::helper('unl_core')->__('This will reset the number of downloads used for this link to zero, allowing the customer to download the product again. Do you wish to proceed?') ?>', '<?php echo $_resetUrl ?>')">
                     <?php echo Mage::helper('unl_core')->__('Reset Download Use') ?></a></strong></dd>
                 <?php endif; ?>
             <?php endforeach; ?>

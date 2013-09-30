@@ -17,6 +17,9 @@
             </downloadable>
         </blocks>
         <helpers>
+            <unl_downloadableplus>
+                <class>Unl_DownloadablePlus_Helper</class>
+            </unl_downloadableplus>
             <downloadable>
                 <rewrite>
                     <!-- Use a better HTTP client for proxying download URLs -->
