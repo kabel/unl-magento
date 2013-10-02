@@ -9,8 +9,7 @@ class Unl_Core_Block_Adminhtml_Notification_Maintenance extends Mage_Adminhtml_B
      */
     protected function _canShowNotification()
     {
-        $maintenanceFile = Mage::helper('backup')->isMaintenanceOn();
-        return !empty($maintenanceFile) && file_exists($maintenanceFile);
+        return Mage::helper('backup')->isMaintenanceOn();
     }
 
 	/**
