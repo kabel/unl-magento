@@ -3,11 +3,13 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
 {
     /**
      * Connection credentials
-     * 
+     *
      * @param string
      */
     static public $ldapServer = 'ldap.unl.edu ldap-backup.unl.edu';
-    
+
+    static public $ldapTls = false;
+
     /**
      * LDAP Connection bind distinguised name
      *
@@ -15,7 +17,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
      * @ignore
      */
     static public $bindDN = 'uid=insertyouruidhere,ou=service,dc=unl,dc=edu';
-    
+
     /**
      * LDAP connection password.
      *
@@ -25,16 +27,16 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     static public $bindPW             = 'putyourpasswordhere';
     static public $baseDN             = 'ou=people,dc=unl,dc=edu';
     static public $ldapTimeout        = 10;
-    
+
     /**
      * Attribute arrays
      * Attributes are the fields retrieved in an LDAP QUERY, limit this to
      * ONLY what is USED/DISPLAYED!
      */
-    
+
     /**
      * List attributes are the attributes displayed in a list of results
-     * 
+     *
      * @var array
      */
     public $listAttributes = array(
@@ -49,7 +51,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         'uid',
         'unlHRPrimaryDepartment',
         'unlHROrgUnitNumber');
-    
+
     /**
      * Details are for UID detail display only.
      * @var array
@@ -85,7 +87,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         'unlSISPermZip',
         'unlSISMajor',
         'unlEmailAlias');
-    
+
     /** Connection details */
     public $connected = false;
     public $linkID;
@@ -94,12 +96,12 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
     public $lastQuery;
     public $lastResult;
     public $lastResultCount = 0;
-    
+
     function __construct()
     {
-        
+
     }
-    
+
     /**
      * Binds to the LDAP directory using the bind credentials stored in
      * bindDN and bindPW
@@ -118,8 +120,10 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
             throw new Exception('ldap_connect failed! Cound not connect to the LDAP directory.', 500);
         }
 
-        if (!ldap_start_tls($this->linkID)) {
-            throw new Exception('Could not connect using StartTLS!', 500);
+        if (!self::$ldapTls) {
+            if (!ldap_start_tls($this->linkID)) {
+                throw new Exception('Could not connect using StartTLS!', 500);
+            }
         }
 
         $this->connected = ldap_bind($this->linkID,
@@ -131,7 +135,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
 
         return $this->connected;
     }
-    
+
     /**
      * Disconnect from the ldap directory.
      *
@@ -142,21 +146,21 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         $this->connected = false;
         return ldap_unbind($this->linkID);
     }
-    
+
     /**
      * Send a query to the ldap directory
      *
      * @param string $filter     LDAP filter (uid=blah)
      * @param array  $attributes attributes to return for the entries
      * @param bool   $setResult  whether or not to set the last result
-     * 
+     *
      * @return mixed
      */
     function query($filter,$attributes,$setResult=true)
     {
         $this->bind();
         $this->lastQuery = $filter;
-        $sr              = @ldap_search($this->linkID, 
+        $sr              = @ldap_search($this->linkID,
                                         self::$baseDN,
                                         $filter,
                                         $attributes,
@@ -203,13 +207,13 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         return $result;
     }
 
-    
+
     /**
      * Get records which match the query exactly.
      *
      * @param string $query       Search string.
      * @param string $affiliation eduPersonAffiliation, eg staff/faculty/student
-     * 
+     *
      * @return array(UNL_Peoplefinder_Record)
      */
     public function getExactMatches($query, $affiliation = null)
@@ -222,7 +226,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
     }
-    
+
     /**
      * Returns an array of UNL_Peoplefinder_Record objects from the ldap
      * query result.
@@ -239,14 +243,14 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         }
         return $r;
     }
-    
+
     /**
      * Get results for an advanced/detailed search.
      *
      * @param string $sn   Surname/last name
      * @param string $cn   Common name/first name
      * @param string $eppa Primary Affiliation
-     * 
+     *
      * @return array(UNL_Peoplefinder_Record)
      */
     public function getAdvancedSearchMatches($query, $affiliation = null)
@@ -255,14 +259,14 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
     }
-    
+
     /**
      * Find matches similar to the query given
      *
      * @param string $query            Search query
      * @param string $affiliation      eduPersonAffiliation, eg staff/faculty/student
      * @param array  $excluded_records Array of records to exclude.
-     * 
+     *
      * @return array(UNL_Peoplefinder_Record)
      */
     public function getLikeMatches($query, $affiliation = null, $excluded_records = array())
@@ -277,13 +281,13 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         $this->query($filter->__toString(), $this->detailAttributes);
         return $this->getRecordsFromResults();
     }
-    
+
     /**
      * Get an array of records which matche by the phone number.
      *
      * @param string $q           EG: 472-1598
      * @param string $affiliation eduPersonAffiliation, eg staff/faculty/student
-     * 
+     *
      * @return array(UNL_Peoplefinder_Record)
      */
     public function getPhoneMatches($query, $affiliation = null)
@@ -297,7 +301,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
      * Get the ldap record for a specific uid eg:bbieber2
      *
      * @param string $uid The unique ID for the user you want to get.
-     * 
+     *
      * @return UNL_Peoplefinder_Record
      */
     function getUID($uid)
@@ -320,8 +324,8 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
                             'bind_password' => self::$bindPW));
         return new UNL_Peoplefinder_Person_Roles(array('iterator'=>$ldap->search($dn, '(&(objectClass=unlRole)(!(unlListingOrder=NL)))')));
     }
-    
-    
+
+
     public static function recordFromLDAPEntry(array $entry)
     {
         $r = new UNL_Peoplefinder_Record();
@@ -339,7 +343,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
         $r->imageURL = $r->getImageURL();
         return $r;
     }
-    
+
     public static function recordFromUNLLDAPEntry(UNL_LDAP_Entry $entry)
     {
         $r = new UNL_Peoplefinder_Record();
@@ -363,7 +367,7 @@ class UNL_Peoplefinder_Driver_LDAP implements UNL_Peoplefinder_DriverInterface
 
         // @TODO Clean up this mess. Either use UNL_LDAP entirely, or use something internal
         $this->query($filter->__toString(), $this->listAttributes);
-        
+
         return new UNL_Peoplefinder_Department_Personnel(new ArrayIterator($this->getRecordsFromResults()));
     }
 }
