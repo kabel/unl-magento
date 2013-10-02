@@ -55,7 +55,10 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getAuth()
     {
-        return UNL_Auth::factory('SimpleCAS', array('requestClass' => 'Zend_Http_Client'));
+        return UNL_Auth::factory('SimpleCAS', array(
+            'requestClass' => 'Zend_Http_Client',
+            'validateRedirect' => false,
+        ));
     }
 
     public function getCasUrl()
