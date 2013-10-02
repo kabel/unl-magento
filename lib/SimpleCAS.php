@@ -57,6 +57,13 @@ class SimpleCAS
     private $_authenticated = false;
 
     /**
+     * Should a redirect be done after ticket validation?
+     *
+     * @var bool
+     */
+    protected $validateRedirect = true;
+
+    /**
      * Protocol for the server running the CAS service.
      *
      * @var SimpleCAS_Protocol
@@ -248,11 +255,21 @@ class SimpleCAS
     /**
      * Set the ticket to be checked for authentication
      *
-     * @param unknown_type $ticket
+     * @param string $ticket
      */
     public function setTicket($ticket)
     {
         $this->_ticket = $ticket;
+    }
+
+    /**
+     * Set the flag controlling the after ticket validation redirect
+     *
+     * @param bool $value
+     */
+    public function setValidateRedirect($value)
+    {
+        $this->validateRedirect = (bool)$value;
     }
 
     /**
@@ -269,7 +286,10 @@ class SimpleCAS
     {
         if ($uid = $this->protocol->validateTicket($ticket, self::getURL())) {
             $this->setAuthenticated($uid);
-            $this->redirect(self::getURL());
+
+            if ($this->validateRedirect) {
+                $this->redirect(self::getURL());
+            }
             return true;
         } else {
             return false;
