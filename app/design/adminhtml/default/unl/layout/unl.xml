@@ -9,6 +9,7 @@
         <reference name="notifications">
             <block type="unl_core/adminhtml_notification_maintenance" name="notification_maintenance" template="notification/maintenance.phtml" />
         </reference>
+        <remove name="notification_survey"/>
     </default>
     
     <editor>
