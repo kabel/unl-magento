@@ -114,6 +114,11 @@ class Unl_Cas_Helper_Ldap extends Mage_Core_Helper_Abstract
             UNL_Peoplefinder_Driver_LDAP::$baseDN = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BASEDN);
             UNL_Peoplefinder_Driver_LDAP::$bindDN = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BINDDN);
             UNL_Peoplefinder_Driver_LDAP::$bindPW = Mage::getStoreConfig(self::XML_PATH_CUSTOMER_UNL_LDAP_BINDPW);
+
+            if (substr(UNL_Peoplefinder_Driver_LDAP::$ldapServer, 0, 6) === 'ldaps:') {
+                UNL_Peoplefinder_Driver_LDAP::$ldapTls = true;
+            }
+
             $driver = new UNL_Peoplefinder_Driver_LDAP();
         } else {
             $driver = null;
