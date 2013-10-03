@@ -32,6 +32,10 @@
                     <dashboard_totals>Unl_Core_Block_Adminhtml_Dashboard_Totals</dashboard_totals>
                     <!-- Customizes the caching/fetching -->
                     <notification_security>Unl_Core_Block_Adminhtml_Notification_Security</notification_security>
+                    <!-- Fix ACL not being considered during display -->
+                    <notification_baseurl>Unl_Core_Block_Adminhtml_Notification_Baseurl</notification_baseurl>
+                    <notification_toolbar>Unl_Core_Block_Adminhtml_Notification_Toolbar</notification_toolbar>
+                    <notification_window>Unl_Core_Block_Adminhtml_Notification_Window</notification_window>
                     <!-- Customize report grids -->
                     <report_product_downloads_grid>Unl_Core_Block_Adminhtml_Report_Product_Downloads_Grid</report_product_downloads_grid>
                     <report_product_lowstock_grid>Unl_Core_Block_Adminhtml_Report_Product_Lowstock_Grid</report_product_lowstock_grid>
