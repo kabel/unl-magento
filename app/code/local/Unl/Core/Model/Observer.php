@@ -104,6 +104,23 @@ class Unl_Core_Model_Observer
     }
 
     /**
+     * A <i>frontend</i> event listener for the <code>controller_action_layout_load_before</code>
+     * event.
+     * This extends the core "customer" module's listener by checking for
+     * NO_STAT_SESSION
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function beforeLoadLayout($observer)
+    {
+        /* @var $action Mage_Core_Controller_Varien_Action */
+        $action = $observer->getEvent()->getAction();
+        if (!$action->getFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_START_SESSION)) {
+            Mage::getSingleton('customer/observer')->beforeLoadLayout($observer);
+        }
+    }
+
+    /**
      * An <i>adminhtml</i> event listener for the <code>adminhtml_block_html_before</code>
      * event.
      *
@@ -186,7 +203,7 @@ class Unl_Core_Model_Observer
     {
         $block = $observer->getEvent()->getBlock();
         $type = 'Mage_Core_Block_Messages';
-        if ($block instanceof $type) {
+        if ($block instanceof $type && !$block->getAction()->getFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_START_SESSION)) {
             $checkout = Mage::getSingleton('checkout/session');
             if ($checkout->getConsume(true)) {
                 $checkout->getMessages(true);

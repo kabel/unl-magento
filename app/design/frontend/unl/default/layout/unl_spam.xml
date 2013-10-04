@@ -12,6 +12,9 @@
             <action method="setTitle"><title>Access Denied</title></action>
         </reference>
         
+        <remove name="head_rss"/>
+        <remove name="global_messages" />
+        <remove name="messages" />
         <remove name="store_switcher" />
         <remove name="top.menu" />
         <remove name="subnav" />
@@ -19,6 +22,8 @@
         <remove name="right" />
         <remove name="contact_link" />
         <remove name="optional_footer" />
+        <remove name="footer_links" />
+        <remove name="marketplace_links"/>
         
         <reference name="content">
             <block type="core/template" name="spam_warning" template="unl_spam/denied.phtml" />
