@@ -1243,7 +1243,7 @@ class Mage_Core_Model_App
         if (empty($this->_response)) {
             $this->_response = new Mage_Core_Controller_Response_Http();
             $this->_response->headersSentThrowsException = Mage::$headersSentThrowsException;
-            $this->_response->setHeader("Content-Type", "text/html; charset=UTF-8");
+//             $this->_response->setHeader("Content-Type", "text/html; charset=UTF-8");
         }
         return $this->_response;
     }
@@ -1325,7 +1325,7 @@ class Mage_Core_Model_App
         }
         return $this;
     }
-    
+
     protected function _compareObserverPriority($a, $b)
     {
         if ($a['priority'] == $b['priority']) {
