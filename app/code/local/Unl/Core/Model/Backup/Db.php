@@ -2,7 +2,7 @@
 
 class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
 {
-    const XML_PATH_RSYNC_ENABLED = 'system/backup/backup_bin';
+    const XML_PATH_MYSQLDUMP_BIN = 'system/backup/backup_bin';
 
     protected $_processedTables = array();
     protected $_processingStack = array();
@@ -17,7 +17,7 @@ class Unl_Core_Model_Backup_Db extends Mage_Backup_Model_Db
 
     public function createBackup(Mage_Backup_Model_Backup $backup)
     {
-        $dumpCmd = Mage::getStoreConfig(self::XML_PATH_RSYNC_ENABLED);
+        $dumpCmd = Mage::getStoreConfig(self::XML_PATH_MYSQLDUMP_BIN);
         if (empty($dumpCmd)) {
             $dumpCmd = 'mysqldump';
         }
