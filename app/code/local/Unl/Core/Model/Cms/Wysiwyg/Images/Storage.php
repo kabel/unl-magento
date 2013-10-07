@@ -2,6 +2,8 @@
 
 class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_Images_Storage
 {
+    const THUMBS_EXTERNAL_DIR = '.external';
+
     /* Overrides
      * @see Mage_Cms_Model_Wysiwyg_Images_Storage::getFilesCollection()
      * by using the design path for the default thumbnail
@@ -58,5 +60,14 @@ class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_I
         }
 
         return $collection;
+    }
+
+    public function getThumbsPath($filePath = false)
+    {
+        if ($filePath && $path = $this->getThumbnailPath($filePath)) {
+            return dirname($path);
+        }
+
+        return $this->getThumbnailRoot() . DS . self::THUMBS_EXTERNAL_DIR;
     }
 }

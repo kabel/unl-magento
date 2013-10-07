@@ -112,6 +112,12 @@
                     <dashboard_order>Unl_Core_Helper_Adminhtml_Dashboard_Order</dashboard_order>
                 </rewrite>
             </adminhtml>
+            <cms>
+                <rewrite>
+                    <!-- Fix incorrect WYSIWYG root URL -->
+                    <wysiwyg_images>Unl_Core_Helper_Cms_Wysiwyg_Images</wysiwyg_images>
+                </rewrite>
+            </cms>
             <backup>
                 <rewrite>
                     <!-- Customize maintenance flag logic -->
