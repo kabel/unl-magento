@@ -1,0 +1,29 @@
+<?php
+/**
+ * Directory contents template for Wysiwyg Images
+ *
+ * @see Mage_Adminhtml_Block_Cms_Wysiwyg_Images_Content_Files
+ */
+?>
+<?php
+$_width  = $this->getImagesWidth();
+$_height = $this->getImagesHeight();
+?>
+<?php if ($this->getFilesCount() > 0): ?>
+    <?php foreach ($this->getFiles() as $file): ?>
+    <?php $_fileName = $this->getFileName($file); ?>
+    <div class="filecnt" id="<?php echo $this->getFileId($file) ?>" title="<?php echo $_fileName ?>">
+        <p class="nm" style="height:<?php echo $_height ?>px;width:<?php echo $_width ?>px;">
+        <?php if($_url = $this->getFileThumbUrl($file)):?>
+            <img src="<?php echo $_url ?>" alt="<?php echo $this->helper('cms')->__('Thumbnail of %s', $_fileName) ?>" />
+        <?php endif; ?>
+        </p>
+        <?php if($this->getFileWidth($file)): ?>
+            <small><?php echo $this->getFileWidth($file) ?>x<?php echo $this->getFileHeight($file) ?> <?php echo $this->helper('cms')->__('px.') ?></small><br/>
+        <?php endif; ?>
+        <small><?php echo $this->getFileShortName($file); ?></small>
+    </div>
+    <?php endforeach; ?>
+<?php else: ?>
+    <?php echo $this->helper('cms')->__('No files found') ?>
+<?php endif; ?>
