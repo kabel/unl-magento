@@ -6,6 +6,8 @@ class Unl_Core_Adminhtml_Cms_Wysiwyg_ImagesController extends Mage_Adminhtml_Cms
 {
     public function thumbnailAction()
     {
+        $this->_getSession()->unlock();
+
         $file = $this->getRequest()->getParam('file');
         $file = Mage::helper('cms/wysiwyg_images')->idDecode($file);
         $thumb = $this->getStorage()->resizeOnTheFly($file);
