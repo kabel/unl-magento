@@ -42,17 +42,23 @@ button.active {
 .css-tooltip span {
 	display: none;
 	position: absolute;
+	z-index: 99;
 	padding: 5px;
 	border: 1px solid #D7C699;
 	background: #fcfac9;
 	text-align: left;
+	white-space: pre;
+	font-family: monospace;
+	overflow: auto;
+	max-height: 300px;
 }
 
 .css-tooltip:hover span {
     display: inline;
 	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
     box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3); -webkit-box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3); -moz-box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3);
-    position: absolute; right: 1em; top: 2em; z-index: 99;
+    right: 1em;
+    top: 1.1em;
     width: 250px;
 }
 
