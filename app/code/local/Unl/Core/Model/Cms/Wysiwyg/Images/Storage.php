@@ -62,6 +62,35 @@ class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_I
         return $collection;
     }
 
+    public function resizeFile($source, $keepRation = true, $keepTransparency = true)
+    {
+        if (!is_file($source) || !is_readable($source)) {
+            return false;
+        }
+
+        $targetDir = $this->getThumbsPath($source);
+        $io = new Varien_Io_File();
+        if (!$io->isWriteable($targetDir)) {
+            $io->mkdir($targetDir);
+        }
+        if (!$io->isWriteable($targetDir)) {
+            return false;
+        }
+        $image = Varien_Image_Adapter::factory('GD2');
+        $image->open($source);
+        $width = $this->getConfigData('resize_width');
+        $height = $this->getConfigData('resize_height');
+        $image->keepAspectRatio($keepRation);
+        $image->keepTransparency($keepTransparency);
+        $image->resize($width, $height);
+        $dest = $targetDir . DS . pathinfo($source, PATHINFO_BASENAME);
+        $image->save($dest);
+        if (is_file($dest)) {
+            return $dest;
+        }
+        return false;
+    }
+
     public function getThumbsPath($filePath = false)
     {
         if ($filePath && $path = $this->getThumbnailPath($filePath)) {
