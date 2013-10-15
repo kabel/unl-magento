@@ -11,15 +11,13 @@ class Unl_Spam_Block_Adminhtml_Widget_Grid_Column_Filter_Cidr extends Mage_Admin
 
         if ($ip === false) {
             if (preg_match('/[a-f:]/i', $value[0])) {
-                $groups = array_filter(explode(':', $value[0], 8));
+                $prefix = rtrim($value[0], ':');
+                $groups = explode(':', $prefix, 8);
                 $mask = 16 * count($groups);
-                if ($value[0][strlen($value[0]) -1 ] == ':') {
-                    $ip = @inet_pton($value[0] . ':');
-                } else {
-                    $ip = @inet_pton($value[0] . '::');
-                }
+                $ip = @inet_pton($prefix . '::');
             } else {
-                $groups = explode('.', $value[0], 4);
+                $prefix = rtrim($value[0], '.');
+                $groups = explode('.', $prefix, 4);
                 $mask = 8 * count($groups);
                 $ip = @inet_pton(implode('.', ($groups + array('0', '0', '0', '0'))));
             }
