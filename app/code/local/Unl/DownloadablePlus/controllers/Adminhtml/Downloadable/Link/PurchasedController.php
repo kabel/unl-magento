@@ -58,6 +58,10 @@ class Unl_DownloadablePlus_Adminhtml_Downloadable_Link_PurchasedController exten
     {
         if (($order = $this->_initOrder()) && ($link = $this->_initLink($order))) {
             try {
+                if (!Mage::helper('unl_downloadableplus')->canResetDownload($link, $order)) {
+                    throw new Exception();
+                }
+
                 $link->setNumberOfDownloadsUsed(0);
 
                 if ($link->getStatus() == Mage_Downloadable_Model_Link_Purchased_Item::LINK_STATUS_EXPIRED) {
@@ -77,7 +81,10 @@ class Unl_DownloadablePlus_Adminhtml_Downloadable_Link_PurchasedController exten
             catch (Exception $e) {
                 $this->_getSession()->addError($this->__('Could not reset download link use.'));
             }
+
             $this->_redirect('*/sales_order/view', array('order_id' => $order->getId()));
+        } else {
+            $this->_forward('noroute');
         }
     }
 
