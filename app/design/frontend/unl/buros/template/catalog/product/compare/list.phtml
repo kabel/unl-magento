@@ -66,7 +66,7 @@
                     <?php if($_item->isSaleable()): ?>
                         <p><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setPLocation('<?php echo $this->helper('catalog/product_compare')->getAddToCartUrl($_item) ?>', true)"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
                     <?php else: ?>
-                        <p class="availability out-of-stock"><span><?php echo $this->__($_item->getTypeId() == 'downloadable' ? 'Test Review Not Available' : 'Out of stock') ?></span></p>
+                        <p class="availability out-of-stock"><span><?php echo $this->__(Mage::helper('unl_core/buros')->isProductTestReview($_item) ? 'Test Review Not Available' : 'Out of stock') ?></span></p>
                     <?php endif; ?>
                     <?php if ($this->helper('wishlist')->isAllow()) : ?>
                         <ul class="add-to-links">
@@ -123,7 +123,7 @@
                     <?php if($_item->isSaleable()): ?>
                         <p><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setPLocation('<?php echo $this->helper('catalog/product_compare')->getAddToCartUrl($_item) ?>', true)"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
                     <?php else: ?>
-                        <p class="availability out-of-stock"><span><?php echo $this->__($_item->getTypeId() == 'downloadable' ? 'Test Review Not Available' : 'Out of stock') ?></span></p>
+                        <p class="availability out-of-stock"><span><?php echo $this->__(Mage::helper('unl_core/buros')->isProductTestReview($_item) ? 'Test Review Not Available' : 'Out of stock') ?></span></p>
                     <?php endif; ?>
                     <?php if ($this->helper('wishlist')->isAllow()) : ?>
                         <ul class="add-to-links">

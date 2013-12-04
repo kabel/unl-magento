@@ -159,6 +159,9 @@
     </div>
 
     <div class="product-collateral">
+        <?php if (!Mage::helper('unl_core/buros')->isProductTestReview($_product)): ?>
+        <?php echo $this->getChildHtml('product.description') ?>
+        <?php endif; ?>
         <?php echo $this->getChildHtml('info_tabs') ?>
         <?php echo $this->getChildHtml('product_additional_data') ?>
     </div>
