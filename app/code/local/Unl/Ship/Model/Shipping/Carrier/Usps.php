@@ -590,13 +590,20 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         return $arr;
     }
 
-    /* Extends
+    /* Overrides
      * @see Mage_Usa_Model_Shipping_Carrier_Abstract::_prepareShipmentRequest()
-     * by escaping XML entities
+     * by escaping XML entities and removing non-digit chars from phone
      */
     protected function _prepareShipmentRequest(Varien_Object $request)
     {
-        parent::_prepareShipmentRequest($request);
+        $phonePattern = '/[^\d]+/';
+        $phoneNumber = $request->getShipperContactPhoneNumber();
+        $phoneNumber = preg_replace($phonePattern, '', $phoneNumber);
+        $request->setShipperContactPhoneNumber($phoneNumber);
+        $phoneNumber = $request->getRecipientContactPhoneNumber();
+        $phoneNumber = preg_replace($phonePattern, '', $phoneNumber);
+        $request->setRecipientContactPhoneNumber($phoneNumber);
+
         foreach ($request->getData() as $key => $data) {
             if ((strpos($key, 'shipper') === 0 || strpos($key, 'recipient') === 0) && is_string($data)) {
                 $request->setData($key, htmlspecialchars($data));

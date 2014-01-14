@@ -7,6 +7,19 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
 
     protected $_carrier;
 
+    protected $_form2976 = array(
+        'INT_13',
+        'INT_14',
+        'INT_15',
+        'INT_17',
+        'INT_18',
+        'INT_19',
+        'INT_20',
+        'INT_21',
+        'INT_22',
+        'INT_23',
+    );
+
     /**
      * Get the singleton instance of the USPS shippnig carrier
      *
@@ -360,7 +373,11 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
         }
 
         if (!$domestic) {
-            $xmlRequest->addChild('IntegratedFormType', 'FORM2976A');
+            if (in_array($request->getShippingMethod(), $this->_form2976)) {
+                $xmlRequest->addChild('IntegratedFormType', 'FORM2976');
+            } else {
+                $xmlRequest->addChild('IntegratedFormType', 'FORM2976A');
+            }
             $customsInfo = $xmlRequest->addChild('CustomsInfo');
             $customsInfo->addChild('ContentsType', $packageParams->getContentType());
             if ($packageParams->getContentType() == 'OTHER') {
