@@ -23,7 +23,7 @@ class Unl_Core_Block_Customer_Address_Renderer_Default extends Mage_Customer_Blo
                 break;
         }
 
-        $formater   = new Varien_Filter_Template();
+        $formater   = new Unl_Filter_Template();
         $attributes = Mage::helper('customer/address')->getAttributes();
 
         $data = array();
@@ -33,9 +33,10 @@ class Unl_Core_Block_Customer_Address_Renderer_Default extends Mage_Customer_Blo
                 continue;
             }
             if ($attribute->getAttributeCode() == 'country_id') {
-                $data['country'] = $address->getCountry() == 'US' ? '' : $address->getCountryModel()->getName();
-            } else if ($attribute->getAttributeCode() == 'region') {
-                $data['region'] = $address->getRegionCode() ? $address->getRegionCode() : $address->getRegion();
+                $data['country'] = $address->getCountryModel()->getName();
+            } elseif ($attribute->getAttributeCode() == 'region') {
+                $data['region_code'] = $address->getRegionCode();
+                $data['region'] = $address->getRegion();
             } else {
                 $dataModel = Mage_Customer_Model_Attribute_Data::factory($attribute, $address);
                 $value     = $dataModel->outputValue($dataFormat);
