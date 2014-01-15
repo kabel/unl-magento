@@ -93,6 +93,13 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         return $options;
     }
 
+    public function getSearchUrl()
+    {
+        return $this->_getUrl('catalogsearch/result', array(
+            '_secure' => Mage::app()->getFrontController()->getRequest()->isSecure()
+        ));
+    }
+
     public function getRatingSummaryTitle($summary)
     {
         return $this->__('%s out of %s stars', round($summary / 100 * 5), 5);
@@ -531,6 +538,32 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return false;
+    }
+
+    /**
+     * Prepares a pager block with extra data for rendering dual functionality pagers
+     *
+     * @param Mage_Page_Block_Html_Pager $block
+     */
+    public function prepareDualPager($block)
+    {
+        $block->setHideFrame(true)
+            ->setHideFirst(true)
+            ->setHideLast(true);
+
+    }
+
+    /**
+     * Renders the secondary HTML of a dual functionality pager block
+     *
+     * @param Mage_Page_Block_Html_Pager $block
+     */
+    public function getSecondaryPager($block)
+    {
+        $block->setIsSecondary(true)
+            ->setHideFrame(false);
+
+        return $block->getParentBlock()->getChildHtml($block->getBlockAlias(), false);
     }
 
     /**
