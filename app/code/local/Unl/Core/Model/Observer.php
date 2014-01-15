@@ -121,6 +121,19 @@ class Unl_Core_Model_Observer
     }
 
     /**
+     * A <i>frontend</i> event listener for the <code>controller_action_layout_render_before_newsletter_manage_index</code>
+     * event.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onBeforeRenderLayoutNewsletter($observer)
+    {
+        $layout = Mage::getSingleton('core/layout');
+
+        $layout->getBlock('head')->setTitle('UNL Marketplace Communications');
+    }
+
+    /**
      * An <i>adminhtml</i> event listener for the <code>adminhtml_block_html_before</code>
      * event.
      *
