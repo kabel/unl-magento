@@ -1,0 +1,11 @@
+<?php /* @var $this Unl_Core_Block_Page_Template_Links_Splitblock */ ?>
+<li<?php if($this->getIsFirst()||$this->getIsLast()): ?> class="<?php if($this->getIsFirst()): ?>first<?php endif; ?><?php if($this->getIsLast()): ?> last<?php endif; ?>"<?php endif; ?> <?php echo $this->getLiParams() ?>><?php echo $this->getBeforeText() ?><a href="<?php echo $this->getLinkUrl() ?>" <?php echo $this->getAParams() ?>>
+    <?php if ($this->getIconClass()): ?>
+    <i class="<?php echo $this->getIconClass() ?>"></i>
+    <?php endif; ?>
+    <span class="nav-main-context"><?php if ($this->getUpperLabel()): ?><?php echo $this->getUpperLabel() ?><?php else: ?>&nbsp;<?php endif; ?></span>
+    <span class="nav-main-action"><?php if ($this->getLowerLabel()): ?><?php echo $this->getLowerLabel() ?><?php else: ?><?php echo $this->getLabel() ?><?php endif; ?></span>
+    <?php if ($this->getBadge()): ?>
+    <span class="nav-main-counter" title="<?php echo $this->getBadgeTitle() ?>"><?php echo $this->getBadge() ?></span>
+    <?php endif; ?>
+</a><?php echo $this->getAfterText() ?></li>
