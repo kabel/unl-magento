@@ -75,10 +75,10 @@
                                     <?php endif; ?>
                                     </label>
                                     <?php if (strpos($_rate->getCode(), 'pickup_store') === 0): ?>
-                                    <div class="pickup-address">
-                                        <label><?php echo $this->__('Pickup Location:') ?></label><br />
+                                    <output class="pickup-address">
+                                        <label><?php echo $this->__('Pick up Location:') ?></label>
                                         <?php echo nl2br($this->escapeHtml($_rate->getMethodDescription())) ?>
-                                    </div>
+                                    </output>
                                     <?php endif; ?>
                                <?php endif ?>
                             </li>
