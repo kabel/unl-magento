@@ -1,10 +1,4 @@
-<?php
-/**
- * Product list toolbar
- *
- * @see Mage_Catalog_Block_Product_List_Toolbar
- */
-?>
+<?php /* @var $this Mage_Catalog_Block_Product_List_Toolbar */ ?>
 <?php if($this->getCollection()->getSize()): ?>
 <div class="toolbar">
     <div class="pager">
@@ -48,7 +42,7 @@
             <?php endif; ?>
         </p>
         <?php endif; ?>
-    
+
         <div class="sort-by">
             <label><?php echo $this->__('Sort By') ?></label>
             <select onchange="setLocation(this.value)">
@@ -56,7 +50,7 @@
                 <?php $_type = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', $_key)->getBackendType();
                 if (in_array($_type, array('varchar', 'text'))) {
                     $ascLabel = $this->__('A-Z');
-                    $descLabel = $this->__('Z-A'); 
+                    $descLabel = $this->__('Z-A');
                 } elseif (in_array($_type, array('int', 'decimal'))) {
                     $ascLabel = $this->__('low to high');
                     $descLabel = $this->__('high to low');
