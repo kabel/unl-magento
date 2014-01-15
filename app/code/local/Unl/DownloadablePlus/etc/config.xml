@@ -8,6 +8,9 @@
     
     <global>
         <blocks>
+            <unl_downloadableplus>
+                <class>Unl_DownloadablePlus_Block</class>
+            </unl_downloadableplus>
             <downloadable>
                 <rewrite>
                     <!-- Setup for use with Pluploader -->
