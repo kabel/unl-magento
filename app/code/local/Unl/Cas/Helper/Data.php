@@ -61,9 +61,13 @@ class Unl_Cas_Helper_Data extends Mage_Core_Helper_Abstract
         ));
     }
 
-    public function getCasUrl()
+    public function getCasUrl($fromCheckout = false)
     {
-        return $this->_getUrl('unlcas/account/cas');
+        $params = array();
+        if ($fromCheckout) {
+            $params['_query'] = array('checkout' => 1);
+        }
+        return $this->_getUrl('unlcas/account/cas', $params);
     }
 
     public function getRegisterPostUrl()

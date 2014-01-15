@@ -93,7 +93,9 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
     {
         $session = $this->_getSession();
 
-        if (!$session->getBeforeAuthUrl() || $session->getBeforeAuthUrl() == Mage::getBaseUrl()) {
+        if ($this->getRequest()->getParam('checkout')) {
+            $session->setBeforeAuthUrl(Mage::getModel('core/url')->getUrl('checkout/onepage'));
+        } elseif (!$session->getBeforeAuthUrl() || $session->getBeforeAuthUrl() == Mage::getBaseUrl()) {
 
             // Set default URL to redirect customer to
             $session->setBeforeAuthUrl(Mage::helper('customer')->getAccountUrl());
@@ -113,7 +115,7 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
             } else {
                 $session->setBeforeAuthUrl(Mage::helper('customer')->getLoginUrl());
             }
-        } else if ($session->getBeforeAuthUrl() == Mage::helper('customer')->getLogoutUrl()) {
+        } elseif ($session->getBeforeAuthUrl() == Mage::helper('customer')->getLogoutUrl()) {
             $session->setBeforeAuthUrl(Mage::helper('customer')->getDashboardUrl());
         } else {
             if (!$session->getAfterAuthUrl()) {
