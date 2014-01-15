@@ -4,10 +4,11 @@ My Cart,Your Cart
 My Account,Your Account
 My Orders,Your Orders
 My Tags,Your Tags
-My Wishlist (%d items),Your Wishlist
-My Wishlist (%d item),Your Wishlist
-My Wishlist <small>(%d)</small>,Your Wishlist <small>(%d)</small>
-My Wishlist,Your Wishlist
+My Wishlist (%d items),Your Wish list
+My Wishlist (%d item),Your Wish list
+My Wishlist <small>(%d)</small>,Your Wish list <small>(%d)</small>
+My Wishlist,Your Wish list
+Add to Wishlist,Add to Wish list
 My Product Reviews,Your Product Reviews
 My Downloadable Products,Your Downloadable Products
 My Dashboard,Your Dashboard
@@ -25,3 +26,4 @@ Specified delivery date is invalid.,Specified ship date is invalid.
 Previous Step,Back
 Orders and Returns,Check Order Status
 Returns,Check Order Status
+Out of Stock,Sold Out 
