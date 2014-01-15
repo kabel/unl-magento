@@ -6,7 +6,7 @@
  */
 ?>
 
-<ol>
+<ol class="<?php echo $this->getClassName() ? $this->getClassName() : '' ?>">
 <?php foreach ($this->getItems() as $_item): ?>
     <li>
         <span class="filter-label">
