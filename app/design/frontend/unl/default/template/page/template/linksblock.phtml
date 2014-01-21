@@ -3,6 +3,6 @@
  * @see Mage_Page_Block_Template_Links_Block
  */
 ?>
-<li<?php if($this->getIsFirst()||$this->getIsLast()): ?> class="<?php if($this->getIsFirst()): ?>first<?php endif; ?><?php if($this->getIsLast()): ?> last<?php endif; ?>"<?php endif; ?> <?php echo $this->getLiParams() ?>><?php echo $this->getBeforeText() ?><a href="<?php echo $this->getLinkUrl() ?>" title="<?php echo $this->getTitle() ?>" <?php echo $this->getAParams() ?>><span><?php echo $this->getLabel() ?></span></a><?php echo $this->getAfterText() ?>
+<li<?php if($this->getIsFirst()||$this->getIsLast()): ?> class="<?php if($this->getIsFirst()): ?>first<?php endif; ?><?php if($this->getIsLast()): ?> last<?php endif; ?>"<?php endif; ?> <?php echo $this->getLiParams() ?>><?php echo $this->getBeforeText() ?><a href="<?php echo $this->getLinkUrl() ?>"<?php if ($this->getTitle() != $this->getLabel()): ?> title="<?php echo $this->getTitle() ?>"<?php endif; ?> <?php echo $this->getAParams() ?>><span><?php echo $this->getLabel() ?></span></a><?php echo $this->getAfterText() ?>
 <?php echo $this->getChildHtml('') ?>
 </li>
