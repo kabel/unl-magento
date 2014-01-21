@@ -1,0 +1,31 @@
+<?php /* @var $this Unl_Core_Block_Payment_Info_Cc */ ?>
+<p><strong><?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?></strong></p>
+
+<table>
+    <tbody>
+        <tr>
+            <th><?php echo $this->escapeHtml(Mage::helper('payment')->__('Credit Card Type')) ?></th>
+        </tr>
+        <tr>
+            <td><?php echo $this->getCcTypeName() ?></td>
+        </tr>
+        <tr>
+            <th><?php echo $this->escapeHtml(Mage::helper('payment')->__('Credit Card Number')) ?></th>
+        </tr>
+        <tr>
+            <td><?php echo $this->getFormattedCcNumber() ?></td>
+        </tr>
+    <?php if ($_specificInfo = $this->getSpecificInformation()):?>
+    <?php foreach ($_specificInfo as $_label => $_value):?>
+        <tr>
+            <th><strong><?php echo $this->escapeHtml($_label)?>:</strong></th>
+        </tr>
+        <tr>
+            <td><?php echo nl2br(implode($this->getValueAsArray($_value, true), "\n"))?></td>
+        </tr>
+    <?php endforeach; ?>
+    <?php endif;?>
+    </tbody>
+</table>
+
+<?php echo $this->getChildHtml()?>
