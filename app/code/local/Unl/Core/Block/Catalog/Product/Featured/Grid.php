@@ -10,6 +10,6 @@ class Unl_Core_Block_Catalog_Product_Featured_Grid extends Unl_Core_Block_Catalo
 
         parent::_construct();
         $this->setTemplate('catalog/product/featured_grid.phtml');
-        $this->setWrapperClass('featured-grid');
+        $this->setWrapperClass('featured featured-grid');
     }
 }

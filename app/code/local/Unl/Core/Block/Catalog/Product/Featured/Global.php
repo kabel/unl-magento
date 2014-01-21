@@ -5,7 +5,7 @@ class Unl_Core_Block_Catalog_Product_Featured_Global extends Unl_Core_Block_Cata
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('catalog/product/featured_global.phtml');
+        $this->setTemplate('catalog/product/featured.phtml');
         $this->setWrapperClass('featured global');
     }
 
@@ -25,5 +25,16 @@ class Unl_Core_Block_Catalog_Product_Featured_Global extends Unl_Core_Block_Cata
         }
 
         return false;
+    }
+
+    public function getProduct()
+    {
+        $product = parent::getProduct();
+
+        if ($product->getId() && $this->isSourceStoreActive($product)) {
+            $product->setStoreId($product->getSourceStoreView());
+        }
+
+        return $product;
     }
 }
