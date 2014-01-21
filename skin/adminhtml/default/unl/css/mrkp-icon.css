@@ -1,0 +1,84 @@
+@font-face {
+  font-family: 'mrkp-icon';
+  src: url('../font/mrkp-icon.eot?81177600');
+  src: url('../font/mrkp-icon.eot?81177600#iefix') format('embedded-opentype'),
+       url('../font/mrkp-icon.woff?81177600') format('woff'),
+       url('../font/mrkp-icon.ttf?81177600') format('truetype'),
+       url('../font/mrkp-icon.svg?81177600#mrkp-icon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'mrkp-icon';
+    src: url('../font/mrkp-icon.svg?81177600#mrkp-icon') format('svg');
+  }
+}
+*/
+ 
+ [class^="mrkp-icon-"]:before, [class*=" mrkp-icon-"]:before {
+  font-family: "mrkp-icon";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+     
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.mrkp-icon-unl-n:before { content: '\e800'; } /* '' */
+.mrkp-icon-gift:before { content: '\e80e'; } /* '' */
+.mrkp-icon-visa:before { content: '\e81f'; } /* '' */
+.mrkp-icon-mastercard:before { content: '\e81e'; } /* '' */
+.mrkp-icon-discover:before { content: '\e81d'; } /* '' */
+.mrkp-icon-spin4:before { content: '\e801'; } /* '' */
+.mrkp-icon-th:before { content: '\e809'; } /* '' */
+.mrkp-icon-th-list:before { content: '\e80a'; } /* '' */
+.mrkp-icon-cancel-circled:before { content: '\e80c'; } /* '' */
+.mrkp-icon-plus-circled:before { content: '\e80b'; } /* '' */
+.mrkp-icon-plus-squared-small:before { content: '\e803'; } /* '' */
+.mrkp-icon-help-circled:before { content: '\e802'; } /* '' */
+.mrkp-icon-lock:before { content: '\e812'; } /* '' */
+.mrkp-icon-lock-open:before { content: '\e813'; } /* '' */
+.mrkp-icon-tag:before { content: '\e814'; } /* '' */
+.mrkp-icon-tags:before { content: '\e815'; } /* '' */
+.mrkp-icon-paycheck:before { content: '\e81b'; } /* '' */
+.mrkp-icon-forward:before { content: '\e80d'; } /* '' */
+.mrkp-icon-edit:before { content: '\e804'; } /* '' */
+.mrkp-icon-doc-text:before { content: '\e817'; } /* '' */
+.mrkp-icon-phone:before { content: '\e816'; } /* '' */
+.mrkp-icon-calendar-empty:before { content: '\e805'; } /* '' */
+.mrkp-icon-login:before { content: '\e806'; } /* '' */
+.mrkp-icon-zoom-in:before { content: '\e807'; } /* '' */
+.mrkp-icon-zoom-out:before { content: '\e808'; } /* '' */
+.mrkp-icon-right-circled:before { content: '\e81c'; } /* '' */
+.mrkp-icon-book:before { content: '\e811'; } /* '' */
+.mrkp-icon-credit-card:before { content: '\e810'; } /* '' */
+.mrkp-icon-truck:before { content: '\e80f'; } /* '' */
+.mrkp-icon-basket:before { content: '\e818'; } /* '' */
+.mrkp-icon-commerical-building:before { content: '\e819'; } /* '' */
+.mrkp-icon-download:before { content: '\e81a'; } /* '' */

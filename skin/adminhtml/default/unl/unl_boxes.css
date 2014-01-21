@@ -125,3 +125,9 @@ button.active {
 .files-wide .uploader .file-row-narrow {
 	overflow: auto;
 }
+
+.card-info i { font-size:2em; vertical-align:middle; color:#000 !important; }
+.card-info i:before { content:'\e810'; }
+.card-visa i:before { content:'\e81f'; }
+.card-mastercard i:before { content:'\e81e'; }
+.card-discover i:before { content:'\e81d'; }
