@@ -2,9 +2,9 @@
 <layout version="0.1.0">
     <default>
         <reference name="marketplace_links">
-            <action method="addLink" translate="label title"><label>About Us</label><url/><title>About Us</title><prepare>true</prepare><urlParams><_direct>about-us</_direct></urlParams></action>
-            <action method="addLink" translate="label title"><label>Shipping</label><url/><title>Shipping</title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>shipping</_fragment></urlParams></action>
-            <action method="addLink" translate="label title"><label>Payment</label><url/><title>Payment</title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>payment</_fragment></urlParams></action>
+            <action method="addLink" translate="label"><label>About Us</label><url/><title></title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_store>default</_store></urlParams></action>
+            <action method="addLink" translate="label"><label>Shipping</label><url/><title></title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>shipping</_fragment><_store>default</_store></urlParams></action>
+            <action method="addLink" translate="label"><label>Payment</label><url/><title></title><prepare>true</prepare><urlParams><_direct>about-us</_direct><_fragment>payment</_fragment><_store>default</_store></urlParams></action>
         </reference>
     </default>
     
