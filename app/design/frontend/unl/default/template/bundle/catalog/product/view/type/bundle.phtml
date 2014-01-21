@@ -8,7 +8,7 @@
 </script>
     <p class="availability in-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('In stock') ?></span></p>
 <?php elseif ($_product->getNoSale()): ?>
-    <p class="availability no-sale"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Not Available Online') ?></span></p>
+    <p class="availability no-sale"><?php echo $this->__('Availability:') ?> <span><?php echo $this->__('Not available online') ?></span></p>
 <?php else: ?>
     <p class="availability out-of-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('Out of stock') ?></span></p>
 <?php endif; ?>
