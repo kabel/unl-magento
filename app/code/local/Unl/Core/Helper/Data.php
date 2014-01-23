@@ -694,4 +694,20 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
         return false;
     }
+
+    /**
+     * Checks if all given products are managing stock
+     *
+     * @param Mage_Catalog_Model_Product[] $items
+     */
+    public function areItemsManageStock($items)
+    {
+        foreach ($items as $item) {
+            if (!$item->getStockItem()->getManageStock()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
