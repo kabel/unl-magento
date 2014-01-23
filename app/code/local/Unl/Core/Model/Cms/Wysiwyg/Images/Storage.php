@@ -5,6 +5,51 @@ class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_I
     const THUMBS_EXTERNAL_DIR = '.external';
 
     /* Overrides
+     * @see Mage_Cms_Model_Wysiwyg_Images_Storage::getDirsCollection()
+     * to match MAGE_PATCH SUPEE-2677
+     */
+    public function getDirsCollection($path)
+    {
+        if (Mage::helper('core/file_storage_database')->checkDbUsage()) {
+            $subDirectories = Mage::getModel('core/file_storage_directory_database')->getSubdirectories($path);
+            foreach ($subDirectories as $directory) {
+                $fullPath = rtrim($path, DS) . DS . $directory['name'];
+                if (!file_exists($fullPath)) {
+                    mkdir($fullPath, 0777, true);
+                }
+            }
+        }
+
+        $conditions = array('reg_exp' => array(), 'plain' => array());
+
+        foreach ($this->getConfig()->dirs->exclude->children() as $dir) {
+            $conditions[$dir->getAttribute('regexp') ? 'reg_exp' : 'plain'][(string) $dir] = true;
+        }
+        // "include" section takes precedence and can revoke directory exclusion
+        foreach ($this->getConfig()->dirs->include->children() as $dir) {
+            unset($conditions['regexp'][(string) $dir], $conditions['plain'][(string) $dir]);
+        }
+
+        $regExp = $conditions['reg_exp'] ? ('~' . implode('|', array_keys($conditions['reg_exp'])) . '~i') : null;
+        $collection = $this->getCollection($path)
+        ->setCollectDirs(true)
+        ->setCollectFiles(false)
+        ->setCollectRecursively(false);
+        $storageRootLength = strlen($this->getHelper()->getStorageRoot());
+
+        foreach ($collection as $key => $value) {
+            $rootChildParts = explode(DIRECTORY_SEPARATOR, substr($value->getFilename(), $storageRootLength));
+
+            if (array_key_exists(end($rootChildParts), $conditions['plain'])
+                || ($regExp && preg_match($regExp, $value->getFilename()))) {
+                $collection->removeItemByKey($key);
+            }
+        }
+
+        return $collection;
+    }
+
+    /* Overrides
      * @see Mage_Cms_Model_Wysiwyg_Images_Storage::getFilesCollection()
      * by using the design path for the default thumbnail
      */
