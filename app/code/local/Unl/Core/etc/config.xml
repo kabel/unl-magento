@@ -95,12 +95,24 @@
                     <template_links>Unl_Core_Block_Page_Template_Links</template_links>
                 </rewrite>
             </page>
+            <payment>
+                <rewrite>
+                    <!-- Custom HTML for credit card methods -->
+                    <info_cc>Unl_Core_Block_Payment_Info_Cc</info_cc>
+                </rewrite>
+            </payment>
             <paypal>
                 <rewrite>
                     <!-- Remove requirement of an express checkout method -->
                     <adminhtml_system_config_fieldset_location>Unl_Core_Block_Paypal_Adminhtml_System_Config_Fieldset_Location</adminhtml_system_config_fieldset_location>
                 </rewrite>
             </paypal>
+            <tag>
+                <rewrite>
+                    <!-- Render HTML even on empty collection -->
+                    <customer_recent>Unl_Core_Block_Tag_Customer_Recent</customer_recent>
+                </rewrite>
+            </tag>
             <unl_core>
                 <class>Unl_Core_Block</class>
             </unl_core>
@@ -132,6 +144,8 @@
                     <image>Unl_Core_Helper_Catalog_Image</image>
                     <!-- Upate Security Logic -->
                     <product>Unl_Core_Helper_Catalog_Product</product>
+                    <!-- Add thumbnail to collection -->
+                    <product_compare>Unl_Core_Helper_Catalog_Product_Compare</product_compare>
                 </rewrite>
             </catalog>
             <payment>
@@ -647,6 +661,15 @@
                 </observers>
             </controller_action_layout_load_before>
             
+            <controller_action_layout_render_before_newsletter_manage_index>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/observer</class>
+                        <method>onBeforeRenderLayoutNewsletter</method>
+                    </unl_core>
+                </observers>
+            </controller_action_layout_render_before_newsletter_manage_index>
+            
             <core_block_abstract_prepare_layout_after>
                 <observers>
                     <unl_core_front_layout>
@@ -1062,6 +1085,46 @@
                 <text_per_page>20</text_per_page>
             </frontend>
         </catalog>
+        <customer>
+            <address_templates>
+                <text>{{depend prefix}}{{var prefix}} {{/depend}}{{var firstname}} {{depend middlename}}{{var middlename}} {{/depend}}{{var lastname}}{{depend suffix}} {{var suffix}}{{/depend}}
+{{depend company}}{{var company}}{{/depend}}
+{{if street1}}{{var street1}}
+{{/if}}
+{{depend street2}}{{var street2}}{{/depend}}
+{{depend street3}}{{var street3}}{{/depend}}
+{{depend street4}}{{var street4}}{{/depend}}
+{{if city}}{{var city}},  {{if region_code}}{{var region_code}}, {{elseif region}}{{var region}}, {{/if}}{{if postcode}}{{var postcode}}{{/if}}
+{{var country}}
+T: {{var telephone}}
+{{depend fax}}F: {{var fax}}{{/depend}}
+{{depend vat_id}}VAT: {{var vat_id}}{{/depend}}</text>
+                <html>{{depend prefix}}{{var prefix}} {{/depend}}{{var firstname}} {{depend middlename}}{{var middlename}} {{/depend}}{{var lastname}}{{depend suffix}} {{var suffix}}{{/depend}}&lt;br/&gt;
+{{depend company}}{{var company}}&lt;br /&gt;{{/depend}}
+{{if street1}}{{var street1}}&lt;br /&gt;{{/if}}
+{{depend street2}}{{var street2}}&lt;br /&gt;{{/depend}}
+{{depend street3}}{{var street3}}&lt;br /&gt;{{/depend}}
+{{depend street4}}{{var street4}}&lt;br /&gt;{{/depend}}
+{{if city}}{{var city}},  {{/if}}{{if region_code}}{{var region_code}}, {{elseif region}}{{var region}}, {{/if}}{{if postcode}}{{var postcode}}{{/if}}&lt;br/&gt;
+{{var country}}&lt;br/&gt;
+{{depend telephone}}&lt;abbr title=&quot;Telephone&quot;&gt;T:&lt;/abbr&gt; {{var telephone}}{{/depend}}
+{{depend fax}}&lt;br/&gt;&lt;abbr title=&quot;Fax&quot;&gt;F:&lt;/abbr&gt; {{var fax}}{{/depend}}
+{{depend vat_id}}&lt;br/&gt;VAT: {{var vat_id}}{{/depend}}</html>
+                <pdf>{{depend prefix}}{{var prefix}} {{/depend}}{{var firstname}} {{depend middlename}}{{var middlename}} {{/depend}}{{var lastname}}{{depend suffix}} {{var suffix}}{{/depend}}|
+{{depend company}}{{var company}}|{{/depend}}
+{{if street1}}{{var street1}}
+{{/if}}
+{{depend street2}}{{var street2}}|{{/depend}}
+{{depend street3}}{{var street3}}|{{/depend}}
+{{depend street4}}{{var street4}}|{{/depend}}
+{{if city}}{{var city}},|{{/if}}
+{{if region_code}}{{var region_code}}, {{elseif region}}{{var region}}, {{/if}}{{if postcode}}{{var postcode}}{{/if}}|
+{{var country}}|
+{{depend telephone}}T: {{var telephone}}{{/depend}}|
+{{depend fax}}&lt;br/&gt;F: {{var fax}}{{/depend}}|
+{{depend vat_id}}&lt;br/&gt;VAT: {{var vat_id}}{{/depend}}|</pdf>
+            </address_templates>
+        </customer>
         <payment>
             <cash>
                 <active>0</active>
