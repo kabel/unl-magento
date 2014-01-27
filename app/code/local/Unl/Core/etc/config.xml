@@ -670,6 +670,15 @@
                 </observers>
             </controller_action_layout_render_before_newsletter_manage_index>
             
+            <controller_action_predispatch_checkout_onepage_saveBilling>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/checkout_observer</class>
+                        <method>onPredispatchOnepageSaveBilling</method>
+                    </unl_core>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_saveBilling>
+            
             <core_block_abstract_prepare_layout_after>
                 <observers>
                     <unl_core_front_layout>
