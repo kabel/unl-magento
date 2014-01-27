@@ -489,6 +489,22 @@ class Unl_Ship_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         return (bool)$this->getConfigData('endicia_enabled');
     }
 
+    /* Extends
+     * @see Mage_Usa_Model_Shipping_Carrier_Usps::collectRates()
+     * by not returning rates during pickup checkout flow
+     */
+    public function collectRates(Mage_Shipping_Model_Rate_Request $request)
+    {
+        $session = Mage::getSingleton('checkout/session');
+        $quote = $session->getQuote();
+
+        if (!$quote->getIsMultiShipping() && $session->getIsPickupFlow()) {
+            return false;
+        }
+
+        return parent::collectRates($request);
+    }
+
     /* Overrides
      * @see Mage_Shipping_Model_Carrier_Abstract::getTotalNumOfBoxes()
      * by adding extra logic for multiple items
