@@ -76,7 +76,7 @@
                                     </label>
                                     <?php if (strpos($_rate->getCode(), 'pickup_store') === 0): ?>
                                     <output class="pickup-address">
-                                        <label><?php echo $this->__('Pick up Location:') ?></label>
+                                        <span class="label"><?php echo $this->__('Pickup Location:') ?></span>
                                         <?php echo nl2br($this->escapeHtml($_rate->getMethodDescription())) ?>
                                     </output>
                                     <?php endif; ?>

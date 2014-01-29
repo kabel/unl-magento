@@ -35,7 +35,7 @@
             </dt>
             <dd class="complete">
             <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($this->getShippingMethod())): ?>
-                <?php echo $this->__('You have selected to pickup this order. The shipping address will be ignored. Please review the pickup location below.') ?>
+                <?php echo $this->__('You have selected to pick up this order. The shipping address will be ignored. Please review the pickup location below.') ?>
             <?php else: ?>
                 <address><?php echo $this->getShipping()->format('html') ?></address>
             <?php endif;?>
