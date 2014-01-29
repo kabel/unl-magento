@@ -62,7 +62,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             $title[] = $this->htmlEscape(Mage::app()->getGroup()->getName());
         }
 
-        if ($brand) {
+        if ($brand && strpos($title[0], $brand) === false) {
             $title[] = $this->htmlEscape($brand);
         }
 
