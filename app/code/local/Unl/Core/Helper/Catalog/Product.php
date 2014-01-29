@@ -68,4 +68,24 @@ class Unl_Core_Helper_Catalog_Product extends Mage_Catalog_Helper_Product
 
         return $product;
     }
+
+
+    /**
+     * Returns if the given product is available in the current website
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return bool
+     */
+    public function isWebsiteUrlAvailable($product)
+    {
+        if (!$product->isVisibleInCatalog()) {
+            return false;
+        }
+
+        if (!in_array(Mage::app()->getStore()->getWebsiteId(), $product->getWebsiteIds())) {
+            return false;
+        }
+
+        return true;
+    }
 }
