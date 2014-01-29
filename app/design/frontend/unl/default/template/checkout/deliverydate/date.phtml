@@ -1,0 +1,32 @@
+<?php /* @var $this AW_Deliverydate_Block_Html_Date */
+$Days = $this->getUnavailDays();
+$first_day = $this->getFirstAvailableDate()->toArray();
+?>
+<input type="text" name="<?php echo $this->getName() ?>" id="<?php echo $this->getId() ?>" value="<?php echo $this->getValue() ?>" class="<?php echo $this->getClass() ?>" <?php echo $this->getExtraParams() ?>/>
+<script type="text/javascript">
+	WDN.loadJQuery(function(){
+	    WDN.loadJS(WDN.getTemplateFilePath("scripts/plugins/ui/jQuery.ui.js"), function() {
+			var AW_DD_Days = <?php echo $this->getDaysJson($Days->getDays()) ?>,
+			    AW_DD_RWeekdays = <?php echo $this->getRecurrentWeekdaysJson($Days->getRecurrentWeekdays()) ?>,
+			    AW_DD_RDays = <?php echo $this->getRecurrentDaysJson($Days->getRecurrentDays()) ?>;
+
+			WDN.jQuery("#<?php echo $this->getId() ?>").datepicker({
+                buttonImage     : "<?php echo $this->getImage() ?>",
+                buttonText      : "<?php echo $this->helper('core')->__('Select Date') ?>",
+                buttonImageOnly : true,
+                showOn          : "both",
+                minDate         : new Date(<?php echo $first_day['year'] ?>, <?php echo ($first_day['month']-1) ?>, <?php echo $first_day['day'] ?>),
+				beforeShowDay   : function(D){
+					if(
+						(AW_DD_RDays.indexOf(D.getDate()) != -1) ||
+						(AW_DD_RWeekdays.indexOf(D.getDay()) != -1) ||
+						(AW_DD_Days.indexOf(D.getFullYear()+"-"+(D.getMonth()+1)+"-"+D.getDate()) != -1)){
+
+						return [false];
+					}
+					return [true];
+				}
+            });
+        });
+    });
+</script>
