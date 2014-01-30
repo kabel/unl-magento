@@ -1,0 +1,35 @@
+<div class="delivery-date">
+    <ul class="form-list">
+        <li class="control">
+        <input type="checkbox" id="toggle-delivery-date-<?php echo $this->getEntity()->getId() ?>" name="toggle-delivery-date[<?php echo $this->getEntity()->getId() ?>]" value="1"  onclick="toggleVisibilityOnObjects(this, ['delivery-date-container-<?php echo $this->getEntity()->getId() ?>']);"<?php if($this->isChecked()): ?> checked="checked"<?php endif; ?> class="checkbox mrkp-check-btn" />
+        <label class="mrkp-btn-cnt mrkp-btn-left" for="toggle-delivery-date-<?php echo $this->getEntity()->getId() ?>">
+                <i class="mrkp-icon-calendar-empty"></i>
+                <span class="mrkp-btn-action">Shipping options/notes</span>
+            <span class="mrkp-btn-noun">Add a shipping date or instructions</span></label>
+        </li>
+    </ul>
+</div>
+<div id="delivery-date-container-<?php echo $this->getEntity()->getId() ?>" class="delivery-date-form">
+    <dl class="form-list">
+    	<dt class="input-box">
+    		<label for="<?php echo $this->getInputId() ?>"><?php echo $this->__("Delivery Date");?></label>
+    	</dt>
+    	<dd><?php echo $this->getCalendarHtml()?>
+    	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_TIME_NOTICE_ENABLED)): ?>
+    		<em><?php echo $this->__("Please note that orders after %s will be delivered the next day", $this->getFormattedTime())?></em>
+    	<?php endif; ?>
+    	</dd>
+
+    	<?php if(Mage::getStoreConfig(AW_Deliverydate_Helper_Config::XML_PATH_GENERAL_NOTICE_ENABLED)): ?>
+    	<dt class="input-box">
+    		<label for="aw_deliverydate_notice-<?php echo $this->getEntity()->getId() ?>"><?php echo $this->__("Delivery Notice");?></label>
+    	</dt>
+    	<dd><textarea id="aw_deliverydate_notice-<?php echo $this->getEntity()->getId() ?>" name="aw_deliverydate_notice[<?php echo $this->getEntity()->getId() ?>]" cols="64" rows="5" class="input-text"><?php echo $this->getAwDeliverydateNotice() ?></textarea></dd>
+    	<?php endif; ?>
+    </dl>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    toggleVisibilityOnObjects('toggle-delivery-date-<?php echo $this->getEntity()->getId() ?>', ['delivery-date-container-<?php echo $this->getEntity()->getId() ?>']);
+//]]>
+</script>

@@ -1,0 +1,36 @@
+<?php /* @var $this Mage_Checkout_Block_Multishipping_Address_Select */ ?>
+<div class="multiple-checkout">
+    <div class="page-title title-buttons">
+        <h1><?php echo $this->__('Change Billing Address') ?></h1>
+        <button type="button" title="<?php echo $this->__('Add New Address') ?>" class="button" onclick="setLocation('<?php echo $this->getAddNewUrl() ?>')"><span><span><?php echo $this->__('Add New Address') ?></span></span></button>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <div class="wdn-grid-set-halves wdn-grid-clear">
+    <?php foreach ($this->getAddressCollection() as $_address): ?>
+        <div class="wdn-col">
+                <menu type="toolbar" class="mrkp-toolbar">
+                    <li><a href="<?php echo $this->getEditAddressUrl($_address) ?>" class="wdn-button"><?php echo $this->__('Edit Address') ?></a></li>
+                    <li><a href="<?php echo $this->getSetAddressUrl($_address) ?>" class="wdn-button wdn-button-brand"><?php echo $this->__('Select Address') ?></a></li>
+                </menu>
+                <address>
+                    <?php echo $_address->format('html') ?>
+                </address>
+                <?php
+                $_defaults = array();
+                if ($this->isAddressDefaultBilling($_address)) {
+                    $_defaults[] = 'default billing';
+                }
+                if ($this->isAddressDefaultShipping($_address)) {
+                    $_defaults[] = 'default shipping';
+                }
+                ?>
+                <?php if (!empty($_defaults)): ?>
+                <p class="mrkp-highlight">This is your current <?php echo implode(' and ', $_defaults) ?> address.</p>
+                <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+    </div>
+    <div class="buttons-set">
+        <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Billing Information') ?></a></p>
+    </div>
+</div>

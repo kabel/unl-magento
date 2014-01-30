@@ -1,0 +1,37 @@
+<script type="text/javascript">
+//<![CDATA[
+    var quoteBaseGrandTotal = <?php echo (float)$this->getQuoteBaseGrandTotal(); ?>;
+    var checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+    var payment = new Payment('co-payment-form', '<?php echo $this->getUrl('checkout/onepage/savePayment') ?>');
+    var lastPrice;
+//]]>
+</script>
+<form action="#" id="co-payment-form">
+    <fieldset id="checkout-payment-method-load" class="wdn-grid-set bp2-wdn-grid-set-halves">
+        <?php echo $this->getChildHtml('methods') ?>
+    </fieldset>
+</form>
+<p>You will have a chance to review your order in the next step, before you place your order.</p>
+<div class="buttons-set" id="payment-buttons-container">
+    <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+    <p class="back-link"><a href="#" onclick="checkout.back(); return false;"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+    <button type="button" class="button" onclick="payment.save()"><span><span><?php echo $this->__('Continue') ?></span></span></button>
+    <span class="please-wait" id="payment-please-wait" style="display:none;">
+        <i class="mrkp-icon-spin4 animate-spin"></i> <?php echo $this->__('Loading next step...') ?>
+    </span>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+require(['jquery'], function($) {
+	window.toggleToolTip = function(event) {
+		event.preventDefault();
+		$('#cvv_visual').toggle();
+	};
+});
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+    payment.currentMethod = "<?php echo $this->getChild('methods')->getSelectedMethodCode() ?>";
+//]]>
+</script>

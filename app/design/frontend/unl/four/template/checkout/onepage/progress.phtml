@@ -1,0 +1,90 @@
+<?php /* @var $this Mage_Checkout_Block_Onepage_Progress */ ?>
+<div class="block block-progress opc-block-progress">
+    <div class="block-content">
+        <ul class="wdn-grid-set-halves bp1-wdn-grid-set-fourths">
+        <?php if ($this->getCheckout()->getStepData('billing', 'is_show')): ?>
+        <?php if ($this->isStepComplete('billing')): ?>
+            <li class="wdn-col complete">
+                <h3><?php echo $this->__('Billing Address') ?>
+                <a href="#billing" onclick="checkout.gotoSection('billing'); return false;" title="<?php echo $this->__('Change') ?>"><i class="mrkp-icon-edit"></i></a>
+                </h3>
+                <address><?php echo $this->getBilling()->format('html') ?></address>
+            </li>
+        <?php else: ?>
+            <li class="wdn-col">
+                <h3><?php echo $this->__('Billing Address') ?></h3>
+            </li>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($this->getCheckout()->getStepData('shipping', 'is_show')): ?>
+        <?php if ($this->isStepComplete('shipping')): ?>
+            <li class="wdn-col complete">
+                <h3><?php echo $this->__('Shipping Address') ?>
+                <a href="#payment" onclick="checkout.gotoSection('shipping');return false;" title="<?php echo $this->__('Change') ?>"><i class="mrkp-icon-edit"></i></a>
+                </h3>
+            <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($this->getShippingMethod())): ?>
+                <?php echo $this->__('You have selected to pick up this order. The shipping address will be ignored. Please review the pickup location in the shipping method section.') ?>
+            <?php else: ?>
+                <address><?php echo $this->getShipping()->format('html') ?></address>
+            <?php endif;?>
+            </li>
+        <?php else: ?>
+            <li class="wdn-col">
+                <h3><?php echo $this->__('Shipping Address') ?></h3>
+            </li>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($this->getCheckout()->getStepData('shipping_method', 'is_show')): ?>
+        <?php if ($this->isStepComplete('shipping_method')): ?>
+            <li class="wdn-col complete">
+                <h3><?php echo $this->__('Shipping Method') ?>
+                <a href="#shipping_method" onclick="checkout.gotoSection('shipping_method'); return false;" title="<?php echo $this->__('Change') ?>"><i class="mrkp-icon-edit"></i></a>
+                </h3>
+                <?php if ($this->getShippingMethod()): ?>
+                    <?php echo $this->escapeHtml($this->getShippingDescription()) ?>
+
+                    <?php $_excl = $this->getShippingPriceExclTax(); ?>
+                    <?php $_incl = $this->getShippingPriceInclTax(); ?>
+                    <?php if ($this->helper('tax')->displayShippingPriceIncludingTax()): ?>
+                        <?php echo $_incl; ?>
+                    <?php else: ?>
+                        <?php echo $_excl; ?>
+                    <?php endif; ?>
+                    <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                        (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                    <?php endif; ?>
+
+                    <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($this->getShippingMethod())): ?>
+                        <p><strong><?php echo $this->__('Pickup Location:') ?></strong><br />
+                        <?php echo nl2br($this->escapeHtml(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($this->getShippingMethod(), $this->getQuote()->getAllItems()))) ?></p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <?php echo $this->__('Shipping method has not been selected yet') ?>
+                <?php endif; ?>
+            </li>
+        <?php else: ?>
+            <li class="wdn-col">
+                <h3><?php echo $this->__('Shipping Method') ?></h3>
+            </li>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($this->getCheckout()->getStepData('payment', 'is_show')): ?>
+        <?php if ($this->isStepComplete('payment')): ?>
+            <li class="wdn-col complete">
+                <h3><?php echo $this->__('Payment Method') ?>
+                <a href="#payment" onclick="checkout.gotoSection('payment'); return false;" title="<?php echo $this->__('Change') ?>"><i class="mrkp-icon-edit"></i></a>
+                </h3>
+                <?php echo $this->getPaymentHtml() ?>
+            </li>
+        <?php else: ?>
+            <li class="wdn-col">
+                <?php echo $this->__('Payment Method') ?>
+            </li>
+        <?php endif; ?>
+        <?php endif; ?>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="page-title">
+    <h1><?php echo $this->__('Shopping Cart is Empty') ?></h1>
+</div>
+<div class="cart-empty">
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getChildHtml('checkout_cart_empty_widget'); ?>
+    <p><?php echo $this->__('You have no items in your shopping cart.') ?></p>
+    <p><a href="<?php echo $this->getContinueShoppingUrl() ?>" class="wdn-button"><?php echo $this->__('Continue shopping') ?></a></p>
+    <?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
+</div>

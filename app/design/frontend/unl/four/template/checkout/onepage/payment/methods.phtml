@@ -1,0 +1,45 @@
+<?php /* @var $this Mage_Checkout_Block_Onepage_Payment_Methods */ ?>
+<?php
+    $methods = $this->getMethods();
+    $oneMethod = count($methods) <= 1;
+?>
+<div class="wdn-col sp-methods">
+    <ul class="form-list wdn-grid-set-halves wdn-grid-clear">
+    <?php foreach ($methods as $_method): ?>
+        <?php $_code = $_method->getCode(); ?>
+        <li class="wdn-col control">
+        <?php if(!$oneMethod): ?>
+            <input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" title="<?php echo $this->htmlEscape($_method->getTitle()) ?>" onclick="payment.switchMethod('<?php echo $_code ?>')"<?php if($this->getSelectedMethodCode()==$_code): ?> checked="checked"<?php endif; ?> class="radio mrkp-radio-btn" />
+        <?php else: ?>
+            <span class="no-display"><input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" checked="checked" class="radio" /></span>
+            <?php $oneMethod = $_code; ?>
+        <?php endif; ?>
+            <label for="p_method_<?php echo $_code ?>" class="mrkp-btn-cnt"><i class="mrkp-icon-"></i><span class="mrkp-btn-noun"><?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?> <?php echo $this->getMethodLabelAfterHtml($_method) ?></span></label>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+</div>
+<div class="wdn-col sp-methods">
+    <ul>
+    <?php foreach ($methods as $_method): ?>
+        <li>
+        <?php if ($html = $this->getPaymentMethodFormHtml($_method)): ?>
+            <?php echo $html; ?>
+        <?php endif; ?>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+    <div id="cvv_visual" class="no-js-show">
+        <img src="<?php echo $this->getSkinUrl('images/cvv.gif') ?>" alt="<?php echo $this->__('Card Verification Number Visual Reference') ?>" title="<?php echo $this->__('Card Verification Number Visual Reference') ?>" />
+    </div>
+</div>
+<?php echo $this->getChildChildHtml('additional'); ?>
+<script type="text/javascript">
+//<![CDATA[
+<?php echo $this->getChildChildHtml('scripts'); ?>
+payment.init();
+<?php if (is_string($oneMethod)): ?>
+    payment.switchMethod('<?php echo $oneMethod ?>');
+<?php endif; ?>
+//]]>
+</script>
