@@ -615,6 +615,7 @@ tr.summary-details-excluded { font-style:italic; }
 .cards-list dt { margin:5px 0 0; }
 .cards-list .offset { padding:2px 0 2px 20px; }
 
+.store-directory .store { margin: 1em 0; }
 .store-directory .store h3 { margin:0; }
 .store-directory .store a { margin:0; }
 
