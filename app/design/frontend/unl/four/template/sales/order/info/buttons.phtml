@@ -1,0 +1,11 @@
+<?php  $_order = $this->getOrder() ?>
+<ul class="mrkp-list-inline-sep tight f-right">
+<?php if($this->helper('rss/order')->isStatusNotificationAllow()): ?>
+    <li><a href="<?php echo $this->helper('rss/order')->getStatusHistoryRssUrl($_order) ?>" class="link-rss icon-link" title="<?php echo $this->__('Subscribe to Order Status') ?>"></a></li>
+<?php endif; ?>
+<?php if ($this->helper('sales/reorder')->canReorder($_order)) : ?>
+    <li><a href="<?php echo $this->getReorderUrl($_order) ?>" class="link-reorder"><?php echo $this->__('Reorder') ?></a></li>
+<?php endif ?>
+    <li><a href="<?php echo $this->getPrintUrl($_order) ?>" class="link-print icon-link" onclick="this.target='_blank';" title="<?php echo $this->__('Print Order') ?>"></a></li>
+</ul>
+<?php echo $this->getChildHtml(); ?>

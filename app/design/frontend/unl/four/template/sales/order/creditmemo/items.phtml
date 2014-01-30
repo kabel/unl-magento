@@ -1,0 +1,40 @@
+<?php /* @var $this Mage_Sales_Block_Order_Creditmemo_Items */ ?>
+<?php $_order = $this->getOrder() ?>
+<p class="order-links"><a href="<?php echo $this->getPrintAllCreditmemosUrl($_order) ?>" onclick="this.target='_blank'" class="link-print"><?php echo $this->__('Print All Refunds') ?></a></p>
+<?php foreach ($_order->getCreditmemosCollection() as $_creditmemo): ?>
+<h2 class="sub-title"><?php echo $this->__('Refund #') ?><?php echo $_creditmemo->getIncrementId(); ?> <a href="<?php echo $this->getPrintCreditmemoUrl($_creditmemo) ?>" onclick="this.target='_blank'" class="link-print wdn-button"><?php echo $this->__('Print Refund') ?></a></h2>
+<h3 class="table-caption"><?php echo $this->__('Items Refunded') ?></h3>
+<table class="data-table" id="my-refund-table-<?php echo $_creditmemo->getId(); ?>">
+    <col />
+    <col class="min" />
+    <col class="min" />
+    <col class="min" />
+    <col class="min" />
+    <col class="min" />
+    <col class="min" />
+    <thead>
+        <tr>
+            <th><?php echo $this->__('Product Name') ?></th>
+            <th><?php echo $this->__('SKU') ?></th>
+            <th class="a-right"><?php echo $this->__('Price') ?></th>
+            <th class="a-center"><?php echo $this->__('Qty') ?></th>
+            <th class="a-right"><?php echo $this->__('Subtotal') ?></th>
+            <th class="a-center wrap"><?php echo $this->__('Discount Amount') ?></th>
+            <th class="a-right wrap"><?php echo $this->__('Row Total') ?></th>
+        </tr>
+    </thead>
+    <tfoot>
+       <?php echo $this->getTotalsHtml($_creditmemo);?>
+    </tfoot>
+    <?php $_items = $_creditmemo->getAllItems(); ?>
+    <?php $_count = count($_items) ?>
+    <?php foreach ($_items as $_item): ?>
+    <?php if ($_item->getOrderItem()->getParentItem()) continue; ?>
+    <tbody>
+        <?php echo $this->getItemHtml($_item) ?>
+    </tbody>
+    <?php endforeach; ?>
+</table>
+<script type="text/javascript">decorateTable('my-refund-table-<?php echo $_creditmemo->getId(); ?>', {'tbody' : ['odd', 'even'], 'tbody tr' : ['first', 'last']})</script>
+<?php echo $this->getCommentsHtml($_creditmemo)?>
+<?php endforeach; ?>

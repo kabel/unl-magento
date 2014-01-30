@@ -1,0 +1,91 @@
+<?php /* @var $this Mage_Sales_Block_Order_Info */ ?>
+<?php $_order = $this->getOrder() ?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<div class="page-title title-buttons">
+    <h1><?php echo $this->__('Order #%s - %s', $_order->getRealOrderId(), $_order->getStatusLabel()) ?></h1>
+    <?php echo $this->getChildHtml('buttons') ?>
+</div>
+<?php echo $this->getStatusHistoryRssUrl($_order) ?>
+<?php $_links = $this->getLinks(); ?>
+<ul id="order-info-tabs" class="mrkp-list-inline-sep">
+<?php foreach ($_links as $_link): ?>
+    <?php if($_link->getUrl()): ?>
+        <li><a href="<?php echo $_link->getUrl() ?>"><?php echo $_link->getLabel() ?></a></li>
+    <?php else: ?>
+        <li class="current"><?php echo $_link->getLabel() ?></li>
+    <?php endif; ?>
+<?php endforeach; ?>
+</ul>
+<script type="text/javascript">decorateGeneric($('order-info-tabs').select('LI'),['first','last']);</script>
+<p class="order-date"><?php echo $this->__('Order Date: %s', $this->formatDate($_order->getCreatedAtStoreDate(), 'long')) ?></p>
+<div class="wdn-grid-set-halves bp2-wdn-grid-set-fourths order-info-box">
+<?php if (!$_order->getIsVirtual()): ?>
+    <div class="wdn-col">
+        <div class="box">
+            <div class="box-title">
+                <h2><?php echo $this->__('Shipping Address') ?></h2>
+            </div>
+            <div class="box-content">
+            <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+                <?php echo $this->__('Pickup order') ?>
+            <?php else: ?>
+                <address><?php echo $_order->getShippingAddress()->format('html') ?></address>
+            <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <div class="wdn-col">
+        <div class="box">
+            <div class="box-title">
+                <h2><?php echo $this->__('Shipping Method') ?></h2>
+            </div>
+            <div class="box-content">
+                <?php if ($_order->getShippingDescription()): ?>
+                    <?php echo $this->escapeHtml($_order->getShippingDescription()) ?>
+                <?php else: ?>
+                    <p><?php echo $this->helper('sales')->__('No shipping information available'); ?></p>
+                <?php endif; ?>
+
+                <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+                    <p><strong><?php echo $this->__('Pickup Location:') ?></strong><br />
+                    <?php echo nl2br($this->escapeHtml(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($_order->getShippingMethod(), $_order->getAllItems()))) ?></p>
+                <?php endif; ?>
+
+                <?php if ($_order->getAwDeliverydateDate()): ?>
+                <br/>
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Date')?></strong>
+                &nbsp;
+                <?php echo $this->formatDate($_order->getAwDeliverydateDate());?>
+                <?php endif; ?>
+
+                <?php if ($_order->getAwDeliverydateNotice()): ?>
+                <br/>
+                <strong><?php echo Mage::helper('deliverydate')->__('Delivery Notice')?></strong><br/>
+                &nbsp;
+                <?php echo $this->escapeHtml($_order->getAwDeliverydateNotice());?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+    <div class="wdn-col">
+        <div class="box">
+            <div class="box-title">
+                <h2><?php echo $this->__('Billing Address') ?></h2>
+            </div>
+            <div class="box-content">
+                <address><?php echo $_order->getBillingAddress()->format('html') ?></address>
+            </div>
+        </div>
+    </div>
+    <div class="wdn-col">
+        <div class="box box-payment">
+            <div class="box-title">
+                <h2><?php echo $this->__('Payment Method') ?></h2>
+            </div>
+            <div class="box-content">
+                <?php echo $this->getPaymentInfoHtml() ?>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+<?php /* @var $this Mage_Sales_Block_Order_History */ ?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $_orders = $this->getOrders(); ?>
+<div class="page-title">
+    <h1><?php echo $this->__('My Orders') ?></h1>
+</div>
+<?php
+$_pager = $this->getChild('pager');
+$_pager->setTotalLabel('order(s)')
+    ->setAvailableLimit(array(10));
+?>
+<?php Mage::helper('unl_core')->prepareDualPager($_pager); ?>
+<?php echo $this->getPagerHtml(); ?>
+<?php if($_orders->getSize()): ?>
+
+<?php /* @var $_order Unl_Core_Model_Sales_Order */?>
+<?php foreach ($_orders as $_order): ?>
+<?php $_orderClone = clone $_order; ?>
+<div class="wdn-grid-set mrkp-well">
+    <div class="bp2-wdn-col-one-third mrkp-well-up order-level">
+        <span class="detail-label">Order placed</span>
+        <h2 class="order-date"><?php echo $this->formatDate($_order->getCreatedAtStoreDate(), Mage_Core_Model_Locale::FORMAT_TYPE_LONG)?></h2>
+        <ul class="mrkp-list-inline-sep tight">
+            <li><a href="<?php echo $this->getViewUrl($_order) ?>">Order Details</a></li>
+            <?php if ($_order->hasInvoices()): ?>
+            <li><a href="<?php echo $this->getUrl('*/*/invoice', array('order_id' => $_order->getId())) ?>">Invoices</a></li>
+            <?php endif; ?>
+            <?php if ($_order->hasShipments()): ?>
+            <li><a href="<?php echo $this->getUrl('*/*/shipment', array('order_id' => $_order->getId())) ?>">Shipments</a></li>
+            <?php endif; ?>
+            <?php if ($_order->hasCreditmemos()): ?>
+            <li><a href="<?php echo $this->getUrl('*/*/creditmemo', array('order_id' => $_order->getId())) ?>">Refunds</a></li>
+            <?php endif; ?>
+        </ul>
+        <ul class="mrkp-list-flat">
+            <li>
+                <span class="detail-label">Order #</span>
+                <span class="detail-info"><a href="<?php echo $this->getViewUrl($_order) ?>"><?php echo $_order->getIncrementId() ?></a></span>
+            </li>
+            <li>
+                <?php if ($_order->getShippingAddress()): ?>
+                    <?php $_recip = $_order->getShippingAddress()->getName(); ?>
+                <?php else: ?>
+                    <?php $_recip = $_order->getBillingAddress()->getName(); ?>
+                <?php endif; ?>
+                <span class="detail-label">Recipient</span>
+                <span class="detail-info recipient"><?php echo $this->escapeHtml($_recip) ?> <a aria-label="Show addresses" class="toggle-link icon-link" href="#"><span>Show addresses</span></a></span>
+            </li>
+            <?php if ($_order->getShippingAddress()): ?>
+            <li class="address no-js-show">
+                <span class="detail-label">Delivery Address</span>
+                <address class="detail-info detail-block">
+                <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+                    <strong><?php echo $this->__('Pickup Location:') ?></strong><br />
+                    <?php echo nl2br($this->escapeHtml(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($_order->getShippingMethod(), $_order->getAllItems()))) ?>
+                <?php else: ?>
+                    <?php echo $_order->getShippingAddress()->format('html') ?>
+                <?php endif; ?>
+                </address>
+            </li>
+            <?php endif; ?>
+            <li>
+                <span class="detail-label">Total</span>
+                <span class="detail-info price"><?php echo $_order->formatPrice($_order->getGrandTotal()) ?></span>
+            </li>
+            <li class="address no-js-show">
+                <span class="detail-label">Billing Address</span>
+                <address class="detail-info detail-block">
+                    <?php echo $_order->getBillingAddress()->format('html') ?>
+                </address>
+            </li>
+        </ul>
+    </div>
+    <span class="mrkp-well-sep-abs-one-third"></span>
+    <div class="bp2-wdn-col-two-thirds order-summary">
+        <div class="wdn-grid-set">
+            <div class="wdn-col-two-thirds">
+                <div class="order-status">
+                    <h3 class="status-<?php echo $_order->getStatus() ?>"><?php echo $_order->getStatusLabel() ?></h3>
+                </div>
+                <ul class="mrkp-list-flat">
+                    <?php foreach ($_orderClone->getItemsCollection(array(), true) as $_item): ?>
+                    <?php /* @var $_item Mage_Sales_Model_Order_Item */ ?>
+                    <li>
+                        <?php $_label = $_item->getProduct()->getImageLabel() ? $_item->getProduct()->getImageLabel() : $_item->getName(); ?>
+                        <?php $_url = Mage::helper('unl_core/catalog_product')->isWebsiteUrlAvailable($_item->getProduct()) ? $_item->getProduct()->getUrlInStore() : null; ?>
+                        <?php if ($_url): ?>
+                        <a href="<?php echo $_url ?>">
+                        <?php endif; ?>
+                        <span class="image-thumb">
+                            <img src="<?php echo $this->helper('catalog/image')->init($_item->getProduct(), 'thumbnail')->resize(100) ?>" alt="<?php echo $this->escapeHtml($_label) ?>" />
+                        </span>
+                        <?php if ($_url): ?>
+                        </a>
+                        <?php endif; ?>
+                        <h3 class="item-title">
+                        <?php if ($_url): ?>
+                        <a href="<?php echo $_url ?>">
+                        <?php endif; ?>
+                        <?php if ($_item->getQtyOrdered() != 1): ?>
+                            <?php echo $this->__('%s of', $_item->getQtyOrdered() * 1) ?>
+                        <?php endif; ?>
+                            <?php echo $this->escapeHtml($_item->getName()) ?>
+                        <?php if ($_url): ?>
+                        </a>
+                        <?php endif; ?>
+                        </h3>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <div class="wdn-col-one-third">
+                <ul class="mrkp-list-flat">
+                <?php if ($_order->getTracksCollection()->count()): ?>
+                    <li><a href="<?php echo $this->helper('shipping')->getTrackingPopupUrlBySalesModel($_order) ?>" onclick="popWin(this.href,'trackorder','top=0,left=0,width=800,height=600,resizable=yes,scrollbars=yes'); return false;" class="wdn-button wdn-button-brand">Track Shipments</a></li>
+                <?php endif; ?>
+                <?php if ($this->helper('sales/reorder')->canReorder($_order)) : ?>
+                    <li><a href="<?php echo $this->getReorderUrl($_order) ?>" class="wdn-button">Reorder</a></li>
+                <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endforeach; ?>
+<script type="text/javascript">
+require(['jquery'], function($) {
+	$(function() {
+		$('.order-level .recipient a').click(function(e) {
+			e.preventDefault();
+			$(this).toggleClass('expanded');
+			$(this).closest('ul').find('.address').toggle();
+		});
+	});
+});
+</script>
+<?php echo Mage::helper('unl_core')->getSecondaryPager($_pager); ?>
+<?php else: ?>
+    <p><?php echo $this->__('You have placed no orders.'); ?></p>
+<?php endif ?>
