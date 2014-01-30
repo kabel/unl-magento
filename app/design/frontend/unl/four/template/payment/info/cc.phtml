@@ -1,0 +1,22 @@
+<?php /* @var $this Unl_Core_Block_Payment_Info_Cc */ ?>
+<p><strong><?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?></strong></p>
+<div class="card-info card-<?php echo strtolower($this->getCcTypeName()) ?>">
+    <i class="mrkp-icon- icon-link"><span><?php echo $this->getCcTypeName()?></span></i>
+    <span class="number"><?php echo $this->getFormattedCcNumber() ?></span>
+</div>
+<?php if ($_specificInfo = $this->getSpecificInformation()):?>
+<table>
+    <tbody>
+    <?php foreach ($_specificInfo as $_label => $_value):?>
+        <tr>
+            <th><strong><?php echo $this->escapeHtml($_label)?>:</strong></th>
+        </tr>
+        <tr>
+            <td><?php echo nl2br(implode($this->getValueAsArray($_value, true), "\n"))?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif;?>
+
+<?php echo $this->getChildHtml()?>
