@@ -1,0 +1,33 @@
+<?php /* @var $this Mage_Customer_Block_Account_Dashboard_Info */ ?>
+<div class="wdn-col">
+    <h3 class="clear-top"><?php echo $this->__('Account Settings') ?></h3>
+    <ul class="mrkp-list-flat">
+       <li><a href="<?php echo $this->getUrl('customer/account/edit') ?>">Change Account Settings</a></li>
+       <li><a href="<?php echo $this->getUrl('customer/account/forgotpassword') ?>">Forgot Your Password?</a></li>
+       <li>
+       <?php if (Mage::helper('unl_cas')->isCustomerCasUser()): ?>
+           Your My.UNL Account:
+           <?php $uid = $this->getCustomer()->getUnlCasUid(); ?>
+           <span class="box-cas-info"><img alt="Your Profile Pic" src="//planetred.unl.edu/pg/icon/unl_<?php echo substr($uid, 0, 2) == 's-' ? 's_' . substr($uid, 2) : $uid ?>/topbar/" />
+           <span><?php echo $this->getCustomer()->getUnlCasUid() ?></span>
+           </span>
+           <a href="#" class="icon-link toggle-link" aria-label="More information"><span>More information</span></a></span>
+           <div class="more-info no-js-show">
+               <p>Your shopping account on UNL Marketplace is linked to your My.UNL account, allowing you access to products and services specifically for students, faculty, and staff.</p>
+               <p>For security reasons, you are only allowed to link a single account and the link cannot be removed. If you have further questions, please contact us.</p>
+           </div>
+       <?php else: ?>
+           <a href="<?php echo $this->getUrl('unl_cas/account/caslink') ?>">Link Your My.UNL Account</a>
+           <a href="#" class="icon-link toggle-link" aria-label="More information"><span>More information</span></a></span>
+           <div class="more-info no-js-show">
+                <p>Link your UNL account to your shopping account to gain access to many of the products and features only available to members of the UNL community.</p>
+           </div>
+       <?php endif; ?>
+       </li>
+    </ul>
+
+    <h3 class="clear-top">Email from UNL Marketplace</h3>
+    <ul class="mrkp-list-flat">
+       <li><a href="<?php echo $this->getUrl('newsletter/manage') ?>">Preferences &amp; Notifications</a></li>
+    </ul>
+</div>

@@ -1,0 +1,81 @@
+<?php /* @var $this Mage_Customer_Block_Account_Dashboard */ ?>
+<div class="dashboard">
+    <div class="page-title">
+        <h1><?php echo $this->__('My Dashboard') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+
+
+
+    <?php echo $this->getChildHtml('hello') ?>
+    <?php echo $this->getChildHtml('top') ?>
+
+    <div class="wdn-grid-set mrkp-well">
+        <div class="bp2-wdn-col-one-fourth mrkp-well-up">
+            <h2 class="mrkp-well-heading"><?php echo $this->__('Digital Content') ?></h2>
+            <p class="mrkp-well-desc">Media &amp; Downloads</p>
+        </div>
+        <span class="mrkp-well-sep-abs-one-fourth"></span>
+        <div class="bp2-wdn-col-three-fourths box-settings">
+            <div class="wdn-grid-set bp1-wdn-grid-set-halves">
+                <div class="wdn-col">
+                    <ul class="mrkp-list-flat">
+                       <li><a href="<?php echo $this->getUrl('downloadable/customer/products'); ?>">Your Collection</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wdn-grid-set mrkp-well">
+        <div class="bp2-wdn-col-one-fourth mrkp-well-up">
+            <h2 class="mrkp-well-heading"><?php echo $this->__('Settings') ?></h2>
+            <p class="mrkp-well-desc">Password, Email &amp; Addresses</p>
+        </div>
+        <span class="mrkp-well-sep-abs-one-fourth"></span>
+        <div class="bp2-wdn-col-three-fourths box-settings">
+            <div class="wdn-grid-set bp1-wdn-grid-set-halves">
+                <?php /* Extensions placeholder */ ?>
+                <?php echo $this->getChildHtml('customer.account.dashboard.extra') ?>
+                <?php echo $this->getChildHtml('info') ?>
+                <?php echo $this->getChildHtml('address') ?>
+            </div>
+        </div>
+        <script type="text/javascript">
+        require(['jquery'], function($) {
+            $(function() {
+            	$('.box-settings a.toggle-link').click(function(e) {
+            		e.preventDefault();
+            		$(this).toggleClass('expanded');
+            		$(this).siblings('.more-info').toggle();
+            	});
+            });
+        });
+        </script>
+    </div>
+
+    <div class="wdn-grid-set mrkp-well">
+        <div class="bp2-wdn-col-one-fourth mrkp-well-up">
+            <h2 class="mrkp-well-heading"><?php echo $this->__('Personalization') ?></h2>
+            <p class="mrkp-well-desc">Participation &amp; Public Content</p>
+        </div>
+        <span class="mrkp-well-sep-abs-one-fourth"></span>
+        <div class="bp2-wdn-col-three-fourths box-settings">
+            <div class="wdn-grid-set bp1-wdn-grid-set-halves">
+                <div class="wdn-col">
+                    <h3 class="clear-top">Community</h3>
+                    <ul class="mrkp-list-flat">
+                       <li><?php echo $this->getChildHtml('info1') ?></li>
+                       <li><?php echo $this->getChildHtml('info2') ?></li>
+                    </ul>
+                </div>
+                <div class="wdn-col">
+                    <h3 class="clear-top">Lists</h3>
+                    <ul class="mrkp-list-flat">
+                       <li><a href="<?php echo $this->getUrl('wishlist') ?>">Your Wish List</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

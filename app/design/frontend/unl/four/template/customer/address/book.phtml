@@ -1,0 +1,60 @@
+<?php
+/**
+ * Temlate for Mage_Customer_Block_Address_Book block
+ */
+/* @var $this Mage_Customer_Block_Address_Book */
+?>
+<div class="page-title">
+    <h1><?php echo $this->__('Address Book') ?></h1>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<p>Click the Edit button under any address you'd like to adjust. Need to change an address on an open order? Please <a href="<?php echo $this->getUrl('contacts') ?>">contact us</a>.</p>
+<div class="buttons-set">
+    <button type="button" title="<?php echo $this->__('Add New Address') ?>" class="button" onclick="window.location='<?php echo $this->getAddAddressUrl() ?>';"><span><span><?php echo $this->__('Add New Address') ?></span></span></button>
+</div>
+<?php $this->getCustomer()->getPrimaryAddresses(); ?>
+<?php $_addresses = $this->getCustomer()->getAddresses(); ?>
+<?php if (empty($_addresses)): ?>
+    <p><?php echo $this->__('You have no addresses in your address book.') ?></p>
+<?php else: ?>
+    <div class="wdn-grid-set-halves wdn-grid-clear addresses-list">
+    <?php foreach($_addresses as $_address): ?>
+        <div class="wdn-col">
+            <div class="address-box">
+                <address>
+                    <?php echo $this->getAddressHtml($_address) ?>
+                </address>
+                <?php
+                $_defaults = array();
+                if ($_address->getIsPrimaryBilling()) {
+                    $_defaults[] = 'default billing';
+                }
+                if ($_address->getIsPrimaryShipping()) {
+                    $_defaults[] = 'default shipping';
+                }
+                ?>
+                <?php if (!empty($_defaults)): ?>
+                <p class="mrkp-highlight">This is your current <?php echo implode(' and ', $_defaults) ?> address.</p>
+                <?php endif; ?>
+                <menu type="toolbar" class="mrkp-toolbar">
+                    <li><a class="wdn-button" href="<?php echo $this->getUrl('customer/address/edit', array('id'=>$_address->getId())) ?>"><?php echo $this->__('Edit') ?></a>
+                    <li><a class="wdn-button" href="#" onclick="return deleteAddress('<?php echo $_address->getId() ?>');"><?php echo $this->__('Delete') ?></a></li>
+                </menu>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<div class="buttons-set">
+    <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    function deleteAddress(addressId) {
+        if(confirm('<?php echo $this->__('Are you sure you want to delete this address?') ?>')) {
+            window.location='<?php echo $this->getDeleteUrl() ?>id/'+addressId;
+        }
+        return false;
+    }
+//]]>
+</script>

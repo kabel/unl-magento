@@ -1,0 +1,35 @@
+<?php /* @var $this Mage_Customer_Block_Newsletter */
+?>
+<div class="page-title">
+    <h1>UNL Marketplace Communications</h1>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php echo $this->getChildHtml('form_before')?>
+<p>We want to stay in touch, but only in ways that you find helpful. Select from the options below and click Save when you are finished.</p>
+<h2>Email Preferences</h2>
+<p>We use HTML messages (pictures as well as text) and currently do not provide a preference for text only messages. We apologize if you have any problem reading a message from us on your preferred email reader. Please let us know if you require any assistance with a message you have received.</p>
+
+<form action="<?php echo $this->getAction() ?>" method="post" id="form-validate">
+    <div class="fieldset">
+        <?php echo $this->getBlockHtml('formkey')?>
+        <h2>UNL Marketplace Marketing Email</h2>
+        <p><strong>Note:</strong> even if you choose not to receive some marketing emails from us, you will still receive our transactional email, such as messages related to your orders, listings, updates about products or services you have purchased from us, or information about your account. We do our best to honor your marketing preference and do not share your information with anyone that is not directly affiliated with the business of UNL Marketplace.</p>
+        <ul class="form-list">
+            <li class="control"><input type="radio" name="is_subscribed" id="subscription_yes" value="1" <?php if($this->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="radio" /><label for="subscription_yes">Send me marketing email from any of your stores/affiliates</label></li>
+            <li class="control"><input type="radio" name="is_subscribed" id="subscription_no" value=""  <?php if(!$this->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="radio"><label for="subscription_no">Do not send me marketing email</label></li>
+            <?php /* Extensions placeholder */ ?>
+            <?php echo $this->getChildHtml('customer.form.newsletter.extra')?>
+        </ul>
+    </div>
+    <div class="buttons-set">
+        <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+        <button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
+    </div>
+</form>
+<?php /* Extensions placeholder */ ?>
+<?php echo $this->getChildHtml('customer.form.newsletter.extra2')?>
+<script type="text/javascript">
+//<![CDATA[
+    var dataForm = new VarienForm('form-validate', true);
+//]]>
+</script>

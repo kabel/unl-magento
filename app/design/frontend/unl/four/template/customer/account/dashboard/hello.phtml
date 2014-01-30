@@ -1,0 +1,4 @@
+<div class="welcome-msg">
+    <p class="hello"><?php echo $this->__('Hello, %s!', $this->htmlEscape($this->getCustomerName())) ?>
+    <a class="action-link smaller" href="<?php echo $this->getUrl('customer/account/logout') ?>"><?php echo $this->__('(not you?)') ?></a></p>
+</div>
