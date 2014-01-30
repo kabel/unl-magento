@@ -12,6 +12,17 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         return Mage::getSingleton('customer/session');
     }
 
+    public function logoutAction()
+    {
+        $session = $this->_getSession();
+
+        if ($session->isLoggedIn()) {
+            $session->logout();
+        }
+
+        $this->_getCasAuth()->logout(Mage::getUrl());
+    }
+
     /**
      * Customer login form page
      */
@@ -383,6 +394,11 @@ class Unl_Cas_AccountController extends Mage_Core_Controller_Front_Action
         return $successUrl;
     }
 
+    /**
+     * Returns the UNL CAS authentication implementation
+     *
+     * @return UNL_Auth_SimpleCAS
+     */
     protected function _getCasAuth()
     {
         return Mage::helper('unl_cas')->getAuth();
