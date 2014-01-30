@@ -1,0 +1,28 @@
+<?php /* @var $this Unl_Core_Block_Catalog_Product_Featured_Grid */ ?>
+<?php if ($_products = $this->getProducts()): ?>
+<?php $_helper = $this->helper('catalog/output'); ?>
+<div class="<?php echo $this->getWrapperClass() ?>">
+    <h2><?php echo $this->__('Featured Products') ?></h2>
+    <div class="wdn-grid-set-fourths wdn-grid-clear">
+    <?php foreach ($_products as $_product): ?>
+        <div class="wdn-col">
+            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(177); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+            <h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h3>
+            <?php if($_product->getRatingSummary()): ?>
+            <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+            <?php endif; ?>
+            <?php echo $this->getPriceHtml($_product, true) ?>
+            <div class="actions">
+                <?php if($_product->isSaleable()): ?>
+                    <p class="availability"><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+                <?php elseif ($_product->getNoSale()): ?>
+                    <p class="availability no-sale"><span><?php echo $this->__('Not available online') ?></span></p>
+                <?php else: ?>
+                    <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>

@@ -1,0 +1,40 @@
+<?php /* @var $this Unl_Core_Block_Catalog_Product_Featured */ ?>
+<?php
+    $_product = $this->getProduct();
+    $_helper = $this->helper('catalog/output');
+?>
+<?php if ($_product->getId()): ?>
+<div class="<?php echo $this->getWrapperClass() ?>">
+    <h2><?php echo $this->__('Featured Product') ?></h2>
+    <div class="wdn-grid-set">
+        <div class="wdn-col-one-half<?php if (!$this->hasData('minimal')): ?> bp1-wdn-col-one-fourth<?php endif; ?>">
+            <?php // Product Image ?>
+            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(177); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+        </div>
+        <div class="wdn-col-one-half<?php if (!$this->hasData('minimal')): ?> bp1-wdn-col-one-fourth<?php endif; ?>">
+            <?php // Product description ?>
+            <div class="product-shop">
+                <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+                <h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h3>
+                <?php if($_product->getRatingSummary()): ?>
+                <?php echo $this->getReviewsSummaryHtml($_product) ?>
+                <?php endif; ?>
+                <?php echo $this->getPriceHtml($_product, true) ?>
+                <?php if($_product->isSaleable()): ?>
+                    <p class="availability"><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+                <?php elseif ($_product->getNoSale()): ?>
+                    <p class="availability no-sale"><span><?php echo $this->__('Not available online') ?></span></p>
+                <?php else: ?>
+                    <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php if (!$this->hasData('minimal')): ?>
+        <div class="wdn-col bp1-wdn-col-one-half desc std">
+            <?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>

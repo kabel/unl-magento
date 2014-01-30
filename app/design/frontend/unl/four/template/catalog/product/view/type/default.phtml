@@ -1,0 +1,12 @@
+<?php /* @var $this Mage_Catalog_Block_Product_View_Abstract */?>
+<?php $_product = $this->getProduct() ?>
+
+<?php if ($_product->isSalable()): ?>
+    <p class="availability in-stock"><span><?php echo $_product->getStockItem()->getManageStock() ? $this->__('In stock') : $this->__('Available') ?></span></p>
+<?php elseif ($_product->getNoSale()): ?>
+    <p class="availability no-sale"><span><?php echo $this->__('Not available online') ?></span></p>
+<?php else: ?>
+    <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+<?php endif; ?>
+<?php echo $this->getChildHtml('product_type_data_extra') ?>
+<?php echo $this->getPriceHtml($_product) ?>

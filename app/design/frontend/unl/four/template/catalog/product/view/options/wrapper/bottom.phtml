@@ -1,0 +1,10 @@
+<?php /* @var $this Mage_Catalog_Block_Product_View */  ?>
+<div class="product-options-bottom wdn-col">
+    <div class="bp1-wdn-grid-set-thirds">
+    <?php foreach ($this->getSortedChildBlocks() as $child): ?>
+    <div class="wdn-col">
+        <?php echo $this->getChildHtml($child->getBlockAlias()) ?>
+    </div>
+    <?php endforeach; ?>
+    </div>
+</div>

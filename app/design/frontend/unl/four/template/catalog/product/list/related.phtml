@@ -1,0 +1,47 @@
+<?php
+/* @var $this Mage_Catalog_Block_Product_List_Related */
+?>
+<?php if($this->getItems()->getSize()): ?>
+<div class="block block-related">
+    <h2 class="block-title"><?php echo $this->__('Frequently Bought Together') ?></h2>
+    <div class="block-content">
+        <ol class="mini-products-list" id="block-related">
+        <?php foreach($this->getItems() as $_item): ?>
+            <li class="item">
+                <?php if(!$_item->isComposite() && $_item->isSaleable()): ?>
+                    <?php if (!$_item->getRequiredOptions()): ?>
+                        <input type="checkbox" class="checkbox related-checkbox" id="related-checkbox<?php echo $_item->getId() ?>" value="<?php echo $_item->getId() ?>" />
+                    <?php endif; ?>
+                <?php endif; ?>
+                <div class="product">
+                    <a href="<?php echo $_item->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_item->getName()) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(50) ?>" width="50" height="50" alt="<?php echo $this->htmlEscape($_item->getName()) ?>" /></a>
+                    <div class="product-details">
+                        <p class="product-name"><a href="<?php echo $_item->getProductUrl() ?>"><?php echo $this->htmlEscape($_item->getName()) ?></a></p>
+                        <?php echo $this->getPriceHtml($_item, true, '-related') ?>
+                    </div>
+                </div>
+            </li>
+        <?php endforeach ?>
+        </ol>
+        <script type="text/javascript">decorateList('block-related', 'none-recursive');</script>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+    $$('.related-checkbox').each(function(elem){
+        Event.observe(elem, 'click', addRelatedToProduct);
+    });
+
+    function addRelatedToProduct(){
+        var checkboxes = $$('.related-checkbox');
+        var values = [];
+        for(var i=0;i<checkboxes.length;i++){
+            if(checkboxes[i].checked) values.push(checkboxes[i].value);
+        }
+        if($('related-products-field')){
+            $('related-products-field').value = values.join(',');
+        }
+    }
+    //]]>
+    </script>
+</div>
+<?php endif ?>
