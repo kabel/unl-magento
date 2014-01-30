@@ -1,0 +1,29 @@
+<div class="search-feedback wdn-band wdn-light-neutral-band"><div class="wdn-inner-wrapper">
+    <h2 class="clear-top">Did you find what you were looking for?</h2>
+    <div class="wdn-grid-set-halves wdn-center">
+    <div class="search-depth wdn-col">
+    <?php
+    $query = array(
+        Mage::getBlockSingleton('page/html_pager')->getPageVarName() => null // exclude current page from urls
+    );
+    ?>
+        <p>
+        <?php if ($this->getRequest()->getParam('deep')): ?>
+            <?php $query['deep'] = null; ?>
+            <?php $searchIn = 'only this store'; ?>
+            You are currently searching in all UNL Marketplace stores.
+        <?php else: ?>
+            <?php $query['deep'] = 1; ?>
+            <?php $searchIn = 'all stores'; ?>
+            You are currently searching only in this store.
+        <?php endif; ?>
+            <br /><button class="button" onclick="setLocation('<?php echo $this->getUrl('*/*/*', array('_current'=>true, '_use_rewrite'=>true, '_query'=>$query)) ?>')"><span><span>Search <?php echo $searchIn ?></span></span></button>
+        </p>
+    </div>
+    <div class="search-web wdn-col">
+        <p>The above results are only from our product database.
+        <br /><button class="button" onclick="setLocation('http://www1.unl.edu/search/?u=<?php echo urlencode(Mage::getBaseUrl()) ?>&amp;q=<?php echo urlencode(Mage::helper('catalogsearch')->getQueryText()) ?>')"><span><span>UNL web search</span></span></button></p>
+    </div>
+    </div>
+    <p>We are always looking to improve our product search functions. If you were unable to find what you were looking for please don't hesitate to <a href="<?php echo $this->getUrl('contacts') ?>">contact us</a>. We'll do our best to get you an answer or direct you to someone who can.</p>
+</div></div>
