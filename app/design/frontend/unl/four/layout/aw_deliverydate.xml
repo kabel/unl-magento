@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+	<checkout_onepage_index>
+        <reference name="checkout.onepage.shipping_method.additional">
+            <block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml" />
+        </reference>
+	</checkout_onepage_index>
+	<checkout_onepage_additional>
+		<reference name="root">
+        	<block type="deliverydate/frontend_checkout_onepage_deliverydate" name="aw_deliverydate.container" template="checkout/onepage/shipping_method/deliverydate.phtml" />
+		</reference>
+    </checkout_onepage_additional>
+</layout>	 
