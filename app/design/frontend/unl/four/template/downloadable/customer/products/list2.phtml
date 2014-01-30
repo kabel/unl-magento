@@ -1,0 +1,63 @@
+<?php /* @var $this Unl_DownloadablePlus_Block_Customer_Products_List */ ?>
+<?php $_items = $this->getItems(); ?>
+<div class="page-title">
+    <h1>Your Collection</h1>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<p>Access all of the digital content you have purchased. If any of your links below do not work or have unexpectedly expired, please <a href="<?php echo $this->getUrl('contacts') ?>">contact us</a>. Please be aware that some links may have an access counter and automatically expire after you have used them.</p>
+<?php echo $this->getChildHtml('pager'); ?>
+
+<?php if(count($_items)): ?>
+    <?php foreach ($_items as $_item): ?>
+        <?php $_prevPurchase = null; ?>
+        <?php $linkIter = $this->getPurchasesByOrderId($_item->getId())->getIterator(); ?>
+
+        <?php if ($linkIter->valid()): ?>
+        <?php $_link = $linkIter->current(); ?>
+        <div class="wdn-grid-set mrkp-well downloadable">
+            <div class="bp2-wdn-col-one-fourth mrkp-well-up order-level">
+                <span class="detail-label">Date aquired</span>
+                <h2 class="order-date"><?php echo $this->formatDate($_link->getCreatedAt(), Mage_Core_Model_Locale::FORMAT_TYPE_LONG) ?></h2>
+                <ul class="mrkp-list-flat">
+                    <li>
+                        <span class="detail-label">Order #</span>
+                        <span class="detail-info"><a href="<?php echo $this->getOrderViewUrl($_item->getId()) ?>"><?php echo $_link->getOrderIncrementId() ?></a></span>
+                    </li>
+                </ul>
+            </div>
+            <span class="mrkp-well-sep-abs-one-fourth"></span>
+            <div class="bp2-wdn-col-three-fourths">
+                <ul class="mrkp-list-flat downloadable-list">
+                <?php while ($linkIter->valid()): ?>
+                    <?php if ($_link->getId() !== $_prevPurchase): ?>
+                    <?php if ($_prevPurchase !== null): ?>
+                    </li>
+                    <?php endif; ?>
+                    <?php $_prevPurchase = $_link->getId(); ?>
+                    <?php $linkIter->next(); ?>
+                    <li>
+                        <h3 class="product-name"><?php echo $this->escapeHtml($_link->getProductName()) ?></h3>
+                        <ul class="mrkp-list-flat">
+                    <?php endif; ?>
+                            <li>
+                                <a title="Access content: <?php echo $this->escapeHtml($_link->getProductName() . ' - ' . $_link->getLinkTitle()) ?>" class="link-title status-<?php echo $_link->getStatus() ?>" href="<?php echo $this->getDownloadUrl($_link) ?>" <?php echo $this->getIsOpenInNewWindow()?'onclick="this.target=\'_blank\'"':''; ?>><?php echo $this->htmlEscape($_link->getLinkTitle()) ?></a>
+                                - <span class="detail-label">Status</span>
+                                <span class="detail-info"><?php echo Mage::helper('downloadable')->__(ucfirst($_link->getStatus())) ?></span>
+                                - <span class="detail-label">Remaining Uses</span>
+                                <span class="detail-info"><?php echo $this->getRemainingDownloads($_link) ?></span>
+                            </li>
+                <?php endwhile; ?>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p><?php echo Mage::helper('downloadable')->__('You have not purchased any downloadable products yet.'); ?></p>
+<?php endif; ?>
+<?php echo Mage::helper('unl_core')->getSecondaryPager($this->getChild('pager')); ?>
+<div class="buttons-set">
+    <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+</div>
