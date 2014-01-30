@@ -1,0 +1,59 @@
+<?php /* @var $this Mage_Page_Block_Html_Breadcrumbs */ ?>
+<div id="wdn_navigation_bar" role="navigation" class="wdn-band">
+    <nav id="breadcrumbs" class="wdn-inner-wrapper">
+        <!-- WDN: see glossary item 'breadcrumbs' -->
+        <h3 class="wdn_list_descriptor wdn-text-hidden">Breadcrumbs</h3>
+        <!-- InstanceBeginEditable name="breadcrumbs" -->
+        <?php $_isDefault = Mage::app()->getStore()->getCode() == 'default'; ?>
+        <ul>
+            <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
+            <li>
+                <a href="<?php echo Mage::app()->getStore('default')->getUrl('/'); ?>">Marketplace</a>
+                <?php if ($_isDefault): ?>
+                <div class="storednav">
+                    <?php echo $this->getChildHtml('store_switcher') ?>
+                </div>
+                <?php endif; ?>
+            </li>
+            <?php if (!$_isDefault): ?>
+            <li>
+                <a href="<?php echo $this->getBaseUrl(); ?>"><?php echo $this->escapeHtml(Mage::app()->getGroup()->getName()) ?></a>
+            </li>
+            <?php endif;?>
+            <?php if ($crumbs && is_array($crumbs)): ?>
+            <?php foreach($crumbs as $_crumbName => $_crumbInfo): ?>
+                <?php if ($_crumbName === 'home') { continue; } ?>
+                <li class="<?php echo $_crumbName ?>">
+                <?php if($_crumbInfo['link']): ?>
+                    <a href="<?php echo $_crumbInfo['link'] ?>" title="<?php echo $this->escapeHtml($_crumbInfo['title']) ?>"><?php echo $this->escapeHtml($_crumbInfo['label']) ?></a>
+                    <div class="storednav">
+                        <?php echo $this->getChildHtml('topMenu') ?>
+                    </div>
+                <?php else: ?>
+                    <?php echo $this->escapeHtml($_crumbInfo['label']) ?>
+                <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+        <!-- InstanceEndEditable -->
+    </nav>
+    <div id="wdn_navigation_wrapper">
+        <nav id="navigation" role="navigation" class="wdn-band">
+            <h3 class="wdn_list_descriptor wdn-text-hidden">Navigation</h3>
+            <!-- InstanceBeginEditable name="navlinks" -->
+            <?php if ($_isDefault): ?>
+            <?php echo $this->getChildHtml('store_switcher') ?>
+            <?php else: ?>
+            <?php echo $this->getChildHtml('topMenu') ?>
+            <?php endif; ?>
+            <!-- InstanceEndEditable -->
+            <label for="wdn_menu_toggle" class="wdn-icon-menu">Menu</label>
+        </nav>
+    </div>
+</div>
+<!-- Navigation Trigger -->
+<div class="wdn-menu-trigger wdn-content-slide">
+    <label for="wdn_menu_toggle" class="wdn-icon-menu">Menu</label>
+</div>
+<!-- End navigation trigger -->

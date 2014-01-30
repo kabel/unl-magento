@@ -1,0 +1,51 @@
+<div class="wdn-band wdn-content-slide" id="wdn_optional_footer">
+    <div class="wdn-inner-wrapper">
+        <!-- InstanceBeginEditable name="optionalfooter" -->
+        <?php echo $this->getChildHtml('optional_footer') ?>
+        <!-- InstanceEndEditable -->
+    </div>
+</div>
+<footer id="footer" role="contentinfo" class="wdn-content-slide">
+    <div class="wdn-band" id="wdn_footer_related">
+        <div class="wdn-inner-wrapper">
+            <!-- InstanceBeginEditable name="leftcollinks" -->
+            <h3>Related Links</h3>
+            <ul>
+                <li><a href="http://www.liedcenter.org/" title="visit the Lied Center&quot;s main site">Lied Center for Performing Arts</a></li>
+                <li><a href="http://www.huskers.com/">Nebraska Athletics</a></li>
+                <li><a href="http://nutechmarketplace.com/">NUtech Marketplace</a>
+                <li><a href="http://www.bkstr.com/webapp/wcs/stores/servlet/StoreCatalogDisplay?catalogId=10001&amp;langId=-1&amp;demoKey=d&amp;storeId=10287">University Bookstore</a>
+                <li><a href="http://www.nebraskapress.unl.edu">University of Nebraska Press</a></li>
+            </ul>
+            <!-- InstanceEndEditable -->
+        </div>
+    </div>
+    <div class="wdn-band">
+        <div class="wdn-inner-wrapper">
+            <div class="footer_col" id="wdn_footer_contact">
+                <h3>Contact Us</h3>
+                <div class="wdn-contact-wrapper">
+                    <!-- InstanceBeginEditable name="contactinfo" -->
+                    <?php echo $this->getChildHtml('contact_link') ?>
+                    <address><?php echo nl2br(Mage::getStoreConfig('general/store_information/address')) ?></address>
+                    <p><?php echo $this->__('Customer Support')?>: <?php echo Mage::getStoreConfig('general/store_information/phone') ?></p>
+                    <!-- InstanceEndEditable -->
+                </div>
+            </div>
+            <div id="wdn_copyright">
+                <div class="wdn-footer-text">
+                    <!-- InstanceBeginEditable name="footercontent" -->
+                    &copy; <?php echo date('Y') ?> <?php echo $this->getCopyright() ?>
+                    <br />
+                     The University of Nebraska-Lincoln is an <a href="http://www.unl.edu/equity/">equal opportunity</a> educator and employer. For current job openings, visit <a title="Employment at UNL" href="http://employment.unl.edu/">employment.unl.edu</a>
+                    <p>This site is powered by <a href="http://magento.com/">Magento</a><sup>&reg;</sup></p>
+                    <!-- InstanceEndEditable -->
+                    <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/wdn.html"); ?>
+                </div>
+            <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/logos.html"); ?>
+            </div>
+        </div>
+    </div>
+    <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/footer_floater.html"); ?>
+</footer>
+<?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/noscript.html"); ?>

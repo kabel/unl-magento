@@ -1,0 +1,60 @@
+<?php /* @var $this Mage_Page_Block_Html_Head */ ?>
+<?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/metanfavico.html"); ?>
+<?php if (!$this->getDisableWdn()): ?>
+<!--
+    Membership and regular participation in the UNL Web Developer Network
+    is required to use the UNL templates. Visit the WDN site at
+    http://wdn.unl.edu/. Click the WDN Registry link to log in and
+    register your unl.edu site.
+    All UNL template code is the property of the UNL Web Developer Network.
+    The code seen in a source code view is not, and may not be used as, a
+    template. You may not use this code, a reverse-engineered version of
+    this code, or its associated visual presentation in whole or in part to
+    create a derivative work.
+    This message may not be removed from any pages based on the UNL site template.
+
+    $Id: php.local.dwt.php | 252c2891a48c70db689be6d897d4f34768b8258a | Thu Aug 1 15:08:19 2013 -0500 | Kevin Abel  $
+-->
+<?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/scriptsandstyles_local.html"); ?>
+<?php else: ?>
+<!-- Load Cloud.typography fonts -->
+	<link rel="stylesheet" type="text/css" href="//cloud.typography.com/7717652/616662/css/fonts.css" />
+<!-- Load our base CSS file -->
+<!--[if gte IE 9]><!-->
+    <link rel="stylesheet" type="text/css" media="all" href="/wdn/templates_4.0/css/all.css" />
+<!--<![endif]-->
+
+<!--[if lt IE 9]>
+    <link rel="stylesheet" type="text/css" media="all" href="/wdn/templates_4.0/css/all_oldie.css" />
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!-- For all IE versions, bring in the tweaks -->
+<!--[if IE]>
+    <link rel="stylesheet" type="text/css" media="all" href="/wdn/templates_4.0/css/ie.css" />
+<![endif]-->
+
+<!-- Load the print styles -->
+    <link rel="stylesheet" type="text/css" media="print" href="/wdn/templates_4.0/css/print.css" />
+<?php endif; ?>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title><?php echo Mage::helper('unl_core')->getFormattedPageTitle($this) ?></title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+<meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
+<?php if (!$this->getDisableWdn()): ?>
+<script type="text/javascript">
+    WDN.setPluginParam('idm', 'logout', '<?php echo $this->getUrl('customer/account/logout', array('_query' => 'cas')) ?>');
+    WDN.setPluginParam('idm', 'login', '<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');
+</script>
+<?php endif; ?>
+
+<?php echo $this->getCssJsHtml() ?>
+<?php echo $this->getChildHtml() ?>
+<?php echo $this->helper('core/js')->getTranslatorScript() ?>
+<?php echo $this->getIncludes() ?>
+<!-- InstanceEndEditable -->
+<!-- TemplateParam name="class" type="text" value="" -->

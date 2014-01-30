@@ -1,0 +1,13 @@
+<div class="wdn-grid-set-thirds">
+    <div class="wdn-col">
+        <h2><span>&nbsp;</span> Helpful Links</h2>
+        <?php echo $this->getChildHtml('footer_links') ?>
+    </div>
+    <div class="wdn-col">
+        <h2><span>Get to know</span> UNL Marketplace</h2>
+        <?php echo $this->getChildHtml('marketplace_links') ?>
+    </div>
+    <div class="wdn-col a-right">
+        <a href="<?php echo $this->getUrl('', array('_direct' => 'about-us', '_fragment' => 'payment')) ?>"><img src="<?php echo $this->getSkinUrl('images/payment_methods.png')?>" alt="Accepted Credit Cards: Visa, MasterCard, Discover" /></a>
+    </div>
+</div>

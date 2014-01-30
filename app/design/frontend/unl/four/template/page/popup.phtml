@@ -1,0 +1,47 @@
+<?php
+/**
+ * Template for Mage_Page_Block_Html
+ * @var $this Mage_Page_Block_Html
+ */
+?>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="ie iem7"><![endif]-->
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"><![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7) ]><html class="ie" lang="en"><![endif]-->
+<!--[if !(IEMobile) | !(IE)]><!--><html lang="en"><!-- InstanceBegin template="/Templates/php.local.dwt.php" codeOutsideHTMLIsLocked="false" --><!--<![endif]-->
+<head>
+<?php echo $this->getChildHtml('head') ?>
+</head>
+<body class="terminal <?php echo $this->getBodyClass() ? ' ' . $this->getBodyClass() : '' ?>" data-version="4.0">
+    <?php echo $this->getChildHtml('after_body_start') ?>
+    <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/skipnav.html"); ?>
+    <div id="wdn_wrapper">
+        <input type="checkbox" id="wdn_menu_toggle" value="Show navigation menu" class="wdn-content-slide wdn-input-driver" />
+        <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/noscript-padding.html"); ?>
+        <?php echo $this->getChildHtml('header') ?>
+        <?php echo $this->getChildHtml('breadcrumbs') ?>
+        <div id="wdn_content_wrapper" role="main" class="wdn-content-slide">
+            <div class="wdn-band">
+                <div class="wdn-inner-wrapper">
+                    <div id="pagetitle">
+                        <!-- InstanceBeginEditable name="pagetitle" -->
+                        <!-- InstanceEndEditable -->
+                    </div>
+                </div>
+            </div>
+            <div id="maincontent" class="wdn-main">
+                <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
+                <!-- InstanceBeginEditable name="maincontentarea" -->
+                <?php echo $this->getChildHtml('content') ?>
+                <!-- InstanceEndEditable -->
+                <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
+            </div>
+        </div>
+        <?php echo $this->getChildHtml('footer') ?>
+        <?php echo $this->getChildHtml('before_body_end') ?>
+    </div>
+    <?php echo $this->getAbsoluteFooter() ?>
+</body>
+</html>

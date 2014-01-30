@@ -1,0 +1,14 @@
+<?php /* @var $this Mage_Page_Block_Html_Header */ ?>
+<header id="header" role="banner" class="wdn-content-slide wdn-band">
+    <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/wdnResources.html"); ?>
+    <div class="wdn-inner-wrapper">
+        <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/logo.html"); ?>
+        <div id="wdn_resources">
+            <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/idm.html"); ?>
+            <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/wdnTools.html"); ?>
+        </div>
+        <span id="wdn_institution_title">University of Nebraska&ndash;Lincoln</span>
+    </div>
+    <?php echo Mage::helper('unl_core')->fetchServerFile("/wdn/templates_4.0/includes/apps.html"); ?>
+    <?php echo $this->getChildHtml('titlegraphic') ?>
+</header>

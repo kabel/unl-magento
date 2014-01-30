@@ -1,0 +1,103 @@
+<?php /* @var $this Mage_Page_Block_Html_Pager */ ?>
+<?php if($this->getCollection()->getSize()): ?>
+
+    <?php if($this->getUseContainer()): ?>
+    <div class="wdn-grid-set<?php echo ($this->getIsSecondary()) ? ' secondary' : '-halves' ?> pager">
+    <?php endif ?>
+
+    <?php if (!$this->getIsSecondary()): ?>
+    <div class="wdn-col">
+
+    <?php if($this->getShowAmounts()): ?>
+    <p class="amount">
+        <?php $label = '%s '; ?>
+        <?php if ($this->getTotalLabel()): ?>
+            <?php $label .= $this->escapeHtml($this->getTotalLabel()); ?>
+        <?php else: ?>
+            <?php $label .= 'Item(s)'; ?>
+        <?php endif; ?>
+        <strong><?php echo $this->__($label, $this->getTotalNum()) ?></strong>
+        <?php if ($this->getExtraInfo()): ?>
+            <?php echo $this->getExtraInfo() ?>
+        <?php endif; ?>
+    </p>
+    <?php endif ?>
+
+    <?php if($this->getShowPerPage()): ?>
+    <div class="limiter">
+        <label><?php echo $this->__('Show') ?></label>
+        <select onchange="setLocation(this.value)">
+        <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
+            <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
+                <?php echo $_limit ?>
+            </option>
+        <?php endforeach; ?>
+        </select> <?php echo $this->__('per page') ?>
+    </div>
+    <?php endif ?>
+
+    </div>
+    <?php endif; ?>
+
+    <?php if($this->getLastPageNum()>1): ?>
+    <div class="wdn-col mrkp-list-inline-sep pages">
+        <ol>
+            <li>
+                <?php if (!$this->isFirstPage()): ?><a class="previous" href="<?php echo $this->getPreviousPageUrl() ?>" title="<?php echo $this->__('Previous') ?>"><?php endif;?>
+                    <?php if(!$this->getAnchorTextForPrevious()): ?>
+                        &laquo; <?php echo $this->__('Previous') ?>
+                    <?php else: ?>
+                        <?php echo $this->getAnchorTextForPrevious() ?>
+                    <?php endif;?>
+                <?php if (!$this->isFirstPage()): ?></a><?php endif;?>
+            </li>
+
+        <?php if ($this->canShowFirst() && !$this->getHideFirst()): ?>
+            <li><a class="first" href="<?php echo $this->getFirstPageUrl() ?>">1</a></li>
+        <?php endif;?>
+
+        <?php if (!$this->getHideFrame()): ?>
+
+        <?php if ($this->canShowPreviousJump()): ?>
+            <li class="page"><a class="previous_jump" title="" href="<?php echo $this->getPreviousJumpUrl() ?>">...</a></li>
+        <?php endif;?>
+
+        <?php foreach ($this->getFramePages() as $_page): ?>
+            <?php if ($this->isPageCurrent($_page)): ?>
+                <li class="page current"><?php echo $_page ?></li>
+            <?php else: ?>
+                <li class="page"><a href="<?php echo $this->getPageUrl($_page) ?>"><?php echo $_page ?></a></li>
+            <?php endif;?>
+        <?php endforeach;?>
+
+        <?php if ($this->canShowNextJump()): ?>
+            <li class="page"><a class="next_jump" title="" href="<?php echo $this->getNextJumpUrl() ?>">...</a></li>
+        <?php endif;?>
+
+        <?php else: ?>
+            <li><strong><?php echo $this->__('Page: %s of %s', $this->getCurrentPage(), $this->getLastPageNum()) ?></strong></li>
+        <?php endif; ?>
+
+        <?php if ($this->canShowLast() && !$this->getHideLast()): ?>
+            <li><a class="last" href="<?php echo $this->getLastPageUrl() ?>"><?php echo $this->getLastPageNum() ?></a></li>
+        <?php endif;?>
+
+            <li>
+                <?php if (!$this->isLastPage()): ?><a class="next" href="<?php echo $this->getNextPageUrl() ?>" title="<?php echo $this->__('Next') ?>"><?php endif;?>
+                    <?php if(!$this->getAnchorTextForNext()): ?>
+                        <?php echo $this->__('Next') ?> &raquo;
+                    <?php else: ?>
+                        <?php echo $this->getAnchorTextForNext() ?>
+                    <?php endif;?>
+                <?php if (!$this->isLastPage()): ?></a><?php endif;?>
+            </li>
+        </ol>
+
+    </div>
+    <?php endif; ?>
+
+    <?php if($this->getUseContainer()): ?>
+    </div>
+    <?php endif ?>
+
+<?php endif ?>

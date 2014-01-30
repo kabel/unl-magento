@@ -1,0 +1,28 @@
+<?php /* @var $this Unl_Core_Block_Page_Html_Directory */ ?>
+<div class="store-directory">
+    <h2><?php echo $this->__('Store Directory') ?></h2>
+    <?php if ($groups = $this->getGroups()): ?>
+    <ul class="wdn-grid-set-thirds bp2-wdn-grid-set-fourths">
+    <?php foreach ($groups as $_group): ?>
+        <?php /* @var $_group Mage_Core_Model_Store_Group */ ?>
+        <li class="wdn-col">
+            <div class="store">
+                <a class="mrkp-btn-cnt" href="<?php echo $_group->getHomeUrl() ?>">
+                <?php /* if ($imgSrc = $this->getStoreIconUrl($_group->getDefaultStore()->getCode())): ?>
+                <span class="store-icon">
+                    <img src="<?php echo $imgSrc ?>" alt="<?php echo $this->escapeHtml($_group->getName()) ?> <?php echo $this->__('icon') ?>" />
+                </span>
+                <?php endif; */ ?>
+                <h3><?php echo $this->escapeHtml($_group->getName()) ?></h3>
+                </a>
+                <?php /* ?>
+                <div class="store-shop">
+                    <p><?php echo $this->htmlEscape($_group->getDescription()) ?></p>
+                </div>
+                <?php */ ?>
+            </div>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+</div>
