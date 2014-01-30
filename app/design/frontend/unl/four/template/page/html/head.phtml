@@ -47,7 +47,7 @@
 <link rel="home" href="<?php echo $this->getBaseUrl() ?>" />
 <?php if (!$this->getDisableWdn()): ?>
 <script type="text/javascript">
-    WDN.setPluginParam('idm', 'logout', '<?php echo $this->getUrl('customer/account/logout', array('_query' => 'cas')) ?>');
+    WDN.setPluginParam('idm', 'logout', '<?php echo $this->getUrl('unlcas/account/logout') ?>');
     WDN.setPluginParam('idm', 'login', '<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');
 </script>
 <?php endif; ?>

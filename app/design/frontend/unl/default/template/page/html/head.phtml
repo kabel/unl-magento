@@ -30,6 +30,7 @@
 <script type="text/javascript">
 //<![CDATA[
     WDN.setPluginParam('idm', 'logout', '<?php echo $this->getUrl('customer/account/logout') ?>');
+    WDN.setPluginParam('idm', 'login', '<?php echo Mage::helper('unl_cas')->getCasUrl() ?>');
 //]]>
 </script>
 <?php endif; ?>
