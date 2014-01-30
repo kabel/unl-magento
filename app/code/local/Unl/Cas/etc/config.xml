@@ -152,6 +152,9 @@
     
     <default>
         <customer>
+            <unl_cas>
+                <recursive_logout>0</recursive_logout>
+            </unl_cas>
             <unl_ldap>
                 <server>ldap.unl.edu ldap-backup.unl.edu</server>
                 <basedn>dc=unl,dc=edu</basedn>

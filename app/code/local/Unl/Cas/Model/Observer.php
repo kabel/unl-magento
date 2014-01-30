@@ -26,12 +26,14 @@ class Unl_Cas_Model_Observer
      */
     public function customerLogout($observer)
     {
-        $customer = $observer->getEvent()->getCustomer();
+        if (Mage::getStoreConfigFlag('customer/unl_cas/recursive_logout')) {
+            $customer = $observer->getEvent()->getCustomer();
 
-        if ($uid = $customer->getData('unl_cas_uid')) {
-            $auth = Mage::helper('unl_cas')->getAuth();
-            if ($auth->isLoggedIn()) {
-                $auth->logout(Mage::getUrl());
+            if ($uid = $customer->getData('unl_cas_uid')) {
+                $auth = Mage::helper('unl_cas')->getAuth();
+                if ($auth->isLoggedIn()) {
+                    $auth->logout(Mage::getUrl());
+                }
             }
         }
     }
