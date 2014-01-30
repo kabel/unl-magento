@@ -1,0 +1,34 @@
+<?php /* @var $item Mage_Wishlist_Model_Item */ ?>
+<?php
+$item = $this->getItem();
+$product = $item->getProduct();
+?>
+<h3 class="product-name"><a href="<?php echo $this->getProductUrl($item) ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>"><?php echo $this->escapeHtml($product->getName()) ?></a></h3>
+<?php echo $this->getPriceHtml($product);?>
+<?php if ($product->isSalable()): ?>
+    <p class="availability in-stock"><span><?php echo $product->getStockItem()->getManageStock() ? $this->__('In stock') : $this->__('Available') ?></span></p>
+<?php elseif ($product->getNoSale()): ?>
+    <p class="availability no-sale"><span><?php echo $this->__('Not available online') ?></span></p>
+<?php else: ?>
+    <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+<?php endif; ?>
+<?php if($this->getSortedChildren()): ?>
+    <div class="item-manage">
+    <?php foreach($this->getSortedChildren() as $childName):?>
+        <?php echo $this->getChildHtml($childName, false);?>
+    <?php endforeach;?>
+    </div>
+<?php endif; ?>
+<p><a href="#" class="toggle-link">Comments and quantity</a></p>
+<ul class="form-list no-js-show">
+    <li>
+        <label for="description_<?php echo $item->getWishlistItemId() ?>"><?php echo $this->__('Comment') ?></label>
+        <div class="input-box"><textarea id="description_<?php echo $item->getWishlistItemId() ?>" name="description[<?php echo $item->getWishlistItemId() ?>]" rows="3" cols="5"><?php echo ($this->escapeHtml($item->getDescription())) ?></textarea></div>
+    </li>
+<?php if ($item->canHaveQty() && $item->getProduct()->isVisibleInSiteVisibility()): ?>
+    <li>
+        <label for="qty_<?php echo $item->getId() ?>">Wants</label>
+        <div class="input-box"><input type="text" class="input-text qty validate-not-negative-number" id="qty_<?php echo $item->getId() ?>" name="qty[<?php echo $item->getId() ?>]" value="<?php echo $item->getQty() ? $item->getQty() * 1 : 1 ?>" /></div>
+    </li>
+<?php endif; ?>
+</ul>

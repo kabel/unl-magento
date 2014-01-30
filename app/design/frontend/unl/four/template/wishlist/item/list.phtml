@@ -1,0 +1,38 @@
+<?php
+    $columns = $this->getColumns();
+?>
+<?php if (count($this->getItems())): ?>
+<ol class="products-list" id="wishlist-items">
+    <?php foreach ($this->getItems() as $item): ?>
+    <li class="wdn-grid-set item" id="item_<?php echo $item->getId();?>">
+        <?php foreach ($columns as $column): ?>
+        <div class="<?php echo $column->getColumnClass() ?>">
+            <?php $column->setItem($item); echo $column->toHtml($item);?>
+        </div>
+        <?php endforeach; ?>
+    </li>
+    <?php endforeach ?>
+</ol>
+<?php else: ?>
+<p class="wishlist-empty"><?php echo $this->__('This Wishlist has no Items');?></p>
+<?php endif; ?>
+<?php foreach ($columns as $column): ?>
+    <?php echo $column->getAdditionalHtml();?>
+<?php endforeach; ?>
+<script type="text/javascript">
+//<![CDATA[
+require(['jquery'], function($) {
+	$(function() {
+	    $('.item').on('click', '.toggle-link', function(e) {
+		    e.preventDefault();
+
+		    $(this).toggleClass('expanded').closest('.item').find('.form-list').toggle();
+	    });
+	});
+});
+
+<?php foreach ($columns as $column): ?>
+    <?php echo $column->getJs();?>
+<?php endforeach; ?>
+//]]>
+</script>

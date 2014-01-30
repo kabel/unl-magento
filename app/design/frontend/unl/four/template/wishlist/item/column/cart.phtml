@@ -1,0 +1,26 @@
+<?php
+/* @var $this Mage_Wishlist_Block_Customer_Wishlist_Item_Column_Cart */
+/* @var $item Mage_Wishlist_Model_Item */
+$item = $this->getItem();
+$product = $item->getProduct();
+?>
+<p class="date-added">Added <?php echo $this->formatDate($item->getAddedAt(), Mage_Core_Model_Locale::FORMAT_TYPE_LONG) ?></p>
+<div class="cart-cell">
+<div class="add-to-cart">
+<?php if ($product->isSaleable()): ?>
+    <button type="button" title="<?php echo $this->__('Add to Cart') ?>" onclick="addWItemToCart(<?php echo $item->getId()?>);" class="button btn-cart"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+<?php endif; ?>
+</div>
+<div class="wdn-grid-set-halves">
+    <?php foreach($this->getSortedChildren() as $childName):?>
+    <div class="wdn-col">
+        <?php echo $this->getChildHtml($childName, false);?>
+    </div>
+    <?php endforeach;?>
+    <?php if ($product->isVisibleInSiteVisibility()): ?>
+    <div class="wdn-col">
+        <a class="link-edit wdn-button" href="<?php echo $this->getItemConfigureUrl($item) ?>"><?php echo $this->__('Edit') ?></a>
+    </div>
+    <?php endif ?>
+</div>
+</div>
