@@ -1,0 +1,23 @@
+.subnav,
+.pager,
+.toolbar,
+.actions,
+.buttons-set,
+.title-buttons a,
+#visitorChat { display:none !important; }
+
+.page-print .data-table .cart-tax-info,
+.product-collateral h2,
+.print-only { display:block !important; }
+
+#header { box-shadow:none; }
+
+#wdn_wrapper { overflow:visible; }
+
+#wdn_site_title { margin-left: 80px; }
+
+#header a:after,
+#footer a:after,
+a.product-image:after,
+a[onclick]:after,
+.add-to-links a:after { content:none !important; }
