@@ -1,0 +1,19 @@
+<?php /* @var $this Mage_Reports_Block_Product_Viewed */ ?>
+<?php if ($_products = $this->getRecentlyViewedProducts()): ?>
+<div class="block block-list block-viewed">
+    <div class="block-title">
+        <h2><?php echo $this->__('Recently Viewed Products') ?></h2>
+    </div>
+    <div class="block-content">
+        <ol id="recently-viewed-items" class="wdn-grid-set-fifths wdn-grid-clear">
+        <?php foreach ($_products as $_item): ?>
+            <li class="wdn-col item">
+                <a href="<?php echo $this->getProductUrl($_item) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image')->resize(223) ?>" alt="<?php echo $this->htmlEscape($_item->getName()) ?>" /></a>
+                <h3 class="product-name"><a href="<?php echo $this->getProductUrl($_item) ?>"><?php echo $this->helper('catalog/output')->productAttribute($_item, $_item->getName() , 'name') ?></a></h3>
+            </li>
+        <?php endforeach; ?>
+        </ol>
+        <script type="text/javascript">decorateList('recently-viewed-items');</script>
+    </div>
+</div>
+<?php endif; ?>
