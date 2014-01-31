@@ -23,6 +23,17 @@ class Unl_Core_Block_Catalog_Layer_View extends Mage_Catalog_Block_Layer_View
         return $filters;
     }
 
+    public function canShowOptions()
+    {
+        foreach ($this->getFilters() as $filter) {
+            if ($filter->getItemsCount() > 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function _getAlphaFilter()
     {
         return $this->getChild('alpha_filter');
