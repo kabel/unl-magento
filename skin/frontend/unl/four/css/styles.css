@@ -49,10 +49,8 @@ dd            { margin: 0; }
 .a-right      { text-align:right !important; }
 .v-top        { vertical-align:top; }
 .v-middle     { vertical-align:middle; }
-.f-left,
-.left         { float:left !important; }
-.f-right,
-.right        { float:right !important; }
+.f-left       { float:left !important; }
+.f-right      { float:right !important; }
 .f-none       { float:none !important; }
 .f-fix        { float:left; width:100%; }
 .no-display   { display:none; }
