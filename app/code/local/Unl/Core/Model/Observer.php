@@ -2,8 +2,6 @@
 
 class Unl_Core_Model_Observer
 {
-    protected $_skipWysiwygConfig = false;
-
     /**
      * An <i>adminhtml</i> event observer for the <code>core_block_abstract_prepare_layout_after</code>
      * Provides a hook for blocks that cannot be modified from layout files.
@@ -220,53 +218,6 @@ class Unl_Core_Model_Observer
             $checkout = Mage::getSingleton('checkout/session');
             if ($checkout->getConsume(true)) {
                 $checkout->getMessages(true);
-            }
-        }
-    }
-
-    /**
-     * An <i>adminhtml</i> event observer for the <code>cms_wysiwyg_config_prepare</code>
-     * event. It extends the default CMS config.
-     *
-     * @param Varien_Event_Observer $observer
-     */
-    public function prepareWysiwygConfig($observer)
-    {
-        $config = $observer->getEvent()->getConfig();
-
-        if (!$this->_skipWysiwygConfig) {
-            // Add CSS from the Design
-            if (!$config->getDisableDesignCss()) {
-                $design = Mage::getModel('core/design_package')->setStore(Mage::app()->getDefaultStoreView());
-                $css = array(
-                    '/wdn/templates_3.1/css/compressed/base.css',
-                    '/wdn/templates_3.1/css/variations/media_queries.css',
-                    $design->getSkinUrl('css/styles.css')
-                );
-
-                if ($config->getContentCss()) {
-                    array_unshift($css, $config->getContentCss());
-                }
-
-                $config->setContentCss(implode(',', $css));
-            }
-
-            $config->setBodyId('maincontent');
-            $config->setBodyClass('fixed');
-            $config->setExtendedValidElements('iframe[align|frameborder|height|longdesc|marginheight|marginwidth|name|scrolling|src|width|class|id|style|title]');
-
-            // Fix bad default values
-            $this->_skipWysiwygConfig = true; // prevent infinite observer loop
-            $defaultConfig = Mage::getSingleton('cms/wysiwyg_config')->getConfig();
-            $this->_skipWysiwygConfig = false;
-
-            if ($config->getData('files_browser_window_url') == $defaultConfig->getData('files_browser_window_url')) {
-                $config->setData('files_browser_window_url', Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/cms_wysiwyg_images/index'));
-            }
-
-            if ($config->getData('directives_url') == $defaultConfig->getData('directives_url')) {
-                $config->setData('directives_url', Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/cms_wysiwyg/directive'));
-                $config->setData('directives_url_quoted', preg_quote($config->getData('directives_url')));
             }
         }
     }

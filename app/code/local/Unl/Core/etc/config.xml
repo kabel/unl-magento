@@ -824,7 +824,7 @@
             <cms_wysiwyg_config_prepare>
                 <observers>
                     <unl_prep_wysiwyg>
-                        <class>unl_core/observer</class>
+                        <class>unl_core/cms_observer</class>
                         <method>prepareWysiwygConfig</method>
                     </unl_prep_wysiwyg>
                 </observers>
