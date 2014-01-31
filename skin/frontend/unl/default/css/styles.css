@@ -492,27 +492,17 @@ tr.summary-details-excluded { font-style:italic; }
 #maincontent .std dl,
 #maincontent .std p,
 #maincontent .std address,
-#maincontent .std blockquote,
-#maincontent.mceContentBody ul,
-#maincontent.mceContentBody ol,
-#maincontent.mceContentBody dl,
-#maincontent.mceContentBody p,
-#maincontent.mceContentBody address,
-#maincontent.mceContentBody blockquote { margin:0 0 1.1em; padding:0; }
-#maincontent .std ul, #maincontent.mceContentBody ul { list-style:disc outside; padding-left:25px; }
-#maincontent .std ol, #maincontent.mceContentBody ol { list-style:decimal outside; padding-left:25px; }
+#maincontent .std blockquote { margin:0 0 1.1em; padding:0; }
+#maincontent .std ul { list-style:disc outside; padding-left:25px; }
+#maincontent .std ol { list-style:decimal outside; padding-left:25px; }
 #maincontent .std ul ul,
 #maincontent .std ol ol,
 #maincontent .std ul ol,
-#maincontent .std ol ul,
-#maincontent.mceContentBody ul ul,
-#maincontent.mceContentBody ol ol,
-#maincontent.mceContentBody ul ol,
-#maincontent.mceContentBody ol ul { margin:.5em 0; }
-#maincontent .std dt, #maincontent.mceContentBody dt { font-weight:bold; }
-#maincontent .std dd, #maincontent.mceContentBody dd { padding-left:25px; }
-#maincontent .std blockquote, #maincontent.mceContentBody blockquote { font-style:italic; padding:0 0 0 1.5em; }
-#maincontent .std address, #maincontent.mceContentBody address { font-style:normal; }
+#maincontent .std ol ul { margin:.5em 0; }
+#maincontent .std dt { font-weight:bold; }
+#maincontent .std dd { padding-left:25px; }
+#maincontent .std blockquote { font-style:italic; padding:0 0 0 1.5em; }
+#maincontent .std address { font-style:normal; }
 
 /* CMS UNL_Template fixes */
 #wdn_Carousel ul.slides { padding:0; margin:0; }
@@ -2100,7 +2090,5 @@ f/********** Product Prices > */
 .store-directory .store:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
 /* ======================================================================================= */
 
-.mceContentBody { float: none !important; margin: auto; background: #fff; width:960px; }
-.mceContentBody .first { margin-left: 0; clear: left; }
 .calendar { line-height: 18px; }
 .calendar table { border-collapse: separate; }

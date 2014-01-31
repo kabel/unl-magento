@@ -42,7 +42,7 @@ class Unl_Core_Model_Cms_Observer
         }
 
         $config->setBodyId('maincontent');
-        $config->setBodyClass('fixed');
+        $config->setBodyClass('wdn-main std');
         $config->setExtendedValidElements('iframe[align|frameborder|height|longdesc|marginheight|marginwidth|name|scrolling|src|width|class|id|style|title]');
 
         // Fix bad default values
@@ -62,6 +62,7 @@ class Unl_Core_Model_Cms_Observer
 
         if ($design->getPackageName() == 'unl') {
             $css = isset($this->_themeUnlCss[$design->getFallbackTheme()]) ? $this->_themeUnlCss[$design->getFallbackTheme()] : array();
+            array_unshift($css, $design->getSkinUrl('css/wysiwyg.css'));
         } else {
             $css = array();
         }
