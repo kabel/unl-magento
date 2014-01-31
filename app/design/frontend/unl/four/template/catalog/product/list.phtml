@@ -27,6 +27,8 @@
                 <?php echo $this->getPriceHtml($_product, true) ?>
                 <?php if($_product->isSaleable()): ?>
                     <button type="button" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                <?php elseif ($_product->getNoSale()): ?>
+                    <p class="availability no-sale"><span><?php echo $this->__('Not available online') ?></span></p>
                 <?php else: ?>
                     <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                 <?php endif; ?>
@@ -88,6 +90,8 @@
                 <div class="actions">
                     <?php if($_product->isSaleable()): ?>
                         <button type="button" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                    <?php elseif ($_product->getNoSale()): ?>
+                        <p class="availability no-sale"><span><?php echo $this->__('Not available online') ?></span></p>
                     <?php else: ?>
                         <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                     <?php endif; ?>
