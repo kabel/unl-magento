@@ -17,7 +17,7 @@
 <a class="mrkp-offset-anchor" id="category_main"></a>
 <div class="page-title category-title">
     <?php if($this->IsRssCatalogEnable() && $this->IsTopCategory()): ?>
-        <a href="<?php echo $this->getRssLink() ?>" class="link-rss icon-link"><span><?php echo $this->__('Subscribe to RSS Feed') ?></span></a>
+        <a href="<?php echo $this->getRssLink() ?>" class="link-rss icon-link" title="<?php echo $this->__('Subscribe to RSS Feed') ?>"></a>
     <?php endif; ?>
     <h1><?php echo $_helper->categoryAttribute($_category, $_category->getName(), 'name') ?></h1>
 </div>
@@ -30,7 +30,14 @@
 
 <?php if($_description=$this->getCurrentCategory()->getDescription()): ?>
     <div class="category-description std">
+        <?php $hasHtml = strpos($_description, '<') !== false; ?>
+        <?php if (!$hasHtml): ?>
+        <div>
+        <?php endif; ?>
         <?php echo $_helper->categoryAttribute($_category, $_description, 'description') ?>
+        <?php if (!$hasHtml): ?>
+        </div>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
 

@@ -71,4 +71,25 @@ class Unl_Core_Model_Cms_Observer
 
          return $css;
     }
+
+    /**
+     * A <i>frontend</i> observer for the <code>core_block_abstract_to_html_after</code>
+     * event.
+     *
+     * This ensures that CMS pages have some sort of HTML wrapper
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onAfterBlockToHtml($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        $transport = $observer->getEvent()->getTransport();
+
+        $type = 'Mage_Cms_Block_Page';
+        if ($block instanceof $type) {
+            if (strpos($block->getPage()->getContent(), '<') === false) {
+                $transport->setHtml('<div>' . $transport->getHtml() . '</div>');
+            }
+        }
+    }
 }

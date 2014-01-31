@@ -689,6 +689,15 @@
                     </unl_core_front_layout>
                 </observers>
             </core_block_abstract_prepare_layout_after>
+            
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/cms_observer</class>
+                        <method>onAfterBlockToHtml</method>
+                    </unl_core>
+                </observers>
+            </core_block_abstract_to_html_after>
         
             <core_design_check_useragent_exps_before>
                 <observers>
