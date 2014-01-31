@@ -4,7 +4,7 @@
     <default>
     	<reference name="head">
     		<action method="addCss"><name>unl_boxes.css</name></action>
-            <action method="addCss"><name>mrkp-icon.css</name></action>
+            <action method="addCss"><name>css/mrkp-icon.css</name></action>
             <action method="setTitle" translate="title"><title>Magento Admin / UNL Marketplace</title></action>
     	</reference>
         <reference name="notifications">
