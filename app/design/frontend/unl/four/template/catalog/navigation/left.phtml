@@ -1,0 +1,32 @@
+<?php /* @var $this Mage_Catalog_Block_Navigation */ ?>
+<?php if (!Mage::registry('current_category')) return ?>
+<?php $_categories = $this->getCurrentChildCategories() ?>
+<?php $_count = is_array($_categories)?count($_categories):$_categories->count(); ?>
+<?php if($_count): ?>
+<div class="wdn-band">
+<div class="block block-layered-nav">
+    <div class="wdn-inner-wrapper wdn-inner-padding-sm">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Browse By') ?></span></strong>
+    </div>
+    <div class="block-content">
+        <dl id="narrow-by-list2">
+            <dt><?php echo $this->__('Category') ?></dt>
+            <dd>
+                <ol class="bp1-wdn-grid-set-fourths wdn-grid-clear">
+                <?php foreach ($_categories as $_category): ?>
+                    <?php if($_category->getIsActive()): ?>
+                    <li class="wdn-col">
+                        <a href="<?php echo $this->getCategoryUrl($_category) ?>"<?php if ($this->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $this->htmlEscape($_category->getName()) ?></a> (<?php echo $_category->getProductCount() ?>)
+                    </li>
+                    <?php endif; ?>
+                <?php endforeach ?>
+                </ol>
+            </dd>
+        </dl>
+        <script type="text/javascript">decorateDataList('narrow-by-list2')</script>
+    </div>
+    </div>
+</div>
+</div>
+<?php endif; ?>
