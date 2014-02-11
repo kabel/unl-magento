@@ -29,7 +29,9 @@
                 </info></action>
             </block>
         </reference>
-        
+        <reference name="subnav">
+            <remove name="top.search.links" />
+        </reference>
     </STORE_buros>
     
     <STORE_dairystore>
