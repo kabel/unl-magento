@@ -1,6 +1,6 @@
 <?php $_order = $this->getOrder() ?>
 <?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
-    You have selected to pickup this order. The shipping address will be ignored.
+    Your selected pickup location.
 <?php else: ?>
     <?php echo $_order->getShippingAddress()->format('html') ?>
 <?php endif; ?>
