@@ -161,4 +161,19 @@ class Unl_Core_Model_Sales_Order extends Mage_Sales_Model_Order
         $total = Mage::app()->getStore($this->getStoreId())->roundPrice($total);
         return max($total, 0);
     }
+
+    public function getCreatedAtFormated($format, $type = 3)
+    {
+        $helper = Mage::helper('core');
+        $withDate = (bool) ($type & 1);
+        $withTime = (bool) ($type & 2);
+
+        if ($withDate) {
+            return $helper->formatDate($this->getCreatedAtStoreDate(), $format, $withTime);
+        } elseif ($withTime) {
+            return $helper->formatTime($this->getCreatedAtStoreDate(), $format);
+        }
+
+        return '';
+    }
 }
