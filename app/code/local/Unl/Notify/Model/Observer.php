@@ -68,6 +68,25 @@ class Unl_Notify_Model_Observer
                 $templateId = Mage::getStoreConfig(self::XML_PATH_ORDER_NOTIFY_TEMPLATE, $storeId);
                 $sendTo = explode(',', preg_replace('/\s+/', '', $product->getNotifyEmails()));
 
+                // Start store emulation process
+                $appEmulation = Mage::getSingleton('core/app_emulation');
+                $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation($storeId);
+
+                try {
+                    // Retrieve specified view block from appropriate design package (depends on emulated store)
+                    $paymentBlock = Mage::helper('payment')->getInfoBlock($this->getPayment())
+                        ->setIsSecureMode(true);
+                    $paymentBlock->getMethod()->setStore($storeId);
+                    $paymentBlockHtml = $paymentBlock->toHtml();
+                } catch (Exception $exception) {
+                    // Stop store emulation process
+                    $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
+                    throw $exception;
+                }
+
+                // Stop store emulation process
+                $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
+
                 $mailer = Mage::getModel('core/email_template_mailer');
                 $emailInfo = Mage::getModel('core/email_info');
                 foreach ($sendTo as $to) {
@@ -83,6 +102,7 @@ class Unl_Notify_Model_Observer
                     'order' => $order,
                     'item'  => $item,
                     'customer_name' => $customerName,
+                    'payment_html' => $paymentBlockHtml,
                 ));
                 $mailer->send();
             }
