@@ -1,0 +1,65 @@
+<!--@subject {{var store.getFrontendName()}}: Invoice # {{var invoice.increment_id}} update @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$billing.getName()":"Guest Customer Name",
+"var order.increment_id":"Order Id",
+"var order.getStatusLabel()":"Order Status",
+"var comment":"Invoice Comment",
+"var store.getFrontendName()":"Store Name"}
+@-->
+<!--@styles
+
+@-->
+
+{{block type='core/template' area='frontend' template='email/common/header.phtml'}}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td align="left" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #cc0000; padding-bottom:20px;">Hello {{htmlescape var=$billing.getName()}},</td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        We have an update for you regarding invoice #{{var invoice.increment_id}} on your order #{{var order.increment_id}}.
+                                                        Your order is currently <strong>{{var order.getStatusLabel()}}</strong>.
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        {{var comment}}
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        If you would like to review the status of your order, please visit <a href="{{store url='sales/order/history'}}" style="text-decoration: none; border-bottom: 1px dotted #cc0000; color: #cc0000;">Your Orders</a> on <a href="{{store url='' _store='default'}}" style="text-decoration: none; border-bottom: 1px dotted #cc0000; color: #cc0000;">UNL Marketplace</a>.
+                                                        If you have any questions, please feel free to contact us at 
+                                                        <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="text-decoration:none; border-bottom:1px dotted #cc0000; color:#cc0000;">{{config path='trans_email/ident_support/email'}}</a>
+                                                        or by phone at {{config path='general/store_information/phone'}}.
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you for shopping with us.</td>
+                                               </tr>
+                                               <tr>
+                                                    <td><a href="{{store url='' _store='default'}}" target="_blank" style="font-size: 20px; font-family: Georgia, serif; color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">UNL Marketplace</a></td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+{{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

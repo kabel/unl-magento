@@ -1,0 +1,226 @@
+<!--@subject  {{var store.getFrontendName()}}: Invoice #{{var invoice.increment_id}} for Order #{{var order.increment_id}} @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$billing.getName()":"Guest Customer Name",
+"var store.getFrontendName()":"Store Name",
+"var invoice.increment_id":"Invoice Id",
+"var order.increment_id":"Order Id",
+"var order.billing_address.format('html')":"Billing Address",
+"var payment_html":"Payment Details",
+"var order.shipping_address.format('html')":"Shipping Address",
+"var order.shipping_description":"Shipping Description",
+"layout area=\"frontend\" handle=\"sales_email_order_invoice_items\" invoice=$invoice order=$order":"Invoice Items Grid",
+"var comment":"Invoice Comment"}
+@-->
+<!--@styles
+
+@-->
+
+{{block type='core/template' area='frontend' template='email/common/header.phtml'}}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td align="left" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #cc0000; padding-bottom:20px;">Hello {{htmlescape var=$billing.getName()}},</td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you for shopping with us.
+                                                    We'd like to let you know that we have issued an invoice for your order #{{var order.increment_id}}
+                                                    {{block type='core/template' area='frontend' template='email/order/state.phtml' order=$order}}
+                                                    If you would like to view the status of your order, please visit <a href="{{store url='sales/guest/form'}}" style="text-decoration: none; border-bottom: 1px dotted #cc0000; color: #cc0000;">Check Order Status</a> on <a href="{{store url='' _store='default'}}" style="text-decoration: none; border-bottom: 1px dotted #cc0000; color: #cc0000;">UNL Marketplace</a>.
+                                                    If you have any questions about your order please contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">{{config path='trans_email/ident_support/email'}}</a>
+                                                    or call us at {{config path='general/store_information/phone'}} Monday - Friday, 9am - 5pm CST.</td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                                
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#E7E2D6" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td style="font-size: 25px; line-height: 27px; font-family: Helvetica, Arial, sans-serif; color: #cc0000; border-bottom:1px solid #D5D0C1;">
+                                                    Invoice Issued</td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                    Invoice #{{var invoice.increment_id}} for Order #{{var order.increment_id}}</td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+                  
+                  <tr>
+                      <td align="left" valign="top" style="padding: 20px 0px 20px 0px;">
+                           <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td bgcolor="#F6F5F0" style="padding: 20px 10px 20px 10px; border-top: 5px solid #D5D0C1;">
+                                       <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="left">
+                                            <tr>
+                                                <td align="left" valign="middle">
+                                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Your order is billed to:</td>
+                                                           </tr>
+                                                           <tr>
+                                                                <td style="font-size: 16px; line-height: 24px; font-family: Georgia, serif; color: #545350; font-weight: bold;" class="padding">
+                                                                    {{var order.getBillingAddress().format('html')}}
+                                                                </td>
+                                                           </tr>
+                                                      </table>
+                                                 </td>
+                                            </tr>
+                                       </table>
+                                       <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="right">
+                                            <tr>          
+                                                 <td align="left" valign="middle">
+                                                       <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Your chosen payment method:</td>
+                                                           </tr>
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; line-height: 24px; font-family: Georgia, serif; color: #545350; font-weight: bold;" class="padding">
+                                                                    {{var payment_html}}
+                                                                    {{layout area="frontend" handle="sales_email_invoice_payment_extra" invoice=$invoice order=$order}}
+                                                                </td>
+                                                           </tr>
+                                                      </table>
+                                                 </td>
+                                            </tr>
+                                        </table>
+                                  </td>
+                                </tr>
+                           </table>
+                      </td>
+                 </tr>
+             </table>
+                 
+             {{depend order.getIsNotVirtual()}}
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                 <tr>
+                      <td align="left" valign="top" style="padding: 20px 0px 20px 0px;">
+                           <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                       <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="left">
+                                            <tr>
+                                                <td align="left" valign="middle">
+                                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Your shipping service:</td>
+                                                           </tr>
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; line-height: 24px; font-family: Georgia, serif; color: #545350; font-weight: bold;" class="padding">
+                                                                    {{var order.getShippingDescription()}}
+                                                                    {{block type='core/template' area='frontend' template='email/order/pickup.phtml' order=$order}}
+                                                                    {{block type='core/template' area='frontend' template='email/order/deliverydate.phtml' order=$order}}
+                                                                </td>
+                                                           </tr>
+                                                      </table>
+                                                 </td>
+                                            </tr>
+                                       </table>
+                                       <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="right">
+                                            <tr>          
+                                                 <td align="left" valign="middle">
+                                                       <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Your order will be sent to:</td>
+                                                           </tr>
+                                                           <tr>
+                                                                <td align="left" style="font-size: 16px; line-height: 24px; font-family: Georgia, serif; color: #545350; font-weight: bold;" class="padding">
+                                                                    {{block type='core/template' area='frontend' template='email/order/shipping.phtml' order=$order}}
+                                                                </td>
+                                                           </tr>
+                                                      </table>
+                                                 </td>
+                                            </tr>
+                                        </table>
+                                  </td>
+                                </tr>
+                           </table>
+                      </td>
+                 </tr>
+             </table>
+             {{/depend}}
+             
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">    
+                 <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        {{layout area="frontend" handle="sales_email_order_invoice_items" invoice=$invoice order=$order}}
+                                                    </td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">{{var comment}}</td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you for shopping with us.</td>
+                                               </tr>
+                                               <tr>
+                                                    <td><a href="{{store url='' _store='default'}}" target="_blank" style="font-size: 20px; font-family: Georgia, serif; color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">UNL Marketplace</a></td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+{{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

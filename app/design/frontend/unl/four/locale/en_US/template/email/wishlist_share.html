@@ -1,0 +1,89 @@
+<!--@subject Take a look at {{var customer.name}}'s wishlist @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"var message":"Wishlist Message",
+"var items":"Wishlist Items"}
+@-->
+<!--@styles
+
+@-->
+
+{{block type='core/template' area='frontend' template='email/common/header.phtml'}}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td align="left" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #cc0000; padding-bottom:20px;">Hello,</td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        UNL Marketplace customer {{htmlescape var=$customer.name}} has sent your their wish list.
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        {{var message}}
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350; padding:1.1em 0;">
+                                                        {{var items}}
+                                                    </td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+             
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                      <td align="left" valign="top" style="padding: 20px 0px 20px 0px;">
+                           <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                      {{depend salable}}
+                                       <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="left">
+                                            <tr>
+                                                <td align="left" valign="middle">
+                                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                           <tr>
+                                                                <td bgcolor="#cc0000" align="center" style="padding: 12px 18px 12px 18px; -webkit-border-radius: 3px; border-radius: 3px; font-family: Verdana, Tahoma, sans-serif; text-transform: uppercase; "><a href="{{var addAllLink}}" style="text-decoration:none; color: #fefefe;">Add All to Cart</a></td>
+                                                           </tr>
+                                                      </table>
+                                                 </td>
+                                            </tr>
+                                       </table>
+                                       {{/depend}}
+                                       <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="right">
+                                            <tr>          
+                                                 <td align="left" valign="middle">
+                                                       <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                           <tr>
+                                                                <td bgcolor="#cc0000" align="center" style="padding: 12px 18px 12px 18px; -webkit-border-radius: 3px; border-radius: 3px; font-family: Verdana, Tahoma, sans-serif; text-transform: uppercase; "><a href="{{var viewOnSiteLink}}" style="text-decoration:none; color: #fefefe;">View Wish List Online</a></td>
+                                                           </tr>
+                                                      </table>
+                                                 </td>
+                                            </tr>
+                                        </table>
+                                  </td>
+                                </tr>
+                           </table>
+                      </td>
+                 </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+{{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

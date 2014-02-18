@@ -1,0 +1,40 @@
+<!--@subject Approved UNL Marketplace marketing preference @-->
+{{block type='core/template' area='frontend' template='email/common/header.phtml'}}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        Thank you for setting your marketing preference on UNL Marketplace. You have been subscribed to receive promotional material from any of our stores.
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 13px; line-height: 17px; font-family: Georgia, serif; color: #545350; padding:1.1em 0;">
+                                                        If this is an error please notify us at {{config path='trans_email/ident_support/email'}}
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you.</td>
+                                               </tr>
+                                               <tr>
+                                                    <td><a href="{{store url='' _store='default'}}" target="_blank" style="font-size: 20px; font-family: Georgia, serif; color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">UNL Marketplace</a></td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                                
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+{{block type='core/template' area='frontend' template='email/common/footer.phtml'}}

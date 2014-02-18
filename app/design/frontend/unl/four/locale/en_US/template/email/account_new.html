@@ -1,0 +1,122 @@
+<!--@subject Welcome, {{var customer.name}}! @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"htmlescape var=$customer.name":"Customer Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var customer.email":"Customer Email",
+"htmlescape var=$customer.password":"Customer Password"}
+@-->
+
+<!--@styles
+
+@-->
+
+{{block type='core/template' area='frontend' template='email/common/header.phtml'}}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td align="left" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #cc0000; padding-bottom:20px;">Hello {{htmlescape var=$customer.name}},</td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        Welcome to UNL Marketplace.
+                                                        To log in when visiting our site just click <a href="{{store url='customer/account/'}}" style="text-decoration: none; border-bottom: 1px dotted #cc0000; color:#cc0000;">Your Account</a> near the top of any page.
+                                                    </td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+
+{{depend customer.getForceConfirmed()}}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#E7E2D6" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        Use the following values to log in as a returning customer:<br />
+                                                        <strong>Email Address</strong>: {{var customer.email}}<br />
+                                                        <strong>Password</strong>: {{htmlescape var=$customer.password}}
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350; padding-top: 1.1em;">
+                                                        You are strongly encouraged to change your password to something <em>you</em> can more easily remember.
+                                                    </td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+{{/depend}}
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#F8F5EC" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                     <td align="left" valign="top">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
+                                                        When you log in to your account, you will be able to do the following:
+                                                        <ul>
+                                                            <li>Proceed through checkout faster when making a purchase</li>
+                                                            <li>Check the status of orders</li>
+                                                            <li>View past orders</li>
+                                                            <li>Make changes to your account information</li>
+                                                            <li>Change your password</li>
+                                                            <li>Store alternative addresses (for shipping to multiple family members and friends!)</li>
+                                                        </ul>
+                                                        If you have any questions about your account or any other matter, please feel free to contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">{{config path='trans_email/ident_support/email'}}</a>
+                                                        or by phone at {{config path='general/store_information/phone'}}.
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you.</td>
+                                               </tr>
+                                               <tr>
+                                                    <td><a href="{{store url='' _store='default'}}" target="_blank" style="font-size: 20px; font-family: Georgia, serif; color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">UNL Marketplace</a></td>
+                                               </tr>
+                                          </table>
+                                     </td>
+                                 </tr>
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+{{block type='core/template' area='frontend' template='email/common/footer.phtml'}}
