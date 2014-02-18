@@ -72,6 +72,8 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
                 $this->_getSession()->addError($e->getMessage());
                 $this->_redirect('*/*/new', array('order_id' => $this->getRequest()->getParam('order_id')));
             }
+
+            return;
         } catch (Exception $e) {
             Mage::logException($e);
             if ($isNeedCreateLabel) {
@@ -83,6 +85,7 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
                 $this->_redirect('*/*/new', array('order_id' => $this->getRequest()->getParam('order_id')));
             }
 
+            return;
         }
 
         $shipmentCreatedMessage = $this->__('The shipment has been created.');
