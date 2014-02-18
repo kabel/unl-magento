@@ -11,14 +11,14 @@ class Unl_DownloadablePlus_Block_Adminhtml_Catalog_Product_Edit_Tab_Downloadable
                 ->setQueryParam('ajax', '1')
                 ->getUrl('*/downloadable_file/upload', array('type' => $type, '_secure' => true)));
 
-        $this->getConfig()->setFlashSwfUrl($this->getSkinUrl('media/plupload.flash.swf'));
-        $this->getConfig()->setSilverlightXapUrl($this->getSkinUrl('media/plupload.silverlight.xap'));
+        $this->getConfig()->setFlashSwfUrl($this->getSkinUrl('media/Moxie.swf'));
+        $this->getConfig()->setSilverlightXapUrl($this->getSkinUrl('media/Moxie.xap'));
 
         $this->getConfig()
             ->setBrowseButtonHover('hover')
             ->setBrowseButtonActive('active');
 
-        $this->getConfig()->setRequiredFeatures('multipart');
+        $this->getConfig()->setRequiredFeatures('send_multipart');
         $this->getConfig()->setMultipart(true);
         $this->getConfig()->setMultipartParams(array('form_key' => $this->getFormKey()));
         $this->getConfig()->setFileDataName($type);
