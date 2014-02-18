@@ -3,4 +3,7 @@
     <br /><br />
     <strong><?php echo $this->__('Delivery Date'); ?></strong>: <?php echo $this->formatDate($_order->getAwDeliverydateDate()); ?><br />
     <strong><?php echo $this->__('Delivery Notice'); ?></strong>: <?php echo nl2br(Mage::helper('core')->htmlEscape($_order->getAwDeliverydateNotice())); ?>
+    <br /><br />
+    <em>Please note:</em> some stores will mark your order as &quot;Shipped&quot; as a normal part of order processing (to generate a tracking number/packing slip/shipping label).
+    Rest assured that your request for delayed shipment above has been noted and our staff will make every attempt to hold this shipment until that date.
 <?php endif; ?>

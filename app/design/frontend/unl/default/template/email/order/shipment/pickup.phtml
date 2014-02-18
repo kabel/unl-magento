@@ -1,0 +1,8 @@
+<?php $_order = $this->getOrder() ?>
+<?php if (Mage::helper('unl_core/shipping_pickup')->isMethodPickup($_order->getShippingMethod())): ?>
+    <br />
+    <strong><?php echo $this->__('Pickup Location:')?></strong><br />
+    <?php echo nl2br(Mage::helper('unl_core/shipping_pickup')->getPickupLocation($_order->getShippingMethod(), $_order->getAllItems())) ?>
+    <br />
+    Your items are available to pick up at this location.
+<?php endif; ?>
