@@ -1,0 +1,56 @@
+<?php /* @var $this Unl_BundlePlus_Block_Sales_Order_Items_Renderer */ ?>
+<?php /* @var $_item Mage_Sales_Model_Order_Shipment_Item */ ?>
+<?php $parentItem = $_item = $this->getItem() ?>
+
+<?php $items = $this->getChilds($parentItem->getOrderItem()) ?>
+<?php $shipItems = $this->getChilds($parentItem) ?>
+
+<tr>
+    <td align="left" valign="top" style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350; padding: 10px;">
+        <?php if (!$this->isShipmentSeparately() && $_item->getQty() != 1): ?>
+        <?php echo $_item->getQty() * 1 ?> of
+        <?php endif; ?>
+        <strong style="color:#137CBD"><?php echo $this->escapeHtml($_item->getName()) ?></strong><br />
+        <em>SKU:</em> <?php echo $this->escapeHtml($_item->getSku()) ?>
+        <?php if ($this->getItemOptions()): ?>
+        <dl style="margin:0; padding:0;">
+            <?php foreach ($this->getItemOptions() as $option): ?>
+            <dt><strong><em><?php echo $option['label'] ?></em></strong></dt>
+            <dd style="margin:0; padding:0 0 0 9px;"><?php echo $option['value'] ?></dd>
+            <?php endforeach; ?>
+        </dl>
+        <?php endif; ?>
+        <?php if (count($items) > 1): ?>
+        <?php $_prevOptionId = '' ?>
+        <dl style="margin:10px 0; padding:0;">
+            <?php foreach ($items as $_item): ?>
+            <?php if (!$_item->getParentItem()) continue; ?>
+            <?php $attributes = $this->getSelectionAttributes($_item) ?>
+            <?php if ($_prevOptionId != $attributes['option_id']): ?>
+            <dt><strong><em><?php echo $attributes['option_label'] ?></em></strong></dt>
+            <?php $_prevOptionId = $attributes['option_id'] ?>
+            <?php endif; ?>
+            <dd style="margin:0; padding:0 0 0 9px;">
+                <?php if ($this->isShipmentSeparately()): ?>
+                <?php if (isset($shipItems[$_item->getId()])): ?>
+                <?php echo $_item->getQty() * 1 ?> of
+                <?php elseif (!$_item->getIsVirtual()): ?>
+                0 of
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php echo $this->getValueHtml($_item)?><br />
+                <em>SKU:</em> <?php echo $this->escapeHtml($_item->getSku()) ?>
+            </dd>
+            <?php endforeach; ?>
+        </dl>
+        <?php $_item = $parentItem; ?>
+        <?php endif; ?>
+        <?php echo $this->escapeHtml($_item->getDescription()) ?>
+        <?php if ($_item->getOrderItem()->getGiftMessageId() && $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_item->getOrderItem()->getGiftMessageId())): ?>
+        <br /><strong><?php echo $this->__('Gift Message') ?></strong>
+        <br /><?php echo $this->__('From:'); ?> <?php echo $this->escapeHtml($_giftMessage->getSender()) ?>
+        <br /><?php echo $this->__('To:'); ?> <?php echo $this->escapeHtml($_giftMessage->getRecipient()) ?>
+        <br /><?php echo $this->__('Message:'); ?><br /> <?php echo $this->escapeHtml($_giftMessage->getMessage()) ?>
+        <?php endif; ?>
+    </td>
+</tr>
