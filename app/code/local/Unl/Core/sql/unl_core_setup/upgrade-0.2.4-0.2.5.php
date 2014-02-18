@@ -16,7 +16,7 @@ $catalogInstaller->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'ordered_des
     'is_configurable'            => false,
     'wysiwyg_enabled'            => true,
     'note'                       => 'This will be displayed in the order confirmation message to the customer',
-    'group'                      => 'Description',
+    'group'                      => 'Descriptions',
 ));
 
 $installer->endSetup();
