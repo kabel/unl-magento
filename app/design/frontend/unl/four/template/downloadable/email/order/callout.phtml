@@ -1,0 +1,35 @@
+<?php /* @var $this Unl_DownloadablePlus_Block_Email_Order_Callout */ ?>
+<?php if ($this->canShow()): ?>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="line-height: normal;">
+  <tr>
+       <td bgcolor="#4A3B13" style="padding: 50px 15px 50px 15px;" class="section-padding">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="620" class="responsive-table">
+                  <tr>
+                       <td valign="middle">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                            	<tr>
+									 <td align="left" valign="top">
+										  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+											   <tr>
+													<td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #ffffff;">
+												    <?php if ($this->getOrder()->getCustomerIsGuest()): ?>
+												        If any of your download links above do not work or have unexpectedly expired, please contact us. Please be aware that some links may have an access counter and automatically expire after you have used them.
+												    <?php else: ?>
+													    These downloadable items have been added to <a href="<?php echo $this->getUrl('downloadable/customer/products')?>" style="text-decoration: none; border-bottom:1px dotted #efefef; color: #efefef;">Your Collection</a>
+													    on <a href="<?php echo $this->getUrl('', array('_store' => 'default')) ?>" style="text-decoration: none; border-bottom:1px dotted #efefef; color: #efefef;">UNL Marketplace</a>.
+													    You may go there to retrieve your download links again or if you have any issues.
+												    <?php endif; ?>
+													</td>
+											   </tr>
+										  </table>
+									 </td>
+                           		 </tr>
+
+                            </table>
+                       </td>
+                  </tr>
+             </table>
+       </td>
+  </tr>
+</table>
+<?php endif; ?>
