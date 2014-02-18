@@ -1,0 +1,25 @@
+<?php /* @var $this Mage_Core_Block_Template */ ?>
+<?php /* @var $order Mage_Sales_Model_Order */?>
+<?php $order = $this->getOrder(); ?>
+<?php if (in_array($order->getState(), array(
+    Mage_Sales_Model_Order::STATE_COMPLETE,
+    Mage_Sales_Model_Order::STATE_CLOSED,
+))): ?>
+and it is now complete.
+<?php elseif (in_array($order->getState(), array(
+    Mage_Sales_Model_Order::STATE_NEW,
+    Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW,
+    Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+))): ?>
+and are reviewing your payment information<?php if ($order->getIsNotVirtual()): ?>, before we prepare it for shipment<?php endif; ?>.
+<?php if ($order->getPayment()->getMethod() == 'checkmo'): ?>
+We are awaiting your mailed payment.
+<?php elseif ($order->getPayment()->getMethod() == 'invoicelater'): ?>
+Please be watching for correspondence from us regarding your invoice.
+<?php endif; ?>
+<?php else: ?>
+<?php if ($order->getIsNotVirtual()): ?>
+and are preparing it for shipment.
+Once your package ships we will send an email with a link to track your order.
+<?php endif; ?>
+<?php endif; ?>
