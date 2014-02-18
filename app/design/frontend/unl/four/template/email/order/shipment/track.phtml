@@ -1,0 +1,43 @@
+<?php $_shipment=$this->getShipment() ?>
+<?php $_order=$this->getOrder() ?>
+<?php if ($_shipment && $_order && $_shipment->getAllTracks()): ?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="padding: 1.1em 0;">
+           <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="left">
+                <tr>
+                    <td align="left" valign="middle" class="padding">
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                               <tr>
+                                    <td bgcolor="#cc0000" align="center" style="padding: 12px 18px 12px 18px; -webkit-border-radius: 3px; border-radius: 3px; font-family: Verdana, Tahoma, sans-serif; text-transform: uppercase; "><a href="<?php echo Mage::helper('shipping')->getTrackingPopupUrlBySalesModel($_shipment) ?>" style="text-decoration:none; color: #ffffff;">Track this Shipment</a></td>
+                               </tr>
+                          </table>
+                     </td>
+                </tr>
+           </table>
+           <table width="48.4%" border="0" cellspacing="0" cellpadding="0" class="responsive-table" align="right">
+                <tr>
+                     <td align="left" valign="middle" class="padding">
+                           <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                               <tr>
+                                    <td style="font-size: 13px; line-height: 17px; font-family: Georgia, serif; color: #545350;">
+                                        Your shipment includes packages from:
+                                        <?php foreach ($_shipment->getAllTracks() as $_item): ?>
+                                        <br />
+                                        <?php echo $_item->getTitle() ?> <?php echo $_item->getNumber() ?>
+                                        <?php endforeach; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 11px; line-height: 14px; font-family: Georgia, serif; color: #545350;">
+                                        Depending on the ship speed you chose, it may take 24 hours for tracking information to be available.
+                                    </td>
+                                </tr>
+                          </table>
+                     </td>
+                </tr>
+            </table>
+      </td>
+    </tr>
+</table>
+<?php endif; ?>

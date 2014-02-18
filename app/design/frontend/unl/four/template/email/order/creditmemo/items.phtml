@@ -1,0 +1,19 @@
+<?php /* @var $this Mage_Sales_Block_Order_Email_Creditmemo_Items */ ?>
+<?php /* @var $_order Unl_Core_Model_Sales_Order */ ?>
+<?php $_creditmemo = $this->getCreditmemo() ?>
+<?php $_order = $this->getOrder() ?>
+<?php if ($_creditmemo && $_order): ?>
+<table cellspacing="0" cellpadding="0" border="0" width="100%">
+    <?php foreach ($_creditmemo->getAllItems() as $_item): ?>
+    <?php if($_item->getParentItem()) continue; ?>
+    <tbody>
+        <?php echo $this->getItemHtml($_item) ?>
+    </tbody>
+    <?php endforeach; ?>
+</table>
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="border-bottom: 1px solid #D5D0C1; border-top:1px solid #D5D0C1;">
+    <tbody>
+        <?php echo $this->getChildHtml('creditmemo_totals');?>
+    </tbody>
+</table>
+<?php endif; ?>

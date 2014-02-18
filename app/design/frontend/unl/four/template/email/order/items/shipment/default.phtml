@@ -1,0 +1,26 @@
+<?php /* @var $this Mage_Sales_Block_Order_Item_Renderer_Default */ ?>
+<?php /* @var $_item Mage_Sales_Model_Order_Shipment_Item */ ?>
+<?php /* @var $_order Unl_Core_Model_Sales_Order */ ?>
+<?php $_item = $this->getItem() ?>
+<tr>
+    <td align="left" valign="top" style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350; padding: 10px;">
+        <?php if ($_item->getQty() != 1) :?>
+        <?php echo $_item->getQty() * 1 ?> of
+        <?php endif; ?>
+        <strong style="color:#137CBD"><?php echo $this->escapeHtml($_item->getName()) ?></strong><br />
+        <em>SKU:</em> <?php echo $this->escapeHtml($this->getSku($_item)) ?>
+        <?php if ($this->getItemOptions()): ?>
+        <dl style="margin:0; padding:0;">
+            <?php foreach ($this->getItemOptions() as $option): ?>
+            <dt><strong><em><?php echo $option['label'] ?></em></strong></dt>
+            <dd style="margin:0; padding:0 0 0 9px;"><?php echo nl2br($option['value']) ?></dd>
+            <?php endforeach; ?>
+        </dl>
+        <?php endif; ?>
+        <?php $addInfoBlock = $this->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addInfoBlock) :?>
+            <?php echo $addInfoBlock->setItem($_item->getOrderItem())->toHtml(); ?>
+        <?php endif; ?>
+        <?php echo $this->htmlEscape($_item->getDescription()) ?>
+    </td>
+</tr>
