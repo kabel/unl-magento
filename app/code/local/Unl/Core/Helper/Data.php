@@ -54,15 +54,20 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $title = array();
+        $includeBrand = true;
+
         if (trim($head->getTitle())) {
             $title[] = $head->getTitle();
+            if (strpos($title[0], $brand) !== false) {
+                $includeBrand = false;
+            }
         }
 
         if (Mage::app()->getStore()->getCode() != 'default') {
             $title[] = $this->htmlEscape(Mage::app()->getGroup()->getName());
         }
 
-        if ($brand && strpos($title[0], $brand) === false) {
+        if ($brand && $includeBrand) {
             $title[] = $this->htmlEscape($brand);
         }
 
