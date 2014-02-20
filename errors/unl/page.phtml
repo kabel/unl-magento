@@ -4,14 +4,14 @@
 <!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
 <!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
 <!--[if (gte IE 9)|(gt IEMobile 7) ]><html class="ie" lang="en"><![endif]-->
-<!--[if !(IEMobile) | !(IE)]><!--><html lang="en"><!-- InstanceBegin template="/Templates/php.local.dwt.php" codeOutsideHTMLIsLocked="false" --><!--<![endif]-->
+<!--[if !(IEMobile) | !(IE)]><!--><html lang="en"><!-- InstanceBegin template="/Templates/local.dwt" codeOutsideHTMLIsLocked="false" --><!--<![endif]-->
 <head>
 <?php
 $docRoot = isset($_SERVER['DOCUMENT_ROOT'])
     ? rtrim($_SERVER['DOCUMENT_ROOT'], '/')
     : dirname(__FILE__) . '/../..';
 ?>
-<?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/metanfavico.html'); ?>
+<?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/metanfavico.html'); ?>
 <!--
     Membership and regular participation in the UNL Web Developer Network
     is required to use the UNL templates. Visit the WDN site at
@@ -24,96 +24,119 @@ $docRoot = isset($_SERVER['DOCUMENT_ROOT'])
     create a derivative work.
     This message may not be removed from any pages based on the UNL site template.
 
-    $Id: php.local.dwt.php | d3b0e517ecafe3e1f81c45ddafa7a316adcc45dd | Fri Mar 9 11:41:56 2012 -0600 | Kevin Abel  $
+    $Id: local.dwt | 252c2891a48c70db689be6d897d4f34768b8258a | Thu Aug 1 15:08:19 2013 -0500 | Kevin Abel  $
 -->
-<?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/scriptsandstyles_local.html'); ?>
+<?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/scriptsandstyles_local.html'); ?>
 <!-- InstanceBeginEditable name="doctitle" -->
-<title><?php echo $this->pageTitle?> | UNL Marketplace</title>
+<title><?php echo $this->pageTitle ?> | UNL Marketplace</title>
 <!-- InstanceEndEditable -->
 <!-- InstanceBeginEditable name="head" -->
-<!-- Place optional header elements here -->
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl()?>css/styles.css" type="text/css" />
-<style type="text/css">
-#footer .footer_col { display: none; }
-#footer_floater { margin-bottom: 10px; }
-#wdn_identity_management, #navigation { display: none; }
-</style>
 <!-- InstanceEndEditable -->
-<!-- InstanceParam name="class" type="text" value="document" -->
+<!-- InstanceParam name="class" type="text" value="" -->
 </head>
-<body class="document" data-version="3.1">
-    <nav class="skipnav">
-        <a class="skipnav" href="#maincontent">Skip Navigation</a>
-    </nav>
+<body class="terminal" data-version="4.0">
+    <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/skipnav.html'); ?>
+    <!--#include virtual="" -->
     <div id="wdn_wrapper">
-        <header id="header" role="banner">
-            <a id="logo" href="http://www.unl.edu/" title="UNL website">UNL</a>
-            <span id="wdn_institution_title">University of Nebraska&ndash;Lincoln</span>
-            <span id="wdn_site_title"><!-- InstanceBeginEditable name="titlegraphic" -->UNL Marketplace<!-- InstanceEndEditable --></span>
-            <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/idm.html'); ?>
-            <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/wdnTools.html'); ?>
+        <input type="checkbox" id="wdn_menu_toggle" value="Show navigation menu" class="wdn-content-slide wdn-input-driver" />
+        <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/noscript-padding.html'); ?>
+        <header id="header" role="banner" class="wdn-content-slide wdn-band">
+            <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/wdnResources.html'); ?>
+            <div class="wdn-inner-wrapper">
+                <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/logo.html'); ?>
+                <div id="wdn_resources">
+                    <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/idm.html'); ?>
+                    <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/wdnTools.html'); ?>
+                </div>
+                <span id="wdn_institution_title">University of Nebraska&ndash;Lincoln</span>
+            </div>
+            <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/apps.html'); ?>
+            <div class="wdn-inner-wrapper">
+                <div id="wdn_site_title">
+                    <span><!-- InstanceBeginEditable name="titlegraphic" -->UNL Marketplace<!-- InstanceEndEditable --></span>
+                </div>
+            </div>
         </header>
-        <div id="wdn_navigation_bar">
-            <nav id="breadcrumbs">
+        <div id="wdn_navigation_bar" role="navigation" class="wdn-band">
+            <nav id="breadcrumbs" class="wdn-inner-wrapper">
                 <!-- WDN: see glossary item 'breadcrumbs' -->
-                <h3 class="wdn_list_descriptor hidden">Breadcrumbs</h3>
+                <h3 class="wdn_list_descriptor wdn-text-hidden">Breadcrumbs</h3>
                 <!-- InstanceBeginEditable name="breadcrumbs" -->
                 <ul>
-                    <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
+                    <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln" class="wdn-icon-home">UNL</a></li>
                     <li>Marketplace</li>
                     <li>Error</li>
                 </ul>
                 <!-- InstanceEndEditable -->
             </nav>
             <div id="wdn_navigation_wrapper">
-                <nav id="navigation" role="navigation">
-                    <h3 class="wdn_list_descriptor hidden">Navigation</h3>
+                <nav id="navigation" role="navigation" class="wdn-band">
+                    <h3 class="wdn_list_descriptor wdn-text-hidden">Navigation</h3>
                     <!-- InstanceBeginEditable name="navlinks" -->
                     <!-- InstanceEndEditable -->
+                    <label for="wdn_menu_toggle" class="wdn-icon-menu">Menu</label>
                 </nav>
             </div>
         </div>
-        <div id="wdn_content_wrapper">
-            <div id="pagetitle">
-                <!-- InstanceBeginEditable name="pagetitle" -->
-                <!-- InstanceEndEditable -->
+        <!-- Navigation Trigger -->
+        <div class="wdn-menu-trigger wdn-content-slide">
+            <label for="wdn_menu_toggle" class="wdn-icon-menu">Menu</label>
+        </div>
+        <!-- End navigation trigger -->
+        <div id="wdn_content_wrapper" role="main" class="wdn-content-slide">
+            <div class="wdn-band">
+                <div class="wdn-inner-wrapper">
+                    <div id="pagetitle">
+                        <!-- InstanceBeginEditable name="pagetitle" -->
+                        <!-- InstanceEndEditable -->
+                    </div>
+                </div>
             </div>
-            <div id="maincontent" role="main">
+            <div id="maincontent" class="wdn-main">
                 <!--THIS IS THE MAIN CONTENT AREA; WDN: see glossary item 'main content area' -->
                 <!-- InstanceBeginEditable name="maincontentarea" -->
                 <?php require_once $contentTemplate; ?>
                 <!-- InstanceEndEditable -->
-                <div class="clear"></div>
-                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/noscript.html'); ?>
                 <!--THIS IS THE END OF THE MAIN CONTENT AREA.-->
             </div>
         </div>
-        <footer id="footer">
-            <div id="footer_floater"></div>
-            <div class="footer_col" id="wdn_footer_feedback">
-                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/feedback.html'); ?>
+        <div class="wdn-band wdn-content-slide" id="wdn_optional_footer">
+            <div class="wdn-inner-wrapper">
+                <!-- InstanceBeginEditable name="optionalfooter" -->
+                <!-- InstanceEndEditable -->
             </div>
-            <div class="footer_col" id="wdn_footer_related">
-                <!-- InstanceBeginEditable name="leftcollinks" -->
-                <!-- InstanceEndEditable --></div>
-            <div class="footer_col" id="wdn_footer_contact">
-                <!-- InstanceBeginEditable name="contactinfo" -->
-                <!-- InstanceEndEditable --></div>
-            <div class="footer_col" id="wdn_footer_share">
-                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/socialmediashare.html'); ?>
-            </div>
-            <!-- InstanceBeginEditable name="optionalfooter" -->
-            <!-- InstanceEndEditable -->
-            <div id="wdn_copyright">
-                <div>
-                    <!-- InstanceBeginEditable name="footercontent" -->
-                    &copy; <?php echo date('Y')?> University of Nebraska&ndash;Lincoln
+        </div>
+        <footer id="footer" role="contentinfo" class="wdn-content-slide">
+            <div class="wdn-band" id="wdn_footer_related">
+                <div class="wdn-inner-wrapper">
+                    <!-- InstanceBeginEditable name="leftcollinks" -->
                     <!-- InstanceEndEditable -->
-                    <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/wdn.html'); ?>
                 </div>
-                <?php echo file_get_contents($docRoot . '/wdn/templates_3.1/includes/logos.html'); ?>
             </div>
+            <div class="wdn-band">
+                <div class="wdn-inner-wrapper">
+                    <div class="footer_col" id="wdn_footer_contact">
+                        <h3>Contact Us</h3>
+                        <div class="wdn-contact-wrapper">
+                            <!-- InstanceBeginEditable name="contactinfo" -->
+                            <!-- InstanceEndEditable -->
+                        </div>
+                    </div>
+                    <div id="wdn_copyright">
+                        <div class="wdn-footer-text">
+                            <!-- InstanceBeginEditable name="footercontent" -->
+                            &copy; <?php echo date('Y')?> University of Nebraska&ndash;Lincoln
+                            <!-- InstanceEndEditable -->
+                            <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/wdn.html'); ?>
+                        </div>
+                        <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/logos.html'); ?>
+                    </div>
+                </div>
+            </div>
+            <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/footer_floater.html'); ?>
         </footer>
+        <?php echo file_get_contents($docRoot . '/wdn/templates_4.0/includes/noscript.html'); ?>
     </div>
 </body>
 <!-- InstanceEnd --></html>
