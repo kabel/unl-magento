@@ -1,0 +1,68 @@
+Index: .htaccess
+===================================================================
+--- .htaccess	(revision 167868)
++++ .htaccess	(working copy)
+@@ -34,6 +34,10 @@
+ #    php_value memory_limit 64M
+     php_value memory_limit 256M
+     php_value max_execution_time 18000
++    php_value max_input_time 9000
++    php_value upload_max_filesize 700M
++    php_value post_max_size 700M
++    php_value auto_detect_line_endings 1
+ 
+ ############################################
+ ## disable magic quotes for php request vars
+@@ -80,22 +84,22 @@
+     # Insert filter on all content
+     ###SetOutputFilter DEFLATE
+     # Insert filter on selected content types only
+-    #AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
++    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
+ 
+     # Netscape 4.x has some problems...
+-    #BrowserMatch ^Mozilla/4 gzip-only-text/html
++    BrowserMatch ^Mozilla/4 gzip-only-text/html
+ 
+     # Netscape 4.06-4.08 have some more problems
+-    #BrowserMatch ^Mozilla/4\.0[678] no-gzip
++    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+ 
+     # MSIE masquerades as Netscape, but it is fine
+-    #BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
++    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+ 
+     # Don't compress images
+-    #SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
++    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+ 
+     # Make sure proxies don't deliver the wrong content
+-    #Header append Vary User-Agent env=!dont-vary
++    Header append Vary User-Agent env=!dont-vary
+ 
+ </IfModule>
+ 
+@@ -152,9 +156,15 @@
+     #RewriteRule ^(.*)$ /mobiledirectoryhere/ [L,R=302]
+ 
+ ############################################
++## redirects for production purposes
++
++    RewriteRule ^tcd(?:/(.*))? tmfd/$1 [L,R=301]
++
++############################################
+ ## always send 404 on missing files in these folders
+ 
+     RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
++    RewriteCond %{REQUEST_URI} !^/(server-status)
+ 
+ ############################################
+ ## never rewrite for existing files, directories and links
+@@ -184,6 +194,7 @@
+ ## Add default Expires header
+ ## http://developer.yahoo.com/performance/rules.html#expires
+ 
++    ExpiresActive On
+     ExpiresDefault "access plus 1 year"
+ 
+ </IfModule>

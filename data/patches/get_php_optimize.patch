@@ -1,0 +1,62 @@
+### Eclipse Workspace Patch 1.0
+#P magento18
+Index: get.php
+===================================================================
+--- get.php	(revision 167868)
++++ get.php	(working copy)
+@@ -138,31 +138,30 @@
+     checkResource($relativeFilename, $allowedResources);
+ }
+ 
+-if (0 !== stripos($pathInfo, $mediaDirectory . '/')) {
++if (0 !== stripos($pathInfo, $mediaDirectory . '/') || is_dir($filePath)) {
+     sendNotFoundPage();
+ }
+ 
+-try {
++if (Mage::helper('core/file_storage_database')->checkDbUsage()) {
+     $databaseFileSotrage = Mage::getModel('core/file_storage_database');
+     $databaseFileSotrage->loadByFilename($relativeFilename);
+-} catch (Exception $e) {
+-}
+-if ($databaseFileSotrage->getId()) {
+-    $directory = dirname($filePath);
+-    if (!is_dir($directory)) {
+-        mkdir($directory, 0777, true);
++    if ($databaseFileSotrage->getId()) {
++        $directory = dirname($filePath);
++        if (!is_dir($directory)) {
++            mkdir($directory, 0777, true);
++        }
++    
++        $fp = fopen($filePath, 'w');
++        if (flock($fp, LOCK_EX | LOCK_NB)) {
++            ftruncate($fp, 0);
++            fwrite($fp, $databaseFileSotrage->getContent());
++        }
++        flock($fp, LOCK_UN);
++        fclose($fp);
++        sendFile($filePath);
+     }
+-
+-    $fp = fopen($filePath, 'w');
+-    if (flock($fp, LOCK_EX | LOCK_NB)) {
+-        ftruncate($fp, 0);
+-        fwrite($fp, $databaseFileSotrage->getContent());
+-    }
+-    flock($fp, LOCK_UN);
+-    fclose($fp);
+ }
+ 
+-sendFile($filePath);
+ sendNotFoundPage();
+ 
+ /**
+@@ -186,6 +185,7 @@
+     foreach ($allowedResources as $allowedResource) {
+         if (0 === stripos($resource, $allowedResource)) {
+             $isResourceAllowed = true;
++            break;
+         }
+     }
+ 

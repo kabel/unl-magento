@@ -1,0 +1,30 @@
+Index: js/mage/adminhtml/form.js
+===================================================================
+--- js/mage/adminhtml/form.js	(revision 167868)
++++ js/mage/adminhtml/form.js	(working copy)
+@@ -295,9 +295,9 @@
+                     option.text = region.name.stripTags();
+                     option.title = region.name;
+ 
+-                    if (this.regionSelectEl.options.add) {
+-                        this.regionSelectEl.options.add(option);
+-                    } else {
++                    try {
++                    	this.regionSelectEl.add(option);
++                    } catch (ex) {
+                         this.regionSelectEl.appendChild(option);
+                     }
+ 
+@@ -438,9 +438,9 @@
+             this.selected = false;
+         }
+ 
+-        if (select.options.add) {
+-            select.options.add(option);
+-        } else {
++        try {
++            select.add(option);
++        } catch (ex) {
+             select.appendChild(option);
+         }
+     }
