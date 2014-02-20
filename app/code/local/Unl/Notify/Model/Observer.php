@@ -74,7 +74,7 @@ class Unl_Notify_Model_Observer
 
                 try {
                     // Retrieve specified view block from appropriate design package (depends on emulated store)
-                    $paymentBlock = Mage::helper('payment')->getInfoBlock($this->getPayment())
+                    $paymentBlock = Mage::helper('payment')->getInfoBlock($order->getPayment())
                         ->setIsSecureMode(true);
                     $paymentBlock->getMethod()->setStore($storeId);
                     $paymentBlockHtml = $paymentBlock->toHtml();
