@@ -1,8 +1,8 @@
 Index: js/varien/product.js
 ===================================================================
---- js/varien/product.js	(revision 157611)
+--- js/varien/product.js	(revision 167868)
 +++ js/varien/product.js	(working copy)
-@@ -578,7 +578,7 @@
+@@ -582,7 +582,7 @@
  
          this.optionPrices   = {};
          this.customPrices   = {};
@@ -11,7 +11,7 @@ Index: js/varien/product.js
  
          this.displayZeroPrice   = true;
  
-@@ -637,14 +637,32 @@
+@@ -641,14 +641,32 @@
          var optionOldPrice = optionPrices[2];
          var priceInclTax = optionPrices[3];
          optionPrices = optionPrices[0];
@@ -47,7 +47,7 @@ Index: js/varien/product.js
                      _productPrice = this.productOldPrice;
                      _plusDisposition = this.oldPlusDisposition;
                      _minusDisposition = this.oldMinusDisposition;
-@@ -655,7 +673,7 @@
+@@ -659,7 +677,7 @@
                  }
                  _priceInclTax = priceInclTax;
  
@@ -56,7 +56,7 @@ Index: js/varien/product.js
                      price = optionOldPrice+parseFloat(_productPrice);
                  } else if (this.specialTaxPrice == 'true' && this.priceInclTax !== undefined && this.priceExclTax !== undefined) {
                      price = optionPrices+parseFloat(this.priceExclTax);
-@@ -679,17 +697,6 @@
+@@ -683,17 +701,6 @@
                      var incl = excl + tax;
                  }
  
@@ -74,7 +74,7 @@ Index: js/varien/product.js
                  excl += subPrice;
                  incl += subPriceincludeTax;
  
-@@ -705,11 +712,11 @@
+@@ -709,11 +716,11 @@
                  excl += parseFloat(nonTaxable);
                  incl += parseFloat(nonTaxable);
  
@@ -89,7 +89,7 @@ Index: js/varien/product.js
                      if (this.showIncludeTax || this.showBothPrices) {
                          price = incl;
                      } else {
-@@ -731,15 +738,15 @@
+@@ -735,15 +742,15 @@
                      formattedPrice = '';
                  }
  
@@ -112,7 +112,7 @@ Index: js/varien/product.js
                      }
                  }
              };
-@@ -746,25 +753,20 @@
+@@ -750,25 +757,20 @@
          }.bind(this));
  
          for (var i = 0; i < this.tierPrices.length; i++) {
@@ -135,8 +135,8 @@ Index: js/varien/product.js
 -                };
 -                var container = $(this.containers[3]) ? this.containers[3] : this.containers[0];
 -                var price = parsePrice($(container).innerHTML);
--                var tierPrice = $$('.price.tier-' + i);
--                tierPrice = tierPrice.length ? parseInt(tierPrice[0].innerHTML, 10) : 0;
+-                var tierPrice = $$('.tier-price.tier-' + i+' .price');
+-                tierPrice = tierPrice.length ? parsePrice(tierPrice[0].innerHTML, 10) : 0;
 -                var $percent = Selector.findChildElements(el, ['.percent.tier-' + i]);
 -                $percent.each(function (el) {
 -                    el.innerHTML = Math.ceil(100 - ((100 / price) * tierPrice));
