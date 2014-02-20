@@ -1,4 +1,4 @@
-<h1 class="sec_header">There has been an error processing your request</h1>
+<h1>There has been an error processing your request</h1>
 <?php if ($this->showSentMsg): ?>
 <ul class="messages">
     <li class="success-msg">
@@ -16,7 +16,7 @@
         </ul>
     </li>
 </ul>
-    <?php if ($this->showErrorMsg): ?>
+<?php if ($this->showErrorMsg): ?>
 <ul class="messages">
     <li class="error-msg">
         <ul>
@@ -24,7 +24,7 @@
         </ul>
     </li>
 </ul>
-    <?php endif; ?>
+<?php endif; ?>
 <form action="<?php echo "{$this->getBaseUrl(true)}errors/report.php?id={$this->reportId}" ?>" method="post" id="form-validate">
     <fieldset class="fieldset">
         <h2>Personal Information</h2>
