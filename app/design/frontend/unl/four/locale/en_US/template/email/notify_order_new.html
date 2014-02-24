@@ -28,12 +28,6 @@
                                                         &lt;<a style="text-decoration:none; border-bottom: 1px dotted #cc0000; color: #cc0000;" href="mailto:{{htmlescape var=$order.customer_email}}">{{htmlescape var=$order.customer_email}}</a>&gt; ordered the following item with order #{{var order.increment_id}}.
                                                     </td>
                                                </tr>
-                                               <tr>
-                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">
-                                                        You are receiving this message because a store manager has listed you as a person to notify when the following product is ordered on {{var store.getFrontendName()}}. If you feel this is an error, please disregard and delete this message then contact the store manager
-                                                        or contact <a style="text-decoration:none; border-bottom: 1px dotted #cc0000; color: #cc0000;" href="mailto:{{config path='trans_email/ident_general/email'}}">{{config path='trans_email/ident_general/email'}}</a>.
-                                                    </td>
-                                               </tr>
                                           </table>
                                      </td>
                                  </tr>
@@ -77,7 +71,7 @@
                                                 <td align="left" valign="middle">
                                                       <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                            <tr>
-                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Your order is billed to:</td>
+                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Customer's billing information:</td>
                                                            </tr>
                                                            <tr>
                                                                 <td style="font-size: 16px; line-height: 24px; font-family: Georgia, serif; color: #545350; font-weight: bold;" class="padding">
@@ -93,7 +87,7 @@
                                                  <td align="left" valign="middle">
                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                            <tr>
-                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Your chosen payment method:</td>
+                                                                <td align="left" style="font-size: 16px; font-family: Georgia, serif; font-weight: normal; color: #4A3B13; padding-bottom: 0px !important;" class="padding">Customer's chosen payment method:</td>
                                                            </tr>
                                                            <tr>
                                                                 <td align="left" style="font-size: 16px; line-height: 24px; font-family: Georgia, serif; color: #545350; font-weight: bold;" class="padding">
@@ -145,7 +139,13 @@
                                      <td align="left" valign="top">
                                           <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                <tr>
-                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you for shopping with us.</td>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350; padding-bottom: 1.1em;">
+                                                        You are receiving this message because a store manager has listed you as a person to notify when the following product is ordered on {{var store.getFrontendName()}}. If you feel this is an error, please disregard and delete this message then contact the store manager
+                                                        or contact <a style="text-decoration:none; border-bottom: 1px dotted #cc0000; color: #cc0000;" href="mailto:{{config path='trans_email/ident_general/email'}}">{{config path='trans_email/ident_general/email'}}</a>.
+                                                    </td>
+                                               </tr>
+                                               <tr>
+                                                    <td style="font-size: 17px; line-height: 27px; font-family: Georgia, serif; color: #545350;">Thank you.</td>
                                                </tr>
                                                <tr>
                                                     <td><a href="{{store url='' _store='default'}}" target="_blank" style="font-size: 20px; font-family: Georgia, serif; color: #cc0000; text-decoration: none; border-bottom: 1px dotted #cc0000;">UNL Marketplace</a></td>
