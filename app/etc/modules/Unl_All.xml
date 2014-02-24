@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <config>
     <modules>
+        <Unl_Email>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Core />
+            </depends>
+        </Unl_Email>
+    
         <Unl_Core>
             <active>true</active>
             <codePool>local</codePool>
@@ -13,6 +21,7 @@
                 <Mage_Reports />
                 <Mage_Sales />
                 <Mage_Tax />
+                <Unl_Email />
             </depends>
         </Unl_Core>
         <Unl_AdminLog>
