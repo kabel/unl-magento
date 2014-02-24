@@ -425,6 +425,15 @@
                     </unlcore_before_block_to_html>
                 </observers>
             </core_block_abstract_prepare_layout_before>
+            
+            <core_email_template_prepare_vars>
+                <observers>
+                    <unl_core>
+                        <class>unl_core/observer</class>
+                        <method>onEmailTemplatePrepareVars</method>
+                    </unl_core>
+                </observers>
+            </core_email_template_prepare_vars>
                         
             <sales_convert_quote_item_to_order_item>
                 <observers>

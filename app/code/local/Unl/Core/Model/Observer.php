@@ -320,6 +320,32 @@ class Unl_Core_Model_Observer
     }
 
     /**
+     * An event observer for the custom <code>core_email_template_prepare_vars</code>
+     * event. This event is provided from the <code>Unl_Email</code> module.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function onEmailTemplatePrepareVars($observer)
+    {
+        /* @var $template Unl_Email_Model_Core_Email_Template */
+        $template = $observer->getEvent()->getTemplate();
+        /* @var $transport Varien_Object */
+        $transport = $observer->getEvent()->getTransport();
+
+        if (is_numeric($template->getId())) {
+            $defaultCode = $template->getOrigTemplateCode();
+        } else {
+            $defaultCode = $template->getId();
+        }
+
+        switch ($defaultCode) {
+            case 'contacts_email_email_template':
+                $transport->setThread(Mage::helper('core')->formatDate());
+                break;
+        }
+    }
+
+    /**
      * A <i>frontend</i> event observer for the
      * <code>catalog_helper_output_construct</code> event.
      * Adds a handler for the productAttribute output helper.
