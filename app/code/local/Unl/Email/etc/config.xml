@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Unl_Email>
+            <version>0.2.0</version>
+        </Unl_Email>
+    </modules>
+    
+    <global>
+        <models>
+            <core>
+                <rewrite>
+                	<!-- Allow locale templates in Design -->
+                    <email_template>Unl_Email_Model_Core_Email_Template</email_template>
+                    <translate>Unl_Email_Model_Core_Translate</translate>
+                </rewrite>
+            </core>
+            <core_resource>
+                <rewrite>
+                    <!-- Fix Transactional Email added_at storage -->
+                    <email_template>Unl_Email_Model_Core_Resource_Email_Template</email_template>
+                </rewrite>
+            </core_resource>
+        </models>
+    </global>
+</config>

@@ -250,9 +250,6 @@
                 <rewrite>
                     <!-- Add an event to package exception check -->
                     <design_package>Unl_Core_Model_Core_Design_Package</design_package>
-                	<!-- Allow locale templates in Design -->
-                    <email_template>Unl_Core_Model_Core_Email_Template</email_template>
-                    <translate>Unl_Core_Model_Core_Translate</translate>
                     <!-- Allow Variables in Wysiwyg Editors outside of adminhtml -->
                     <variable_config>Unl_Core_Model_Core_Variable_Config</variable_config>
                 </rewrite>
