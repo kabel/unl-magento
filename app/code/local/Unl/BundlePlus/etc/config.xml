@@ -34,9 +34,10 @@
         </helpers>
         <models>
             <bundle>
-                <!-- User Defined Qty for Checkbox Bundle Option -->
                 <rewrite>
+                    <!-- User Defined Qty for Checkbox Bundle Option -->
                     <product_type>Unl_BundlePlus_Model_Product_Type</product_type>
+                    <!-- Better PDF rendering -->
                     <sales_order_pdf_items_creditmemo>Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Creditmemo</sales_order_pdf_items_creditmemo>
                     <sales_order_pdf_items_invoice>Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Invoice</sales_order_pdf_items_invoice>
                     <sales_order_pdf_items_shipment>Unl_BundlePlus_Model_Sales_Order_Pdf_Items_Shipment</sales_order_pdf_items_shipment>
