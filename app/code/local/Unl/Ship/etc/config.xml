@@ -23,11 +23,6 @@
             <unl_ship>
                <class>Unl_Ship_Helper</class>
             </unl_ship>
-            <usa>
-                <rewrite>
-                    <data>Unl_Ship_Helper_Usa</data>
-                </rewrite>
-            </usa>
         </helpers>
     
         <models>
