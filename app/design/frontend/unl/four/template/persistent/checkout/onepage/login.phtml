@@ -6,9 +6,11 @@
  */
 /* @var $this Mage_Checkout_Block_Onepage_Login */
 ?>
+<?php $_allowGuest = $this->getQuote()->isAllowedGuestCheckout(); ?>
+<?php $_mustBeLogged = $this->helper('checkout')->isCustomerMustBeLogged(); ?>
 <?php echo $this->getChildHtml('login_before')?>
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
-<div class="wdn-grid-set-halves bp2-wdn-grid-set-fourths">
+<div class="wdn-grid-set-halves bp2-wdn-grid-set-<?php echo $_allowGuest ? 'fourths' : 'thirds' ?>">
     <div class="wdn-col" id="unl_login">
         <a class="mrkp-btn-cnt" href="<?php echo Mage::helper('unl_cas')->getCasUrl(true) ?>">
             <i class="mrkp-icon-unl-n"></i>
@@ -23,7 +25,7 @@
             <span class="mrkp-btn-noun short">returning customer</span>
         </a>
     </div>
-    <div class="bp2-wdn-col-three-fourths" id="login_inputs" style="display:none;">
+    <div class="bp2-wdn-col-<?php echo $_allowGuest ? 'three-fourths' : 'two-thirds' ?>" id="login_inputs" style="display:none;">
         <form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post">
         <fieldset>
             <ul class="form-list">
@@ -52,15 +54,12 @@
         </form>
     </div>
     <div class="wdn-col" id="create">
-    <?php if ($this->getQuote()->isAllowedGuestCheckout()): ?>
-        <input type="radio" name="checkout_method" id="login:register" value="register" onclick="checkout.setMethod();" class="radio no-display" />
-        <?php $_onClick = ''; ?>
-    <?php elseif ($this->helper('checkout')->isCustomerMustBeLogged()): ?>
+    <?php if (!$_allowGuest && $_mustBeLogged): ?>
+        <input type="hidden" id="login:register" value="register" />
         <?php $_onClick = 'setLocation(\'' . $this->helper('checkout/url')->getRegistrationUrl() . '\')'; ?>
     <?php else: ?>
-        <input type="hidden" name="checkout_method" id="login:register" value="register" checked="checked" />
-        <form id="persistent_form" action="<?php echo $this->getUrl('persistent/index/saveMethod'); ?>"></form>
-        <?php $_onClick = 'persistentRegister()'; ?>
+        <input type="radio" name="checkout_method" id="login:register" value="register" <?php echo !$_allowGuest ? ' checked="checked"' : '' ?> class="radio no-display" />
+        <?php $_onClick = 'persistentContinue(' . (!$_allowGuest ? 'true' : '') . ')' ; ?>
     <?php endif;?>
         <label class="mrkp-btn-cnt" for="login:register" onclick="<?php echo $_onClick ?>">
             <i class="wdn-icon-user"></i>
@@ -70,7 +69,7 @@
     </div>
     <?php if ($this->getQuote()->isAllowedGuestCheckout()): ?>
     <div class="wdn-col" id="login_guest">
-        <input type="radio" name="checkout_method" id="login:guest" value="guest" onclick="checkout.setMethod()" class="radio no-display" />
+        <input type="radio" name="checkout_method" id="login:guest" value="guest" onclick="persistentContinue()" class="radio no-display" />
         <label class="mrkp-btn-cnt" for="login:guest">
             <i class="mrkp-icon-forward"></i>
             <span class="mrkp-btn-action">Continue as</span>
@@ -148,6 +147,19 @@
     		});
 		});
     });
+
+    function persistentContinue(register){
+        if (register) {
+        	new Ajax.Request('<?php echo $this->getUrl('persistent/index/saveMethod'); ?>', {
+            	method: 'post',
+            	onFailure: function() {
+                	checkout.ajaxFailure();
+            	}
+        	});
+        }
+
+        checkout.setMethod();
+    }
 //]]>
 </script>
 <?php
@@ -156,9 +168,6 @@
 ?>
     <script type="text/javascript">
     //<![CDATA[
-        function persistentRegister(){
-            $('persistent_form').submit();
-        }
         document.observe("dom:loaded", function() {
             if($('login:register')) {
                 $('login:register').checked = true;
