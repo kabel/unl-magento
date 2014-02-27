@@ -10,10 +10,10 @@
 <?php if(count($_items)): ?>
     <?php foreach ($_items as $_item): ?>
         <?php $_prevPurchase = null; ?>
-        <?php $linkIter = $this->getPurchasesByOrderId($_item->getId())->getIterator(); ?>
-
-        <?php if ($linkIter->valid()): ?>
-        <?php $_link = $linkIter->current(); ?>
+        <?php $_links = $this->getPurchasesByOrderId($_item->getId()); ?>
+        <?php if ($_links->count()): ?>
+        <?php /* @var $_link Mage_Downloadable_Model_Link_Purchased_Item */ ?>
+        <?php $_link = $_links->getFirstItem(); ?>
         <div class="wdn-grid-set mrkp-well downloadable">
             <div class="bp2-wdn-col-one-fourth mrkp-well-up order-level">
                 <span class="detail-label">Date aquired</span>
@@ -28,13 +28,13 @@
             <span class="mrkp-well-sep-abs-one-fourth"></span>
             <div class="bp2-wdn-col-three-fourths">
                 <ul class="mrkp-list-flat downloadable-list">
-                <?php while ($linkIter->valid()): ?>
-                    <?php if ($_link->getId() !== $_prevPurchase): ?>
+                <?php foreach ($_links as $_link): ?>
+                    <?php if ($_link->getPurchasedId() !== $_prevPurchase): ?>
                     <?php if ($_prevPurchase !== null): ?>
+                        </ul>
                     </li>
                     <?php endif; ?>
-                    <?php $_prevPurchase = $_link->getId(); ?>
-                    <?php $linkIter->next(); ?>
+                    <?php $_prevPurchase = $_link->getPurchasedId(); ?>
                     <li>
                         <h3 class="product-name"><?php echo $this->escapeHtml($_link->getProductName()) ?></h3>
                         <ul class="mrkp-list-flat">
@@ -46,7 +46,7 @@
                                 - <span class="detail-label">Remaining Uses</span>
                                 <span class="detail-info"><?php echo $this->getRemainingDownloads($_link) ?></span>
                             </li>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
                         </ul>
                     </li>
                 </ul>
