@@ -58,7 +58,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
         if (trim($head->getTitle())) {
             $title[] = $head->getTitle();
-            if (strpos($title[0], $brand) !== false) {
+            if (empty($brand) || strpos($title[0], $brand) !== false) {
                 $includeBrand = false;
             }
         }
@@ -67,7 +67,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             $title[] = $this->htmlEscape(Mage::app()->getGroup()->getName());
         }
 
-        if ($brand && $includeBrand) {
+        if ($includeBrand) {
             $title[] = $this->htmlEscape($brand);
         }
 
