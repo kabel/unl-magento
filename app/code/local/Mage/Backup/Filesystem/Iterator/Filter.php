@@ -34,7 +34,7 @@
  * @method RecursiveDirectoryIterator getInnerIterator()
  * @method SplFileInfo current()
  */
-class Mage_Backup_Filesystem_Iterator_Filter extends FilterIterator
+class Mage_Backup_Filesystem_Iterator_Filter extends RecursiveFilterIterator
 {
     /**
      * Array that is used for filtering
