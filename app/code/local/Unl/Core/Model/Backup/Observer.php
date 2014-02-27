@@ -8,6 +8,10 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
     const XML_PATH_RSYNC_HOST    = 'system/rsync/host';
     const XML_PATH_RSYNC_PATH    = 'system/rsync/path';
 
+    protected $_tmpCronLog;
+
+    protected $_emptyDirPath;
+
     /* Overrides
      * @see Mage_Backup_Model_Observer::scheduledBackup()
      * by adding rsync logic
@@ -62,6 +66,11 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
         return $this;
     }
 
+    /**
+     * Removes all existing backup files
+     *
+     * @return Unl_Core_Model_Backup_Observer
+     */
     protected function _clearBackups()
     {
         $baseDir = Mage::getBaseDir('var') . DS . 'backups';
@@ -73,11 +82,22 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
         return $this;
     }
 
+    /**
+     * Public API to perform an rsync backup
+     *
+     * @return Unl_Core_Model_Backup_Observer
+     */
     public function forceRsync()
     {
-        $this->_rsyncBackup();
+        return $this->_rsyncBackup();
     }
 
+    /**
+     * Performs an rsync backup of the backups directory, if enabled in config
+     *
+     * @throws Exception
+     * @return Unl_Core_Model_Backup_Observer
+     */
     protected function _rsyncBackup()
     {
         $host = Mage::getStoreConfig(self::XML_PATH_RSYNC_HOST);
@@ -85,8 +105,6 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
         if (!Mage::getStoreConfigFlag(self::XML_PATH_RSYNC_ENABLED) || empty($host)) {
             return $this;
         }
-
-        $tmpErrorLog = Mage::getBaseDir('var') . DS . 'log' . DS . 'tmpCron.log';
 
         $retainCount = intval(Mage::getStoreConfig(self::XML_PATH_RSYNC_RETAIN));
         if ($retainCount == 0) {
@@ -105,8 +123,8 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
             $path = '.';
         }
 
-        $baseCmd = 'rsync --delete -aze "ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ' . $keyPath . '"';
-        $errorRedir = ' 2>>' . $tmpErrorLog;
+        $baseCmd = 'rsync --delete -aze "ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o BatchMode=yes -i ' . $keyPath . '"';
+        $errorRedir = ' 2>>' . $this->_getTmpCronLog();
 
         // clear last incremental backup
         $this->_createEmptyDirIfNotExists();
@@ -114,12 +132,31 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
         if ($user) {
             $remotePath = "$user@" . $remotePath;
         }
-        exec($baseCmd . ' ' . $this->_getEmptyDirPath() . DS . ' ' . escapeshellarg(rtrim($remotePath, '/')) . $errorRedir);
+
+        $output = null;
+        $return = 0;
+        exec($baseCmd . ' ' . $this->_getEmptyDirPath() . DS . ' ' . escapeshellarg(rtrim($remotePath, '/')) . $errorRedir, $output, $return);
+        if ($return != 0) {
+            return $this->_handleCronError();
+        }
+
         $this->_removeEmptyDir();
 
         // copy backups
-        exec($baseCmd . ' --exclude=".ht*" ' . Mage::getBaseDir('var') . DS . 'backups' . DS . ' ' . escapeshellarg($remotePath) . $errorRedir);
+        exec($baseCmd . ' --exclude=".ht*" ' . Mage::getBaseDir('var') . DS . 'backups' . DS . ' ' . escapeshellarg($remotePath) . $errorRedir, $output, $return);
 
+        return $this->_handleCronError();
+    }
+
+    /**
+     * Transfers the contents of the temporary cron log (redirected resync StdErr output)
+     * to the cron.log
+     *
+     * @return Unl_Core_Model_Backup_Observer
+     */
+    protected function _handleCronError()
+    {
+        $tmpErrorLog = $this->_getTmpCronLog();
         if (file_exists($tmpErrorLog)) {
             $errors = file_get_contents($tmpErrorLog);
             if ($errors) {
@@ -131,11 +168,39 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
         return $this;
     }
 
-    protected function _getEmptyDirPath()
+    /**
+     * Returns the path to the temporary cron log
+     *
+     * @return string
+     */
+    protected function _getTmpCronLog()
     {
-        return Mage::getBaseDir('var') . DS . 'emptydir';
+        if (!$this->_tmpCronLog) {
+            $this->_tmpCronLog = Mage::getBaseDir('var') . DS . 'log' . DS . 'tmpCron.log';
+        }
+
+        return $this->_tmpCronLog;
     }
 
+    /**
+     * Returns the path to the empty directory
+     *
+     * @return string
+     */
+    protected function _getEmptyDirPath()
+    {
+        if (!$this->_emptyDirPath) {
+            $this->_emptyDirPath = Mage::getBaseDir('var') . DS . 'emptydir';
+        }
+
+        return $this->_emptyDirPath;
+    }
+
+    /**
+     * Creates an empty directory for clearing old backup files
+     *
+     * @return Unl_Core_Model_Backup_Observer
+     */
     protected function _createEmptyDirIfNotExists()
     {
         $dir = $this->_getEmptyDirPath();
@@ -146,6 +211,11 @@ class Unl_Core_Model_Backup_Observer extends Mage_Backup_Model_Observer
         return $this;
     }
 
+    /**
+     * Removes the empty directory used for clearing old backup files
+     *
+     * @return Unl_Core_Model_Backup_Observer
+     */
     protected function _removeEmptyDir()
     {
         $dir = $this->_getEmptyDirPath();
