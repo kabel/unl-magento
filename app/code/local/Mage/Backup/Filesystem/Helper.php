@@ -117,7 +117,7 @@ class Mage_Backup_Filesystem_Helper
         $iterator = new RecursiveIteratorIterator(
             new Mage_Backup_Filesystem_Iterator_Filter(
                 new RecursiveDirectoryIterator($path),
-                $skipPaths
+                $skipFiles
             ),
             RecursiveIteratorIterator::CHILD_FIRST
         );
