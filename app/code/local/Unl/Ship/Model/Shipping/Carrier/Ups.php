@@ -1,6 +1,7 @@
 <?php
 
-class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrier_Ups
+class Unl_Ship_Model_Shipping_Carrier_Ups
+    extends Mage_Usa_Model_Shipping_Carrier_Ups
     implements Unl_Ship_Model_Shipping_Carrier_VoidInterface
 {
     protected $_lastVoidResult;
@@ -12,20 +13,7 @@ class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrie
 
     protected function _construct()
     {
-        $this->_defaultUrls['Void'] = 'https://wwwcie.ups.com/ups.app/xml/Void';
-    }
-
-    public function getConfigData($field)
-    {
-        if ($field == 'url') {
-            if (parent::getConfigData('mode_xml')) {
-                $this->_defaultUrls['ShipConfirm'] = 'https://onlinetools.ups.com/ups.app/xml/ShipConfirm';
-                $this->_defaultUrls['ShipAccept']  = 'https://onlinetools.ups.com/ups.app/xml/ShipAccept';
-                $this->_defaultUrls['Void']        = 'https://onlinetools.ups.com/ups.app/xml/Void';
-            }
-        }
-
-        return parent::getConfigData($field);
+        $this->_defaultUrls['Void'] = 'https://onlinetools.ups.com/ups.app/xml/Void';
     }
 
     /* Extends
@@ -120,6 +108,9 @@ class Unl_Ship_Model_Shipping_Carrier_Ups extends Mage_Usa_Model_Shipping_Carrie
     protected function _getXmlQuotes()
     {
         $url = $this->getConfigData('gateway_xml_url');
+        if (!$url) {
+            $url = $this->_defaultUrls['Rate'];
+        }
 
         $this->setXMLAccessRequest();
         $xmlRequest=$this->_xmlAccessRequest;
@@ -447,6 +438,10 @@ XMLRequest;
         }
     }
 
+    /* Overrides
+     * @see Mage_Usa_Model_Shipping_Carrier_Abstract::requestToShipment()
+     * to support event based validation and UNL Package format
+     */
     public function requestToShipment(Mage_Shipping_Model_Shipment_Request $request)
     {
         $packages = $request->getPackages();
@@ -521,6 +516,10 @@ XMLRequest;
         return $response;
     }
 
+    /* Overrides
+     * @see Mage_Usa_Model_Shipping_Carrier_Ups::_formShipmentRequest()
+     * to support XML escaping, forced insurance, better API rules
+     */
     protected function _formShipmentRequest(Varien_Object $request)
     {
         $packageParams = $request->getPackageParams();
@@ -738,6 +737,10 @@ XMLRequest;
         return $xmlRequest;
     }
 
+    /* Overrides
+     * @see Mage_Usa_Model_Shipping_Carrier_Ups::_sendShipmentAcceptRequest()
+     * to support UNL Package format
+     */
     protected function _sendShipmentAcceptRequest(SimpleXMLElement $shipmentConfirmResponse)
     {
         $xmlRequest = new SimpleXMLElement('<?xml version = "1.0" ?><ShipmentAcceptRequest/>');
@@ -747,7 +750,10 @@ XMLRequest;
 
         $debugData = array('request' => $xmlRequest->asXML());
         try {
-            $url = $this->_defaultUrls['ShipAccept'];
+            $url = $this->getConfigData('shipaccept_xml_url');
+            if (!$url) {
+                $url = $this->_defaultUrls['ShipAccept'];
+            }
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -817,13 +823,17 @@ XMLRequest;
         return $result;
     }
 
+    /* Overrides
+     * @see Mage_Usa_Model_Shipping_Carrier_Ups::_doShipmentRequest()
+     * by skipping cache (shipment requests are NOT replay safe)
+     */
     protected function _doShipmentRequest(Varien_Object $request)
     {
         $this->_prepareShipmentRequest($request);
         $result = new Varien_Object();
         $xmlRequest = $this->_formShipmentRequest($request);
 
-        $url = $this->getConfigData('url');
+        $url = $this->getConfigData('shipconfirm_xml_url');
         if (!$url) {
             $url = $this->_defaultUrls['ShipConfirm'];
         }
@@ -911,7 +921,7 @@ XMLRequest;
 
         $debugData = array('request' => $xmlRequest->asXML());
         try {
-            $url = $this->getConfigData('url');
+            $url = $this->getConfigData('void_xml_url');
             if (!$url) {
                 $url = $this->_defaultUrls['Void'];
             }

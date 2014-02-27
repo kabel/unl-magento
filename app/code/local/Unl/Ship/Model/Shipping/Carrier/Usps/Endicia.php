@@ -248,6 +248,7 @@ class Unl_Ship_Model_Shipping_Carrier_Usps_Endicia
             'INT_1'  => array('PriorityMailExpressInternational', null),
             'INT_2'  => array('PriorityMailInternational', null),
             'INT_4'  => array('GXG', null),
+            'INT_5'  => array('GXG', 'Flat'),
             'INT_6'  => array('GXG', 'Parcel'),
             'INT_7'  => array('GXG', 'Parcel'),
             'INT_8'  => array('PriorityMailInternational', 'FlatRateEnvelope'),
