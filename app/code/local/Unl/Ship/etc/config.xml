@@ -40,20 +40,22 @@
             </unl_ship_resource>  
             <usa>
             	<rewrite>
+                    <!-- Support UNL Package format, etc -->
             		<shipping_carrier_fedex>Unl_Ship_Model_Shipping_Carrier_Fedex</shipping_carrier_fedex>
             		<shipping_carrier_ups>Unl_Ship_Model_Shipping_Carrier_Ups</shipping_carrier_ups>
                     <shipping_carrier_usps>Unl_Ship_Model_Shipping_Carrier_Usps</shipping_carrier_usps>
-                    <shipping_carrier_usps_source_method>Unl_Ship_Model_Shipping_Carrier_Usps_Source_Method</shipping_carrier_usps_source_method>
             	</rewrite>
             </usa>
             <sales>
                 <rewrite>
+                    <!-- Allow shipments to be _unregistered_ -->
                     <order_shipment>Unl_Ship_Model_Sales_Order_Shipment</order_shipment>
                     <order_shipment_item>Unl_Ship_Model_Sales_Order_Shipment_Item</order_shipment_item>
                 </rewrite>
             </sales>
             <shipping>
                 <rewrite>
+                    <!-- Use proper price sorting algorithm -->
                     <rate_result>Unl_Ship_Model_Shipping_Rate_Result</rate_result>
                 </rewrite>
             </shipping>
@@ -74,6 +76,7 @@
             </unl_ship>
             <adminhtml>
                 <rewrite>
+                    <!-- Support UNL Package format -->
                     <sales_order_shipment_packaging>Unl_Ship_Block_Sales_Order_Shipment_Packaging</sales_order_shipment_packaging>
                 </rewrite>
             </adminhtml>
@@ -168,7 +171,6 @@
             <ups>
                 <force_insurance_value>1000</force_insurance_value>
                 <ship_request_option>nonvalidate</ship_request_option>
-                <gateway_xml_url>https://onlinetools.ups.com/ups.app/xml/Rate</gateway_xml_url>
             </ups>
             <usps>
                 <endicia_requester_id backend_model="adminhtml/system_config_backend_encrypted"></endicia_requester_id>

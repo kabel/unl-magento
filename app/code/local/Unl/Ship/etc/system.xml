@@ -191,6 +191,20 @@
                         <tracking_xml_url>
                             <sort_order>131</sort_order>
                         </tracking_xml_url>
+                        <shipconfirm_xml_url>
+                            <sort_order>132</sort_order>
+                        </shipconfirm_xml_url>
+                        <shipaccept_xml_url>
+                            <sort_order>133</sort_order>
+                        </shipaccept_xml_url>
+                        <void_xml_url translate="label">
+                            <label>Void XML URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>134</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </void_xml_url>
                         
                         <heading_defaults translate="label">
                             <label>Units/Defaults</label>
