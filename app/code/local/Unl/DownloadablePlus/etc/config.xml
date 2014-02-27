@@ -33,6 +33,7 @@
         <models>
             <downloadable>
                 <rewrite>
+                    <!-- Better PDF Rendering -->
                     <sales_order_pdf_items_invoice>Unl_DownloadablePlus_Model_Sales_Order_Pdf_Items_Invoice</sales_order_pdf_items_invoice>
                     <sales_order_pdf_items_creditmemo>Unl_DownloadablePlus_Model_Sales_Order_Pdf_Items_Creditmemo</sales_order_pdf_items_creditmemo>
                     <!-- Fix PHP warnings during API link creation -->
