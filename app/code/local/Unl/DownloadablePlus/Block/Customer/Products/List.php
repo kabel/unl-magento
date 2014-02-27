@@ -34,6 +34,9 @@ class Unl_DownloadablePlus_Block_Customer_Products_List extends Mage_Downloadabl
         Mage::helper('unl_core')->prepareDualPager($pager);
 
         $this->setChild('pager', $pager);
+
+
+
         return $this;
     }
 
@@ -41,13 +44,16 @@ class Unl_DownloadablePlus_Block_Customer_Products_List extends Mage_Downloadabl
      * Returns a collection of purchased links of a given order id
      *
      * @param int $orderId
-     * @return Mage_Downloadable_Model_Resource_Link_Purchased_Collection
+     * @return Mage_Downloadable_Model_Resource_Link_Purchased_Item_Collection
      */
     public function getPurchasesByOrderId($orderId)
     {
-        $collection = Mage::getResourceModel('downloadable/link_purchased_collection')
-            ->addFieldToFilter('order_id', $orderId)
-            ->addPurchasedItemsToResult()
+        $collection = Mage::getResourceModel('downloadable/link_purchased_item_collection');
+
+        $cond = $collection->getConnection()->quoteInto('main_table.purchased_id = p.purchased_id AND p.order_id = ?', $orderId);
+
+        $collection
+            ->join(array('p' => 'downloadable/link_purchased'), $cond)
             ->addFieldToFilter('status',
                 array(
                     'nin' => array(
