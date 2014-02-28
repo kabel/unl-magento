@@ -32,9 +32,9 @@ class Unl_Core_Model_Cms_Wysiwyg_Images_Storage extends Mage_Cms_Model_Wysiwyg_I
 
         $regExp = $conditions['reg_exp'] ? ('~' . implode('|', array_keys($conditions['reg_exp'])) . '~i') : null;
         $collection = $this->getCollection($path)
-        ->setCollectDirs(true)
-        ->setCollectFiles(false)
-        ->setCollectRecursively(false);
+            ->setCollectDirs(true)
+            ->setCollectFiles(false)
+            ->setCollectRecursively(false);
         $storageRootLength = strlen($this->getHelper()->getStorageRoot());
 
         foreach ($collection as $key => $value) {

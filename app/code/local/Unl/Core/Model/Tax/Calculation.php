@@ -18,19 +18,20 @@ class Unl_Core_Model_Tax_Calculation extends Mage_Tax_Model_Calculation
         if ($shippingAddress === false && $billingAddress === false && $customerTaxClass === false) {
             return $this->getRateOriginRequest($store);
         }
-        $address    = new Varien_Object();
-        $customer   = $this->getCustomer();
-        $basedOn    = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON, $store);
+        $address = new Varien_Object();
+        $customer = $this->getCustomer();
+        $basedOn = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON, $store);
 
         if (($shippingAddress === false && $basedOn == 'shipping')
-            || ($billingAddress === false && $basedOn == 'billing')) {
+            || ($billingAddress === false && $basedOn == 'billing')
+        ) {
             $basedOn = 'default';
         } else {
             if ((($billingAddress === false || is_null($billingAddress) || !$billingAddress->getCountryId())
                 && $basedOn == 'billing')
                 || (($shippingAddress === false || is_null($shippingAddress) || !$shippingAddress->getCountryId())
                 && $basedOn == 'shipping')
-            ){
+            ) {
                 if ($customer) {
                     $defBilling = $customer->getDefaultBillingAddress();
                     $defShipping = $customer->getDefaultShippingAddress();
