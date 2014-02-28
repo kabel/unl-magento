@@ -330,13 +330,6 @@
                     <report_order_updatedat>Unl_Core_Model_Sales_Resource_Report_Order_Updatedat</report_order_updatedat>
                 </rewrite>
             </sales_resource>
-            <!-- Handled by config change
-            <shipping>
-                <rewrite>
-                    <carrier_pickup>Unl_Core_Model_Shipping_Carrier_Pickup</carrier_pickup>
-                </rewrite>
-            <shipping>
-             -->
             <tax>
                 <rewrite>
                     <!-- Find the Zip+4 for NE Addresses -->
@@ -359,7 +352,7 @@
             </tax_resource>
             <widget>
             	<rewrite>
-                    <!-- Allow WYWSIWYG outside of adminhtml -->
+                    <!-- Allow WYSIWYG outside of adminhtml -->
             		<widget_config>Unl_Core_Model_Widget_Widget_Config</widget_config>
             	</rewrite>
             </widget>
