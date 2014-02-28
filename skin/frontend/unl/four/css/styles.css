@@ -171,7 +171,7 @@ select.multiselect option:last-child { border-bottom:0; }
 textarea { overflow:auto; }
 input.radio { margin-right:3px; }
 input.checkbox { margin-right:3px; }
-input.qty { width:2.5em !important; }
+input.qty { width:3.5em !important; text-align:center; }
 button {
     background-color: #137CBD;
     border: 0 none;
