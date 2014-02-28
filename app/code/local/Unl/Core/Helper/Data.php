@@ -67,7 +67,7 @@ class Unl_Core_Helper_Data extends Mage_Core_Helper_Abstract
             $title[] = $this->htmlEscape(Mage::app()->getGroup()->getName());
         }
 
-        if ($includeBrand) {
+        if ($includeBrand && $brand) {
             $title[] = $this->htmlEscape($brand);
         }
 
