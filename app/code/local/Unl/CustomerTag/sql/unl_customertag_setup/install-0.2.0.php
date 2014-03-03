@@ -152,7 +152,6 @@ $table = $installer->getConnection()
     )
     ->addForeignKey(
         $installer->getFkName('unl_customertag/category_link', 'tag_id', 'unl_customertag/tag', 'tag_id'),
-        $installer->getTable('unl_customertag/category_link'),
         'tag_id',
         $installer->getTable('unl_customertag/tag'),
         'tag_id',
