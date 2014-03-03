@@ -48,9 +48,7 @@ class Unl_Core_Block_Email_Order_Instructions extends Mage_Core_Block_Template
             foreach ($order->getAllItems() as $item) {
                 $product = $item->getProduct();
 
-                if ($product->hasData('ordered_description') &&
-                    !array_key_exists($product->getId(), $products)
-                ) {
+                if ($product->getOrderedDescription() && !array_key_exists($product->getId(), $products)) {
                     $products[$product->getId()] = $product;
                 }
             }
