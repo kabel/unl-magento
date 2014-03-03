@@ -1099,13 +1099,77 @@
     </stores>
 
     <default>
+        <admin>
+            <security>
+                <use_form_key>0</use_form_key>
+            </security>
+        </admin>
+        <general>
+            <store_information>
+                <name>UNL Marketplace</name>
+            </store_information>
+        </general>
+        <design>
+            <package>
+                <name>unl</name>
+            </package>
+            <theme>
+                <default>four</default>
+            </theme>
+            <head>
+                <default_title>UNL Marketplace</default_title>
+                <default_description>Products and services brought to you by the University of Nebraska-Lincoln</default_description>
+                <default_keywords>eCommerce unl marketplace university nebraska lincoln</default_keywords>
+                <default_robots>INDEX,FOLLOW</default_robots>
+            </head>
+            <footer>
+                <copyright><![CDATA[University of Nebraska&ndash;Lincoln]]></copyright>
+            </footer>
+        </design>
         <catalog>
             <frontend>
+            </frontend>
+            <navigation>
+                <max_depth>2</max_depth>
+            </navigation>
+            <frontend>
+                <list_mode>grid-list</list_mode>
+                <grid_per_page_values>12,20,32</grid_per_page_values>
+                <list_per_page_values>10,20,40</list_per_page_values>
+                <grid_per_page>12</grid_per_page>
+                <list_per_page>10</list_per_page>
                 <text_per_page_values>20,40,80</text_per_page_values>
                 <text_per_page>20</text_per_page>
             </frontend>
+            <seo>
+                <product_url_suffix>.html</product_url_suffix>
+                <category_url_suffix></category_url_suffix>
+                <title_separator> | </title_separator>
+                <category_canonical_tag>1</category_canonical_tag>
+                <product_canonical_tag>1</product_canonical_tag>
+                <search_terms>0</search_terms>
+                <site_map>0</site_map>
+            </seo>
         </catalog>
+        <rss>
+            <config>
+                <active>1</active>
+            </config>
+            <catalog>
+                <category>1</category>
+                <new>1</new>
+            </catalog>
+            <order>
+                <status_notified>1</status_notified>
+            </order>
+            <wishlist>
+                <active>1</active>
+            </wishlist>
+        </rss>
         <customer>
+            <account_share>
+                <scope>0</scope>
+            </account_share>
             <address_templates>
                 <text>{{depend prefix}}{{var prefix}} {{/depend}}{{var firstname}} {{depend middlename}}{{var middlename}} {{/depend}}{{var lastname}}{{depend suffix}} {{var suffix}}{{/depend}}
 {{depend company}}{{var company}}{{/depend}}
@@ -1145,6 +1209,11 @@ T: {{var telephone}}
 {{depend vat_id}}&lt;br/&gt;VAT: {{var vat_id}}{{/depend}}|</pdf>
             </address_templates>
         </customer>
+        <sales>
+            <gift_messages>
+                <allow_items>1</allow_items>
+            </gift_messages>
+        </sales>
         <payment>
             <cash>
                 <active>0</active>
@@ -1171,6 +1240,25 @@ T: {{var telephone}}
                 <model></model>
             </googlecheckout>
         </payment>
+        <tax>
+            <defaults>
+                <country>US</country>
+                <region>38</region>
+                <postcode>68508</postcode>
+            </defaults>
+        </tax>
+        <web>
+            <url>
+                <use_store>1</use_store>
+            </url>
+            <secure>
+                <use_in_frontend>1</use_in_frontend>
+                <use_in_adminhtml>1</use_in_adminhtml>
+            </secure>
+            <seo>
+                <use_rewrites>1</use_rewrites>
+            </seo>
+        </web>
         <carriers>
             <pickup>
                 <active>0</active>
@@ -1179,12 +1267,27 @@ T: {{var telephone}}
                 <title>Pickup</title>
                 <showmethod>1</showmethod>
                 <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+                <company>University of Nebraska-Lincoln</company>
+                <address1>1100 N 17th St</address1>
+                <city>Lincoln</city>
+                <postcode>68508</postcode>
+                <region_id>38</region_id>
+                <country_id>US</country_id>
             </pickup>
         </carriers>
         <dev>
+            <log>
+                <active>0</active>
+            </log>
             <template>
                 <allow_symlink>1</allow_symlink>
             </template>
+            <js>
+                <merge_files>1</merge_files>
+            </js>
+            <css>
+                <merge_files>1</merge_files>
+            </css>
         </dev>
         <google>
             <analytics>
