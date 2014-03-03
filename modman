@@ -1,0 +1,22 @@
+# Patch unlinkable files, if not already done
+@shell	$MODULE/data/scripts/apply-patches.sh
+
+# Magento Core include_path overrides
+app/code/local/Mage
+app/code/local/Varien/Image
+app/code/local/Zend
+
+# UNL Modules bundle
+app/code/local/Unl
+app/design/frontend/unl
+app/design/adminhtml/default/unl
+app/etc/modules/Unl_All.xml
+errors/unl
+errors/local.xml
+js/unl
+lib/LinLibertineFont513
+lib/SimpleCAS
+lib/SimpleCAS.php
+lib/UNL
+skin/frontend/unl
+skin/adminhtml/default/unl
