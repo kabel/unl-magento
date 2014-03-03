@@ -1,5 +1,6 @@
 #!/bin/sh
 out=".htmaint"
+out2="maintenance.flag"
 help=0
 showUsage () {
     echo "== Magento Maintanence Enabler =="
@@ -17,7 +18,7 @@ showHelp () {
 
 if [ "$1" = "-e" -o "$1" = "--end" ]; then
     echo "Removing maintenace lock"
-    rm -f $out
+    rm -f $out $out2
     exit
 elif [ "$1" = "-h" -o "$1" = "--help" ]; then
     showUsage
@@ -34,7 +35,9 @@ if [ -n "$*" ]; then
     sep="','"
     ips=$(printf "$sep%s" "$@")
     echo "<?php return array('${ips:${#sep}}');" > $out
+    touch $out2
 else
     echo "Adding maintenance lock without IP exceptions"
     printf "" > $out
+    touch $out2
 fi
