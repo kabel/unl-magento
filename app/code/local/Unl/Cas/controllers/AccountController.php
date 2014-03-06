@@ -1,5 +1,7 @@
 <?php
 
+require_once "Mage/Customer/controllers/AccountController.php";
+
 class Unl_Cas_AccountController extends Mage_Customer_AccountController
 {
     // BEGIN: Reset parent controller additions
