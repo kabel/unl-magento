@@ -78,7 +78,7 @@ class Unl_Core_Model_Tax_Sales_Total_Quote_Tax extends Mage_Tax_Model_Sales_Tota
 
         $address->setShippingTaxAmount($address->getShippingTaxAmount() + max(0, $tax));
         $address->setBaseShippingTaxAmount($address->getBaseShippingTaxAmount() + max(0, $baseTax));
-        $this->_saveAppliedTaxes($address, $applied, $tax, $baseTax, $rate, $calc, $baseCalc);
+        $this->_saveAppliedTaxes($address, $appliedRates, $tax, $baseTax, $rate, $calc, $baseCalc);
     }
 
     /* Overrides
