@@ -11,10 +11,12 @@ Index: index.php
  
  if (!file_exists($mageFilename)) {
      if (is_dir('downloader')) {
-@@ -62,6 +62,13 @@
+@@ -62,8 +62,13 @@
  }
  
  if (file_exists($maintenanceFile)) {
+-    include_once dirname(__FILE__) . '/errors/503.php';
+-    exit;
 +    ob_start();
 +    $maintenanceDevIps = include $maintenanceFile;
 +    ob_end_clean();
@@ -22,6 +24,6 @@ Index: index.php
 +        include_once dirname(__FILE__) . '/errors/503.php';
 +        exit;
 +    }
-     include_once dirname(__FILE__) . '/errors/503.php';
-     exit;
  }
+ 
+ require_once $mageFilename;
