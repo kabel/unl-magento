@@ -7,6 +7,7 @@
     <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
     </div>
     <form action="<?php echo $this->getPostActionUrl() ?>" method="post" onsubmit="return showLoader();">
+        <?php echo $this->getBlockHtml('formkey'); ?>
         <div class="colorize-legend"><div class="wdn-inner-wrapper wdn-inner-padding-sm"><h2 class="legend"><?php echo $this->__('Billing Information') ?></h2></div></div>
         <div class="wdn-inner-wrapper">
         <div class="wdn-grid-set-halves">
