@@ -46,6 +46,14 @@ class Unl_Inventory_Model_Audit extends Mage_Core_Model_Abstract
 		$this->_init('unl_inventory/audit');
 	}
 
+	protected function _beforeSave()
+	{
+	    if (is_null($this->getData('created_at'))) {
+	        $this->setData('created_at', Mage::getSingleton('core/date')->gmtDate());
+	    }
+	    return parent::_beforeSave();
+	}
+
 	protected function _afterSave()
 	{
 	    $accounting = Mage::getSingleton('unl_inventory/config')->getAccounting();
