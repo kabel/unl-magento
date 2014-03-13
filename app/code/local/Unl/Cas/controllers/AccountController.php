@@ -226,16 +226,12 @@ class Unl_Cas_AccountController extends Mage_Customer_AccountController
      */
     protected function _createCustomerFromLdapData(Varien_Object $data)
     {
-        /* @var $customer Mage_Customer_Model_Customer */
-        $customer = Mage::getModel('customer/customer')->setId(null);
-
-        $customer->addData($data->toArray());
-        $uid = $this->_getCasAuth()->getUser();
-        $customer->setData('unl_cas_uid', $uid);
-        $customer->setPassword($customer->generatePassword());
+        $customer = $this->_getCustomer($data);
 
         try {
-            $this->_completeCustomer($customer);
+            $customer->save();
+            $this->_dispatchRegisterSuccess($customer);
+            $this->_successProcessRegistration($customer);
         } catch (Mage_Core_Exception $e) {
             if ($e->getCode() == Mage_Customer_Model_Customer::EXCEPTION_EMAIL_EXISTS) {
                 try {
@@ -292,6 +288,10 @@ class Unl_Cas_AccountController extends Mage_Customer_AccountController
             return;
         }
 
+        $randomPass = $this->_getCustomer()->getPassword();
+        $this->getRequest()->setPost('password', $randomPass);
+        $this->getRequest()->setPost('confirmation', $randomPass);
+
         parent::createPostAction();
     }
 
@@ -299,11 +299,18 @@ class Unl_Cas_AccountController extends Mage_Customer_AccountController
      * @see Mage_Customer_AccountController::_getCustomer()
      * by setting the CAS attriubte for the customer
      */
-    protected function _getCustomer()
+    protected function _getCustomer(Varien_Object $defaultData = null)
     {
         $customer = parent::_getCustomer();
 
+        if ($defaultData) {
+            $customer->addData($defaultData->toArray());
+        }
+
         $customer->setUnlCasUid($this->_getCasAuth()->getUser());
+
+        $randomPass = $customer->generatePassword();
+        $customer->setPassword($randomPass);
 
         return $customer;
     }

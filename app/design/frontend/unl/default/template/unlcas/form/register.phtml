@@ -33,10 +33,8 @@
                 </li>
                 <?php if ($this->isNewsletterEnabled()): ?>
                 <li class="control">
-                    <div class="input-box">
-                        <input type="checkbox" name="is_subscribed" title="<?php echo $this->__('Sign Up for Newsletter') ?>" value="1" id="is_subscribed"<?php if($this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="checkbox" />
-                    </div>
-                    <label for="is_subscribed"><?php echo $this->__('Sign Up for Newsletter') ?></label>
+                    <li class="control"><input type="radio" name="is_subscribed" id="subscription_yes" value="1" <?php if($this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="radio" /><label for="subscription_yes">Send me marketing email from any of your stores/affiliates</label></li>
+            <li class="control"><input type="radio" name="is_subscribed" id="subscription_no" value=""  <?php if(!$this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="radio"><label for="subscription_no">Do not send me marketing email</label></li>
                     <?php /* Extensions placeholder */ ?>
                     <?php echo $this->getChildHtml('customer.form.register.newsletter')?>
                 </li>
@@ -130,6 +128,14 @@
             <input type="hidden" name="default_shipping" value="1" />
         </div>
     <?php endif; ?>
+    <?php if ($addlHtml = $this->getChildHtml('form.additional.info')): ?>
+        <div class="fieldset">
+            <h2 class="legend"><?php echo $this->__('Login Information') ?></h2>
+            <ul class="form-list">
+                <?php echo $addlHtml ?>
+            </ul>
+        </div>
+    <?php endif;?>
         <div class="buttons-set">
             <p class="required"><?php echo $this->__('* Required Fields') ?></p>
             <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>" class="back-link"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
