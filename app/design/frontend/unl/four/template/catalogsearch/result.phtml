@@ -2,6 +2,7 @@
 <?php if (Mage::helper('catalogsearch')->getQueryText() !== ''): ?>
 <?php if($this->getResultCount()): ?>
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<a id="category_main" class="mrkp-offset-anchor"></a>
 <div class="page-title">
     <?php if ($this->helper('rss/catalog')->getTagFeedUrl()): ?>
         <a href="<?php echo $this->helper('rss/catalog')->getTagFeedUrl() ?>" class="nobr link-rss"><?php echo $this->__('Subscribe to Feed') ?></a>
