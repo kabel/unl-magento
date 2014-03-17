@@ -631,7 +631,7 @@ tr.summary-details-excluded { font-style:italic; }
 .noscript p { margin:0; }
 
 /* Demo Notice */
-.demo-notice { margin:0; padding:6px 10px; background:#d75f07; font-size:12px; line-height:1.15; text-align:center; color:#fff; }
+.demo-notice { margin:0; padding:6px 10px; background:#d75f07; font-size:12px; line-height:1.15; text-align:center; color:#000; }
 .demo-notice p { margin:0; }
 
 /* Cookie Notice */
@@ -647,6 +647,7 @@ tr.summary-details-excluded { font-style:italic; }
 /********** < Navigation */
 #main-menu { color:#fff; background:#4A3B13; font-family:"Gotham SSm A","Gotham SSm B",Verdana,"Verdana Ref",Geneva,Tahoma,"Lucida Grande","Lucida Sans Unicode","Lucida Sans","DejaVu Sans","Bitstream Vera Sans","Liberation Sans",sans-serif; }
 #main-menu nav { padding: 2px 0; }
+#main-menu .wdn-text-hidden { color:#fff; }
 #main-menu ul { margin:0; padding:0; }
 #main-menu ul:after { clear: both; content: ""; display: table; }
 #main-menu li { float:left; margin-right:6px; position:relative; white-space:nowrap; border:1px solid transparent; border-radius:3px }
@@ -814,7 +815,7 @@ tr.summary-details-excluded { font-style:italic; }
 .products-grid .product-image { display:block; margin:0 0 10px; border:0; }
 .products-grid .product-image img { width:100%; display:block; }
 .products-grid .product-name { margin-top:0; font-size:1.692em; }
-.products-grid .product-name a {}
+.products-grid .product-name a { border:0; }
 .products-grid .price-box { margin:5px 0; }
 .products-grid .availability { }
 .products-grid .actions { }
@@ -831,7 +832,7 @@ tr.summary-details-excluded { font-style:italic; }
 }
 .products-list .product-image img { display:block; width:100%; }
 .products-list .product-name { margin-top:0; }
-.products-list .product-name a {}
+.products-list .product-name a { border:0; }
 .products-list .price-box { }
 .products-list .availability { }
 .products-list .desc { }
@@ -843,6 +844,7 @@ tr.summary-details-excluded { font-style:italic; }
 /* View Type: Text */
 .products-text .item { padding:0.5em 0; }
 .products-text .product-name { margin-top:0; }
+.products-text .product-name a { border:0; }
 .products-text .price-box {}
 .products-text .availability { margin:0; }
 .products-text .availability .button { margin:0; width:100%; }
@@ -1468,6 +1470,7 @@ tr.summary-details-excluded { font-style:italic; }
 .order-summary .image-thumb img { display: block; text-align: center; }
 .order-summary .order-status { border-bottom:1px dotted; padding-bottom:1em; margin-bottom:1em; }
 .order-summary .order-status h3 { margin:0; font-size:1.75em; color:#008A2C; text-transform:uppercase; }
+.order-summary .item-title a { border:0; }
 
 
 @media (min-width: 768px) {
