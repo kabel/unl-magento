@@ -16,8 +16,9 @@
         </p>
 
         <div class="limiter">
-            <label><?php echo $this->__('Show') ?>
-            <select onchange="setLocation(this.value)">
+            <?php $labelFor = $this->getBlockAlias() . '_limit'; ?>
+            <label for="<?php echo $labelFor ?>"><?php echo $this->__('Show') ?>
+            <select id="<?php echo $labelFor ?>" onchange="setLocation(this.value)">
             <?php foreach ($this->getAvailableLimit() as  $_key=>$_limit): ?>
                 <option value="<?php echo $this->getLimitUrl($_key) ?>"<?php if($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
                     <?php echo $_limit ?>
@@ -46,7 +47,7 @@
                 <?php if($this->isModeActive($_code)): ?>
                     <strong class="<?php echo strtolower($_code); ?>"><?php echo $_label ?></strong>&nbsp;
                 <?php else: ?>
-                    <a href="<?php echo $this->getModeUrl($_code) ?>" class="<?php echo strtolower($_code); ?>"><?php echo $_label ?></a>&nbsp;
+                    <a href="<?php echo $this->getModeUrl($_code) ?>" class="<?php echo strtolower($_code); ?>" rel="nofollow"><?php echo $_label ?></a>&nbsp;
                 <?php endif; ?>
             <?php endforeach; ?>
             <?php endif; ?>
@@ -54,8 +55,9 @@
         <?php endif; ?>
 
         <div class="wdn-col sort-by">
-            <label><?php echo $this->__('Sort By') ?>
-            <select onchange="setLocation(this.value)">
+            <?php $labelFor = $this->getBlockAlias() . '_sort'?>
+            <label for="<?php echo $labelFor ?>"><?php echo $this->__('Sort By') ?></label>
+            <select id="<?php echo $labelFor ?>" onchange="setLocation(this.value)">
             <?php foreach($this->getAvailableOrders() as $_key=>$_order): ?>
                 <?php $_type = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', $_key)->getBackendType();
                 if (in_array($_type, array('varchar', 'text'))) {
@@ -78,7 +80,7 @@
                     <?php echo $_order ?> <?php echo $descLabel ?>
                 </option>
             <?php endforeach; ?>
-            </select></label>
+            </select>
         </div>
     </div>
     <?php endif; ?>
