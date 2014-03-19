@@ -9,7 +9,8 @@
 <?php $_allowGuest = $this->getQuote()->isAllowedGuestCheckout(); ?>
 <?php $_mustBeLogged = $this->helper('checkout')->isCustomerMustBeLogged(); ?>
 <?php echo $this->getChildHtml('login_before')?>
-<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $errors =  $this->getMessagesBlock()->getGroupedHtml(); ?>
+<?php echo $errors ?>
 <div class="wdn-grid-set-halves bp2-wdn-grid-set-<?php echo $_allowGuest ? 'fourths' : 'thirds' ?>">
     <div class="wdn-col" id="unl_login">
         <a class="mrkp-btn-cnt" href="<?php echo Mage::helper('unl_cas')->getCasUrl(true) ?>">
@@ -28,6 +29,7 @@
     <div class="bp2-wdn-col-<?php echo $_allowGuest ? 'three-fourths' : 'two-thirds' ?>" id="login_inputs" style="display:none;">
         <form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post">
         <fieldset>
+            <?php echo $this->getBlockHtml('formkey'); ?>
             <ul class="form-list">
                 <li>
                     <label for="login-email" class="required"><?php echo $this->__('Email Address') ?></label>
@@ -91,7 +93,8 @@
     }
     require(['jquery', 'modernizr'], function($, Modernizr) {
 		$(function() {
-			$('#returning a').on('click', function(e) {
+			$cust = $('#returning a');
+			$cust.on('click', function(e) {
     			var unlLogin = $('#unl_login'),
     			create = $('#create'),
     			unlLoginBtn = unlLogin.children('a'),
@@ -145,6 +148,9 @@
     				});
     			}
     		});
+    		<?php if (!empty($errors)): ?>
+			$cust.click();
+			<?php endif;?>
 		});
     });
 

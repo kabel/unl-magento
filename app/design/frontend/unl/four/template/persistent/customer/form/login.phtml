@@ -10,8 +10,9 @@
     <div class="page-title">
         <h1><?php echo $this->__('Login or Create an Account') ?></h1>
     </div>
-    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $errors = $this->getMessagesBlock()->getGroupedHtml() ?>
     <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="login-form">
+        <?php echo $this->getBlockHtml('formkey'); ?>
         <div class="wdn-grid-set bp1-wdn-grid-set-thirds">
             <div class="wdn-col" id="unl_login">
                 <a class="mrkp-btn-cnt" href="<?php echo Mage::helper('unl_cas')->getCasUrl() ?>">
@@ -69,7 +70,8 @@
 
         require(['jquery', 'modernizr'], function($, Modernizr) {
     		$(function() {
-    			$('#returning a').on('click', function(e) {
+    			$cust = $('#returning a');
+    			$cust.on('click', function(e) {
         			var unlLogin = $('#unl_login'),
         			create = $('#create'),
         			unlLoginBtn = unlLogin.children('a'),
@@ -120,6 +122,9 @@
         				});
         			}
         		});
+    			<?php if (!empty($errors)): ?>
+    			$cust.click();
+    			<?php endif;?>
     		});
     	});
     //]]>

@@ -20,6 +20,7 @@
             <?php echo $errors ?>
             <form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post">
             <fieldset>
+                <?php echo $this->getBlockHtml('formkey'); ?>
                 <p><?php echo $this->__('Please log in below:') ?></p>
                 <ul class="form-list">
                     <li>
