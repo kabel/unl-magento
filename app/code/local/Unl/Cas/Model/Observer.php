@@ -36,6 +36,8 @@ class Unl_Cas_Model_Observer
                 }
             }
         }
+
+        Mage::getSingleton('unl_cas/session')->clear();
     }
 
     /**

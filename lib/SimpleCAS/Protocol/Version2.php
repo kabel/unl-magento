@@ -14,7 +14,7 @@
 class SimpleCAS_Protocol_Version2 extends SimpleCAS_Protocol_Version1 implements SimpleCAS_SingleSignOut, SimpleCAS_ProxyGranting
 {
     const VERSION = '2.0';
-    
+
     protected $lastValidationResponse;
 
     /**
@@ -99,5 +99,14 @@ class SimpleCAS_Protocol_Version2 extends SimpleCAS_Protocol_Version1 implements
     function validateProxyTicket($ticket)
     {
         throw new Exception('not implemented');
+    }
+
+    public function getAttributes()
+    {
+        if ($this->lastValidationResponse) {
+            return $this->lastValidationResponse->getAttributes();
+        }
+
+        return false;
     }
 }
