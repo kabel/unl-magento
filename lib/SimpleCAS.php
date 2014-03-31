@@ -216,7 +216,11 @@ class SimpleCAS
         }
 
         if (!is_null($name)) {
-            return isset($_SESSION[$this->_sessionNamespace][$name]) ? $_SESSION[$this->_sessionNamespace][$name] : null;
+            $value = null;
+            if (isset($_SESSION[$this->_sessionNamespace][$name])) {
+                $value = $_SESSION[$this->_sessionNamespace][$name];
+            }
+            return $value;
         }
 
         return $_SESSION[$this->_sessionNamespace];
@@ -261,7 +265,7 @@ class SimpleCAS
     {
         $this->_ticket = $ticket;
     }
-    
+
     /**
      * Returns the extra attributes from Version 2 protocol validation
      *
@@ -296,7 +300,7 @@ class SimpleCAS
     {
         if ($uid = $this->protocol->validateTicket($ticket, self::getURL())) {
             $this->setAuthenticated($uid);
-            
+
             if ($this->protocol instanceof SimpleCAS_Protocol_Version2) {
                 $session =& $this->_getSession();
                 $session['ATTRIBUTES'] = $this->protocol->getAttributes();
