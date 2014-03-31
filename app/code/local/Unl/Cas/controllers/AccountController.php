@@ -236,6 +236,12 @@ class Unl_Cas_AccountController extends Mage_Customer_AccountController
             if ($e->getCode() == Mage_Customer_Model_Customer::EXCEPTION_EMAIL_EXISTS) {
                 try {
                     $customer->loadByEmail($data['email']);
+
+                    // prevent another CAS user from taking this account
+                    if ($customer->getUnlCasUid()) {
+                        throw $e;
+                    }
+
                     $customer->setData('unl_cas_uid', $this->_getCasAuth()->getUser())
                         ->save();
 
