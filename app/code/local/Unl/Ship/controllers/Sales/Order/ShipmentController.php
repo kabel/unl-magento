@@ -68,6 +68,7 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             if ($isNeedCreateLabel) {
                 $responseAjax->setError(true);
                 $responseAjax->setMessage($e->getMessage());
+                $this->_sendAjaxResponse($responseAjax);
             } else {
                 $this->_getSession()->addError($e->getMessage());
                 $this->_redirect('*/*/new', array('order_id' => $this->getRequest()->getParam('order_id')));
@@ -78,8 +79,8 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
             Mage::logException($e);
             if ($isNeedCreateLabel) {
                 $responseAjax->setError(true);
-                $responseAjax->setMessage(
-                    Mage::helper('sales')->__('An error occurred while creating shipping label.'));
+                $responseAjax->setMessage(Mage::helper('sales')->__('An error occurred while creating shipping label.'));
+                $this->_sendAjaxResponse($responseAjax);
             } else {
                 $this->_getSession()->addError($this->__('Cannot save shipment.'));
                 $this->_redirect('*/*/new', array('order_id' => $this->getRequest()->getParam('order_id')));
@@ -113,11 +114,25 @@ class Unl_Ship_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order
                 'timer' => $timer,
             ));
 
-            $this->getResponse()->setBody($responseAjax->toJson());
+
+            $this->_sendAjaxResponse($responseAjax);
         } else {
             $this->_getSession()->addSuccess($success);
             $this->_redirect('*/sales_order/view', array('order_id' => $shipment->getOrderId()));
         }
+    }
+
+    /**
+     * Set the response body to the JSON of the given Varien_Object.
+     *
+     * @param Varien_Object $responseAjax
+     * @return Unl_Ship_Sales_Order_ShipmentController
+     */
+    protected function _sendAjaxResponse(Varien_Object $responseAjax)
+    {
+        $this->getResponse()->setBody($responseAjax->toJson());
+
+        return $this;
     }
 
     /**
