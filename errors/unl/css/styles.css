@@ -1,7 +1,3 @@
-/* Lists */
-#maincontent ul,
-#maincontent ol         { list-style:none; padding:0; }
-
 /* Tools */
 .hidden       { display:block !important; border:0 !important; margin:0 !important; padding:0 !important; font-size:0 !important; line-height:0 !important; width:0 !important; height:0 !important; overflow:hidden !important; }
 .nobr         { white-space:nowrap !important; }
@@ -24,63 +20,63 @@
 /* ======================================================================================= */
 
 /* Form Elements */
-input,select,textarea,button { font:12px/15px Arial, Helvetica, sans-serif; vertical-align:middle; color:#2f2f2f; }
-input.input-text,select,textarea { background:#fff; border:1px solid #b6b6b6; }
-input.input-text,textarea { padding:2px; }
-select { padding:1px; }
-select option { padding-right:10px; }
-select.multiselect option { border-bottom:1px solid #b6b6b6; padding:2px 5px; }
-select.multiselect option:last-child { border-bottom:0; }
-textarea { overflow:auto; }
-input.radio { margin-right:3px; }
-input.checkbox { margin-right:3px; }
-input.qty { width:2.5em !important; }
-button.button::-moz-focus-inner { padding:0; border:0; } /* FF Fix */
-button.button { -webkit-border-fit:lines; } /* <- Safari & Google Chrome Fix */
-button.button { overflow:visible; width:auto; border:0; padding:0; margin:0; background:transparent; cursor:pointer; }
-button.button span { display:block; height:19px; border:1px solid #990000; background:#cc0000; padding:0 8px; font:bold 12px/19px Arial, Helvetica, sans-serif; text-align:center; white-space:nowrap; color:#fff; }
-button.button span span { border:0; padding:0; }
-button.disabled span { border-color:#999; background:#ccc; color:#eee;}
-
 p.control input.checkbox,
 p.control input.radio { margin-right:6px; }
-/* Form Highlight */
-input.input-text:focus,select:focus,textarea:focus { background-color:#edf7fd; }
-/*.highlight { background:#efefef; }*/
 
 /* Form lists */
 /* Grouped fields */
-.form-list li { margin:0 0 8px; }
-.form-list label { float:left; color:#667; font-weight:bold; position:relative; z-index:0; }
-.form-list label.required {}
-.form-list label.required em { float:right; font-style:normal; color:#eb340a; position:absolute; top:0; right:-8px; }
+.form-list li {  }
+.form-list label { position:relative; z-index:0; }
+.form-list .required {}
+.form-list .required em { font-style:normal; color:#d20000; position:absolute; bottom:0; right:-1em; }
+.form-list li.control { position:relative }
 .form-list li.control label { float:none; }
 .form-list li.control input.radio,
-.form-list li.control input.checkbox { margin-right:6px; }
-.form-list .input-box { display:block; clear:both; width:260px; }
-.form-list .field { float:left; width:275px; }
-.form-list input.input-text { width:254px; }
-.form-list textarea { width:254px; height:10em; }
-.form-list select { width:260px; }
-.form-list li.wide .input-box { width:535px; }
-.form-list li.wide input.input-text { width:529px; }
-.form-list li.wide textarea { width:529px; }
-.form-list li.wide select { width:535px; }
+.form-list li.control input.checkbox { /*margin-right:6px;*/ }
+.form-list li.control .input-box { clear:none; display:inline; width:auto; }
+.form-list .fields { margin: 0 -11px; /*clear:left;*/ }
+.form-list .fields:after { clear: both; content: ""; display: table; }
+.form-list .input-box { display:block; clear:both; }
+.form-list .field { float:left; width:100%; padding: 0 11px; }
+.form-list input.input-text { }
+.form-list textarea { height:10em; }
+.form-list select { -webkit-appearance:none; }
+.form-list li.wide  { clear:left; }
+.form-list li.wide .input-box { }
+.form-list li.wide input.input-text { }
+.form-list li.wide textarea { }
+.form-list li.wide select { }
+.form-list li.additional-row { border-top:1px solid #ccc; margin-top:10px; padding-top:7px; }
+.form-list li.additional-row .btn-remove { float:right; margin:5px 0 0; }
 .form-list .input-range input.input-text { width:74px; }
+.form-list .input-group { display: table; }
+.form-list .input-group .input-text { margin:0; display: table-cell; border-radius:0; }
+.form-list .input-group .input-group-addon { display:table-cell; width:1%; vertical-align:middle; white-space:nowrap; background:#DBDAC8; padding:0.75em  }
+.form-list .input-group .input-group-btn { display: table-cell; width: 1%; vertical-align: middle; white-space:nowrap; }
+.form-list .input-group .input-group-btn button { border-radius:0; margin: 0; border-color: #dbdac8; border-style: solid; border-width: 1px 0; background-clip: padding-box; padding: 2em 1.333em; }
+.form-list .input-group .input-group-btn :last-child { border-width: 1px 1px 1px 0; }
+.form-list .input-group :first-child { border-top-left-radius:3px; border-bottom-left-radius:3px; }
+.form-list .input-group :last-child,
+.form-list .input-group :last-child button { border-top-right-radius:3px; border-bottom-right-radius:3px; }
 
-.buttons-set { clear:both; margin:4em 0 0; padding:8px 0 0; border-top:1px solid #e4e4e4; text-align:right; }
-.buttons-set p.required { margin:0 0 10px; }
+@media (min-width: 768px) {
+	.form-list .field { width: 50%; }
+    .form-list .input-group .input-group-btn button { padding: 1.5833em 1.333em; }
+}
+
+.buttons-set { text-align:right; }
+.buttons-set p.required {}
 .buttons-set .back-link { float:left; margin:0; }
-.buttons-set button.button { float:right; margin-right:5px; }
+.buttons-set button.button {}
 
-.fieldset { border:1px solid #bbafa0; background:#fbfaf6; padding:22px 25px 12px 33px; margin:28px 0; }
-.fieldset .legend { float:left; font-weight:bold; font-size:13px; border:1px solid #f19900; background:#f9f3e3; color:#e76200; margin:-33px 0 0 -10px; padding:0 8px; position:relative; }
+.fieldset {}
+.fieldset .legend {}
 
 /* Form Validation */
 .validation-advice { clear:both; min-height:13px; margin:3px 0 0; padding-left:17px; font-size:11px; font-weight:bold; line-height:13px; background:url(../images/validation_advice_bg.gif) 2px 0 no-repeat; color:#eb340a; }
 .validation-failed { border:1px dashed #eb340a !important; background:#faebe7 !important; }
 .validation-passed {}
-p.required { font-size:11px; text-align:right; color:#EB340A; }
+p.required { font-size:11px; text-align:right; color:#d20000; }
 
 /* Global Messages  */
 .success { color:#3d6611; font-weight:bold; }
@@ -89,7 +85,7 @@ p.required { font-size:11px; text-align:right; color:#EB340A; }
 .trace { width:940px; overflow:auto; min-height:250px; }
 
 .messages,
-.messages ul { list-style:none !important; margin:0 !important; padding:0 !important; }
+.messages ul { list-style:none !important; padding: 0; }
 .messages { width:100%; overflow:hidden; }
 .messages li { margin:0 0 10px !important; }
 .messages li li { margin:0 0 3px !important; }

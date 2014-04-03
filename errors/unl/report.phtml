@@ -25,9 +25,9 @@
     </li>
 </ul>
 <?php endif; ?>
-<form action="<?php echo "{$this->getBaseUrl(true)}errors/report.php?id={$this->reportId}" ?>" method="post" id="form-validate">
-    <fieldset class="fieldset">
-        <h2>Personal Information</h2>
+<form class="wdn-band wdn-light-triad-band" action="<?php echo "{$this->getBaseUrl(true)}errors/report.php?id={$this->reportId}" ?>" method="post" id="form-validate">
+    <div class="fieldset wdn-inner-wrapper">
+        <h2 class="clear-top">Personal Information</h2>
         <ul class="form-list group-select">
             <li class="fields">
                 <div class="field">
@@ -41,26 +41,27 @@
             </li>
             <li class="fields">
                 <div class="field">
-                    <label for="firstname" class="required"><em>*</em>Email Address</label>
+                    <label for="email_address" class="required"><em>*</em>Email Address</label>
                     <span class="input-box"><input type="text" name="email" id="email_address" value="<?php echo $this->postData['email'] ?>" title="Email Address" class="validate-email required-entry input-text" /></span>
                 </div>
                 <div class="field">
-                    <label for="firstname">Telephone</label>
+                    <label for="telephone">Telephone</label>
                     <span class="input-box"><input type="text" name="telephone" id="telephone" value="<?php echo $this->postData['telephone'] ?>" title="Telephone" class="input-text" /></span>
                 </div>
             </li>
             <li>
                 <div class="input-box">
-                    <label for="firstname">Comment</label>
-                    <span class="input-box"><textarea name="comment" cols="5" rows="3"><?php echo $this->postData['comment'] ?></textarea></span>
+                    <label for="comment">Comment</label>
+                    <span class="input-box"><textarea name="comment" id="comment" cols="5" rows="3"><?php echo $this->postData['comment'] ?></textarea></span>
                 </div>
             </li>
         </ul>
         <p class="required">* Required Fields</p>
-    </fieldset>
-    <div class="buttons-set form-buttons btn-only">
-        <button name="submit" class="button" type="submit"><span><span>Submit</span></span></button>
+        <div class="buttons-set form-buttons btn-only">
+            <button name="submit" class="button wdn-button" type="submit"><span><span>Submit</span></span></button>
+        </div>
     </div>
+
 </form>
 <?php elseif ('' == $this->reportAction): ?>
     <p><em>Exception printing is disabled by default for security reasons.</em></p>
