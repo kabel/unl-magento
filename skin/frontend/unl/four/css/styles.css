@@ -581,7 +581,9 @@ tr.summary-details-excluded { font-style:italic; }
 .std p,
 .std address,
 .std blockquote {}
+#maincontent > .std ul,
 .std ul { list-style:disc outside; padding-left:2em; }
+#maincontent > .std ol,
 .std ol { list-style:decimal outside; padding-left:2em; }
 .std ul ul { list-style-type:circle; }
 .std ul ul,
