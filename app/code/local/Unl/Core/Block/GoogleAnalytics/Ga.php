@@ -2,76 +2,149 @@
 
 class Unl_Core_Block_GoogleAnalytics_Ga extends Mage_GoogleAnalytics_Block_Ga
 {
-    const XML_PATH_OUTPUT_SCRIPT = 'google/analytics/output_script';
-
-    /* Overrides
-     * @see Mage_GoogleAnalytics_Block_Ga::_toHtml()
-     * by conditionally outputting the GA lib code
-     */
-    protected function _toHtml()
+    protected function _getCommandPrefix($trackerName)
     {
-        if (!Mage::helper('googleanalytics')->isGoogleAnalyticsAvailable()) {
-            return '';
+        if (!empty($trackerName)) {
+            return $this->jsQuoteEscape($trackerName) . '.';
         }
-        $accountId = Mage::getStoreConfig(Mage_GoogleAnalytics_Helper_Data::XML_PATH_ACCOUNT);
-        $altAccountId = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_ALT_ACCOUNT);
-        $altDomain = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_ALT_DOMAIN);
-        return '
-<!-- BEGIN GOOGLE ANALYTICS CODE -->
-<script type="text/javascript">
-//<![CDATA[' . $this->_getAnalyticsScriptCode() . '
-    var _gaq = _gaq || [];
-' . $this->_getPageTrackingCode($accountId) . '
-' . $this->_getOrdersTrackingCode() . '
-' . ($altAccountId ? $this->_getPageTrackingCode($altAccountId, 'alt', $altDomain) : '') . '
-//]]>
-</script>
-<!-- END GOOGLE ANALYTICS CODE -->';
+
+        return '';
+    }
+
+    protected function _getVersion()
+    {
+        return Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_VERSION);
+    }
+
+    protected function _augmentLegacyJs($code, $trackerName)
+    {
+        $cmdPrefix = $this->_getCommandPrefix($trackerName);
+
+        $code = str_replace("_gaq.push(['_", "_gaq.push(['{$cmdPrefix}_", $code);
+
+        return $code;
     }
 
     /* Overrides
      * @see Mage_GoogleAnalytics_Block_Ga::_getPageTrackingCode()
-     * by allowing a named tracker and domain to set (linker)
      */
     protected function _getPageTrackingCode($accountId, $trackerName = '', $domain = '')
     {
+        // augment parent logic for ga.js
+        if ($this->_getVersion() != Unl_Core_Helper_GoogleAnalytics::VERSION_ANALYTICS) {
+            $code = parent::_getPageTrackingCode($accountId);
+
+            if ($domain) {
+                $code = str_replace("_gaq.push(['_trackPageview", "_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview", $code);
+            }
+
+            if ($trackerName) {
+                $code = $this->_augmentLegacyJs($code, $trackerName);
+            }
+
+            return $code;
+        }
+
+        // New logic to support analytics.js
+        $cmdPrefix = $this->_getCommandPrefix($trackerName);
         $pageName   = trim($this->getPageName());
         $optPageURL = '';
         if ($pageName && preg_match('/^\/.*/i', $pageName)) {
             $optPageURL = ", '{$this->jsQuoteEscape($pageName)}'";
         }
 
+        $code = array();
+
+        $optCreate = "'{$this->jsQuoteEscape($accountId)}', 'auto'";
+        $optCreateJson = array();
         if (!empty($trackerName)) {
-            $trackerName = $this->jsQuoteEscape($trackerName) . '.';
+            $optCreateJson['name'] = $trackerName;
         }
-
-        $code = "
-_gaq.push(['{$trackerName}_setAccount', '{$this->jsQuoteEscape($accountId)}']);";
-
         if (!empty($domain)) {
-            $code .= "
-_gaq.push(['{$trackerName}_setDomainName', '{$this->jsQuoteEscape($domain)}']);
-_gaq.push(['{$trackerName}_setAllowLinker', true]);";
+            $optCreateJson['allowLinker'] = true;
+        }
+        if (!empty($optCreateJson)) {
+            $optCreate .= ', ' . Mage::helper('core')->jsonEncode($optCreateJson);
         }
 
-        $code .= "
-_gaq.push(['{$trackerName}_trackPageview'{$optPageURL}]);
-";
+        $code[] = "ga('create', {$optCreate});";
+        $code[] = $this->_getAnonymizationCode();
+        $code[] = "ga('{$cmdPrefix}send', 'pageview'{$optPageURL});";
 
-        return $code;
+        return implode("\n", $code);
     }
 
-    protected function _getAnalyticsScriptCode()
+    protected function _getOrdersTrackingCode($trackerName = '')
     {
-        if (!Mage::getStoreConfigFlag(self::XML_PATH_OUTPUT_SCRIPT)) {
+        // augment parent logic for ga.js
+        if ($this->_getVersion() != Unl_Core_Helper_GoogleAnalytics::VERSION_ANALYTICS) {
+            $result = parent::_getOrdersTrackingCode();
+
+            if ($trackerName) {
+                $result = $this->_augmentLegacyJs($result, $trackerName);
+            }
+
+            return $result;
+        }
+
+        // New logic to support analytics.js
+        $cmdPrefix = $this->_getCommandPrefix($trackerName);
+        $orderIds = $this->getOrderIds();
+        if (empty($orderIds) || !is_array($orderIds)) {
+            return;
+        }
+        $collection = Mage::getResourceModel('sales/order_collection')
+            ->addFieldToFilter('entity_id', array('in' => $orderIds));
+
+        $result = array("ga('{$cmdPrefix}require', 'ecommerce', 'ecommerce.js');");
+
+        foreach ($collection as $order) {
+            $json = Mage::helper('core')->jsonEncode(array(
+                'id' => $order->getIncrementId(),
+                'affiliation' => Mage::app()->getStore()->getFrontendName(),
+                'revenue' => $order->getBaseGrandTotal(),
+                'tax' => $order->getBaseTaxAmount(),
+                'shipping' => $order->getBaseShippingAmount(),
+            ));
+            $result[] = "ga('{$cmdPrefix}ecommerce:addTransaction', {$json});";
+
+            foreach ($order->getAllVisibleItems() as $item) {
+                $json = Mage::helper('core')->jsonEncode(array(
+                    'id' => $order->getIncrementId(),
+                    'name' => $item->getName(),
+                    'sku' => $item->getSku(),
+                    'price' => $item->getBasePrice(),
+                    'quantity' => $item->getQtyOrdered(),
+                ));
+                $result[] = "ga('{$cmdPrefix}ecommerce:addItem', {$json});";
+            }
+
+            $result[] = "ga('{$cmdPrefix}ecommerce:send');";
+        }
+        return implode("\n", $result);
+    }
+
+
+    protected function _getAnonymizationCode($trackerName = '')
+    {
+        if (!Mage::helper('googleanalytics')->isIpAnonymizationEnabled()) {
             return '';
         }
 
-        return '
-    (function() {
-        var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;
-        ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';
-        (document.getElementsByTagName(\'head\')[0] || document.getElementsByTagName(\'body\')[0]).appendChild(ga);
-    })();' . "\n";
+        // augment parent logic for ga.js
+        if ($this->_getVersion() != Unl_Core_Helper_GoogleAnalytics::VERSION_ANALYTICS) {
+            $code = parent::_getAnonymizationCode();
+
+            if ($trackerName) {
+                $code = $this->_augmentLegacyJs($code, $trackerName);
+            }
+
+            return $code;
+        }
+
+        // New logic to support analytics.js
+        $cmdPrefix = $this->_getCommandPrefix($trackerName);
+        return "ga('{$cmdPrefix}set', 'anonymizeIp', true);";
     }
 }

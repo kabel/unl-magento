@@ -1,0 +1,37 @@
+<?php /* @var $this Unl_Core_Block_GoogleAnalytics_Ga */ ?>
+<?php if (!Mage::helper('core/cookie')->isUserNotAllowSaveCookie()): ?>
+<?php
+$accountId = Mage::getStoreConfig(Mage_GoogleAnalytics_Helper_Data::XML_PATH_ACCOUNT);
+$altAccountId = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_ALT_ACCOUNT);
+$altDomain = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_ALT_DOMAIN);
+$version = Mage::getStoreConfig(Unl_Core_Helper_GoogleAnalytics::XML_PATH_VERSION);
+$outputScript = Mage::getStoreConfigFlag(Unl_Core_Helper_GoogleAnalytics::XML_PATH_OUTPUT_SCRIPT);
+?>
+<!-- BEGIN GOOGLE ANALYTICS CODEs -->
+<script type="text/javascript">
+//<![CDATA[
+<?php if ($outputScript): ?>
+<?php if ($version == Unl_Core_Helper_GoogleAnalytics::VERSION_ANALYTICS): ?>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<?php else: ?>
+var _gaq = _gaq || [];
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+<?php endif; ?>
+<?php endif; ?>
+<?php echo $this->_getPageTrackingCode($accountId) ?>
+<?php echo $this->_getOrdersTrackingCode() ?>
+<?php if ($altAccountId): ?>
+<?php echo $this->_getPageTrackingCode($altAccountId, 'alt', $altDomain) ?>
+<?php echo $this->_getOrdersTrackingCode('alt') ?>
+<?php endif; ?>
+//]]>
+</script>
+<!-- END GOOGLE ANALYTICS CODE -->
+<?php endif; ?>
