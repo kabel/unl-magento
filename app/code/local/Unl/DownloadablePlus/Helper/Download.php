@@ -12,6 +12,8 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
 
         if (is_null($this->_handle)) {
             if ($this->_linkType == self::LINK_TYPE_URL) {
+                $session = Mage::getSingleton('customer/session');
+
                 $client = new Zend_Http_Client($this->_resourceFile, array(
                     'maxredirects' => 0,
                     'useragent' => 'Magento ver/' . Mage::getVersion(),
@@ -26,6 +28,7 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
                 $client->setHeaders('Accept-encoding', 'identity');
 
                 try {
+                    $session->unlock();
                     /* @var $response Zend_Http_Response_Stream */
                     $this->_urlResponse = $response = $client->request('GET');
                     $this->_handle = $response->getStream();
@@ -38,6 +41,8 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
                     Mage::logException($e);
                     Mage::throwException(Mage::helper('downloadable')->__('An error occurred while getting the requested content. Please contact the store owner.'));
                 }
+
+                $session->lock();
             }
             else {
                 return parent::_getHandle();
