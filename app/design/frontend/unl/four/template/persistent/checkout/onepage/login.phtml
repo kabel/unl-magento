@@ -57,13 +57,11 @@
     </div>
     <div class="wdn-col" id="create">
     <?php if (!$_allowGuest && $_mustBeLogged): ?>
-        <input type="hidden" id="login:register" value="register" />
-        <?php $_onClick = 'setLocation(\'' . $this->helper('checkout/url')->getRegistrationUrl() . '\')'; ?>
+        <input type="hidden" id="login:register" value="register" onclick="setLocation('<?php echo $this->helper('checkout/url')->getRegistrationUrl() ?>')" />
     <?php else: ?>
-        <input type="radio" name="checkout_method" id="login:register" value="register" <?php echo !$_allowGuest ? ' checked="checked"' : '' ?> class="radio no-display" />
-        <?php $_onClick = 'persistentContinue(' . (!$_allowGuest ? 'true' : '') . ')' ; ?>
+        <input type="radio" name="checkout_method" id="login:register" value="register" <?php echo !$_allowGuest ? ' checked="checked"' : '' ?> class="radio no-display" onclick="persistentContinue(<?php if (!$_allowGuest) { echo 'true'; } ?>)" />
     <?php endif;?>
-        <label class="mrkp-btn-cnt" for="login:register" onclick="<?php echo $_onClick ?>">
+        <label class="mrkp-btn-cnt" for="login:register">
             <i class="wdn-icon-user"></i>
             <span class="mrkp-btn-action">Register as</span>
             <span class="mrkp-btn-noun short">new customer</span>

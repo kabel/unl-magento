@@ -339,6 +339,12 @@ p.control input.radio { margin-right:6px; }*/
     .form-list .input-group .input-group-btn button { padding: 1.5833em 1.333em; }
 }
 
+.ie8 .radio.no-display {
+	display: block;
+	float: left;
+	filter: alpha(opacity=0);
+}
+
 /* Customer */
 .form-list .customer-name-prefix .input-box,
 .form-list .customer-name-suffix .input-box,
