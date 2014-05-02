@@ -48,6 +48,7 @@ class Unl_Core_Model_Resource_Report_Tax_Reconcile_Paid extends Mage_Tax_Model_R
         $innerSelect = $this->getConnection()->select()
             ->from($this->_getInnerMainTable(),
                 array('paid_at' => sprintf('MIN(%s)', $this->_getInnerDateColumn()), 'order_id'))
+            ->where('base_tax_amount > 0')
             ->group('order_id');
 
         return $innerSelect;

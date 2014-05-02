@@ -91,6 +91,7 @@ class Unl_Core_Model_Resource_Report_Tax_Totals_Paid extends Mage_Sales_Model_Re
         $innerSelect = $this->getConnection()->select()
             ->from($this->_getInnerMainTable(),
                 array($col => sprintf('MIN(%s)', $col), 'order_id'))
+            ->where('base_tax_amount > 0')
             ->group('order_id');
 
         return $innerSelect;
