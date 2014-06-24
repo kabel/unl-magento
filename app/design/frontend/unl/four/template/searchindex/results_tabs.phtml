@@ -1,0 +1,39 @@
+<?php echo $this->getChildHtml('topSearch') ?>
+<?php if (Mage::helper('catalogsearch')->getQueryText() !== ''): ?>
+<?php
+$_indexes     = $this->getIndexes();
+$_cntNotEmpty = 0;
+foreach ($_indexes as $_index) {
+    if ($_index->getCountResults() && $_index->getContentBlock()->getIsVisible()) {
+        $_cntNotEmpty++;
+    }
+}
+?>
+<?php if ($_cntNotEmpty > 0): ?>
+<ul class="searchindex-results">
+<?php foreach ($_indexes as $_index): ?>
+    <?php if ($_index->getCountResults()
+        && ($_index->getContentBlock()->getIsVisible() == true || $_index->getCode() == 'mage_catalog_product')): ?>
+        <?php if ($_index == $this->getCurrentIndex()): ?>
+        <li class="active">
+        <?php else: ?>
+        <li>
+        <?php endif ?>
+            <a href="<?php echo $this->getIndexUrl($_index) ?>">
+            <?php echo $this->__($_index->getTitle()) ?>
+            &nbsp;<span>(<?php echo $_index->getCountResults() ?>)</span></a>
+        </li>
+    <?php endif ?>
+<?php endforeach ?>
+</ul>
+<?php endif ?>
+<div class="page-title">
+    <h1><?php echo ($this->getHeaderText()) ? $this->getHeaderText() : $this->__("Search results for '%s'", $this->helper('catalogsearch')->getEscapedQueryText()) ?></h1>
+</div>
+
+<?php Mage::helper('mstcore/debug')->dump('product $collection', Mage::getModel('catalogsearch/layer')->getProductCollection()->getSelect()->__toString()); ?>
+
+<?php echo $this->getCurrentContent() ?>
+
+<?php echo $this->getChildHtml('feedback') ?>
+<?php endif; ?>
