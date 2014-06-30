@@ -1469,7 +1469,7 @@ tr.summary-details-excluded { font-style:italic; }
 
 .detail-label { font-size: 0.9em; text-transform: uppercase; opacity: 0.7; }
 
-.toggle-link:before { content: '\e803'; font-family:mrkp-icon; display:inline-block; width:1em; text-align:center; font-weight:normal; }
+.toggle-link:before { content: '\e803'; font-family:mrkp-icon; display:inline-block; width:1em; text-align:center; font-weight:normal; font-style: normal; }
 .toggle-link.expanded:before { content: '\e820'; }
 
 .order-summary li { clear: left; }

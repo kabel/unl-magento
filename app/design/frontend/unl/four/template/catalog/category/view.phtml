@@ -17,7 +17,7 @@
 <a class="mrkp-offset-anchor" id="category_main"></a>
 <div class="page-title category-title">
     <?php if($this->IsRssCatalogEnable() && $this->IsTopCategory()): ?>
-        <a href="<?php echo $this->getRssLink() ?>" class="link-rss icon-link" title="<?php echo $this->__('Subscribe to RSS Feed') ?>"></a>
+        <a href="<?php echo $this->getRssLink() ?>"><i class="link-rss"></i><span class="wdn-text-hidden"><?php echo $this->__('Subscribe to RSS Feed') ?></span></a>
     <?php endif; ?>
     <h1><?php echo $_helper->categoryAttribute($_category, $_category->getName(), 'name') ?></h1>
 </div>

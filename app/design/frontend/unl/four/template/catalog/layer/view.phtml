@@ -15,7 +15,7 @@
             <div class="actions"><a href="<?php echo $this->getClearUrl() ?>"><?php echo $this->__('Clear All') ?></a></div>
         <?php endif; ?>
         <?php if($this->canShowOptions()): ?>
-            <p class="block-subtitle"><?php echo $this->__('Available filters') ?> <a href="#" class="icon-link toggle-link" title="Toggle display"></a></p>
+            <p class="block-subtitle"><?php echo $this->__('Available filters') ?> <a href="#"><i class="toggle-link"></i><span class="wdn-text-hidden">Toggle display</span></a></p>
             <ul class="wdn-grid-set-halves bp1-wdn-grid-set-fourths no-js-show" id="narrow-by-list">
                 <?php $_filters = $this->getFilters() ?>
                 <?php foreach ($_filters as $_filter): ?>
