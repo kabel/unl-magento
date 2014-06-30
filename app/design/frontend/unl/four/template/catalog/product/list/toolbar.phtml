@@ -47,7 +47,7 @@
                 <?php if($this->isModeActive($_code)): ?>
                     <strong class="<?php echo strtolower($_code); ?>"><?php echo $_label ?></strong>&nbsp;
                 <?php else: ?>
-                    <a href="<?php echo $this->getModeUrl($_code) ?>" class="<?php echo strtolower($_code); ?>" rel="nofollow"><?php echo $_label ?></a>&nbsp;
+                    <button type="button" onclick="setLocation('<?php echo $this->getModeUrl($_code) ?>')" class="<?php echo strtolower($_code); ?>"><?php echo $_label ?></button>&nbsp;
                 <?php endif; ?>
             <?php endforeach; ?>
             <?php endif; ?>
