@@ -287,7 +287,7 @@ p.control input.radio { margin-right:6px; }*/
 .form-list li {  }
 .form-list label { position:relative; z-index:0; }
 .form-list .required {}
-.form-list .required em { font-style:normal; color:#eb340a; position:absolute; bottom:0; right:-1em; }
+.form-list .required em { font-style:normal; color:#d20000; position:absolute; bottom:0; right:-1em; }
 .form-list li.control { position:relative }
 .form-list li.control label { float:none; }
 .form-list li.control input.radio,
@@ -425,7 +425,7 @@ p.control input.radio { margin-right:6px; }*/
 	
 .validation-failed { border:1px dashed #f00 !important; background:#faebe7 !important; }
 .validation-passed {}
-p.required { color:#f00; }
+p.required { color:#d20000; }
 /* Expiration date and CVV number validation fix */
 .v-fix { float:left; }
 .v-fix .validation-advice { display:block; width:12em; margin-right:-12em; position:relative; }
@@ -530,7 +530,7 @@ form .data-table input,
 .data-table col.min { width: 1%; }
 .data-table col.quarter { width:25%; }
 table tbody tr:first-child td { border-top-width:1px; }
-table tbody th { border: 1px solid #DDCEA1; border-left:0; }
+table tbody th { border: 1px solid #d5d5d2; border-left:0; }
 /*.data-table th { padding:5px; border:1px solid #ddd; font-weight:bold; white-space:nowrap; }
 .data-table td { padding:5px; border:1px solid #ddd; }
 .data-table thead { background-color:#f2f2f2; }
@@ -1043,10 +1043,11 @@ tr.summary-details-excluded { font-style:italic; }
 .product-view .short-description { margin:1em 0; border-bottom: 1px solid #E5E1D5; }
 
 /* Product Options */
-.product-options { background-color:#E6E2D5; }
+.product-options { background-color:#ECEAE3; }
 .product-options dt { margin-top:1em; }
-.product-options dt label { font-weight:bold; position:relative; }
-.product-options dt label.required em { font-style:normal; color:#eb340a; position:absolute; bottom:0; right:-1em; }
+.product-options dt label,
+.product-options dt .label { font-weight:bold; position:relative; color: inherit; }
+.product-options dt .required em { font-style:normal; color:#d20000; position:absolute; bottom:0; right:-1em; }
 .product-options dt .qty-holder { float:right; }
 .product-options dt .qty-holder label { vertical-align:middle; }
 .product-options dt .qty-disabled { background:none; border:0; padding:3px; color:#000; }
@@ -1064,7 +1065,7 @@ tr.summary-details-excluded { font-style:italic; }
 .product-options dd textarea { width:98%; height:8em; }
 .product-options dd select { width:100%; }
 .product-options .options-list { margin-bottom:1em; }
-.product-options .options-list li { padding-top:0.5em; }
+.product-options .options-list li { margin:0; padding-top:0.5em; }
 .product-options .options-list li:after { clear: both; content: ""; display: table; }
 .product-options .options-list input.radio { margin-left:10px; vertical-align:baseline; }
 .product-options .options-list input.checkbox { margin-left:10px; }
