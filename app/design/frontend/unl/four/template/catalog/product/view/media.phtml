@@ -44,8 +44,10 @@
 <div class="more-views">
     <ul class="wdn-grid-set-fourths">
     <?php foreach ($this->getGalleryImages() as $_image): ?>
+        <?php $_label = $_image->getLabel(); ?>
+        <?php if (empty($_label)) { $_label = $_product->getName() . ' alternate view'; } ?>
         <li class="wdn-col">
-            <a href="#" onclick="popWin('<?php echo $this->getGalleryUrl($_image) ?>', 'gallery', 'width=300,height=300,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;" title="<?php echo $this->htmlEscape($_image->getLabel()) ?>"><img src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(56); ?>" width="56" height="56" alt="<?php echo $this->htmlEscape($_image->getLabel()) ?>" /></a>
+            <a href="#" onclick="popWin('<?php echo $this->getGalleryUrl($_image) ?>', 'gallery', 'width=300,height=300,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;" title="View larger image"><img src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(56); ?>" width="56" height="56" alt="<?php echo $this->htmlEscape($_label) ?>" /></a>
         </li>
     <?php endforeach; ?>
     </ul>
