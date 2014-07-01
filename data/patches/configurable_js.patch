@@ -1,0 +1,22 @@
+Index: js/varien/configurable.js
+===================================================================
+--- js/varien/configurable.js	(revision 167883)
++++ js/varien/configurable.js	(working copy)
+@@ -170,6 +170,7 @@
+         this.clearSelect(element);
+         element.options[0] = new Option('', '');
+         element.options[0].innerHTML = this.config.chooseText;
++        element.options[0].setAttribute('selected', 'selected');
+ 
+         var prevConfig = false;
+         if(element.prevSetting){
+@@ -194,9 +195,6 @@
+                 if(allowedProducts.size()>0){
+                     options[i].allowedProducts = allowedProducts;
+                     element.options[index] = new Option(this.getOptionLabel(options[i], options[i].price), options[i].id);
+-                    if (typeof options[i].price != 'undefined') {
+-                        element.options[index].setAttribute('price', options[i].price);
+-                    }
+                     element.options[index].config = options[i];
+                     index++;
+                 }
