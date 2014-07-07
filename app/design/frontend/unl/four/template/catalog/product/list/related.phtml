@@ -10,7 +10,7 @@
             <li class="item">
                 <?php if(!$_item->isComposite() && $_item->isSaleable()): ?>
                     <?php if (!$_item->getRequiredOptions()): ?>
-                        <input type="checkbox" class="checkbox related-checkbox" id="related-checkbox<?php echo $_item->getId() ?>" value="<?php echo $_item->getId() ?>" />
+                        <input type="checkbox" class="checkbox related-checkbox" id="related-checkbox<?php echo $_item->getId() ?>" value="<?php echo $_item->getId() ?>" title="<?php echo $this->escapeHtml($this->__('Include "%s" with selections', $_item->getName())) ?>" />
                     <?php endif; ?>
                 <?php endif; ?>
                 <div class="product">
