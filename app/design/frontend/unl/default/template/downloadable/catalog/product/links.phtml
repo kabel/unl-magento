@@ -4,7 +4,7 @@
     <dl>
         <?php $_links = $this->getLinks(); ?>
         <?php $_isRequired = $this->getLinkSelectionRequired(); ?>
-        <dt><span class="label<?php if ($_isRequired) echo 'required' ?>"><?php if ($_isRequired) echo '<em>*</em>' ?><?php echo $this->getLinksTitle() ?></span></dt>
+        <dt><span class="label<?php if ($_isRequired) echo ' required' ?>"><?php if ($_isRequired) echo '<em>*</em>' ?><?php echo $this->getLinksTitle() ?></span></dt>
         <dd>
             <ul id="downloadable-links-list" class="options-list">
             <?php foreach ($_links as $_link): ?>
