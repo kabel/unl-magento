@@ -4,7 +4,6 @@
 # Magento Core include_path overrides
 app/code/local/Mage
 app/code/local/Varien/Image
-app/code/local/Zend
 
 # UNL Modules bundle
 app/code/local/Unl
