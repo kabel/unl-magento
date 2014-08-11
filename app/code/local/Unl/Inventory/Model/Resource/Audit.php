@@ -18,7 +18,8 @@ class Unl_Inventory_Model_Resource_Audit extends Mage_Core_Model_Resource_Db_Abs
 
 	public function insertPurchaseAssociations($object)
 	{
-	    if (!$object->hasPurchaseAssociations()) {
+	    $purchases = $object->getPurchaseAssociations();
+	    if (empty($purchases)) {
 	        return $this;
 	    }
 
@@ -26,7 +27,7 @@ class Unl_Inventory_Model_Resource_Audit extends Mage_Core_Model_Resource_Db_Abs
 	    $table = $this->getTable('unl_inventory/purchase_audit');
 
 	    $rows = array();
-	    foreach ($object->getPurchaseAssociations() as $assoc) {
+	    foreach ($purchases as $assoc) {
 	        $rows[] = array(
 	            $assoc['purchase']->getId(),
 	            $object->getId(),
