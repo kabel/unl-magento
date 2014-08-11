@@ -70,6 +70,31 @@ class Unl_Inventory_Model_Observer
     }
 
     /**
+     * Returns the auditable qty for an invoice item
+     *
+     * @param Mage_Sales_Model_Order_Invoice $invoice
+     * @param Mage_Sales_Model_Order_Invoice_Item $item
+     */
+    protected function _getInvoiceItemAuditQty($invoice, $item)
+    {
+        $baseQty = $item->getQty();
+        if ($item->getOrderItem()->isDummy()) {
+            $baseQty = 1;
+        }
+
+        $parentOrderId = $item->getOrderItem()->getParentItemId();
+        $parentItem = false;
+        foreach ($invoice->getAllItems() as $tmpItem) {
+            if ($tmpItem->getOrderItemId() == $parentOrderId) {
+                $parentItem = $tmpItem;
+                break;
+            }
+        }
+
+        return $parentItem ? ($parentItem->getQty() * $baseQty) : $baseQty;
+    }
+
+    /**
      * An event observer for the <code>sales_model_service_order_prepare_invoice</code>
      * event.
      *
@@ -84,7 +109,7 @@ class Unl_Inventory_Model_Observer
 
         foreach ($invoice->getAllItems() as $item) {
             /* @var $item Mage_Sales_Model_Order_Invoice_Item */
-            if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy()) {
+            if ($item->getQty() <= 0) {
                 continue;
             }
 
@@ -93,12 +118,14 @@ class Unl_Inventory_Model_Observer
                 continue;
             }
 
+            $qty = $this->_getInvoiceItemAuditQty($invoice, $item);
+
             $auditLog = Mage::getModel('unl_inventory/audit');
             $auditLog->setData(array(
                 'product_id' => $item->getProductId(),
                 'type' => Unl_Inventory_Model_Audit::TYPE_SALE,
-                'qty' => $item->getQty() * -1,
-                'amount' => $item->getQty() * $item->getBaseCost() * -1,
+                'qty' => $qty * -1,
+                'amount' => $qty * $item->getBaseCost() * -1,
                 'invoice_item' => $item,
             ));
             $auditLogs[] = $auditLog;
@@ -125,7 +152,7 @@ class Unl_Inventory_Model_Observer
 
         foreach ($invoice->getAllItems() as $item) {
             /* @var $item Mage_Sales_Model_Order_Invoice_Item */
-            if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy()) {
+            if ($item->getQty() <= 0) {
                 continue;
             }
 
@@ -134,12 +161,14 @@ class Unl_Inventory_Model_Observer
                 continue;
             }
 
+            $qty = $this->_getInvoiceItemAuditQty($invoice, $item);
+
             $auditLog = Mage::getModel('unl_inventory/audit');
             $auditLog->setData(array(
                 'product_id' => $item->getProductId(),
                 'type' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
-                'qty' => $item->getQty(),
-                'amount' => $item->getBaseCost() * $item->getQty(),
+                'qty' => $qty,
+                'amount' => $qty * $item->getBaseCost(),
                 'invoice_item' => $item,
             ));
             $auditLogs[] = $auditLog;
@@ -202,7 +231,16 @@ class Unl_Inventory_Model_Observer
 
         foreach ($creditmemo->getAllItems() as $item) {
             /* @var $item Mage_Sales_Model_Order_Creditmemo_Item */
-            if ($item->getQty() <= 0 || $item->getOrderItem()->isDummy() || !$item->getBackToStock()) {
+            $return = false;
+            if ($item->hasBackToStock()) {
+                if ($item->getBackToStock() && $item->getQty()) {
+                    $return = true;
+                }
+            } elseif (Mage::helper('cataloginventory')->isAutoReturnEnabled()) {
+                $return = true;
+            }
+
+            if ($item->getQty() <= 0 || !$return) {
                 continue;
             }
 
@@ -211,11 +249,15 @@ class Unl_Inventory_Model_Observer
                 continue;
             }
 
+            $parentOrderId = $item->getOrderItem()->getParentItemId();
+            /* @var $parentItem Mage_Sales_Model_Order_Creditmemo_Item */
+            $parentItem = $parentOrderId ? $creditmemo->getItemByOrderId($parentOrderId) : false;
+
             $auditLog = Mage::getModel('unl_inventory/audit');
             $auditLog->setData(array(
                 'product_id' => $item->getProductId(),
                 'type' => Unl_Inventory_Model_Audit::TYPE_CREDIT,
-                'qty' => $item->getQty(),
+                'qty' => $parentItem ? ($parentItem->getQty() * $item->getQty()) : $item->getQty(),
                 'amount' => $item->getBaseCost() * $item->getQty(),
                 'creditmemo_item' => $item,
             ));
