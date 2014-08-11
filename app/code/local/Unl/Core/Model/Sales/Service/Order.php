@@ -11,6 +11,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         $totalQty = 0;
         $creditmemo = $this->_convertor->toCreditmemo($this->_order);
         $qtys = isset($data['qtys']) ? $data['qtys'] : array();
+        $this->updateLocaleNumbers($qtys);
 
         foreach ($this->_order->getAllItems() as $orderItem) {
             if (!$this->_canRefundItem($orderItem, $qtys)) {
@@ -20,6 +21,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
             $item = $this->_convertor->itemToCreditmemoItem($orderItem);
             if ($orderItem->isDummy()) {
                 $qty = 1;
+                $orderItem->setLockedDoShip(true);
             } else {
                 if (isset($qtys[$orderItem->getId()])) {
                     $qty = (float) $qtys[$orderItem->getId()];
@@ -46,7 +48,6 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
         return $creditmemo;
     }
 
-
     /* Overrides
      * @see Mage_Sales_Model_Service_Order::prepareInvoiceCreditmemo()
      * by adding an event before total collection
@@ -55,6 +56,8 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
     {
         $totalQty = 0;
         $qtys = isset($data['qtys']) ? $data['qtys'] : array();
+        $this->updateLocaleNumbers($qtys);
+
         $creditmemo = $this->_convertor->toCreditmemo($this->_order);
         $creditmemo->setInvoice($invoice);
 
@@ -143,6 +146,7 @@ class Unl_Core_Model_Sales_Service_Order extends Mage_Sales_Model_Service_Order
      */
     public function prepareInvoice($qtys = array())
     {
+        $this->updateLocaleNumbers($qtys);
         $invoice = $this->_convertor->toInvoice($this->_order);
         $totalQty = 0;
         foreach ($this->_order->getAllItems() as $orderItem) {
