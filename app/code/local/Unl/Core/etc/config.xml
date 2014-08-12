@@ -260,6 +260,11 @@
                     <convert_parser_xml_excel>Unl_Core_Model_Dataflow_Convert_Parser_Xml_Excel</convert_parser_xml_excel>
                 </rewrite>
             </dataflow>
+            <eav_resource>
+                <rewrite>
+                    <helper_mysql4>Unl_Core_Model_Eav_Resource_Helper_Mysql4</helper_mysql4>
+                </rewrite>
+            </eav_resource>
             <importexport>
                 <rewrite>
                     <!-- Add admin scope filters -->
