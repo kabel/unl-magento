@@ -201,7 +201,11 @@ class Unl_Core_Model_Admin_Observer
         $reqeust = $observer->getEvent()->getControllerAction()->getRequest();
 
         $storeIds = $reqeust->getParam('store_ids');
-        $storeIds = Mage::helper('unl_core')->getScopeFilteredStores(explode(',', $storeIds));
+        if (!empty($storeIds)) {
+            $storeIds = explode(',', $storeIds);
+        }
+
+        $storeIds = Mage::helper('unl_core')->getScopeFilteredStores($storeIds);
 
         if (!empty($storeIds)) {
             $reqeust->setParam('store_ids', implode(',', $storeIds));
