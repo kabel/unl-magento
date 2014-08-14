@@ -130,6 +130,7 @@ class Unl_DownloadablePlus_Downloadable_DownloadController extends Mage_Download
             'product_id' => $linkPurchasedItem->getProductId(),
             'item_id' => $linkPurchasedItem->getId(),
             'created_at' => $linkPurchasedItem->getCreatedAt(),
+            'uses' => $linkPurchasedItem->getNumberOfDownloadsUsed(),
         );
 
         $rawBody = http_build_query($callbackData, '', '&');
