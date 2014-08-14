@@ -7,6 +7,14 @@
     </modules>
     
     <global>
+        <fieldsets>
+            <downloadable_sales_copy_link>
+                <link_secret>
+                    <to_purchased>*</to_purchased>
+                </link_secret>
+            </downloadable_sales_copy_link>
+        </fieldsets>
+    
         <blocks>
             <unl_downloadableplus>
                 <class>Unl_DownloadablePlus_Block</class>
@@ -46,9 +54,28 @@
                 <class>Unl_DownloadablePlus_Model</class>
             </unl_downloadableplus>
         </models>
+        
+        <resources>
+            <unl_downloadableplus_setup>
+                <setup>
+                    <module>Unl_DownloadablePlus</module>
+                    <class>Mage_Catalog_Model_Resource_Eav_Mysql4_Setup</class>
+                </setup>
+            </unl_downloadableplus_setup>
+        </resources>
     </global>
     
     <frontend>
+        <routers>
+            <downloadable>
+                <args>
+                    <modules>
+                        <unl_downloadableplus before="Mage_Downloadable">Unl_DownloadablePlus_Downloadable</unl_downloadableplus>
+                    </modules>
+                </args>
+            </downloadable>
+        </routers>
+    
         <events>
             <sales_order_save_commit_after>
                 <observers>
