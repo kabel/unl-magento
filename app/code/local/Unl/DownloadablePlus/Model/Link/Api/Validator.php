@@ -2,6 +2,8 @@
 
 class Unl_DownloadablePlus_Model_Link_Api_Validator extends Mage_Downloadable_Model_Link_Api_Validator
 {
+    protected $_uploadTypes = array('file', 'url', 'callback');
+
     /* Overrides
      * @see Mage_Downloadable_Model_Link_Api_Validator::_dispatch()
      * to prevent PHP warnings on valid input
@@ -30,7 +32,7 @@ class Unl_DownloadablePlus_Model_Link_Api_Validator extends Mage_Downloadable_Mo
             if ($resource['type'] == 'file') {
                 $this->validateFileDetails($resource['file']);
             }
-            if ($resource['type'] == 'url' && empty($resource['link_url'])) {
+            if (in_array($resource['type'], array('url', 'callback')) && empty($resource['link_url'])) {
                 throw new Exception('empty_url');
             }
 
