@@ -131,3 +131,5 @@ button.active {
 .card-visa i:before { content:'\e81f'; }
 .card-mastercard i:before { content:'\e81e'; }
 .card-discover i:before { content:'\e81d'; }
+
+.files label.wide { width: auto; }
