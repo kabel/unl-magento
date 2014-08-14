@@ -2,7 +2,12 @@
 
 class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Download
 {
+    const LINK_TYPE_CALLBACK = 'callback';
+    const LINK_TYPE_REDIRECT = 'redirect';
+
     protected $_urlResponse;
+
+    protected $_urlSecret;
 
     protected function _getHandle()
     {
@@ -21,6 +26,10 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
                     'storeresponse' => false,
                     'adapter' => 'Zend_Http_Client_Adapter_Curl',
                 ));
+
+                if ($this->_urlSecret) {
+                    $client->setHeaders('X-Magento-Secret', $this->getHMAC($this->_resourceFile, $this->_urlSecret));
+                }
 
                 $this->_resourceFile = $client->getUri()->getPath();
 
@@ -49,5 +58,15 @@ class Unl_DownloadablePlus_Helper_Download extends Mage_Downloadable_Helper_Down
             }
         }
         return $this->_handle;
+    }
+
+    public function setUrlSecret($secret)
+    {
+        $this->_urlSecret = $secret;
+    }
+
+    public function getHMAC($data, $key)
+    {
+        return 'sha1=' . hash_hmac('sha1', $data, $key);
     }
 }
