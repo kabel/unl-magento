@@ -220,7 +220,8 @@ Validation.addAllThese([
 Validation.addAllThese([
     ['validate-downloadable-url', 'Please specify Url.', function(v,element) {
             linkType = element.up(0).down('input[value="url"]');
-            if (linkType.checked && v == '') {
+            var altLinkType = element.up(1).down('input[value="callback"]');
+            if ((linkType.checked || altLinkType.checked) && v == '') {
                 return false;
             }
             return true;

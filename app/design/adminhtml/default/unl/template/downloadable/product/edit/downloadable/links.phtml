@@ -151,6 +151,12 @@ var linkTemplate = '<tr>'+
             '<div class="row">'+
                 '<label for="downloadable_link_{{id}}_url_type"><input type="radio" class="radio validate-one-required-by-name" id="downloadable_link_{{id}}_url_type" name="downloadable[link][{{id}}][type]" value="url"{{url_checked}} /> URL:</label><input type="text" class="validate-downloadable-url input-text" name="downloadable[link][{{id}}][link_url]" value="{{link_url}}" />'+
             '</div>'+
+            '<div class="row">'+
+                '<label for="downloadable_link_{{id}}_callback_type" class="wide"><input type="radio" class="radio validate-one-required-by-name" id="downloadable_link_{{id}}_callback_type" name="downloadable[link][{{id}}][type]" value="callback"{{callback_checked}} /> Callback</label>'+
+            '</div>'+
+            '<div class="row">'+
+                '<label for="downloadable_link_{{id}}_secret">Secret:</label><input id="downloadable_link_{{id}}_secret" type="password" class="input-text" name="downloadable[link][{{id}}][link_secret]" value="{{link_secret}}" autocomplete="off" />'+
+            '</div>'+
             '<div>'+
                 '<span id="downloadable_link_{{id}}_link_container"></span>'+
             '</div>'+
@@ -185,6 +191,8 @@ var linkItems = {
             data.url_checked = ' checked="checked"';
         } else if (data.link_type == 'file') {
             data.file_checked = ' checked="checked"';
+        } else if (data.link_type) {
+            data.callback_checked = ' checked="checked"';
         }
         if (data.sample_type == 'url') {
             data.sample_url_checked = ' checked="checked"';
@@ -280,6 +288,7 @@ var linkItems = {
         linkFile = $('downloadable_link_'+data.id+'_file_type');
         linkFile.advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
         linkUrl.advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
+        linkUrl.up(1).down('.validate-downloadable-url').advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
         $('downloadable_link_'+data.id+'_file_save').advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
 
         sampleFile = $('downloadable_link_'+data.id+'_sample_file_type');
