@@ -883,6 +883,7 @@ tr.summary-details-excluded { font-style:italic; }
 .ratings-table th {}
 
 /* Availability */
+.product-hide-availability .availability { display: none; }
 .availability { }
 .availability span { font-weight:bold; }
 .availability.in-stock span {}

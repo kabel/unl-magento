@@ -959,6 +959,7 @@ tr.summary-details-excluded { font-style:italic; }
 .ratings-table td { padding:4px 0 0; }
 
 /* Availability */
+.product-hide-availability .availability { display: none; }
 #maincontent .availability { margin:0; }
 .availability span { font-weight:bold; }
 .availability.in-stock span {}
@@ -1162,8 +1163,10 @@ f/********** Product Prices > */
 /* Product Options */
 .product-options { margin:20px 0 0; padding:0 15px 10px; background-color:#E5DCA7; border:1px solid #CCC495; }
 .product-options dt { padding:10px 0 0; font-weight:normal; }
-.product-options dt label { font-weight:bold; position:relative; }
-.product-options dt label.required em { color:#eb340a; position:absolute; top:0; right:-7px; }
+.product-options dt label,
+.product-options dt span { font-weight:bold; position:relative; }
+.product-options dt label.required em,
+.product-options dt span.required em { color:#eb340a; position:absolute; top:0; right:-7px; }
 .product-options dt .qty-holder { float:right; margin-right:15px; }
 .product-options dt .qty-holder label { vertical-align:middle; }
 .product-options dt .qty-disabled,
