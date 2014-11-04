@@ -72,12 +72,12 @@
                 </div>
             <?php endif; ?>
 
-            <?php /*if ($_product->getShortDescription()):?>
+            <?php if (!Mage::helper('unl_core/buros')->isProductTestReview($_product) && $_product->getShortDescription() != '-'): ?>
                 <div class="short-description">
                     <h2><?php echo $this->__('Quick Overview') ?></h2>
                     <div class="std"><?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?></div>
                 </div>
-            <?php endif; */ ?>
+            <?php endif; ?>
 
             <?php echo $this->getChildHtml('other');?>
             <?php if ($_product->isSaleable() && $this->hasOptions()):?>
