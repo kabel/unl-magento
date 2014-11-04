@@ -695,3 +695,11 @@ button.btn-checkout > span {
 	color: #b3b3b3;
 	text-decoration: none;
 }
+
+.product-options {
+	background-color: #f4fbff;
+	border-color: #9EC1D3;
+}
+#maincontent .product-options dd {
+	border-color: #9EC1D3;
+}
