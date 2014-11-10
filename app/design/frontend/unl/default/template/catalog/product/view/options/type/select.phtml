@@ -31,7 +31,7 @@
     <?php if ($_option->getType() == Mage_Catalog_Model_Product_Option::OPTION_TYPE_DROP_DOWN || $_option->getType() == Mage_Catalog_Model_Product_Option::OPTION_TYPE_MULTIPLE): ?>
     <label for="select_<?php echo $_option->getId() ?>"<?php if ($_option->getIsRequire()) echo ' class="required"' ?>><?php if ($_option->getIsRequire()) echo '<em>*</em>' ?><?php echo  $this->escapeHtml($_option->getTitle()) ?></label>
     <?php else: ?>
-    <span<?php if ($_option->getIsRequire()) echo ' class="required"' ?>><?php if ($_option->getIsRequire()) echo '<em>*</em>' ?><?php echo  $this->escapeHtml($_option->getTitle()) ?></span>
+    <span class="label<?php if ($_option->getIsRequire()) echo ' required' ?>"><?php if ($_option->getIsRequire()) echo '<em>*</em>' ?><?php echo  $this->escapeHtml($_option->getTitle()) ?></span>
     <?php endif; ?>
 </dt>
 <dd<?php if ($_option->decoratedIsLast){?> class="last"<?php }?>>

@@ -1048,6 +1048,7 @@ tr.summary-details-excluded { font-style:italic; }
 .product-options dt { margin-top:1em; }
 .product-options dt label,
 .product-options dt .label { font-weight:bold; position:relative; color: inherit; }
+.product-options dt span.label { font-family:"Gotham SSm A","Gotham SSm B",Verdana,"Verdana Ref",Geneva,Tahoma,"Lucida Grande","Lucida Sans Unicode","Lucida Sans","DejaVu Sans","Bitstream Vera Sans","Liberation Sans",sans-serif; font-size: 12px; }
 .product-options dt .required em { font-style:normal; color:#d20000; position:absolute; bottom:0; right:-1em; }
 .product-options dt .qty-holder { float:right; }
 .product-options dt .qty-holder label { vertical-align:middle; }
@@ -1056,6 +1057,7 @@ tr.summary-details-excluded { font-style:italic; }
 .product-options dd:after { clear:both; content:""; display:table; }
 .product-options dl.last dd.last {}
 @media (min-width: 768px) {
+	.product-options dt span.label { font-size: 13px; }
 	.product-options dd .input-box { float:left; width:80%; }
 	.product-options dd .input-box ~ .qty-holder { float:right; }
 	.product-options .options-list { margin-right:-25%; }
