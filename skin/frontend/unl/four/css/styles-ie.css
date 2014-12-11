@@ -1,0 +1,8 @@
+.ie7 .radio.no-display {
+	display: block;
+	float: left;
+	filter: alpha(opacity=0);
+}
+.ie7 .form-list li.control input.mrkp-radio-btn {
+	height: 1px;
+}
