@@ -2,6 +2,8 @@
 
 class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
+    protected $_isAllowedFilter;
+
     public function __construct()
     {
         parent::__construct();
@@ -15,6 +17,9 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
 
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
+
+        $this->_isAllowedFilter = Mage::getSingleton('admin/session')->isAllowed('sales/order');
+        $this->setFilterVisibility($this->_isAllowedFilter);
     }
 
     protected function _prepareCollection()
@@ -32,12 +37,15 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
 
     protected function _prepareColumns()
     {
+
         $this->addColumn('real_order_id', array(
             'header'    => Mage::helper('sales')->__('Order #'),
             'width'     => '80px',
             'type'      => 'text',
             'index'     => 'ordernum',
-            'renderer'  => 'unl_core/adminhtml_report_product_orderdetails_grid_renderer_action'
+            'renderer'  => $this->_isAllowedFilter
+                ? 'unl_core/adminhtml_report_product_orderdetails_grid_renderer_action'
+                : null
         ));
 
         $this->addColumn('order_date', array(
@@ -113,7 +121,9 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
 
     public function getRowUrl($item)
     {
-        return $this->getUrl('*/sales_order/view', array('order_id' => $item->getOrderId()));
+        return $this->_isAllowedFilter
+            ? $this->getUrl('*/sales_order/view', array('order_id' => $item->getOrderId()))
+            : false;
     }
 
     /* Overrides
