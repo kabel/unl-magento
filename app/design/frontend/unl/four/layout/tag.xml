@@ -34,10 +34,11 @@ Default layout, loads most of the pages
 
     <default>
         <!-- Mage_Tag -->
+        <!-- 
         <reference name="right">
             <block type="tag/popular" name="tags_popular" template="tag/popular.phtml"/>
         </reference>
-
+        -->
     </default>
 
 <!--
@@ -46,9 +47,11 @@ Customer account pages, rendered for all tabs in dashboard
 
     <customer_account>
         <!-- Mage_Tag -->
+        <!-- 
         <reference name="customer_account_navigation">
             <action method="addLink" translate="label" module="tag"><name>tags</name><path>tag/customer/</path><label>My Tags</label></action>
         </reference>
+        -->
     </customer_account>
 
 <!--
@@ -57,15 +60,18 @@ Customer account home dashboard layout
 
     <customer_account_index>
         <!-- Mage_Tag -->
+        <!-- 
         <reference name="customer_account_dashboard">
             <action method="unsetChild"><name>customer_account_dashboard_info2</name></action>
             <block type="tag/customer_recent" name="customer_account_dashboard_info2" as="info2" template="tag/customer/recent.phtml"/>
         </reference>
+        -->
     </customer_account_index>
 
     <catalog_product_view translate="label">
         <label>Catalog Product View</label>
          <!-- Mage_Tag -->
+         <!--
         <reference name="product.info.additional">
             <block type="tag/product_list" name="product_tag_list" before="-" template="tag/list.phtml">
                 <block type="page/html_wrapper" name="product.tag.list.list.before" as="list_before" translate="label">
@@ -74,6 +80,7 @@ Customer account home dashboard layout
                 </block>
             </block>
         </reference>
+        -->
     </catalog_product_view>
 
 <!--
