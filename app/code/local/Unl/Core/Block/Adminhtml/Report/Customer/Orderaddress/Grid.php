@@ -30,6 +30,23 @@ class Unl_Core_Block_Adminhtml_Report_Customer_Orderaddress_Grid extends Mage_Ad
             $collection->addFieldToFilter('parent_id', array('in' => $this->getParam('order_ids')));
         }
 
+        $select = Mage::helper('unl_core')->addAdminScopeFilters($collection, 'parent_id');
+
+        if ($this->getRequest()->getParam('product')) {
+            $adapter = $collection->getConnection();
+
+            if (!$select) {
+                /* @var $select Varien_Db_Select */
+                $select = Mage::getModel('sales/order_item')->getCollection()->getSelect()
+                    ->reset(Zend_Db_Select::COLUMNS)
+                    ->columns(array('order_id'))
+                    ->group('order_id');
+                $collection->getSelect()->join(array('scope' => $select), 'main_table.parent_id = scope.order_id', array());
+            }
+
+            $select->where($adapter->prepareSqlCondition('product_id', $this->getParam('product')));
+        }
+
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -67,6 +84,16 @@ class Unl_Core_Block_Adminhtml_Report_Customer_Orderaddress_Grid extends Mage_Ad
             'index'     => 'lastname',
         ));
 
+        $this->addColumn('email', array(
+            'header'    => Mage::helper('sales')->__('Email'),
+            'index'     => 'email',
+        ));
+
+        $this->addColumn('company', array(
+            'header'    => Mage::helper('sales')->__('Company'),
+            'index'     => 'company',
+        ));
+
         $this->addColumn('address', array(
             'header'    => Mage::helper('sales')->__('Billing Address'),
             'index'     => 'entity_id',
@@ -83,7 +110,7 @@ class Unl_Core_Block_Adminhtml_Report_Customer_Orderaddress_Grid extends Mage_Ad
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/orderaddressGrid');
+        return $this->getUrl('*/*/orderaddressGrid', array('_current' => array('product')));
     }
 
     public function getRowUrl($item)

@@ -17,7 +17,6 @@ class Unl_Core_Model_Resource_Report_Customer_Orderaddress_Collection extends Ma
         );
 
         $this->addFieldToFilter('address_type', 'billing');
-        Mage::helper('unl_core')->addAdminScopeFilters($this, 'parent_id');
 
         return $this;
     }
