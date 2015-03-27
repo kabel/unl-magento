@@ -309,11 +309,13 @@ class Unl_Core_Model_Observer
      */
     public function autoCleanBlockHtmlCache($schedule)
     {
-        $type = 'block_html';
-        if (Mage::app()->useCache($type) &&
-            array_key_exists($type, Mage::app()->getCacheInstance()->getInvalidatedTypes())
-        ) {
-            Mage::app()->getCacheInstance()->cleanType($type);
+        $types = ['block_html', 'layout_general_cache_tag'];
+        foreach ($types as $type) {
+            if (Mage::app()->useCache($type) &&
+                array_key_exists($type, Mage::app()->getCacheInstance()->getInvalidatedTypes())
+            ) {
+                Mage::app()->getCacheInstance()->cleanType($type);
+            }
         }
 
         return $this;
