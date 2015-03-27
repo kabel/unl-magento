@@ -18,5 +18,6 @@ lib/LinLibertineFont513
 lib/SimpleCAS
 lib/SimpleCAS.php
 lib/UNL
+shell/cache-stats.php
 skin/frontend/unl
 skin/adminhtml/default/unl
