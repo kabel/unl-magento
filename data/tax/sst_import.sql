@@ -1,5 +1,5 @@
 TRUNCATE TABLE `boundaries`;
-LOAD DATA LOCAL INFILE '/Users/kabel/Downloads/NETaxData_20130701/NEB2013Q3JUN15.csv' 
+LOAD DATA INFILE 'NEB.txt' 
   INTO TABLE `boundaries` 
   FIELDS TERMINATED BY ','
   LINES TERMINATED BY '\r\n'
@@ -19,20 +19,20 @@ LOAD DATA LOCAL INFILE '/Users/kabel/Downloads/NETaxData_20130701/NEB2013Q3JUN15
     address_secondary_high,
     address_secondary_odd_even,
     city_name,
-    zip_code,
-    plus_4,
-    zip_code_low,
-    zip_ext_low,
-    zip_code_high,
-    zip_ext_high,
+    @zip_code,
+    @plus_4,
+    @zip_code_low,
+    @zip_ext_low,
+    @zip_code_high,
+    @zip_ext_high,
     composite_ser_code,
     fips_state_code,
     fips_state_indicator,
     fips_county_code,
     fips_place_number,
     fips_place_class_code,
-    longitude,
-    latitude,
+    @longitude,
+    @latitude,
     special_tax_district_code_src_1,
     special_tax_district_code_1,
     tax_auth_type_code_1,
@@ -93,12 +93,23 @@ LOAD DATA LOCAL INFILE '/Users/kabel/Downloads/NETaxData_20130701/NEB2013Q3JUN15
     special_tax_district_code_src_20,
     special_tax_district_code_20,
     tax_auth_type_code_20
-  );
+  )
+  SET 
+    zip_code = NULLIF(@zip_code, ''),
+    plus_4 = NULLIF(@plus_4, ''),
+    zip_code_low = NULLIF(@zip_code_low, ''),
+    zip_ext_low = NULLIF(@zip_ext_low, ''),
+    zip_code_high = NULLIF(@zip_code_high, ''),
+    zip_ext_high = NULLIF(@zip_ext_high, ''),
+    longitude = NULLIF(@longitude, ''),
+    latitude = NULLIF(@latitude, '')
+;
+
 TRUNCATE TABLE `rates`;
-LOAD DATA LOCAL INFILE '/Users/kabel/Downloads/NETaxData_20130701/NER2013Q3JUN15.csv' 
+LOAD DATA INFILE '/Users/kabel/Public/NER.csv' 
   INTO TABLE `rates` 
   FIELDS TERMINATED BY ',' 
-  LINES TERMINATED BY ' \r\n'
+  LINES TERMINATED BY '\r\n'
   (
     state, 
     jurisdiction_type,
@@ -108,5 +119,7 @@ LOAD DATA LOCAL INFILE '/Users/kabel/Downloads/NETaxData_20130701/NER2013Q3JUN15
     food_drug_tax_rate_intra,
     food_drug_tax_rate_inter,
     begin_date,
-    end_date
-  );
+    @end_date
+  )
+  SET end_date = SUBSTRING_INDEX(@end_date, ' ', 1)
+;
