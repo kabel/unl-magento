@@ -20,13 +20,32 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
         return $this;
     }
 
+    public function setDateRange($from = null, $to = null)
+    {
+        if ($from) {
+            $from = Mage::app()->getLocale()->utcDate(null, $from, false, Varien_Date::DATE_INTERNAL_FORMAT);
+        }
+
+        if ($to) {
+            $to = Mage::app()->getLocale()->date()
+                ->set($to, Varien_Date::DATE_INTERNAL_FORMAT)
+                ->setHour(23)
+                ->setMinute(59)
+                ->setSecond(59)
+                ->setTimezone(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
+        }
+
+        return parent::setDateRange($from, $to);
+
+    }
+
     protected function _applyDateRangeFilter()
     {
         if (!is_null($this->_from)) {
-            $this->getSelect()->where($this->getConnection()->getDatePartSql($this->_getPeriodExpr()) . ' >= ?', $this->_from);
+            $this->getSelect()->where('e.' . $this->_periodColumn . ' >= ?', Varien_Date::formatDate($this->_from));
         }
         if (!is_null($this->_to)) {
-            $this->getSelect()->where($this->getConnection()->getDatePartSql($this->_getPeriodExpr()) . ' <= ?', $this->_to);
+            $this->getSelect()->where('e.' . $this->_periodColumn . ' <= ?', Varien_Date::formatDate($this->_to));
         }
         return $this;
     }
