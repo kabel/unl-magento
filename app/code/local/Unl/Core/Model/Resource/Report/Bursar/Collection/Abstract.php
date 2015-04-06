@@ -149,4 +149,13 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
         $resource = Mage::getResourceModel('sales/report_order');
         return $resource->getStoreTZOffsetQuery($table, $column, $from, $to, $store);
     }
+
+    public function getSelectCountSql()
+    {
+        $countSelect = $this->_conn->select();
+        $innerSelect = clone $this->getSelect();
+        $countSelect->from(array('counter' => $innerSelect), 'COUNT(*)');
+
+        return $countSelect;
+    }
 }
