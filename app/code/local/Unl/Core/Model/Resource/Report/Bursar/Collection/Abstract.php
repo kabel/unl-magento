@@ -9,12 +9,15 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
     protected $_selectedColumns = array();
     protected $_paymentMethodCodes = array();
 
-    protected $_inited = false;
-
     public function __construct()
     {
         parent::_construct();
         $this->setModel('adminhtml/report_item');
+    }
+
+    public function __clone()
+    {
+        $this->_select = clone $this->_select;
     }
 
     protected function _applyStoresFilter()
@@ -101,10 +104,6 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
 
     protected function _initSelectForProducts($groupOrder = false)
     {
-        if ($this->_inited) {
-            return $this;
-        }
-
         $this->_initSelectForShipping(false, $groupOrder);
 
         $this->getSelect()
@@ -118,17 +117,11 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
                 ->group('sg.group_id');
         }
 
-        $this->_inited = true;
-
         return $this;
     }
 
     protected function _initSelectForShipping($filterShipping = true, $groupOrder = false)
     {
-        if ($this->_inited) {
-            return $this;
-        }
-
         $this->getSelect()
             ->from(array('e' => $this->getResource()->getMainTable()), $this->_getSelectedColumns())
             ->join(array('p' => $this->getTable('sales/order_payment')), 'e.order_id = p.parent_id', array())
@@ -151,7 +144,6 @@ class Unl_Core_Model_Resource_Report_Bursar_Collection_Abstract extends Mage_Sal
         }
 
         $this->_useAnalyticFunction = true;
-        $this->_inited = true;
 
         return $this;
     }
