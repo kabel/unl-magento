@@ -9,11 +9,6 @@
             <li><a href="http://www.unl.edu/" title="University of Nebraska&ndash;Lincoln">UNL</a></li>
             <li>
                 <a href="<?php echo Mage::app()->getStore('default')->getUrl('/'); ?>">Marketplace</a>
-                <?php if ($_isDefault): ?>
-                <div class="storednav">
-                    <?php echo $this->getChildHtml('store_switcher') ?>
-                </div>
-                <?php endif; ?>
             </li>
             <?php if (!$_isDefault): ?>
             <li>
