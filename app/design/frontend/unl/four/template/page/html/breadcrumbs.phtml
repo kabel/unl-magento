@@ -43,7 +43,9 @@
             <h3 class="wdn_list_descriptor wdn-text-hidden">Navigation</h3>
             <!-- InstanceBeginEditable name="navlinks" -->
             <?php if ($_isDefault): ?>
-            <?php echo $this->getChildHtml('store_switcher') ?>
+            <ul>
+                <li><a href="<?php echo Mage::app()->getStore('default')->getUrl('/'); ?>">Home</a></li>
+            </ul>
             <?php else: ?>
             <?php echo $this->getChildHtml('topMenu') ?>
             <?php endif; ?>
