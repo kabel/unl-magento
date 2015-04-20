@@ -74,6 +74,7 @@ class Mage_Admin_Model_Observer
                     $request->setPost('login', null);
                 }
                 if (!$request->getInternallyForwarded()) {
+                    $request->setInternallyForwarded();
                     if ($request->getParam('isIframe')) {
                         $request->setParam('forwarded', true)
                             ->setControllerName('index')
