@@ -10,27 +10,31 @@ class Unl_Ship_Model_Shipment_Package extends Mage_Core_Model_Abstract
 
 	public function getPdfImage()
 	{
-	    $rawformat = strtolower($this->getLabelFormat());
 	    $imgstr = $this->getLabelImage();
 
 	    if (!$imgstr) {
 	        return false;
 	    }
 
-	    if ($rawformat != 'png') {
-	        $image = imagecreatefromstring($imgstr);
-	        imageinterlace($image, false);
+        $image = imagecreatefromstring($imgstr);
+        if (!$image) {
+            return false;
+        }
 
-	        if ($this->getCarrier() == 'ups') {
-	            $image = imagerotate($image, 270, 0);
-	        }
+        imageinterlace($image, false);
 
-	        ob_start();
-	        imagepng($image);
-	        $imgstr = ob_get_clean();
-	        imagedestroy($image);
-	        unset($image);
-	    }
+        if (imagesx($image) > imagesy($image)) {
+            $image = imagerotate($image, 270, 0);
+        }
+
+//         imagefilter($image, IMG_FILTER_GRAYSCALE);
+        imagetruecolortopalette($image, false, 256);
+
+        ob_start();
+        imagepng($image, null, 9, PNG_ALL_FILTERS);
+        $imgstr = ob_get_clean();
+        imagedestroy($image);
+        unset($image);
 
         return new Zend_Pdf_Resource_Image_Png('data://image/png;base64,' . base64_encode($imgstr));
 	}
