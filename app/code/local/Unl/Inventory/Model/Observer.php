@@ -86,7 +86,9 @@ class Unl_Inventory_Model_Observer
         $parentItem = false;
         foreach ($invoice->getAllItems() as $tmpItem) {
             if ($tmpItem->getOrderItemId() == $parentOrderId) {
-                $parentItem = $tmpItem;
+                if (!$tmpItem->getOrderItem()->isDummy()) {
+                    $parentItem = $tmpItem;
+                }
                 break;
             }
         }
