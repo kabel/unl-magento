@@ -85,10 +85,10 @@ class Unl_Core_Block_Adminhtml_Report_Product_Customized_Grid extends Mage_Admin
 
         $currencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
         $this->addColumn('base_price', array(
-            'header'        => Mage::helper('reports')->__('Price'),
+            'header'        => Mage::helper('reports')->__('Item Total'),
             'type'          => 'currency',
             'currency_code' => $currencyCode,
-            'index'         => 'base_price',
+            'index'         => 'base_total',
         ));
 
         $this->addColumn('customer_firstname', array(

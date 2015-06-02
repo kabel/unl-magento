@@ -55,6 +55,13 @@ class Unl_Core_Model_Resource_Report_Product_Orderdetails_Collection extends Mag
             'canceled' => 'qty_canceled'
         ));
 
+        $this->addFilterToMap('base_total', '(main_table.base_row_total - main_table.base_discount_amount + main_table.base_tax_amount)');
+        $this->addExpressionFieldToSelect('base_total', '({{row}} - {{discount}} + {{tax}})', array(
+            'row'  => 'main_table.base_row_total',
+            'discount' => 'main_table.base_discount_amount',
+            'tax' => 'main_table.base_tax_amount',
+        ));
+
         $this->addFieldToFilter('qty_adjusted', array('gt' => 0));
 
         $this->addFieldToFilter('is_dummy', false);

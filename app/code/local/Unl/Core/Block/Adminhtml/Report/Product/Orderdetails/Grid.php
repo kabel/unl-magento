@@ -75,10 +75,10 @@ class Unl_Core_Block_Adminhtml_Report_Product_Orderdetails_Grid extends Mage_Adm
 
         $currencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
         $this->addColumn('base_price', array(
-            'header'        => Mage::helper('reports')->__('Price'),
+            'header'        => Mage::helper('reports')->__('Row Total'),
             'type'          => 'currency',
             'currency_code' => $currencyCode,
-            'index'         => 'base_price',
+            'index'         => 'base_total',
         ));
 
         $this->addColumn('customer_firstname', array(
