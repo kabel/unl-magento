@@ -415,7 +415,7 @@ class Unl_Core_Model_Resource_Report_Product_Options_Collection extends Varien_D
         return 0;
     }
 
-    protected function getExcludedLoadedOptionsByType($type, $excludedOptionIds)
+    protected function getExcludedLoadedOptionsByType($type, $excludeOptionIds)
     {
         if (!in_array($type, array(
             'loadedOptions',
@@ -431,12 +431,12 @@ class Unl_Core_Model_Resource_Report_Product_Options_Collection extends Varien_D
 
     public function getExcludedLoadedOptions($excludeOptionIds)
     {
-        return $this->getExcludedLoadedOptionsByType('loadedOptions', $excludedOptionIds);
+        return $this->getExcludedLoadedOptionsByType('loadedOptions', $excludeOptionIds);
     }
 
     public function getExcludedLoadedBundleOptions($excludeOptionIds)
     {
-        return $this->getExcludedLoadedOptionsByType('loadedBundleOptions', $excludedOptionIds);
+        return $this->getExcludedLoadedOptionsByType('loadedBundleOptions', $excludeOptionIds);
     }
 
     protected function addLoadedOption($optionId, $option, $override = false)
