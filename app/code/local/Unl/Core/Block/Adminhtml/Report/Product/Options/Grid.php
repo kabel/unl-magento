@@ -18,7 +18,7 @@ class Unl_Core_Block_Adminhtml_Report_Product_Options_Grid extends Mage_Adminhtm
         $this->setPagerVisibility(false);
 
         $this->_defaultFilter = array(
-//             'order_date' => array('from' => strtotime('last year')),
+            'order_date' => array('from' => strtotime('last year')),
         );
 
         $this->_isAllowedOrderView = Mage::getSingleton('admin/session')->isAllowed('sales/order');
