@@ -177,7 +177,7 @@ class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_
     public function optionsPickerGridAction()
     {
         $this->loadLayout();
-        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_optionspicker_grid')->toHtml();
+        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_optionsPicker_grid')->toHtml();
         $this->getResponse()->setBody($grid);
     }
 
