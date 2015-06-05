@@ -4,6 +4,16 @@ require_once 'Mage/Adminhtml/controllers/Report/ProductController.php';
 
 class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_ProductController
 {
+    protected function _initProduct()
+    {
+        $productId  = (int) $this->getRequest()->getParam('id');
+        $product = Mage::getModel('catalog/product')->load($productId);
+
+        Mage::register('current_product', $product);
+
+        return $product;
+    }
+
     public function reconcileAction()
     {
         $this->_title($this->__('Reports'))
@@ -147,14 +157,114 @@ class Unl_Core_Adminhtml_Report_ProductController extends Mage_Adminhtml_Report_
         $this->_exportExcel('', 'customized');
     }
 
+    public function optionsPickerAction()
+    {
+        if ($this->getRequest()->getQuery('ajax')) {
+            $this->_forward('optionsPickerGrid');
+            return;
+        }
+
+        $this->_title($this->__('Reports'))
+            ->_title($this->__('Products'))
+            ->_title($this->__('With Options'));
+
+        $this->_initAction()
+            ->_setActiveMenu('report/product/optionsPicker');
+
+        $this->renderLayout();
+    }
+
+    public function optionsPickerGridAction()
+    {
+        $this->loadLayout();
+        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_optionspicker_grid')->toHtml();
+        $this->getResponse()->setBody($grid);
+    }
+
+    public function optionsAction()
+    {
+        $product = $this->_initProduct();
+
+        if (!$product->getId() || !Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+            $this->_getSession()->addError(Mage::helper('unl_core')->__('Cannot load requested product'));
+            $this->_redirect('*/*/optionsPicker');
+            return;
+        }
+
+        if ($this->getRequest()->getQuery('ajax')) {
+            $this->_forward('optionsGrid');
+            return;
+        }
+
+        $this->_title($this->__('Reports'))
+            ->_title($this->__('Products'))
+            ->_title($this->__('Ordered with Options'))
+            ->_title($product->getName());
+
+        $this->_initAction()
+            ->_setActiveMenu('report/product/optionsPicker');
+
+        $this->renderLayout();
+    }
+
+    public function optionsGridAction()
+    {
+        $product = $this->_initProduct();
+
+        if (!$product->getId() || !Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+            $this->_forward('denied');
+            return;
+        }
+
+        $this->loadLayout();
+        $grid = $this->getLayout()->createBlock('unl_core/adminhtml_report_product_options_grid')->toHtml();
+        $this->getResponse()->setBody($grid);
+    }
+
+    public function exportOptionsCsvAction()
+    {
+        $product = $this->_initProduct();
+
+        if (!$product->getId() || !Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+            $this->_getSession()->addError(Mage::helper('unl_core')->__('Cannot load requested product'));
+            $this->_redirect('*/*/optionsPicker');
+            return;
+        }
+
+        $this->_exportCsv('', 'options');
+    }
+
+    public function exportOptionsExcelAction()
+    {
+        $product = $this->_initProduct();
+
+        if (!$product->getId() || !Mage::helper('unl_core')->isAdminUserAllowedProductEdit($product)) {
+            $this->_getSession()->addError(Mage::helper('unl_core')->__('Cannot load requested product'));
+            $this->_redirect('*/*/optionsPicker');
+            return;
+        }
+
+        $this->_exportExcel('', 'options');
+    }
+
     protected function _isAllowed()
     {
-        $act = $this->getRequest()->getActionName();
+        $session = Mage::getSingleton('admin/session');
+        $act = strtolower($this->getRequest()->getActionName());
+
         switch ($act) {
             case 'orderdetails':
             case 'customized':
             case 'reconcile':
-                return Mage::getSingleton('admin/session')->isAllowed('report/products/' . $act);
+                return $session->isAllowed('report/products/' . $act);
+                break;
+            case 'optionspicker':
+            case 'optionspickergrid':
+            case 'options':
+            case 'optionsgrid':
+            case 'exportoptionscsv':
+            case 'exportoptionsexcel':
+                return $session->isAllowed('report/products/ordered_options');
                 break;
             default:
                 return parent::_isAllowed();

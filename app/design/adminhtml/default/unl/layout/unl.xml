@@ -127,6 +127,20 @@ Custom Product Reports
         </reference>
     </adminhtml_report_product_customized>
     
+    <adminhtml_report_product_optionspicker>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_product_optionsPicker" name="sales.grid.container"/>
+        </reference>
+    </adminhtml_report_product_optionspicker>
+    
+    <adminhtml_report_product_options>
+        <reference name="content">
+            <block type="unl_core/adminhtml_report_product_options" name="sales.grid.container">
+            	<block type="unl_core/adminhtml_report_product_options_params" name="grid.params.form" />
+            </block>
+        </reference>
+    </adminhtml_report_product_options>
+    
     <adminhtml_report_product_reconcile>
         <reference name="content">
             <block type="unl_core/adminhtml_report_product_reconcile" name="sales.grid.container"/>

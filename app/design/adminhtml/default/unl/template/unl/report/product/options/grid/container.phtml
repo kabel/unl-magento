@@ -1,0 +1,29 @@
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <?php echo $this->getChildHtml('grid.params.form') ?>
+</div>
+<div>
+    <?php echo $this->getGridHtml() ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    function paramsFormSubmit() {
+        var filters = $$('#params_form input', '#params_form select');
+        var elements = [];
+        for(var i in filters){
+            if(filters[i].value && filters[i].value.length && !filters[i].disabled) elements.push(filters[i]);
+        }
+        var validator  = new Validation('params_form');
+        if (validator.validate()) {
+            setLocation('<?php echo $this->getParamsUrl(); ?>params/'+encode_base64(Form.serializeElements(elements))+'/');
+        }
+    }
+//]]>
+</script>

@@ -65,6 +65,10 @@
                             <title>Customized</title>
                             <action>adminhtml/report_product/customized</action>
                         </customized>
+                        <ordered_options translate="title" module="reports">
+                            <title>Ordered with Options</title>
+                            <action>adminhtml/report_product/optionsPicker</action>
+                        </ordered_options>
                         <reconcile translate="title" module="unl_core">
                             <title>Reconcile</title>
                             <action>adminhtml/report_product/reconcile</action>
@@ -153,6 +157,9 @@
                                     <customized translate="title">
                                         <title>Customized</title>
                                     </customized>
+                                    <ordered_options translate="title">
+                                        <title>Ordered with Options</title>
+                                    </ordered_options>
                                     <reconcile translate="title">
                                         <title>Reconcile</title>
                                     </reconcile>
