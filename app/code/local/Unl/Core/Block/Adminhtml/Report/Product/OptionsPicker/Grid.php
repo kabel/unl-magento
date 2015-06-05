@@ -23,6 +23,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_OptionsPicker_Grid extends Mage_Ad
 
         $collection->joinAttribute('status', 'catalog_product/status', 'entity_id', null, 'inner');
 
+        $collection->addAttributeToSelect('unl_payment_account');
+
         /* @var $orderItemSelect Zend_Db_Select */
         $orderItemSelect = Mage::getModel('sales/order_item')->getCollection()->getSelect();
         $orderItemSelect->group('product_id');
@@ -97,6 +99,8 @@ class Unl_Core_Block_Adminhtml_Report_Product_OptionsPicker_Grid extends Mage_Ad
                 'sortable'  => false,
                 'index'     => 'entity_id',
             ));
+
+        Mage::dispatchEvent('adminhtml_grid_prepare_columns', array('grid' => $this));
 
         return parent::_prepareColumns();
     }
