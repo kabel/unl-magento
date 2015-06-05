@@ -12,6 +12,13 @@ class Unl_Core_Block_Adminhtml_Report_Product_Options extends Mage_Adminhtml_Blo
         parent::__construct();
         $this->setTemplate('unl/report/product/options/grid/container.phtml');
         $this->_removeButton('add');
+
+        $this->addButton('back', array(
+            'label' => Mage::helper('reports')->__('Back'),
+            'onclick' => 'setLocation(\'' . $this->getUrl('*/*/optionsPicker') . '\')',
+            'class' => 'back'
+        ));
+
         $this->addButton('params_form_submit', array(
             'label'     => Mage::helper('reports')->__('Update Report'),
             'onclick'   => 'paramsFormSubmit()'
