@@ -127,7 +127,7 @@ class Unl_Core_Model_Resource_Report_Product_Options_Collection extends Varien_D
             if ($groupType == Mage_Catalog_Model_Product_Option::OPTION_GROUP_DATE) {
                 $value = strtotime($option['option_value']);
             } else if ($groupType == Mage_Catalog_Model_Product_Option::OPTION_GROUP_SELECT) {
-                $group = $optionModel->groupFactory();
+                $group = $optionModel->groupFactory(null);
                 $group->setOption($optionModel);
                 $value = $group->prepareOptionValueForRequest($option['option_value']);
             }
